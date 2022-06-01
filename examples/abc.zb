@@ -1,0 +1,14 @@
+
+// declares a "fragment"
+// that another tokens can refer to:
+
+// gets evalulated as it's getting parsed.
+// the final DFA gets stored.
+
+// no whitespace bewteen the gravemarks and the name:
+`abc`:
+	"a"+
+	"b"+
+	"c"+
+;
+
