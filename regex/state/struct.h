@@ -5,7 +5,7 @@ struct regex_state
 	
 	struct {
 		struct transition {
-			char value;
+			unsigned char value;
 			struct regex_state* to;
 		}** data;
 		size_t n, cap;

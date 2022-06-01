@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <macros/strequals.h>
+#include <macros/memequals.h>
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
@@ -23,11 +23,11 @@ int read_directive(
 	int error = 0;
 	ENTER;
 	
-	if (strequals(tokenizer->tokenchars.chars, "%""start"))
+	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
 	{
 		TODO;
 	}
-	else if (strequals(tokenizer->tokenchars.chars, "%""include"))
+	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
 	{
 		error = read_token(tokenizer, include_machine);
 		
@@ -39,7 +39,7 @@ int read_directive(
 			
 			case t_absolute_path:
 			{
-				char* path = tokenizer->tokenchars.chars + 1;
+				char* path = (char*) tokenizer->tokenchars.chars + 1;
 				
 				path[tokenizer->tokenchars.n - 2] = '\0';
 				

@@ -27,7 +27,7 @@ static int append_tokenchar(struct tokenizer* this, char c)
 
 int read_token(
 	struct tokenizer* this,
-	enum tokenizer_state machine[number_of_tokenizer_states][128])
+	enum tokenizer_state machine[number_of_tokenizer_states][256])
 {
 	int error = 0;
 	ENTER;
@@ -40,9 +40,6 @@ int read_token(
 	
 	while (!error && state >= ts_start)
 	{
-		if (this->c < 0)
-			this->c = 0;
-		
 		state = machine[state][(unsigned) this->c];
 		
 		if (state > ts_start)

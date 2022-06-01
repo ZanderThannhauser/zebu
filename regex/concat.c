@@ -1,6 +1,7 @@
 
 #include <debug.h>
 
+#include "dotout.h"
 #include "lambda_all_accepting_states.h"
 #include "concat.h"
 
@@ -20,6 +21,11 @@ int regex_concat(
 		/* arena: */ arena,
 		/* dest:  */ right,
 		/* keep_accepting: */ false);
+	
+	#ifdef DEBUGGING
+	if (!error)
+		regex_dotout(left);
+	#endif
 	
 	EXIT;
 	return error;

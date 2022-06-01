@@ -1,7 +1,8 @@
 
 #include <debug.h>
 
-#include <regex/dotout.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/simplify.h>
 
 #include "concat.h"
 #include "simp.h"
@@ -13,35 +14,17 @@ int read_simp_token_expression(
 {
 	int error = 0;
 	struct regex_state* nfa;
+	struct regex_state* dfa;
+	struct regex_state* simp;
 	ENTER;
 	
-	error = read_concat_token_expression(&nfa, token_scratchpad, tokenizer);
+	error = 0
+		?: read_concat_token_expression(&nfa, token_scratchpad, tokenizer)
+		?: regex_nfa_to_dfa(&dfa, token_scratchpad, nfa)
+		?: regex_simplify(&simp, dfa);
 	
-	#ifdef DEBUGGING
-	
-	regex_dotout(nfa);
-	
-	CHECK;
-	
-	#endif
-	
-	struct regex_state* dfa;
-	
-	// error = regex_nfa_to_dfa()
-	TODO;
-	
-	// error = regex_simplify_dfa()
-	TODO;
-	
-	#ifdef DEBUGGING
-	
-	regex_dotout(dfa);
-	
-	CHECK;
-	
-	#endif
-	
-	TODO;
+	if (!error)
+		*out = simp;
 	
 	EXIT;
 	return error;

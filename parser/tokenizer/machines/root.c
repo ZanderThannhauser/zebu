@@ -2,7 +2,7 @@
 #include "ANY.h"
 #include "root.h"
 
-enum tokenizer_state root_machine[number_of_tokenizer_states][128] = {
+enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 	
 	// EOF:
 	[ts_start][ 0 ] = ts_EOF,

@@ -4,6 +4,7 @@
 #include "state/struct.h"
 
 #include "clone.h"
+#include "dotout.h"
 #include "lambda_all_accepting_states.h"
 #include "one_or_more.h"
 
@@ -25,6 +26,12 @@ int regex_one_or_more(
 	if (!error)
 	{
 		clone->is_accepting = true;
+		
+		#ifdef DEBUGGING
+		if (!error)
+			regex_dotout(in);
+		#endif
+		
 		*out = in;
 	}
 	

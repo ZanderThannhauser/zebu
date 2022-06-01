@@ -5,6 +5,7 @@
 #include "state/new.h"
 #include "state/add_transition.h"
 
+#include "dotout.h"
 #include "from_literal.h"
 
 int regex_from_literal(
@@ -28,7 +29,7 @@ int regex_from_literal(
 		
 		error = 0
 			?: new_regex_state(&temp, arena)
-			?: regex_state_add_transition(accept, arena, *string++, temp);
+			?: regex_state_add_transition(accept, arena, (unsigned) *string++, temp);
 		
 		accept = temp;
 	}
@@ -39,6 +40,10 @@ int regex_from_literal(
 		
 		*out = start;
 	}
+	
+	#ifdef DEBUGGING
+	regex_dotout(start);
+	#endif
 	
 	EXIT;
 	return error;

@@ -5,20 +5,20 @@
 
 #include "state/struct.h"
 
+#include "phase_counter.h"
 #include "dotout.h"
 
 static void helper(
 	FILE* out,
-	unsigned new_phase,
 	struct regex_state* state)
 {
 	ENTER;
 	
-	if (state->phase != new_phase)
+	if (state->phase != phase_counter)
 	{
 		size_t i, n;
 		
-		state->phase = new_phase;
+		state->phase = phase_counter;
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
@@ -34,7 +34,6 @@ static void helper(
 			
 			helper(
 				/* out: */ out,
-				/* new_phase: */ new_phase,
 				/* state:  */ transition->to);
 			
 			fprintf(out, ""
@@ -53,7 +52,6 @@ static void helper(
 			
 			helper(
 				/* out: */ out,
-				/* new_phase: */ new_phase,
 				/* state:  */ to);
 			
 			fprintf(out, ""
@@ -73,11 +71,19 @@ static void helper(
 	EXIT;
 }
 
+static unsigned frame_counter = 0;
+
 void regex_dotout(struct regex_state* state)
 {
 	ENTER;
 	
-	FILE* out = fopen("dot/regex.dot", "w");
+	char path[PATH_MAX];
+	
+	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
+	
+	dpvs(path);
+	
+	FILE* out = fopen(path, "w");
 	
 	fprintf(out, "digraph {" "\n");
 	
@@ -85,9 +91,9 @@ void regex_dotout(struct regex_state* state)
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
 	
-	unsigned new_phase = state->phase + 1;
+	phase_counter++;
 	
-	helper(out, new_phase, state);
+	helper(out, state);
 	
 	fprintf(out, "}" "\n");
 	
@@ -98,4 +104,20 @@ void regex_dotout(struct regex_state* state)
 }
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

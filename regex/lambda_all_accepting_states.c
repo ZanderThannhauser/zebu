@@ -4,23 +4,23 @@
 #include "state/struct.h"
 #include "state/add_lambda_transition.h"
 
+#include "phase_counter.h"
 #include "lambda_all_accepting_states.h"
 
 static int helper(
 	struct regex_state* regex,
 	struct memory_arena* arena,
 	struct regex_state* dest,
-	unsigned new_phase,
 	bool keep_accepting)
 {
 	int error = 0;
 	ENTER;
 	
-	if (regex->phase != new_phase)
+	if (regex->phase != phase_counter)
 	{
 		size_t i, n;
 		
-		regex->phase = new_phase;
+		regex->phase = phase_counter;
 		
 		// normal transitions:
 		for (i = 0, n = regex->transitions.n; !error && i < n; i++)
@@ -33,7 +33,6 @@ static int helper(
 				/* regex: */ transition->to,
 				/* arena: */ arena,
 				/* dest:  */ dest,
-				/* new_phase: */ new_phase,
 				/* keep_accepting: */ keep_accepting);
 		}
 		
@@ -46,7 +45,6 @@ static int helper(
 				/* regex: */ regex->lambda_transitions.data[i],
 				/* arena: */ arena,
 				/* dest:  */ dest,
-				/* new_phase: */ new_phase,
 				/* keep_accepting: */ keep_accepting);
 		}
 		
@@ -81,11 +79,11 @@ int regex_lambda_all_accepting_states(
 	int error = 0;
 	ENTER;
 	
-	unsigned new_phase = regex->phase + 1;
+	phase_counter++;
 	
-	dpv(new_phase);
+	dpv(phase_counter);
 	
-	error = helper(regex, arena, dest, new_phase, keep_accepting);
+	error = helper(regex, arena, dest, keep_accepting);
 	
 	EXIT;
 	return error;

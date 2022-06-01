@@ -2,7 +2,7 @@
 #include "ANY.h"
 #include "expression_after_suffix.h"
 
-enum tokenizer_state expression_after_suffix_machine[number_of_tokenizer_states][128] = {
+enum tokenizer_state expression_after_suffix_machine[number_of_tokenizer_states][256] = {
 	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,
