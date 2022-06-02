@@ -9,15 +9,17 @@
 #include "concat.h"
 
 int read_concat_token_expression(
+	bool* is_nfa_out,
 	struct regex_state** out,
-	struct memory_arena* token_scratchpad,
+	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
 	int error = 0;
+	bool _;
 	struct regex_state* left;
 	ENTER;
 	
-	error = read_range_token_expression(&left, token_scratchpad, tokenizer);
+	error = read_range_token_expression(&_, &left, scratchpad, tokenizer);
 	
 	if (!error) switch (tokenizer->token)
 	{
@@ -30,9 +32,10 @@ int read_concat_token_expression(
 		case t_dot:
 		{
 			error = 0
-				?: read_concat_token_expression(&right, token_scratchpad, tokenizer)
-				?: regex_concat(token_scratchpad, left, right);
+				?: read_concat_token_expression(&_, &right, scratchpad, tokenizer)
+				?: regex_concat(scratchpad, left, right);
 			
+			*is_nfa_out = true;
 			*out = left;
 			break;
 		}
@@ -48,6 +51,16 @@ int read_concat_token_expression(
 	EXIT;
 	return error;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -20,7 +20,7 @@ int regex_concat(
 		/* regex: */ left,
 		/* arena: */ arena,
 		/* dest:  */ right,
-		/* keep_accepting: */ false);
+		/* new_accepting: */ false);
 	
 	#ifdef DEBUGGING
 	if (!error)

@@ -7,8 +7,9 @@
 #include "prefixes.h"
 
 int read_prefixes_token_expression(
+	bool* is_nfa_out,
 	struct regex_state** out,
-	struct memory_arena* token_scratchpad,
+	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
 	int error = 0;
@@ -21,7 +22,7 @@ int read_prefixes_token_expression(
 			break;
 		
 		default:
-			error = read_highest_token_expression(out, token_scratchpad, tokenizer);
+			error = read_highest_token_expression(is_nfa_out, out, scratchpad, tokenizer);
 			break;
 	}
 	

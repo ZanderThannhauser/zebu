@@ -11,15 +11,18 @@
 #include "suffixes.h"
 
 int read_suffixes_token_expression(
+	bool* is_nfa_out,
 	struct regex_state** out,
-	struct memory_arena* token_scratchpad,
+	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
 	int error = 0;
-	struct regex_state* regex;
+	bool is_nfa;
+	struct regex_state* given;
+	struct regex_state* nfa;
 	ENTER;
 	
-	error = read_prefixes_token_expression(&regex, token_scratchpad, tokenizer);
+	error = read_prefixes_token_expression(&is_nfa, &given, scratchpad, tokenizer);
 	
 	if (!error) switch (tokenizer->token)
 	{
@@ -35,26 +38,38 @@ int read_suffixes_token_expression(
 		{
 			error = 0
 				?: regex_one_or_more(
-					/* out:        */ &regex,
-					/* scratchpad: */  token_scratchpad,
-					/* in:         */  regex)
+					/* out:        */ &nfa,
+					/* scratchpad: */ scratchpad,
+					/* in:         */ given)
 				?: read_token(
 					/* tokenizer: */ tokenizer,
 					/* machine:   */ expression_after_suffix_machine);
 			
 			if (!error)
-				*out = regex;
+			{
+				*is_nfa_out = true;
+				*out = nfa;
+			}
 			
 			break;
 		}
 		
 		case t_ocurly:
+		{
+			// repeated clones and concat
+			// require accepting
+			// nfa_to_dfa
+			// simplify
 			TODO;
 			break;
+		}
 		
 		default:
-			*out = regex;
+		{
+			*is_nfa_out = is_nfa;
+			*out = given;
 			break;
+		}
 	}
 	
 	EXIT;

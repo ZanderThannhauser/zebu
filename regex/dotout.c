@@ -85,6 +85,12 @@ void regex_dotout(struct regex_state* state)
 	
 	FILE* out = fopen(path, "w");
 	
+	if (!out)
+	{
+		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		abort();
+	}
+	
 	fprintf(out, "digraph {" "\n");
 	
 	fprintf(out, "\t" "layout = neato;" "\n");

@@ -11,7 +11,7 @@ static int helper(
 	struct regex_state* regex,
 	struct memory_arena* arena,
 	struct regex_state* dest,
-	bool keep_accepting)
+	bool new_accepting)
 {
 	int error = 0;
 	ENTER;
@@ -33,7 +33,7 @@ static int helper(
 				/* regex: */ transition->to,
 				/* arena: */ arena,
 				/* dest:  */ dest,
-				/* keep_accepting: */ keep_accepting);
+				/* new_accepting: */ new_accepting);
 		}
 		
 		// lambda transitions:
@@ -45,7 +45,7 @@ static int helper(
 				/* regex: */ regex->lambda_transitions.data[i],
 				/* arena: */ arena,
 				/* dest:  */ dest,
-				/* keep_accepting: */ keep_accepting);
+				/* new_accepting: */ new_accepting);
 		}
 		
 		// default transition?:
@@ -61,8 +61,7 @@ static int helper(
 				/* arena: */ arena,
 				/* to:    */ dest);
 			
-			if (!keep_accepting)
-				regex->is_accepting = false;
+			regex->is_accepting = new_accepting;
 		}
 	}
 	
@@ -74,7 +73,7 @@ int regex_lambda_all_accepting_states(
 	struct regex_state* regex,
 	struct memory_arena* arena,
 	struct regex_state* dest,
-	bool keep_accepting)
+	bool new_accepting)
 {
 	int error = 0;
 	ENTER;
@@ -83,7 +82,7 @@ int regex_lambda_all_accepting_states(
 	
 	dpv(phase_counter);
 	
-	error = helper(regex, arena, dest, keep_accepting);
+	error = helper(regex, arena, dest, new_accepting);
 	
 	EXIT;
 	return error;

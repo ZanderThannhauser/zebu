@@ -25,6 +25,7 @@ int read_fragment(
 	
 	char* name = NULL;
 	
+	bool is_nfa;
 	struct regex_state* regex = NULL;
 	
 	tokenizer->tokenchars.chars[tokenizer->tokenchars.n - 1] = 0;
@@ -33,8 +34,10 @@ int read_fragment(
 		?: sstrdup(&name, tokenizer->tokenchars.chars + 1)
 		?: read_token(tokenizer, colon_machine)
 		?: read_token(tokenizer, expression_root_machine)
-		?: read_root_token_expression(&regex, token_scratchpad, tokenizer);
+		?: read_root_token_expression(&is_nfa, &regex, token_scratchpad, tokenizer);
 	
+	TODO;
+	#if 0
 	if (!error && tokenizer->token != t_semicolon)
 	{
 		TODO;
@@ -54,6 +57,7 @@ int read_fragment(
 	TODO;
 	
 	free(name);
+	#endif
 	
 	EXIT;
 	return error;

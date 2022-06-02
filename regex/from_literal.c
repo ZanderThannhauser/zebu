@@ -17,9 +17,14 @@ int regex_from_literal(
 	int error = 0;
 	ENTER;
 	
+	dpvsn(string, len);
+	
 	struct regex_state* start = NULL;
 	
 	error = new_regex_state(&start, arena);
+	
+	dpv(start);
+	
 	
 	struct regex_state* accept = start;
 	
@@ -48,4 +53,15 @@ int regex_from_literal(
 	EXIT;
 	return error;
 }
+
+
+
+
+
+
+
+
+
+
+
 

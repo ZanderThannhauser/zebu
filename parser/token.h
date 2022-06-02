@@ -18,6 +18,14 @@ enum token
 	t_qmark,
 	t_asterisk,
 	t_ocurly,
+	t_gthan,
+	t_gthan_eq,
+	t_lthan,
+	t_lthan_eq,
+	t_equal_to,
+	t_not_equal_to,
+	t_and,
+	t_or,
 	
 	t_ellipsis,
 	

@@ -10,8 +10,9 @@
 #include "highest.h"
 
 int read_highest_token_expression(
+	bool* is_nfa_out,
 	struct regex_state** out,
-	struct memory_arena* token_scratchpad,
+	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
 	int error = 0;
@@ -27,11 +28,15 @@ int read_highest_token_expression(
 			
 			error = 0
 				?: regex_from_literal(
-				/* out: */ out,
-				/* scratchpad: */ token_scratchpad,
-				/* chars: */ tokenizer->tokenchars.chars + 1,
-				/* strlen: */ tokenizer->tokenchars.n - 2)
-				?: read_token(tokenizer, expression_after_highest_machine);
+					/* out: */ out,
+					/* scratchpad: */ scratchpad,
+					/* chars: */ tokenizer->tokenchars.chars + 1,
+					/* strlen: */ tokenizer->tokenchars.n - 2)
+				?: read_token(
+					/* tokenizer: */ tokenizer,
+					/* machine:   */ expression_after_highest_machine);
+			
+			*is_nfa_out = false;
 			
 			break;
 		}

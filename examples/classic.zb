@@ -7,16 +7,15 @@
 
 %include <abc.zb>
 
-// DFA string literal, parenthesis: "literal", (DFA $1)
-// DFA prefixes: !<$1>
-// NFA suffixes <$1>?, <$1>+, <$1>*, <$1>{a, b}
-// NFA range: <$1> '...' <$2>
-// NFA concatenation: <$1> <$2> ...
-// NFA -> DFA   // (and simplication)
-// DFA boolean-cmp (and simplication): <$1> {<,>,<=,>=,==,!=} <$2> ... (python-style)
-// DFA boolean-and (and simplication): <$1> & <$2> & ...
-// DFA boolean-or  (and simplication): <$1> | <$2> | ...
-// DFA boolean-?:  (and simplication): <$1> if ... else <$3>
+//    -?FA string literal, parenthesis: "literal", (?FA $1)
+// DFA-DFA prefixes: !<$1>
+// ?FA-NFA suffixes: <$1>?, <$1>+, <$1>*, <$1>{a, b}
+// DFA-DFA range: <$1> '...' <$2>
+// ?FA-NFA concatenation: <$1> <$2> ...
+// DFA-DFA boolean-cmp : <$1> {<,>,<=,>=,==,!=} <$2> ... (python-style)
+// DFA-DFA boolean-and : <$1> & <$2> & ...
+// ?FA-?FA boolean-or  : <$1> | <$2> | ...
+// DFA-DFA boolean-?:  : <$1> if ... else <$3>
 
 // LRP charater/string literal, regex, parenthesis: "token", `DFA $1`, (LRP $1)
 // LRP reduction-rule multiplicities: <$1>?, <$1>+, <$1>*, <$1>{a, b};
