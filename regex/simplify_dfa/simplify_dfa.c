@@ -16,11 +16,11 @@ struct regex* regex_simplify_dfa(
 		// if one is accepting and another is not:
 			// definately different
 		// for each of their inputs:
-			// call self on the transitioned-to node-pairs\
+			// call self on the transitioned-to node-pairs
 				// (possibly using defaults)
 			// if subpair is different:
 				// than this pair is different too
-		
+	
 	TODO;
 	
 	EXIT;

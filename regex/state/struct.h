@@ -19,5 +19,7 @@ struct regex
 	struct regex* default_transition_to;
 	
 	unsigned phase;
+	
+	bool is_freeing;
 };
 

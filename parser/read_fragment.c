@@ -7,6 +7,8 @@
 
 #include <regex/simplify_dfa/simplify_dfa.h>
 
+#include <regex/state/free.h>
+
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/colon.h"
@@ -55,6 +57,8 @@ void read_fragment(
 		struct regex* nfa = bun.regex;
 		
 		struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
+		
+		free_regex(nfa, scratchpad);
 		
 		simp = regex_simplify_dfa(dfa, scratchpad);
 	}
