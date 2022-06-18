@@ -8,6 +8,11 @@
 #include <memory/arena/new.h>
 #include <memory/arena/free.h>
 
+#include "options/new.h"
+
+#include "fragment/compare.h"
+#include "fragment/free.h"
+
 #include "pragma_once/new.h"
 #include "pragma_once/free.h"
 
@@ -20,7 +25,9 @@ struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
 	
 	struct avl_tree_t* grammar = new_avl_tree(NULL, NULL);
 	
-	struct avl_tree_t* fragments = new_avl_tree(NULL, NULL);
+	struct options* options = new_options();
+	
+	struct avl_tree_t* fragments = new_avl_tree(compare_fragments, free_fragment);
 	
 	char* dup = sstrdup(path);
 	
@@ -30,6 +37,7 @@ struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
 	
 	recursive_parse(
 		/* grammar: */ grammar,
+		/* options: */ options,
 		/* fragments: */ fragments,
 		/* pragma_once: */ pragma_once,
 		/* token_scratchpad: */ scratchpad,

@@ -8,6 +8,8 @@
 
 struct tokenizer* new_tokenizer(int fd)
 {
+	ENTER;
+	
 	struct tokenizer* this = smalloc(sizeof(*this));
 	
 	this->fd = fd;
@@ -19,6 +21,7 @@ struct tokenizer* new_tokenizer(int fd)
 	this->tokenchars.n = 0;
 	this->tokenchars.cap = 0;
 	
+	EXIT;
 	return this;
 }
 

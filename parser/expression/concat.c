@@ -12,6 +12,8 @@ struct bundle read_concat_token_expression(
 	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
+	ENTER;
+	
 	struct bundle retval;
 	struct bundle inner = read_suffixes_token_expression(scratchpad, tokenizer);
 	

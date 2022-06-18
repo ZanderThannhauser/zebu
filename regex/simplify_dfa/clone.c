@@ -7,19 +7,22 @@
 
 #include <memory/smalloc.h>
 
-#include "state/struct.h"
-#include "state/new.h"
-#include "state/add_transition.h"
+#include <regex/state/struct.h>
+#include <regex/state/new.h>
+#include <regex/state/add_transition.h>
 
 #include "clone.h"
 
-struct mapping
-{
+static struct mapping {
 	struct regex* old; // must be the first
 	struct regex* new;
-};
+}* new_mapping(struct regex* old, struct regex* new) {
+	struct mapping* this = smalloc(sizeof(*this));
+	this->old = old, this->new = new;
+	return this;
+}
 
-static int compare(const void* a, const void* b)
+static int compare_mappings(const void* a, const void* b)
 {
 	const struct mapping* A = a, *B = b;
 	
@@ -36,15 +39,17 @@ struct memory_arena;
 static struct regex* clone_helper(
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena,
+	struct avl_tree_t* unique_nodes,
 	struct regex* old)
 {
 	struct avl_node_t* node;
+	struct mapping* mapping;
 	ENTER;
 	
 	if ((node = avl_search(mappings, &old)))
 	{
-		// *out = node->item->new;
-		TODO;
+		EXIT;
+		return (mapping = node->item)->new;
 	}
 	else
 	{
@@ -52,18 +57,20 @@ static struct regex* clone_helper(
 		
 		new->is_accepting = old->is_accepting;
 		
-		struct mapping* mapping = smalloc(sizeof(*mapping));
-		
-		mapping->old = old;
-		mapping->new = new;
-		
-		safe_avl_insert(mappings, mapping);
+		safe_avl_insert(mappings, new_mapping(old, new));
 		
 		// for each transition:
 		size_t i, n;
 		for (i = 0, n = old->transitions.n; i < n; i++)
 		{
 			struct transition* const ele = old->transitions.data[i];
+			
+			struct regex* cloneme;
+			{
+				node = avl_search(unique_nodes, ele->to);
+				assert(node);
+				cloneme = node->item;
+			}
 			
 			regex_add_transition(
 				/* from: */ new,
@@ -72,14 +79,8 @@ static struct regex* clone_helper(
 				/* to */ clone_helper(
 					/* mappings: */ mappings,
 					/* arena: */ arena,
-					/* in: */ ele->to));
-		}
-		
-		// for each lambda transition:
-		for (i = 0, n = old->lambda_transitions.n; i < n; i++)
-		{
-			
-			TODO;
+					/* unique_nodes: */ unique_nodes,
+					/* in: */ cloneme));
 		}
 		
 		// for default transition:
@@ -93,26 +94,23 @@ static struct regex* clone_helper(
 	}
 }
 
-struct regex* regex_clone(
-	struct memory_arena* arena,
-	struct regex* in)
+struct regex* simplify_dfa_clone(
+	struct avl_tree_t* unique_nodes,
+	struct regex* original_start,
+	struct memory_arena* arena)
 {
 	ENTER;
 	
-	struct avl_tree_t* mappings = new_avl_tree(compare, free);
+	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free);
 	
-	struct regex* retval = clone_helper(mappings, arena, in);
+	struct regex* new_start = clone_helper(
+		mappings, arena, unique_nodes, original_start);
 	
 	avl_free_tree(mappings);
 	
 	EXIT;
-	return retval;
+	return new_start;
 }
-
-
-
-
-
 
 
 

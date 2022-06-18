@@ -8,7 +8,7 @@
 #include "tokenizer/read_char.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/root.h"
-/*#include "tokenizer/free.h"*/
+#include "tokenizer/free.h"
 
 #include "pragma_once/lookup.h"
 
@@ -19,6 +19,7 @@
 
 void recursive_parse(
 	struct avl_tree_t* grammar,
+	struct options* options,
 	struct avl_tree_t* fragments,
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
@@ -70,6 +71,7 @@ void recursive_parse(
 				case t_directive: read_directive(
 					/* tokenizer:      */ tokenizer,
 					/* grammar:        */ grammar,
+					/* options:        */ options,
 					/* fragments:      */ fragments,
 					/* pragma_once:    */ pragma_once,
 					/* scratchpad:     */ scratchpad,
@@ -81,7 +83,7 @@ void recursive_parse(
 				case t_fragment: read_fragment(
 					/* tokenizer: */ tokenizer,
 					/* token_scratchpad: */ scratchpad,
-					/* lex: */ lex);
+					/* fragments: */ fragments);
 				break;
 				
 				case t_identifier:
@@ -91,28 +93,20 @@ void recursive_parse(
 				}
 				
 				default:
+					dpv(tokenizer->token);
 					TODO;
 					break;
 			}
 		}
 		
-		TODO;
-		#if 0
-		TODO;
-		
 		free_tokenizer(tokenizer);
-		#endif
 	}
 	
-	TODO;
-	
-	#if 0
-	if (new_relative_dirfd > 0 && new_relative_dirfd != relative_dirfd)
-		close(new_relative_dirfd);
+	if (relative_dirfd != old_relative_dirfd)
+		close(relative_dirfd);
 	
 	if (fd > 0)
 		close(fd);
-	#endif
 	
 	EXIT;
 }

@@ -29,5 +29,9 @@ enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 		[ts_reading_fragment]['`'] = ts_read_fragment,
 			[ts_read_fragment][ANY] = ts_fragment,
 	
+	// identifier (start of grammar rule):
+	[ts_start]['a' ... 'z'] = ts_reading_identifier,
+		[ts_reading_identifier][ANY] = ts_identifier,
+		[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
 };
 

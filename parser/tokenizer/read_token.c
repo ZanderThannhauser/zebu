@@ -86,6 +86,8 @@ enum token read_token(
 		
 		case ts_fragment: this->token = t_fragment; break;
 		
+		case ts_identifier: append(this, 0); this->token = t_identifier; break;
+		
 		case ts_colon: this->token = t_colon; break;
 		
 		case ts_plus: this->token = t_plus; break;

@@ -37,6 +37,7 @@ enum tokenizer_state
 	ts_absolute_path,
 	ts_relative_path,
 	ts_fragment,
+	ts_identifier,
 	
 	// keywords/misc:
 	ts_directive,
@@ -80,6 +81,7 @@ enum tokenizer_state
 	ts_reading_relpath_literal,
 	ts_reading_abspath_literal,
 	ts_reading_fragment,
+	ts_reading_identifier,
 	
 	ts_read_string_literal,
 	ts_read_relpath_literal,

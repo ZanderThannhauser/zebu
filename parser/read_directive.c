@@ -3,9 +3,16 @@
 
 #include <macros/memequals.h>
 
+#include <memory/sstrdup.h>
+
+#include "options/struct.h"
+
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
+#include "tokenizer/machines/identifier.h"
+#include "tokenizer/machines/semicolon.h"
+#include "tokenizer/machines/root.h"
 
 #include "recursive_parse.h"
 #include "read_directive.h"
@@ -13,6 +20,7 @@
 void read_directive(
 	struct tokenizer* tokenizer,
 	struct avl_tree_t* grammar,
+	struct options* options,
 	struct avl_tree_t* fragments,
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
@@ -24,7 +32,17 @@ void read_directive(
 	
 	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
 	{
-		TODO;
+		read_token(tokenizer, identifier_machine);
+		
+		free(options->start_rule);
+		
+		options->start_rule = sstrdup(tokenizer->tokenchars.chars);
+		
+		dpvs(options->start_rule);
+		
+		read_token(tokenizer, semicolon_machine);
+		
+		read_token(tokenizer, root_machine);
 	}
 	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
 	{
@@ -46,6 +64,7 @@ void read_directive(
 				
 				recursive_parse(
 					/* grammar: */ grammar,
+					/* options: */ options,
 					/* fragments: */ fragments,
 					/* pragma_once: */ pragma_once,
 					/* token_scratchpad: */ scratchpad,
@@ -61,6 +80,8 @@ void read_directive(
 				TODO;
 				break;
 		}
+		
+		read_token(tokenizer, root_machine);
 	}
 	else
 	{

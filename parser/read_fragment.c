@@ -1,6 +1,9 @@
 
 #include <debug.h>
 
+#include <avl/avl.h>
+#include <avl/safe_insert.h>
+
 #include <memory/sstrdup.h>
 
 #include <regex/nfa_to_dfa/nfa_to_dfa.h>
@@ -17,24 +20,35 @@
 
 #include "expression/root.h"
 
+#include "fragment/new.h"
+
 #include "read_fragment.h"
 
 void read_fragment(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct lex* lex)
+	struct avl_tree_t* fragments)
 {
 	ENTER;
 	
 	assert(tokenizer->token == t_fragment);
 	
-	char* name = ({
+	char* name;
+	{
 		char* original = tokenizer->tokenchars.chars + 1;
+		
 		original[tokenizer->tokenchars.n - 2] = 0;
-		sstrdup(original);
-	});
+		
+		name = sstrdup(original);
+	}
 	
 	dpvs(name);
+	
+	if (avl_search(fragments, &name))
+	{
+		TODO;
+		exit(e_bad_input_file);
+	}
 	
 	read_token(tokenizer, colon_machine);
 	
@@ -61,6 +75,8 @@ void read_fragment(
 		free_regex(nfa, scratchpad);
 		
 		simp = regex_simplify_dfa(dfa, scratchpad);
+		
+		free_regex(dfa, scratchpad);
 	}
 	else
 	{
@@ -70,19 +86,14 @@ void read_fragment(
 	dpvs(name);
 	dpv(simp);
 	
-	TODO;
-	#if 0
-	// add fragment to fragment lookup
-	TODO;
-	
-	// format scratchpad:
-	TODO;
-	#endif
-	
-	free(name);
+	safe_avl_insert(fragments, new_fragment(name, simp));
 	
 	EXIT;
 }
+
+
+
+
 
 
 
