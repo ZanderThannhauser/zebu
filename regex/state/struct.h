@@ -1,22 +1,22 @@
 
-struct regex_state
+struct regex
 {
 	bool is_accepting;
 	
 	struct {
 		struct transition {
 			unsigned char value;
-			struct regex_state* to;
+			struct regex* to;
 		}** data;
 		size_t n, cap;
 	} transitions;
 	
 	struct {
-		struct regex_state** data;
+		struct regex** data;
 		size_t n, cap;
 	} lambda_transitions;
 	
-	struct regex_state* default_transition_to;
+	struct regex* default_transition_to;
 	
 	unsigned phase;
 };

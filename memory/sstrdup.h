@@ -1,1 +1,1 @@
-int sstrdup(char** out, const char* in);
+char* sstrdup(const char* in);

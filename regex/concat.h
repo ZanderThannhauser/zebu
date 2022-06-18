@@ -1,8 +1,8 @@
 
 struct memory_arena;
-struct regex_state;
+struct regex;
 
-int regex_concat(
+void regex_concat(
 	struct memory_arena* arena,
-	struct regex_state* left,
-	struct regex_state* right);
+	struct regex* left,
+	struct regex* right);

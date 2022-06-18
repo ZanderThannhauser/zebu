@@ -2,31 +2,34 @@
 #include <debug.h>
 
 #include "../tokenizer/struct.h"
+#include "../tokenizer/read_token.h"
+#include "../tokenizer/machines/expression_root.h"
 
 #include "highest.h"
 #include "prefixes.h"
 
-int read_prefixes_token_expression(
-	bool* is_nfa_out,
-	struct regex_state** out,
+struct bundle read_prefixes_token_expression(
 	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
-	int error = 0;
 	ENTER;
 	
-	switch (tokenizer->token)
+	bool emark = false;
+	
+	if (tokenizer->token == t_emark)
 	{
-		case t_emark:
-			TODO;
-			break;
-		
-		default:
-			error = read_highest_token_expression(is_nfa_out, out, scratchpad, tokenizer);
-			break;
+		emark = true;
+		read_token(tokenizer, expression_root_machine);
+	}
+	
+	struct bundle inner = read_highest_token_expression(scratchpad, tokenizer);
+	
+	if (emark)
+	{
+		TODO;
 	}
 	
 	EXIT;
-	return error;
+	return inner;
 }
 

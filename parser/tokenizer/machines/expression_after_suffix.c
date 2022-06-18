@@ -23,6 +23,10 @@ enum tokenizer_state expression_after_suffix_machine[number_of_tokenizer_states]
 					[ts_after_dotdotdot][ANY] = ts_ellipsis,
 	
 	// firsts:
+		// open sqaure:
+		[ts_start]['['] = ts_after_osqaure,
+			[ts_after_osqaure][ANY] = ts_osqaure,
+		
 		// open paren:
 		[ts_start]['('] = ts_after_oparen,
 			[ts_after_oparen][ANY] = ts_oparen,

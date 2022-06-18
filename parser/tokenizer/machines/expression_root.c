@@ -16,6 +16,10 @@ enum tokenizer_state expression_root_machine[number_of_tokenizer_states][256] = 
 			[ts_skipping_comment]['\n'] = ts_start,
 	
 	// highest:
+		// open sqaure:
+		[ts_start]['['] = ts_after_osqaure,
+			[ts_after_osqaure][ANY] = ts_osqaure,
+		
 		// open paren:
 		[ts_start]['('] = ts_after_oparen,
 			[ts_after_oparen][ANY] = ts_oparen,

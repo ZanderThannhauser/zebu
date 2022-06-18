@@ -7,23 +7,12 @@
 #include "compare.h"
 #include "new.h"
 
-int new_pragma_once(struct pragma_once** new)
+struct pragma_once* new_pragma_once()
 {
-	int error = 0;
-	ENTER;
+	struct pragma_once* this = smalloc(sizeof(*this));
 	
-	struct pragma_once* this = NULL;
+	avl_init_tree(&this->tree, compare_node, free);
 	
-	error = smalloc((void**) &this, sizeof(*this));
-	
-	if (!error)
-	{
-		avl_init_tree(&this->tree, compare_node, free);
-		
-		*new = this;
-	}
-	
-	EXIT;
-	return error;
+	return this;
 }
 

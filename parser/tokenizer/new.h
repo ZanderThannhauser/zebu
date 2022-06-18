@@ -1,4 +1,2 @@
 
-struct tokenizer;
-
-int new_tokenizer(struct tokenizer** out, int fd);
+struct tokenizer* new_tokenizer(int fd);

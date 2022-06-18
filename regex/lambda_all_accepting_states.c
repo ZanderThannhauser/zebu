@@ -1,4 +1,5 @@
 
+
 #include <debug.h>
 
 #include "state/struct.h"
@@ -7,13 +8,12 @@
 #include "phase_counter.h"
 #include "lambda_all_accepting_states.h"
 
-static int helper(
-	struct regex_state* regex,
+static void helper(
+	struct regex* regex,
 	struct memory_arena* arena,
-	struct regex_state* dest,
+	struct regex* dest,
 	bool new_accepting)
 {
-	int error = 0;
 	ENTER;
 	
 	if (regex->phase != phase_counter)
@@ -23,25 +23,19 @@ static int helper(
 		regex->phase = phase_counter;
 		
 		// normal transitions:
-		for (i = 0, n = regex->transitions.n; !error && i < n; i++)
+		for (i = 0, n = regex->transitions.n; i < n; i++)
 		{
-			dpv(i);
-			
-			struct transition* transition = regex->transitions.data[i];
-			
-			error = helper(
-				/* regex: */ transition->to,
+			helper(
+				/* regex: */ regex->transitions.data[i]->to,
 				/* arena: */ arena,
 				/* dest:  */ dest,
 				/* new_accepting: */ new_accepting);
 		}
 		
 		// lambda transitions:
-		for (i = 0, n = regex->lambda_transitions.n; !error && i < n; i++)
+		for (i = 0, n = regex->lambda_transitions.n; i < n; i++)
 		{
-			dpv(i);
-			
-			error = helper(
+			helper(
 				/* regex: */ regex->lambda_transitions.data[i],
 				/* arena: */ arena,
 				/* dest:  */ dest,
@@ -49,14 +43,14 @@ static int helper(
 		}
 		
 		// default transition?:
-		if (!error && regex->default_transition_to)
+		if (regex->default_transition_to)
 		{
 			TODO;
 		}
 		
 		if (regex->is_accepting)
 		{
-			error = regex_state_add_lambda_transition(
+			regex_add_lambda_transition(
 				/* from:  */ regex,
 				/* arena: */ arena,
 				/* to:    */ dest);
@@ -66,29 +60,24 @@ static int helper(
 	}
 	
 	EXIT;
-	return error;
 }
 
-int regex_lambda_all_accepting_states(
-	struct regex_state* regex,
+void regex_lambda_all_accepting_states(
+	struct regex* regex,
 	struct memory_arena* arena,
-	struct regex_state* dest,
+	struct regex* dest,
 	bool new_accepting)
 {
-	int error = 0;
 	ENTER;
 	
 	phase_counter++;
 	
 	dpv(phase_counter);
 	
-	error = helper(regex, arena, dest, new_accepting);
+	helper(regex, arena, dest, new_accepting);
 	
 	EXIT;
-	return error;
 }
-
-
 
 
 

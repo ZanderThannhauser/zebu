@@ -10,47 +10,35 @@
 #include "dealloc.h"
 #include "realloc.h"
 
-int arena_realloc(
+void* arena_realloc(
 	struct memory_arena* this,
-	void** ptr, size_t size)
+	void* old, size_t size)
 {
-	int error = 0;
 	size_t user_size;
-	ENTER;
 	
-	dpv(*ptr);
-	dpv(size);
-	
-	if (!*ptr)
-		error = arena_malloc(this, ptr, size);
+	if (!old)
+		return arena_malloc(this, size);
 	else if (!size)
-		arena_dealloc(this, *ptr);
-	else if (size > (user_size = arena_get_size(*ptr)))
+		return arena_dealloc(this, old), NULL;
+	else if (size <= (user_size = arena_get_size(old)))
+		return old;
+	else
 	{
-		void *old = *ptr, *new = NULL;
+		void *new = arena_malloc(this, size);
 		
 		dpv(old);
+		dpv(new);
 		
-		error = arena_malloc(this, &new, size);
+		memcpy(new, old, user_size);
 		
-		if (!error)
-		{
-			dpv(new);
-			
-			memcpy(new, old, user_size);
-			
-			arena_dealloc(this, old);
-			
-			*ptr = new;
-			
-			#ifdef DEBUGGING
-			arena_prettyprint(this);
-			#endif
-		}
+		arena_dealloc(this, old);
+		
+		#ifdef DEBUGGING
+		arena_prettyprint(this);
+		#endif
+		
+		return new;
 	}
-	
-	EXIT;
-	return error;
 }
 
 

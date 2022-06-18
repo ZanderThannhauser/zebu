@@ -3,6 +3,6 @@
 
 struct memory_arena;
 
-int arena_realloc(
+void* arena_realloc(
 	struct memory_arena* this,
-	void** ptr, size_t size);
+	void* in, size_t size);

@@ -1,6 +1,7 @@
 
 #include <avl/avl.h>
 #include <avl/new.h>
+#include <avl/safe_insert.h>
 
 #include <debug.h>
 
@@ -14,8 +15,8 @@
 
 struct mapping
 {
-	struct regex_state* old; // must be the first
-	struct regex_state* new;
+	struct regex* old; // must be the first
+	struct regex* new;
 };
 
 static int compare(const void* a, const void* b)
@@ -32,13 +33,11 @@ static int compare(const void* a, const void* b)
 
 struct memory_arena;
 
-static int clone_helper(
-	struct regex_state** out,
+static struct regex* clone_helper(
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena,
-	struct regex_state* old)
+	struct regex* old)
 {
-	int error = 0;
 	struct avl_node_t* node;
 	ENTER;
 	
@@ -49,94 +48,65 @@ static int clone_helper(
 	}
 	else
 	{
-		struct regex_state* new;
+		struct regex* new = new_regex(arena);
 		
-		error = new_regex_state(&new, arena);
+		new->is_accepting = old->is_accepting;
 		
-		struct mapping* mapping;
+		struct mapping* mapping = smalloc(sizeof(*mapping));
 		
-		// allocate mapping:
-		if (!error)
-		{
-			new->is_accepting = old->is_accepting;
-			
-			error = smalloc((void**) &mapping, sizeof(*mapping));
-		}
+		mapping->old = old;
+		mapping->new = new;
 		
-		// insert mapping:
-		if (!error)
-		{
-			assert(mapping);
-			
-			mapping->old = old;
-			mapping->new = new;
-			
-			if (!avl_insert(mappings, mapping))
-			{
-				TODO;
-				error = e_out_of_memory;
-			}
-		}
+		safe_avl_insert(mappings, mapping);
 		
 		// for each transition:
 		size_t i, n;
-		for (i = 0, n = old->transitions.n; !error && i < n; i++)
+		for (i = 0, n = old->transitions.n; i < n; i++)
 		{
-			struct regex_state* new_dest;
-			struct transition* ele = old->transitions.data[i];
+			struct transition* const ele = old->transitions.data[i];
 			
-			error = 0
-				?: clone_helper(
-					/* out: */ &new_dest,
+			regex_add_transition(
+				/* from: */ new,
+				/* arena */ arena,
+				/* value: */ ele->value,
+				/* to */ clone_helper(
 					/* mappings: */ mappings,
 					/* arena: */ arena,
-					/* in: */ ele->to)
-				?: regex_state_add_transition(
-					/* from: */ new,
-					/* arena */ arena,
-					/* value: */ ele->value,
-					/* to */ new_dest);
+					/* in: */ ele->to));
 		}
 		
 		// for each lambda transition:
-		for (i = 0, n = old->lambda_transitions.n; !error && i < n; i++)
+		for (i = 0, n = old->lambda_transitions.n; i < n; i++)
 		{
 			
 			TODO;
 		}
 		
 		// for default transition:
-		if (!error && old->default_transition_to)
+		if (old->default_transition_to)
 		{
 			TODO;
 		}
 		
-		*out = new;
+		EXIT;
+		return new;
 	}
-	
-	EXIT;
-	return error;
 }
 
-
-int regex_clone(
-	struct regex_state** out,
+struct regex* regex_clone(
 	struct memory_arena* arena,
-	struct regex_state* in)
+	struct regex* in)
 {
-	int error = 0;
 	ENTER;
 	
-	struct avl_tree_t* mappings = NULL;
+	struct avl_tree_t* mappings = new_avl_tree(compare, free);
 	
-	error = 0
-		?: new_avl_tree(&mappings, compare, free)
-		?: clone_helper(out, mappings, arena, in);
+	struct regex* retval = clone_helper(mappings, arena, in);
 	
 	avl_free_tree(mappings);
 	
 	EXIT;
-	return error;
+	return retval;
 }
 
 

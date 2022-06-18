@@ -1,31 +1,14 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
-
+#include "smalloc.h"
 #include "smemdup.h"
 
-int smemdup(
-	void** out,
-	const void* in,
-	size_t size)
+void* smemdup(const void* in, size_t size)
 {
-	int error = 0;
-	void* new;
-	ENTER;
+	void* new = smalloc(size);
 	
-	if ((new = malloc(size)))
-	{
-		memcpy(new, in, size);
-		*out = new;
-	}
-	else
-	{
-		fprintf(stderr, "%s: malloc(size = %lu): %m\n", argv0, size),
-		error = e_out_of_memory;
-	}
+	memcpy(new, in, size);
 	
-	EXIT;
-	return error;
+	return new;
 }
-

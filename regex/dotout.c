@@ -8,9 +8,7 @@
 #include "phase_counter.h"
 #include "dotout.h"
 
-static void helper(
-	FILE* out,
-	struct regex_state* state)
+static void helper(FILE* out, struct regex* state)
 {
 	ENTER;
 	
@@ -48,7 +46,7 @@ static void helper(
 		{
 			dpv(i);
 			
-			struct regex_state* to = state->lambda_transitions.data[i];
+			struct regex* to = state->lambda_transitions.data[i];
 			
 			helper(
 				/* out: */ out,
@@ -73,7 +71,7 @@ static void helper(
 
 static unsigned frame_counter = 0;
 
-void regex_dotout(struct regex_state* state)
+void regex_dotout(struct regex* state)
 {
 	ENTER;
 	
@@ -110,7 +108,6 @@ void regex_dotout(struct regex_state* state)
 }
 
 #endif
-
 
 
 

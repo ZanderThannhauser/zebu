@@ -7,29 +7,21 @@
 #include "read_char.h"
 #include "read_token.h"
 
-static int append_tokenchar(struct tokenizer* this, char c)
+static void append(struct tokenizer* this, char c)
 {
-	int error = 0;
-	
 	if (this->tokenchars.n + 1 >= this->tokenchars.cap)
 	{
 		this->tokenchars.cap = this->tokenchars.cap * 2 ?: 1;
-		error = srealloc((void**) &this->tokenchars.chars, this->tokenchars.cap);
+		this->tokenchars.chars = srealloc(this->tokenchars.chars, this->tokenchars.cap);
 	}
 	
-	if (!error)
-	{
-		this->tokenchars.chars[this->tokenchars.n++] = c;
-	}
-	
-	return error;
+	this->tokenchars.chars[this->tokenchars.n++] = c;
 }
 
-int read_token(
+enum token read_token(
 	struct tokenizer* this,
 	enum tokenizer_state machine[number_of_tokenizer_states][256])
 {
-	int error = 0;
 	ENTER;
 	
 	dpvc(this->c);
@@ -38,20 +30,19 @@ int read_token(
 	
 	enum tokenizer_state state = ts_start;
 	
-	while (!error && state >= ts_start)
+	while (state >= ts_start)
 	{
 		state = machine[state][(unsigned) this->c];
 		
 		if (state > ts_start)
-			error = append_tokenchar(this, this->c);
+			append(this, this->c);
 		else if (state == ts_start)
 			this->tokenchars.n = 0;
 		
 		if (state >= ts_start)
-			error = read_char(this);
+			read_char(this);
 	}
 	
-	if (!error)
 	switch (state)
 	{
 		case ts_error:
@@ -59,11 +50,12 @@ int read_token(
 			break;
 		
 		case ts_EOF:
-			TODO;
+/*			TODO;*/
+			this->token = t_EOF;
 			break;
 		
 		case ts_directive:
-			error = append_tokenchar(this, '\0');
+			append(this, 0);
 			this->token = t_directive;
 			break;
 		
@@ -83,29 +75,20 @@ int read_token(
 			TODO;
 			break;
 		
-		case ts_string_literal:
-			this->token = t_string_literal;
-			break;
+		case ts_string_literal: this->token = t_string_literal; break;
 		
-		case ts_absolute_path:
-			this->token = t_absolute_path;
-			break;
+		case ts_absolute_path: this->token = t_absolute_path; break;
 		
 		case ts_relative_path:
-			this->token = t_relative_path;
+			TODO;
+/*			this->token = t_relative_path;*/
 			break;
 		
-		case ts_fragment:
-			this->token = t_fragment;
-			break;
+		case ts_fragment: this->token = t_fragment; break;
 		
-		case ts_colon:
-			this->token = t_colon;
-			break;
+		case ts_colon: this->token = t_colon; break;
 		
-		case ts_plus:
-			this->token = t_plus;
-			break;
+		case ts_plus: this->token = t_plus; break;
 		
 		case ts_lthan:
 			TODO;
@@ -159,9 +142,7 @@ int read_token(
 			TODO;
 			break;
 		
-		case ts_semicolon:
-			this->token = t_semicolon;
-			break;
+		case ts_semicolon: this->token = t_semicolon; break;
 		
 		case ts_gravemark:
 			TODO;
@@ -173,7 +154,7 @@ int read_token(
 	}
 	
 	EXIT;
-	return error;
+	return this->token;
 }
 
 

@@ -1,9 +1,9 @@
 
 struct memory_arena;
-struct regex_state;
+struct regex;
 
-int regex_state_add_transition(
-	struct regex_state* state,
+void regex_add_transition(
+	struct regex* from,
 	struct memory_arena* arena,
-	char value,
-	struct regex_state* to);
+	unsigned value,
+	struct regex* to);

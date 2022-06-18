@@ -11,6 +11,7 @@ enum token
 	// symbols:
 	t_colon,
 	t_oparen,
+	t_osquare,
 	t_semicolon,
 	t_dot,
 	t_plus,

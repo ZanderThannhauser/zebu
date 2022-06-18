@@ -6,23 +6,15 @@
 #include "struct.h"
 #include "new.h"
 
-int new_lex(struct lex** new, bool verbose)
+struct lex* new_lex(bool verbose)
 {
-	int error = 0;
 	ENTER;
 	
-	struct lex* this;
+	struct lex* this = smalloc(sizeof(*this));
 	
-	error = smalloc((void**) &this, sizeof(*this));
-	
-	if (!error)
-	{
-		this->verbose = verbose;
-		
-		*new = this;
-	}
+	this->verbose = verbose;
 	
 	EXIT;
-	return error;
+	return this;
 }
 

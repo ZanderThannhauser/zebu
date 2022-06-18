@@ -3,23 +3,16 @@
 
 #include "sstrdup.h"
 
-int sstrdup(char** out, const char* in)
+char* sstrdup(const char* in)
 {
-	int error = 0;
-	char* new;
-	ENTER;
+	char* new = strdup(in);
 	
-	if ((new = strdup(in)))
-	{
-		*out = new;
-	}
-	else
+	if (!new)
 	{
 		TODO;
-		error = e_out_of_memory;
+		exit(e_out_of_memory);
 	}
 	
-	EXIT;
-	return error;
+	return new;
 }
 

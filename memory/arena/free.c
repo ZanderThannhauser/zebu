@@ -14,6 +14,9 @@ void free_memory_arena(struct memory_arena* this)
 	typeof(*this->mmaps.data)* mentry;
 	ENTER;
 	
+	TODO;
+	#if 0
+	
 	if (this)
 	{
 		for (i = 0, n = this->mmaps.n; i < n; i++)
@@ -27,6 +30,7 @@ void free_memory_arena(struct memory_arena* this)
 		free(this->mmaps.data);
 		free(this);
 	}
+	#endif
 	
 	EXIT;
 }

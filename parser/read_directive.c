@@ -10,17 +10,16 @@
 #include "recursive_parse.h"
 #include "read_directive.h"
 
-int read_directive(
+void read_directive(
 	struct tokenizer* tokenizer,
 	struct avl_tree_t* grammar,
 	struct avl_tree_t* fragments,
 	struct pragma_once* pragma_once,
-	struct memory_arena* token_scratchpad,
+	struct memory_arena* scratchpad,
 	int absolute_dirfd,
 	int relative_dirfd,
 	struct lex* lex)
 {
-	int error = 0;
 	ENTER;
 	
 	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
@@ -29,13 +28,13 @@ int read_directive(
 	}
 	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
 	{
-		error = read_token(tokenizer, include_machine);
-		
-		switch (tokenizer->token)
+		switch (read_token(tokenizer, include_machine))
 		{
 			case t_relative_path:
+			{
 				TODO;
 				break;
+			}
 			
 			case t_absolute_path:
 			{
@@ -45,17 +44,16 @@ int read_directive(
 				
 				dpvs(path);
 				
-				error = recursive_parse(
+				recursive_parse(
 					/* grammar: */ grammar,
 					/* fragments: */ fragments,
 					/* pragma_once: */ pragma_once,
-					/* token_scratchpad: */ token_scratchpad,
+					/* token_scratchpad: */ scratchpad,
 					/* absolute_dirfd: */ absolute_dirfd,
 					/* relative_dirfd: */ relative_dirfd,
 					/* path */ path,
 					/* lex: */ lex);
 				
-				TODO;
 				break;
 			}
 			
@@ -63,18 +61,15 @@ int read_directive(
 				TODO;
 				break;
 		}
-		
-		TODO;
 	}
 	else
 	{
 		dpvs(tokenizer->tokenchars.chars);
 		TODO;
-		error = e_bad_input_file;
+		exit(e_bad_input_file);
 	}
 	
 	EXIT;
-	return error;
 }
 
 

@@ -5,6 +5,6 @@
 
 void free_lex(struct lex* this)
 {
-	TODO;
+	free(this);
 }
 

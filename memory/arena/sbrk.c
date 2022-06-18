@@ -30,6 +30,10 @@ static void setup_free_block(
 	dpv(start);
 	dpv(size);
 	
+	#ifdef DEBUGGING
+	VALGRIND_MAKE_MEM_UNDEFINED(start, size);
+	#endif
+	
 	struct memory_arena_header* header = start;
 	struct memory_arena_footer* footer = start + size - sizeof(*footer);
 	
@@ -51,94 +55,81 @@ static void setup_free_block(
 	EXIT;
 }
 
-int arena_sbrk(
+void* arena_sbrk(
 	struct memory_arena* this,
 	size_t requested_size)
 {
-	int error = 0;
-	bool done = false;
 	ENTER;
 	
 	dpv(requested_size);
-	assert(requested_size);
 	
 	if (this->mmaps.n > 0)
 	{
-		typeof(*this->mmaps.data)* mentry = &this->mmaps.data[this->mmaps.n - 1];
+		struct mentry* mentry = &this->mmaps.data[this->mmaps.n - 1];
 		
 		size_t old_size = mentry->size;
 		size_t new_size = old_size * 2;
+		
+		if (requested_size > new_size)
+			new_size = requested_size;
+		
+		dpv(old_size);
 		dpv(new_size);
 		
 		if (mremap(mentry->start, old_size, new_size, 0) != MAP_FAILED)
 		{
 			// setup free block
-			dpv(old_size);
-			dpv(new_size);
-			
 			setup_free_block(this,
 				mentry->start + old_size,
 				new_size - old_size);
 			
 			mentry->size = new_size;
-			done = true;
+			
+			EXIT;
+			return mentry->start + old_size;
 		}
 	}
 	
-	if (!error && !done)
+	size_t size = this->mmaps.n
+		? this->mmaps.data[this->mmaps.n - 1].size * 2
+		: INITIAL_MMAP_LENGTH;
+	
+	if (requested_size > size)
+		size = requested_size;
+	
+	dpv(size);
+	
+	void* start = NULL;
+	
+	if ((start = mmap(
+		/* addr:   */  NULL,
+		/* length: */  size,
+		/* prot:   */  PROT_READ | PROT_WRITE,
+		/* flags:  */  MAP_ANONYMOUS | MAP_PRIVATE,
+		/* fd:     */ -1,
+		/* offset: */  0)) == MAP_FAILED)
 	{
-		// create a new mmap, twice as big as the previous:
-		
-		void* start = NULL;
-		size_t size = this->mmaps.n
-			? this->mmaps.data[this->mmaps.n - 1].size * 2
-			: INITIAL_MMAP_LENGTH;
-		
-		if (requested_size > size)
-			size = requested_size;
-		
-		dpv(size);
-		
-		if ((start = mmap(
-			/* addr:   */  NULL,
-			/* length: */  size,
-			/* prot:   */  PROT_READ | PROT_WRITE,
-			/* flags:  */  MAP_ANONYMOUS | MAP_PRIVATE,
-			/* fd:     */ -1,
-			/* offset: */  0)) == MAP_FAILED)
-		{
-			fprintf(stderr, "%s: mmap(): %m\n", argv0);
-			error = e_syscall_failed;
-		}
-		
-		#ifdef DEBUGGING
-		if (!error)
-		{
-			VALGRIND_MAKE_MEM_UNDEFINED(start, size);
-		}
-		#endif
-		
-		setup_free_block(this, start, size);
-		
-		if (!error && this->mmaps.n + 1 >= this->mmaps.cap)
-		{
-			this->mmaps.cap = this->mmaps.cap * 2 ?: 1;
-			error = srealloc((void**) &this->mmaps.data, sizeof(*this->mmaps.data) * this->mmaps.cap);
-		}
-		
-		dpv(this->mmaps.data);
-		
-		this->mmaps.data[this->mmaps.n].start = start;
-		this->mmaps.data[this->mmaps.n].size = size;
-		this->mmaps.n++;
-		
-		if (error && start && munmap(start, size) < 0)
-			fprintf(stderr, "%s: munmap(): %m\n", argv0),
-			error = e_syscall_failed;
+		fprintf(stderr, "%s: mmap(): %m\n", argv0);
+		exit(e_syscall_failed);
 	}
+	
+	setup_free_block(this, start, size);
+	
+	if (this->mmaps.n + 1 >= this->mmaps.cap)
+	{
+		this->mmaps.cap = this->mmaps.cap * 2 ?: 1;
+		this->mmaps.data = srealloc(this->mmaps.data, sizeof(struct mentry) * this->mmaps.cap);
+	}
+	
+	dpv(this->mmaps.data);
+	
+	this->mmaps.data[this->mmaps.n++] = (struct mentry) {
+		.start = start,
+		.size = size
+	};
 	
 	EXIT;
-	return error;
+	return start;
 }
 
 

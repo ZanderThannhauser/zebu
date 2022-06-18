@@ -10,21 +10,16 @@
 #include "prefixes.h"
 #include "suffixes.h"
 
-int read_suffixes_token_expression(
-	bool* is_nfa_out,
-	struct regex_state** out,
+struct bundle read_suffixes_token_expression(
 	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
-	int error = 0;
-	bool is_nfa;
-	struct regex_state* given;
-	struct regex_state* nfa;
+	struct bundle retval;
+	
 	ENTER;
+	struct bundle inner = read_prefixes_token_expression(scratchpad, tokenizer);
 	
-	error = read_prefixes_token_expression(&is_nfa, &given, scratchpad, tokenizer);
-	
-	if (!error) switch (tokenizer->token)
+	switch (tokenizer->token)
 	{
 		case t_qmark:
 			TODO;
@@ -36,44 +31,49 @@ int read_suffixes_token_expression(
 		
 		case t_plus:
 		{
-			error = 0
-				?: regex_one_or_more(
-					/* out:        */ &nfa,
-					/* scratchpad: */ scratchpad,
-					/* in:         */ given)
-				?: read_token(
-					/* tokenizer: */ tokenizer,
-					/* machine:   */ expression_after_suffix_machine);
+			struct regex* nfa = regex_one_or_more(
+				/* scratchpad: */ scratchpad,
+				/* in:         */ inner.regex);
 			
-			if (!error)
-			{
-				*is_nfa_out = true;
-				*out = nfa;
-			}
+			read_token(
+				/* tokenizer: */ tokenizer,
+				/* machine:   */ expression_after_suffix_machine);
+			
+			retval = (struct bundle) {
+				.is_nfa = true,
+				.regex = nfa,
+			};
 			
 			break;
 		}
 		
 		case t_ocurly:
 		{
+			TODO;
+			#if 0
 			// repeated clones and concat
 			// require accepting
 			// nfa_to_dfa
 			// simplify
+			TODO;
+			#endif
 			TODO;
 			break;
 		}
 		
 		default:
 		{
+			TODO;
+			#if 0
 			*is_nfa_out = is_nfa;
 			*out = given;
+			#endif
 			break;
 		}
 	}
 	
 	EXIT;
-	return error;
+	return retval;
 }
 
 

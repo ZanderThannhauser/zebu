@@ -1,6 +1,6 @@
 
 struct memory_arena;
 
-int arena_sbrk(
+void* arena_sbrk(
 	struct memory_arena* this,
-	size_t size);
+	size_t requested_size);

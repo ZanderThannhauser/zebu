@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "avl.h"
@@ -15,3 +16,4 @@ int avl_tree_insert(struct avl_tree_t* tree, void* element)
 	return error;
 }
 
+#endif

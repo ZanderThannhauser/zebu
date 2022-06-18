@@ -1,4 +1,1 @@
-
-#include <stddef.h>
-
-int srealloc(void** retval, size_t size);
+void* srealloc(void* old, size_t size);

@@ -7,10 +7,10 @@
 
 #include "usage.h"
 
-void usage()
+void usage(int code)
 {
-	TODO;
-/*	printf("usage: %s [-vh] [-j=jobs] <input-file.calc>\n", argv0);*/
+	printf("usage: %s [-vh] [-j=jobs] <input-file.calc>\n", argv0);
+	exit(code);
 }
 
 

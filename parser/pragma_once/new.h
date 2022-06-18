@@ -1,4 +1,2 @@
 
-struct pragma_once;
-
-int new_pragma_once(struct pragma_once** new);
+struct pragma_once* new_pragma_once();

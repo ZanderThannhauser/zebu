@@ -17,12 +17,15 @@
 #include "usage.h"
 #include "process.h"
 
-int cmdln_process(struct cmdln** out, int argc, char* argv[])
+struct cmdln* cmdln_process(int argc, char* argv[])
 {
-	int error = 0;
 	ENTER;
 	
+	
 	const char* input_path = NULL;
+	const char* output_path = NULL;
+	
+	bool build_depends = false;
 	bool debug_lex = false;
 	bool debug_yacc = false;
 	bool verbose = false;
@@ -30,19 +33,28 @@ int cmdln_process(struct cmdln** out, int argc, char* argv[])
 	int opt, option_index;
 	const struct option long_options[] = {
 		{"input",  required_argument, 0, 'i'},
+		{"output",       no_argument, 0, 'o'},
 		{"debug",  required_argument, 0, 'd'},
 		{"verbose",      no_argument, 0, 'v'},
 		{"help",         no_argument, 0, 'h'},
 		{ 0,                       0, 0,  0 },
 	};
 	
-	while (!error && (opt = getopt_long(argc, argv,
-		"i:" "d:" "v" "h", long_options, &option_index)) >= 0)
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "M" "d:" "v" "h",
+		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
 		{
 			case 'i':
 				input_path = optarg;
+				break;
+			
+			case 'o':
+				output_path = optarg;
+				break;
+			
+			case 'M':
+				build_depends = true;
 				break;
 			
 			case 'd':
@@ -51,7 +63,7 @@ int cmdln_process(struct cmdln** out, int argc, char* argv[])
 				} else if (strequals(optarg, "yacc")) {
 					debug_yacc = true;
 				} else {
-					error = e_bad_cmdline_args;
+					usage(e_bad_cmdline_args);
 				}
 				break;
 			
@@ -60,45 +72,37 @@ int cmdln_process(struct cmdln** out, int argc, char* argv[])
 				break;
 			
 			case 'h':
+				usage(0);
+				break;
+			
 			default:
-				error = e_bad_cmdline_args;
+				usage(e_bad_cmdline_args);
 				break;
 		}
 	}
 	
-	if (!error && !input_path)
+	if (!input_path || !output_path)
 	{
-		fprintf(stderr, "%s: missing input file!\n", argv0);
-		error = e_bad_cmdline_args;
+		fprintf(stderr, "%s: missing arguments!\n", argv0);
+		usage(e_bad_cmdline_args);
 	}
 	
-	if (error == e_bad_cmdline_args)
-		usage();
+	struct cmdln* flags = smalloc(sizeof(*flags));
 	
-	struct cmdln* flags = NULL;
+	flags->input_path = input_path;
 	
-	if (!error)
-		error = smalloc((void**) &flags, sizeof(*flags));
+	flags->debug.lex = debug_lex;
+	flags->debug.yacc = debug_yacc;
 	
-	if (!error)
-	{
-		flags->input_path = input_path;
-		
-		flags->debug.lex = debug_lex;
-		flags->debug.yacc = debug_yacc;
-		
-		flags->verbose = verbose;
-		
-		dpvs(flags->input_path);
-		dpvb(flags->debug.lex);
-		dpvb(flags->debug.yacc);
-		dpvb(flags->verbose);
-		
-		*out = flags;
-	}
+	flags->verbose = verbose;
 	
+	dpvs(flags->input_path);
+	dpvb(flags->debug.lex);
+	dpvb(flags->debug.yacc);
+	dpvb(flags->verbose);
+		
 	EXIT;
-	return error;
+	return flags;
 }
 
 

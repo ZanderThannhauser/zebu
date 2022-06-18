@@ -1,4 +1,2 @@
 
-struct cmdln;
-
-int cmdln_process(struct cmdln** flags, int argc, char* argv[]);
+struct cmdln* cmdln_process(int argc, char* argv[]);

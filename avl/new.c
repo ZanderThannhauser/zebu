@@ -4,21 +4,22 @@
 #include "avl.h"
 #include "new.h"
 
-int new_avl_tree(
-	struct avl_tree_t** out,
+struct avl_tree_t* new_avl_tree(
 	int (*compare)(const void *, const void *),
 	void (*freeitem)(void *))
 {
 	int error = 0;
 	ENTER;
 	
-	if (!(*out = avl_alloc_tree(compare, freeitem)))
+	struct avl_tree_t* retval = avl_alloc_tree(compare, freeitem);
+	
+	if (!retval)
 	{
 		fprintf(stderr, "%s: avl_alloc_tree(): %m\n", argv0),
-		error = e_out_of_memory;
+		exit(e_out_of_memory);
 	}
 	
 	EXIT;
-	return error;
+	return retval;
 }
 

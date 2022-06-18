@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "yacc.h"
@@ -12,3 +13,4 @@ int yacc(
 	TODO;
 }
 
+#endif

@@ -13,31 +13,33 @@
 
 #include <parser/mains_parse.h>
 
-#include <yacc/yacc.h>
+/*#include <yacc/yacc.h>*/
 
-#include <out/out.h>
+/*#include <out/out.h>*/
 
 int main(int argc, char* argv[])
 {
 	int error = 0;
-	struct cmdln* flags = NULL;
-	struct lex* lex = NULL;
-	struct avl_tree_t* grammar = NULL;
-	void* LRP = NULL;
 	ENTER;
 	
-	error = 0
-		?: cmdln_process(&flags, argc, argv)
-		?: new_lex(&lex, flags->debug.lex)
-		?: new_avl_tree(&grammar, NULL, NULL)
-		?: mains_parse(grammar, flags->input_path, lex)
-		?: yacc(&LRP, grammar, lex, flags->debug.yacc)
-		?: out(LRP, flags->output_path)
-		;
+	struct cmdln* flags = cmdln_process(argc, argv);
+	
+	struct lex* lex = new_lex(flags->debug.lex);
+	
+	struct avl_tree_t* grammar = mains_parse(flags->input_path, lex);
+	
+	#if 0
+	void* LRP = yacc(&LRP, grammar, lex, flags->debug.yacc);
+	
+	out(LRP, flags->output_path);
 	
 	free(LRP);
+	#endif
+	
 	avl_free_tree(grammar);
+	
 	free_lex(lex);
+	
 	free_cmdln(flags);
 	
 	EXIT;

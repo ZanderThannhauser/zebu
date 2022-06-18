@@ -1,9 +1,7 @@
 
 struct memory_arena;
-struct regex_state;
+struct regex;
 
-int regex_clone(
-	struct regex_state** out,
+struct regex* regex_clone(
 	struct memory_arena* arena,
-	struct regex_state* in);
-
+	struct regex* in);

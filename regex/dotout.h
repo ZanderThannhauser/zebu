@@ -1,4 +1,4 @@
 
-struct regex_state;
+struct regex;
 
-void regex_dotout(struct regex_state* state);
+void regex_dotout(struct regex* state);

@@ -6,19 +6,34 @@
 #include "and.h"
 #include "or.h"
 
-int read_or_token_expression(
-	bool* is_nfa_out,
-	struct regex_state** out,
+struct bundle read_or_token_expression(
 	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
-	int error = 0;
-	bool is_nfa;
-	struct regex_state* given;
+	struct bundle retval;
 	ENTER;
 	
-	error = read_and_token_expression(&is_nfa, &given, scratchpad, tokenizer);
+	struct bundle inner = read_and_token_expression(scratchpad, tokenizer);
 	
+	if (tokenizer->token == t_or)
+	{
+		TODO;
+	}
+	else
+	{
+		retval = inner;
+	}
+	
+	EXIT;
+	return retval;
+}
+
+
+
+
+
+
+	#if 0
 	while (!error && tokenizer->token == t_or)
 	{
 		// read next dfa
@@ -28,23 +43,7 @@ int read_or_token_expression(
 		
 		is_nfa = true;
 	}
-	
-	if (!error)
-	{
-		*is_nfa_out = is_nfa;
-		*out = given;
-	}
-	
-	EXIT;
-	return error;
-}
-
-
-
-
-
-
-
+	#endif
 
 
 

@@ -1,5 +1,1 @@
-
-int smemdup(
-	void** out,
-	const void* in,
-	size_t size);
+void* smemdup(const void* in, size_t size);

@@ -6,31 +6,19 @@
 #include "struct.h"
 #include "new.h"
 
-int new_tokenizer(struct tokenizer** out, int fd)
+struct tokenizer* new_tokenizer(int fd)
 {
-	int error = 0;
-	ENTER;
+	struct tokenizer* this = smalloc(sizeof(*this));
 	
-	struct tokenizer* this;
+	this->fd = fd;
 	
-	if (!error)
-		error = smalloc((void**) &this, sizeof(*this));
+	this->buffer.i = 0;
+	this->buffer.n = 0;
 	
-	if (!error)
-	{
-		this->fd = fd;
-		
-		this->buffer.i = 0;
-		this->buffer.n = 0;
-		
-		this->tokenchars.chars = NULL;
-		this->tokenchars.n = 0;
-		this->tokenchars.cap = 0;
-		
-		*out = this;
-	}
+	this->tokenchars.chars = NULL;
+	this->tokenchars.n = 0;
+	this->tokenchars.cap = 0;
 	
-	EXIT;
-	return error;
+	return this;
 }
 

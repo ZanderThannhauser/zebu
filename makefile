@@ -43,10 +43,11 @@ buildprefix = gen/$(buildtype)-build
 default: $(buildprefix)/zebu
 
 ARGS += -v
+
 ARGS += --debug=yacc
 ARGS += --debug=lex
 
-ARGS += -i ./examples/classic.zb
+ARGS += -i ./examples/classic.zb -o ./examples/classic # zebu appends suffix
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
@@ -89,6 +90,9 @@ $(buildprefix)/%.o $(buildprefix)/%.d: %.c | $(buildprefix)/%/
 $(buildprefix)/zebu: $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+dot/%.png: dot/%.dot
+	dot -Tpng < $< > $@
 
 clean:
 	for l in $$(cat .gitignore); do rm -rvf $$l; done

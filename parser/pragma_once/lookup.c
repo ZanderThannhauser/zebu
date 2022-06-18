@@ -1,5 +1,5 @@
 
-#include <avl/avl.h>
+#include <avl/safe_insert.h>
 
 #include <debug.h>
 
@@ -9,19 +9,15 @@
 #include "node.h"
 #include "lookup.h"
 
-int pragma_once_lookup(
-	struct pragma_once* this,
-	bool* out,
-	int fd)
+bool pragma_once_lookup(struct pragma_once* this, int fd)
 {
-	int error = 0;
 	struct stat statbuf;
 	ENTER;
 	
 	if (fstat(fd, &statbuf) < 0)
 	{
-		TODO;
-		error = 1;
+		fprintf(stderr, "%s: fstat(): %m\n", argv0);
+		exit(e_syscall_failed);
 	}
 	
 	dpvo(statbuf.st_dev);
@@ -31,24 +27,30 @@ int pragma_once_lookup(
 		.dev = statbuf.st_dev,
 		.ino = statbuf.st_ino,
 	};
-		
-	if (!error && (*out = !avl_search(&this->tree, &node)))
+	
+	bool first_time;
+	
+	if ((first_time = !avl_search(&this->tree, &node)))
 	{
-		struct pragma_once_node* new = NULL;
+		struct pragma_once_node* new = smemdup(&node, sizeof(node));
 		
-		error = smemdup((void**) &new, &node, sizeof(node));
-		
-		if (!error && !avl_insert(&this->tree, new))
-		{
-			TODO;
-			error = e_out_of_memory;
-			free(new);
-		}
+		safe_avl_insert(&this->tree, new);
 	}
 	
 	EXIT;
-	return error;
+	return first_time;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
 
 struct tokenizer;
 
-int read_char(struct tokenizer* this);
+void read_char(struct tokenizer* this);

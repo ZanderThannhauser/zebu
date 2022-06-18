@@ -6,7 +6,7 @@ struct arena_header;
 struct memory_arena
 {
 	struct {
-		struct {
+		struct mentry {
 			void *start;
 			size_t size;
 		}* data;

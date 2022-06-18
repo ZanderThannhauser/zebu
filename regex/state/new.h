@@ -2,4 +2,4 @@
 struct regex_state;
 struct memory_arena;
 
-int new_regex_state(struct regex_state** new, struct memory_arena* arena);
+struct regex* new_regex(struct memory_arena* arena);

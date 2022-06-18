@@ -5,5 +5,6 @@
 
 struct tokenizer;
 
-int read_token(struct tokenizer* this,
+enum token read_token(
+	struct tokenizer* this,
 	enum tokenizer_state machine[number_of_tokenizer_states][256]);

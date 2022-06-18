@@ -4,7 +4,7 @@ struct avl_tree_t;
 struct pragma_once;
 struct memory_arena;
 
-int recursive_parse(
+void recursive_parse(
 	struct avl_tree_t* grammar,
 	struct avl_tree_t* fragments,
 	struct pragma_once* pragma_once,

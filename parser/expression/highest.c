@@ -9,13 +9,11 @@
 
 #include "highest.h"
 
-int read_highest_token_expression(
-	bool* is_nfa_out,
-	struct regex_state** out,
+struct bundle read_highest_token_expression(
 	struct memory_arena* scratchpad,
 	struct tokenizer* tokenizer)
 {
-	int error = 0;
+	struct bundle retval;
 	ENTER;
 	
 	switch (tokenizer->token)
@@ -26,18 +24,26 @@ int read_highest_token_expression(
 			
 			dpvsn(tokenizer->tokenchars.chars + 1, tokenizer->tokenchars.n - 2);
 			
-			error = 0
-				?: regex_from_literal(
-					/* out: */ out,
-					/* scratchpad: */ scratchpad,
-					/* chars: */ tokenizer->tokenchars.chars + 1,
-					/* strlen: */ tokenizer->tokenchars.n - 2)
-				?: read_token(
-					/* tokenizer: */ tokenizer,
-					/* machine:   */ expression_after_highest_machine);
+			struct regex* start = regex_from_literal(
+				/* scratchpad: */ scratchpad,
+				/* chars:      */ tokenizer->tokenchars.chars + 1,
+				/* strlen:     */ tokenizer->tokenchars.n - 2);
 			
-			*is_nfa_out = false;
+			read_token(
+				/* tokenizer: */ tokenizer,
+				/* machine:   */ expression_after_highest_machine);
 			
+			retval = (struct bundle) {
+				.regex = start,
+				.is_nfa = false,
+			};
+			
+			break;
+		}
+		
+		case t_osquare:
+		{
+			TODO;
 			break;
 		}
 		
@@ -65,6 +71,6 @@ int read_highest_token_expression(
 	}
 	
 	EXIT;
-	return error;
+	return retval;
 }
 

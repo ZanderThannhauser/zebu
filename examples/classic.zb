@@ -7,15 +7,18 @@
 
 %include <abc.zb>
 
-//    -?FA string literal, parenthesis: "literal", (?FA $1)
+// charset: char literal: 'c', (charset $1)
+// charset: set-prefixes: ^<$1>
+// charset: set-range: <$1> - <$2>
+// charset: set-intersect: <$1> & <$2> ...
+// charset: set-union: <$1> | <$2> ...
+
+//    -?FA string literal, parenthesis: "literal", [char-set $1], (?FA $1)
 // DFA-DFA prefixes: !<$1>
 // ?FA-NFA suffixes: <$1>?, <$1>+, <$1>*, <$1>{a, b}
-// DFA-DFA range: <$1> '...' <$2>
 // ?FA-NFA concatenation: <$1> <$2> ...
-// DFA-DFA boolean-cmp : <$1> {<,>,<=,>=,==,!=} <$2> ... (python-style)
 // DFA-DFA boolean-and : <$1> & <$2> & ...
 // ?FA-?FA boolean-or  : <$1> | <$2> | ...
-// DFA-DFA boolean-?:  : <$1> if ... else <$3>
 
 // LRP charater/string literal, regex, parenthesis: "token", `DFA $1`, (LRP $1)
 // LRP reduction-rule multiplicities: <$1>?, <$1>+, <$1>*, <$1>{a, b};
@@ -31,14 +34,13 @@
 
 %start start;
 
-start: `abc & (..)*` ":" `"w" ... "y"` "." {
+start: `abc & (..)*` ":" `['w' - 'y']` "." {
 		printf("'%s':'%s'\n", $1, $3);
 		puts("nice.");
-	} | `abc & (...)*` ":" `"x" ... "z"` "!" {
+	} | `abc & (...)*` ":" `[^(^'x' & ^('y' - 'z' | 'z'))]` "!" {
 		printf("'%s':'%s'\n", $1, $3);
 		puts("nice!");
 	};
-
 
 
 

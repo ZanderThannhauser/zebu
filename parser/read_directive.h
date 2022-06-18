@@ -5,7 +5,7 @@ struct avl_tree_t;
 struct pragma_once;
 struct memory_arena;
 
-int read_directive(
+void read_directive(
 	struct tokenizer* tokenizer,
 	struct avl_tree_t* grammar,
 	struct avl_tree_t* fragments,
