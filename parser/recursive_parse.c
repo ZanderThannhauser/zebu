@@ -14,6 +14,7 @@
 
 #include "read_directive.h"
 #include "read_fragment.h"
+#include "read_grammar.h"
 
 #include "recursive_parse.h"
 
@@ -86,11 +87,12 @@ void recursive_parse(
 					/* fragments: */ fragments);
 				break;
 				
-				case t_identifier:
-				{
-					TODO;
-					break;
-				}
+				case t_identifier: read_grammar(
+					/* tokenizer:      */ tokenizer,
+					/* grammar:        */ grammar,
+					/* fragments:      */ fragments,
+					/* scratchpad:     */ scratchpad);
+				break;
 				
 				default:
 					dpv(tokenizer->token);

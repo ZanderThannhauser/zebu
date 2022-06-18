@@ -12,7 +12,7 @@
 // charset: set-range: <$1> - <$2>
 // charset: set-intersect: <$1> & <$2> ...
 // charset: set-difference: <$1> ^ <$2> ...
-// charset: set-union: <$1> <$2> ...
+// charset: set-union: <$1> '|'? <$2> ...
 
 //    -?FA string literal, parenthesis: "literal", [char-set $1], (?FA $1)
 // DFA-DFA prefixes: !<$1>
@@ -35,7 +35,7 @@
 
 %start start;
 
-start : `abc & (..)*` ":" `['w' - 'y']+` "." {
+start : `abc & (..)*` ":" `['w' - 'y']*` "." {
 		printf("'%s':'%s'\n", $1, $3);
 		puts("nice.");
 	} | `abc & (...)*` ":"+ `[~(~('w'-'y') & ~('x'-'z')) & ~'w']` "!" {
