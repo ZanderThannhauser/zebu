@@ -23,6 +23,12 @@ enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 		[ts_after_percent][    ANY    ] = ts_directive,
 		[ts_after_percent]['a' ... 'z'] = ts_after_percent,
 	
+	// charset:
+	[ts_start]['['] = ts_reading_charset,
+		[ts_reading_charset][ANY] = ts_reading_charset,
+		[ts_reading_charset][']'] = ts_read_charset,
+			[ts_read_charset][ANY] = ts_charset,
+	
 	// fragments:
 	[ts_start]['`'] = ts_reading_fragment,
 		[ts_reading_fragment][ANY] = ts_reading_fragment,

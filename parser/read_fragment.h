@@ -1,10 +1,12 @@
 
+struct scope;
 struct lex;
 struct tokenizer;
 struct memory_arena;
 struct avl_tree_t;
+struct name;
 
 void read_fragment(
 	struct tokenizer* tokenizer,
-	struct memory_arena* token_scratchpad,
-	struct avl_tree_t* fragments);
+	struct memory_arena* scratchpad,
+	struct scope* scope);

@@ -13,15 +13,15 @@
 #include "pragma_once/lookup.h"
 
 #include "read_directive.h"
+#include "read_charset.h"
 #include "read_fragment.h"
 #include "read_grammar.h"
 
 #include "recursive_parse.h"
 
 void recursive_parse(
-	struct avl_tree_t* grammar,
 	struct options* options,
-	struct avl_tree_t* fragments,
+	struct scope* scope,
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
 	int absolute_dirfd,
@@ -69,30 +69,46 @@ void recursive_parse(
 		{
 			switch (tokenizer->token)
 			{
-				case t_directive: read_directive(
-					/* tokenizer:      */ tokenizer,
-					/* grammar:        */ grammar,
-					/* options:        */ options,
-					/* fragments:      */ fragments,
-					/* pragma_once:    */ pragma_once,
-					/* scratchpad:     */ scratchpad,
-					/* absolute_dirfd: */ absolute_dirfd,
-					/* relative_dirfd: */ relative_dirfd,
-					/* lex:            */ lex);
-				break;
+				case t_directive:
+				{
+					read_directive(
+						/* tokenizer:      */ tokenizer,
+						/* options:        */ options,
+						/* scope:          */ scope,
+						/* pragma_once:    */ pragma_once,
+						/* scratchpad:     */ scratchpad,
+						/* absolute_dirfd: */ absolute_dirfd,
+						/* relative_dirfd: */ relative_dirfd,
+						/* lex:            */ lex);
+					break;
+				}
 				
-				case t_fragment: read_fragment(
-					/* tokenizer: */ tokenizer,
-					/* token_scratchpad: */ scratchpad,
-					/* fragments: */ fragments);
-				break;
+				case t_charset:
+				{
+					read_charset(
+						/* tokenizer: */ tokenizer,
+						/* scope      */ scope);
+					break;
+				}
 				
-				case t_identifier: read_grammar(
-					/* tokenizer:      */ tokenizer,
-					/* grammar:        */ grammar,
-					/* fragments:      */ fragments,
-					/* scratchpad:     */ scratchpad);
-				break;
+				case t_fragment:
+				{
+					read_fragment(
+						/* tokenizer:  */ tokenizer,
+						/* scratchpad: */ scratchpad,
+						/* scope       */ scope);
+					break;
+				}
+				
+				case t_identifier:
+				{
+					read_grammar(
+						/* tokenizer:  */ tokenizer,
+						/* scratchpad: */ scratchpad,
+						/* scope       */ scope,
+						/* lex: */ lex);
+					break;
+				}
 				
 				default:
 					dpv(tokenizer->token);

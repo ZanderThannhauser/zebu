@@ -8,10 +8,9 @@
 #include <memory/arena/new.h>
 #include <memory/arena/free.h>
 
-#include "options/new.h"
+#include "scope/new.h"
 
-#include "fragment/compare.h"
-#include "fragment/free.h"
+#include "options/new.h"
 
 #include "pragma_once/new.h"
 #include "pragma_once/free.h"
@@ -23,11 +22,9 @@ struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
 {
 	ENTER;
 	
-	struct avl_tree_t* grammar = new_avl_tree(NULL, NULL);
+	struct scope* scope = new_scope();
 	
 	struct options* options = new_options();
-	
-	struct avl_tree_t* fragments = new_avl_tree(compare_fragments, free_fragment);
 	
 	char* dup = sstrdup(path);
 	
@@ -36,27 +33,34 @@ struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
 	struct memory_arena* scratchpad = new_memory_arena();
 	
 	recursive_parse(
-		/* grammar: */ grammar,
 		/* options: */ options,
-		/* fragments: */ fragments,
+		/* scope: */ scope,
 		/* pragma_once: */ pragma_once,
-		/* token_scratchpad: */ scratchpad,
+		/* scratchpad: */ scratchpad,
 		/* absolute_dirfd: */ AT_FDCWD,
 		/* relative_dirfd: */ AT_FDCWD,
 		/* path: */ dup,
 		/* lex: */ lex
 	);
 	
+	TODO;
+	#if 0
 	free(dup);
 	
 	free_memory_arena(scratchpad);
 	
 	free_pragma_once(pragma_once);
 	
-	avl_free_tree(fragments);
+	// lookup options->start_rule in grammar tree,
+	// keep a reference to return
+	TODO;
+	
+	free_scope(scope);
+	#endif
 	
 	EXIT;
-	return grammar;
+	// return reference to start rule's grammar
+	TODO;
 }
 
 

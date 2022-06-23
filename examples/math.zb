@@ -1,0 +1,12 @@
+
+
+%start root;
+
+lit: `['0'-'9']+` | '(' root ')';
+
+mul: lit (('*' | '/') mul)?;
+
+add: mul (('+' | '-') add)?;
+
+root: add;
+

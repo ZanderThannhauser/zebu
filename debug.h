@@ -30,24 +30,11 @@
 	
 	#include <enums/error.h>
 	
-/*	#include <memory/tcalloc.h>*/
-/*	#include <memory/tmalloc.h>*/
-/*	#include <memory/trealloc.h>*/
-/*	#include <memory/tinc.h>*/
-/*	#include <memory/tstrdup.h>*/
-/*	#include <memory/tstrndup.h>*/
-/*	#include <memory/tfree.h>*/
-/*	*/
-/*	#include <macros/streq.h>*/
-	
-	struct stats;
 	struct scope;
+	struct lex;
 	struct tokenizer;
-	struct instruction;
-	struct instruction_inheritance;
-	struct vregister_ll;
-	struct block;
-	struct vregister;
+	struct regex;
+	struct memory_arena;
 	
 #endif
 

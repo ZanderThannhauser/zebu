@@ -75,6 +75,12 @@ enum token read_token(
 			TODO;
 			break;
 		
+		case ts_character_literal: this->token = t_character_literal; break;
+		
+		case ts_charset: this->token = t_charset; break;
+		
+		case ts_fragment: this->token = t_fragment; break;
+		
 		case ts_string_literal: this->token = t_string_literal; break;
 		
 		case ts_absolute_path: this->token = t_absolute_path; break;
@@ -83,8 +89,6 @@ enum token read_token(
 			TODO;
 /*			this->token = t_relative_path;*/
 			break;
-		
-		case ts_fragment: this->token = t_fragment; break;
 		
 		case ts_identifier: append(this, 0); this->token = t_identifier; break;
 		
@@ -100,29 +104,25 @@ enum token read_token(
 			TODO;
 			break;
 		
-		case ts_emark:
-			TODO;
-			break;
+		case ts_emark: this->token = t_emark; break;
 		
-		case ts_qmark:
-			TODO;
-			break;
+		case ts_qmark: this->token = t_qmark; break;
 		
-		case ts_and:
-			TODO;
-			break;
+		case ts_ampersand: this->token = t_ampersand; break;
 		
-		case ts_oparen:
-			TODO;
-			break;
+		case ts_oparen: this->token = t_oparen; break;
 		
-		case ts_cparen:
-			TODO;
-			break;
+		case ts_tilda: this->token = t_tilda; break;
 		
-		case ts_asterisk:
-			TODO;
-			break;
+		case ts_dot: this->token = t_dot; break;
+		
+		case ts_cparen: this->token = t_cparen; break;
+		
+		case ts_asterisk: this->token = t_asterisk; break;
+		
+		case ts_osqaure: this->token = t_osquare; break;
+		
+		case ts_csqaure: this->token = t_csquare; break;
 		
 		case ts_lthan_eq:
 			TODO;
@@ -136,9 +136,7 @@ enum token read_token(
 			TODO;
 			break;
 		
-		case ts_or:
-			TODO;
-			break;
+		case ts_vertical_bar: this->token = t_vertical_bar; break;
 		
 		case ts_not_equal_to:
 			TODO;
@@ -146,10 +144,10 @@ enum token read_token(
 		
 		case ts_semicolon: this->token = t_semicolon; break;
 		
-		case ts_gravemark:
-			TODO;
-			break;
-	
+		case ts_gravemark: this->token = t_gravemark; break;
+		
+		case ts_hypen: this->token = t_hypen; break;
+		
 		default:
 			TODO;
 			break;

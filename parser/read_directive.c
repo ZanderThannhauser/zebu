@@ -19,9 +19,8 @@
 
 void read_directive(
 	struct tokenizer* tokenizer,
-	struct avl_tree_t* grammar,
 	struct options* options,
-	struct avl_tree_t* fragments,
+	struct scope* scope,
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
 	int absolute_dirfd,
@@ -63,9 +62,8 @@ void read_directive(
 				dpvs(path);
 				
 				recursive_parse(
-					/* grammar: */ grammar,
 					/* options: */ options,
-					/* fragments: */ fragments,
+					/* scope: */ scope,
 					/* pragma_once: */ pragma_once,
 					/* token_scratchpad: */ scratchpad,
 					/* absolute_dirfd: */ absolute_dirfd,

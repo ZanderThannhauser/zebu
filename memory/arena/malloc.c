@@ -21,8 +21,14 @@ static void* private_arena_find_block(struct memory_arena* this, size_t* size)
 	struct memory_arena_header *i, *block = NULL;
 	
 	for (i = this->free_list.head; !block && i; i = i->next)
-		if (!i->is_alloc && *size <= i->size)
+	{
+		assert(!i->is_alloc);
+		
+		if (*size <= i->size)
 			block = i;
+	}
+	
+	HERE;
 	
 	if (!block)
 		block = arena_sbrk(this, *size);
@@ -39,6 +45,8 @@ static void* private_arena_find_block(struct memory_arena* this, size_t* size)
 		
 		struct memory_arena_header* newblock = (void*) block + *size;
 		struct memory_arena_footer* footer = (void*) block + block->size - sizeof(*footer);
+		
+		assert((void*) footer - (void*) newblock + sizeof(*footer) == split_size);
 		
 		dpv(newblock);
 		

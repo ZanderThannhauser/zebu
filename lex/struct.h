@@ -1,10 +1,14 @@
 
 #include <stdbool.h>
 
+#include <avl/avl.h>
+
 struct lex
 {
 	bool verbose;
 	
-	// fragment name -> id
-	// dfa -> id
+	unsigned next_id;
+	
+	struct avl_tree_t nodes;
+	
 };

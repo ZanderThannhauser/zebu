@@ -16,6 +16,8 @@ void arena_prettyprint(
 	typeof(*this->mmaps.data)* mentry;
 	struct memory_arena_header* header;
 	struct memory_arena_footer* footer;
+	
+	#if 0
 	ENTER;
 	
 	dpv(this->free_list.head);
@@ -49,14 +51,24 @@ void arena_prettyprint(
 					header->prev,
 					header->next);
 				
-				if (!header->prev)
+				if (header->prev)
+				{
+					assert(!header->prev->is_alloc);
+					assert(header->prev->next == header);
+				}
+				else
 				{
 					assert(!free_head);
 					
 					free_head = header;
 				}
 				
-				if (!header->next)
+				if (header->next)
+				{
+					assert(!header->next->is_alloc);
+					assert(header->next->prev == header);
+				}
+				else
 				{
 					assert(!free_tail);
 					
@@ -74,6 +86,7 @@ void arena_prettyprint(
 	assert(this->free_list.tail == free_tail);
 	
 	EXIT;
+	#endif
 }
 
 

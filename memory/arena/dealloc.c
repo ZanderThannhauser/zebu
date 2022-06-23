@@ -21,6 +21,16 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	
 	dpv(ptr);
 	
+	struct memory_arena_header* header;
+	struct memory_arena_footer* footer;
+	
+	header = ptr - sizeof(*header);
+	footer = ((void*) header) + header->size - sizeof(*footer);
+	
+	dpv(header->size);
+	
+	assert(header->is_alloc);
+	
 	size_t i, n;
 	struct mentry* mentry;
 	
@@ -36,20 +46,14 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	
 	assert(i < n);
 	
-	struct memory_arena_header* header;
-	struct memory_arena_footer* footer;
-	
-	header = ptr - sizeof(*header);
-	footer = ((void*) header) + header->size - sizeof(*footer);
-	
 	struct memory_arena_header* preheader;
 	struct memory_arena_footer* prefooter;
 	
-	if ((void*) header > mentry->start &&
+	if (mentry->start < (void*) header &&
 		!(preheader =
 			(prefooter = (void*) header - sizeof(*prefooter))->header)->is_alloc)
 	{
-		// merge upwards
+		ddprintf("merge upwards\n");
 		remove_from_ll(this, preheader);
 		
 		header = preheader;
@@ -60,6 +64,8 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	if ((void*) (footer + 1) < mentry->start + mentry->size &&
 		!(postheader = (void*) footer + sizeof(*footer))->is_alloc)
 	{
+		ddprintf("merge downwards\n");
+		
 		// remove from linked list
 		remove_from_ll(this, postheader);
 		
@@ -69,8 +75,10 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	header->is_alloc = false;
 	header->size = (void*) footer - (void*) header + sizeof(*footer);
 	
-	header->next = this->free_list.head;
+	dpv(header->size);
+	
 	header->prev = NULL;
+	header->next = this->free_list.head;
 	
 	footer->header = header;
 	

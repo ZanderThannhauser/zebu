@@ -26,7 +26,9 @@ int main(int argc, char* argv[])
 	
 	struct lex* lex = new_lex(flags->debug.lex);
 	
-	struct avl_tree_t* grammar = mains_parse(flags->input_path, lex);
+	mains_parse(flags->input_path, lex);
+	
+	TODO;
 	
 	#if 0
 	void* LRP = yacc(&LRP, grammar, lex, flags->debug.yacc);
@@ -34,11 +36,11 @@ int main(int argc, char* argv[])
 	out(LRP, flags->output_path);
 	
 	free(LRP);
-	#endif
 	
 	avl_free_tree(grammar);
 	
 	free_lex(lex);
+	#endif
 	
 	free_cmdln(flags);
 	
