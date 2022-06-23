@@ -33,6 +33,8 @@ enum token
 	t_gravemark,
 	t_cparen,
 	t_csquare,
+	t_comma,
+	t_percent,
 	
 	t_ellipsis,
 	

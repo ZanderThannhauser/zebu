@@ -1,4 +1,6 @@
 
+#undef DEBUGGING
+
 #include <string.h>
 
 #include <debug.h>

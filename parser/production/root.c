@@ -14,8 +14,7 @@ struct bundle read_root_production(
 	
 	struct bundle inner = read_or_production(tokenizer, scratchpad, scope, lex);
 	
-	TODO;
-	
 	EXIT;
+	return inner;
 }
 

@@ -19,6 +19,8 @@ struct bundle read_and_token_expression(
 	struct scope* scope)
 {
 	struct bundle retval;
+	ENTER;
+	
 	struct bundle left = read_concat_token_expression(tokenizer, scratchpad, scope);
 	
 	if (tokenizer->token == t_ampersand)

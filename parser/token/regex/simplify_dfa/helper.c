@@ -1,16 +1,16 @@
 
-#include <avl/avl.h>
-
 #include <debug.h>
+
+#include <misc/phase_counter.h>
 
 #include "../state/struct.h"
 
-#include "../phase_counter.h"
+#include "regex_ll/add.h"
 
 #include "helper.h"
 
 void simplify_dfa_helper(
-	struct avl_tree_t* unique_nodes,
+	struct regex_ll* unique_nodes,
 	struct regex* node)
 {
 	ENTER;
@@ -37,11 +37,7 @@ void simplify_dfa_helper(
 			simplify_dfa_helper(unique_nodes, node->default_transition_to);
 		}
 		
-		if (!avl_search(unique_nodes, node))
-		{
-			ddprintf("looks new, adding...\n");
-			avl_insert(unique_nodes, node);
-		}
+		regex_ll_add(unique_nodes, node);
 	}
 	
 	EXIT;

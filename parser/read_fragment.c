@@ -45,12 +45,6 @@ void read_fragment(
 	
 	struct bundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
 	
-	if (tokenizer->token != t_semicolon)
-	{
-		TODO;
-		exit(e_syntax_error);
-	}
-	
 	if (bun.is_nfa)
 	{
 		struct regex* nfa = bun.regex;
@@ -70,7 +64,13 @@ void read_fragment(
 		scope_declare_token(scope, name, bun.regex);
 	}
 	
-	read_token(tokenizer, root_machine);
+	if (true
+		&& tokenizer->token != t_semicolon
+		&& tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(e_syntax_error);
+	}
 	
 	EXIT;
 }

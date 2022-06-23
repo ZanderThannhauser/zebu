@@ -32,7 +32,7 @@ struct scope* new_scope()
 	
 	this->layer = NULL;
 	
-	scope_push(this, "");
+	scope_push(this);
 	
 	EXIT;
 	return this;

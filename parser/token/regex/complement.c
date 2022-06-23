@@ -1,10 +1,11 @@
 
 #include <debug.h>
 
+#include <misc/phase_counter.h>
+
 #include "state/struct.h"
 
 #include "dotout.h"
-#include "phase_counter.h"
 #include "complement.h"
 
 static void helper(struct regex* regex)

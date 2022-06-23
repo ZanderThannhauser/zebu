@@ -1,1 +1,2 @@
-void scope_push(struct scope* this, const char* layer_name);
+
+void scope_push(struct scope* this);

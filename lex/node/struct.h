@@ -1,7 +1,7 @@
 
 struct node
 {
-	struct regex* token; // must be the first
-	unsigned id;
+	unsigned id; // must be the first
+	struct regex* token;
 };
 

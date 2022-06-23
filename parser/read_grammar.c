@@ -12,6 +12,8 @@
 #include "production/gegex/state/new.h"
 #include "production/root.h"
 
+#include "scope/declare/grammar.h"
+
 #include "read_grammar.h"
 
 void read_grammar(
@@ -44,19 +46,16 @@ void read_grammar(
 		/* scope: */ scope,
 		/* lex: */ lex);
 	
-	bundle.end->reduce_to = name;
-	
-	// nfa to dfa
-	TODO;
-	
-	// dfa simplify
-	TODO;
-	
 	// add grammar rule to scope
-	TODO;
+	scope_declare_grammar(scope, name, bundle.start, bundle.end);
 	
-	// better be a semicolon:
-	TODO;
+	if (true
+		&& tokenizer->token != t_semicolon
+		&& tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(e_syntax_error);
+	}
 	
 	EXIT;
 }

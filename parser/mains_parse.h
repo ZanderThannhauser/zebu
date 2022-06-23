@@ -1,4 +1,11 @@
 
+struct options;
+
 struct lex;
 
-struct avl_tree_t* mains_parse(const char* path, struct lex* lex);
+void mains_parse(
+	struct options* options,
+	struct scope* scope,
+	struct memory_arena* scratchpad,
+	struct lex* lex,
+	const char* path);

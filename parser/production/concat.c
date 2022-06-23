@@ -5,7 +5,7 @@
 
 #include "gegex/state/add_lambda_transition.h"
 
-#include "suffixes.h"
+#include "subdefinitions.h"
 #include "concat.h"
 
 struct bundle read_concat_production(
@@ -18,7 +18,7 @@ struct bundle read_concat_production(
 	
 	struct bundle retval;
 	
-	struct bundle left = read_suffixes_production(tokenizer, scratchpad, scope, lex);
+	struct bundle left = read_subdefinitions_production(tokenizer, scratchpad, scope, lex);
 	
 	switch (tokenizer->token)
 	{

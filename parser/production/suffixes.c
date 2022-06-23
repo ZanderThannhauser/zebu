@@ -23,11 +23,14 @@ struct bundle read_suffixes_production(
 	switch (tokenizer->token)
 	{
 		case t_plus:
-			TODO;
+			gegex_add_lambda_transition(retval.end, scratchpad, retval.start);
+			read_token(tokenizer, production_after_suffix_machine);
 			break;
 		
 		case t_asterisk:
-			TODO;
+			gegex_add_lambda_transition(retval.end, scratchpad, retval.start);
+			gegex_add_lambda_transition(retval.start, scratchpad, retval.end);
+			read_token(tokenizer, production_after_suffix_machine);
 			break;
 		
 		case t_qmark:

@@ -1,4 +1,6 @@
 
+#undef DEBUGGING
+
 #include <debug.h>
 
 #include <valgrind/memcheck.h>

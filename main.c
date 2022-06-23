@@ -12,6 +12,13 @@
 #include <lex/free.h>
 
 #include <parser/mains_parse.h>
+#include <parser/options/new.h>
+/*#include <parser/options/free.h>*/
+#include <parser/scope/new.h>
+#include <parser/scope/free.h>
+
+#include <memory/arena/new.h>
+#include <memory/arena/free.h>
 
 /*#include <yacc/yacc.h>*/
 
@@ -24,9 +31,15 @@ int main(int argc, char* argv[])
 	
 	struct cmdln* flags = cmdln_process(argc, argv);
 	
+	struct scope* scope = new_scope();
+	
+	struct options* options = new_options();
+	
+	struct memory_arena* scratchpad = new_memory_arena();
+	
 	struct lex* lex = new_lex(flags->debug.lex);
 	
-	mains_parse(flags->input_path, lex);
+	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
 	TODO;
 	
@@ -41,6 +54,14 @@ int main(int argc, char* argv[])
 	
 	free_lex(lex);
 	#endif
+	
+	free_memory_arena(scratchpad);
+	
+/*	free_scope(scope);*/
+	TODO;
+	
+/*	free_options(options);*/
+	TODO;
 	
 	free_cmdln(flags);
 	

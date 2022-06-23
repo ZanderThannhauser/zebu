@@ -5,32 +5,32 @@
 #include <debug.h>
 
 #include <memory/sstrdup.h>
-#include <memory/arena/new.h>
-#include <memory/arena/free.h>
+/*#include <memory/arena/new.h>*/
+/*#include <memory/arena/free.h>*/
 
-#include "scope/new.h"
+/*#include "scope/new.h"*/
 
-#include "options/new.h"
+/*#include "options/new.h"*/
 
 #include "pragma_once/new.h"
 #include "pragma_once/free.h"
 
+#include "resolve_grammar_names.h"
 #include "recursive_parse.h"
 #include "mains_parse.h"
 
-struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
+void mains_parse(
+	struct options* options,
+	struct scope* scope,
+	struct memory_arena* scratchpad,
+	struct lex* lex,
+	const char* path)
 {
 	ENTER;
-	
-	struct scope* scope = new_scope();
-	
-	struct options* options = new_options();
 	
 	char* dup = sstrdup(path);
 	
 	struct pragma_once* pragma_once = new_pragma_once();
-	
-	struct memory_arena* scratchpad = new_memory_arena();
 	
 	recursive_parse(
 		/* options: */ options,
@@ -43,24 +43,14 @@ struct avl_tree_t* mains_parse(const char* path, struct lex* lex)
 		/* lex: */ lex
 	);
 	
-	TODO;
-	#if 0
-	free(dup);
-	
-	free_memory_arena(scratchpad);
-	
 	free_pragma_once(pragma_once);
 	
-	// lookup options->start_rule in grammar tree,
-	// keep a reference to return
-	TODO;
+	free(dup);
 	
-	free_scope(scope);
-	#endif
+	resolve_grammar_names(scope);
 	
 	EXIT;
-	// return reference to start rule's grammar
-	TODO;
+	// return (options, scope, scratchpad);
 }
 
 

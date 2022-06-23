@@ -1,10 +1,14 @@
 
 #include <debug.h>
 
-#include "charset/inc.h"
-#include "charset/free.h"
-
 #include "../tokenizer/struct.h"
+#include "../tokenizer/read_token.h"
+#include "../tokenizer/machines/charset/inside_intersect.h"
+
+#include "charset/struct.h"
+#include "charset/inc.h"
+#include "charset/union.h"
+#include "charset/free.h"
 
 #include "range.h"
 #include "intersect.h"
@@ -21,7 +25,32 @@ struct charset* read_intersect_charset(
 	
 	if (tokenizer->token == t_ampersand)
 	{
-		TODO;
+		read_token(tokenizer, charset_inside_intersect_machine);
+		
+		right = read_range_charset(tokenizer, scope);
+		
+		if (left->is_complement)
+		{
+			if (right->is_complement)
+			{
+				retval = charset_union(left, right, true);
+			}
+			else
+			{
+				TODO;
+			}
+		}
+		else
+		{
+			if (right->is_complement)
+			{
+				TODO;
+			}
+			else
+			{
+				TODO;
+			}
+		}
 	}
 	else
 	{
@@ -33,4 +62,18 @@ struct charset* read_intersect_charset(
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

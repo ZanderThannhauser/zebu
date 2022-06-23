@@ -3,7 +3,7 @@
 
 #include "after_highest.h"
 
-enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_states][256] = {
+const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_states][256] = {
 	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,
@@ -64,12 +64,15 @@ enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_states][2
 			[ts_after_comma][ANY] = ts_comma,
 	
 	// end of expression:
+	
 		// semicolon:
 		[ts_start][';'] = ts_after_semicolon,
 			[ts_after_semicolon][ANY] = ts_semicolon,
+		
 		// close paren:
 		[ts_start][')'] = ts_after_cparen,
 			[ts_after_cparen][ANY] = ts_cparen,
+		
 		// close square:
 		[ts_start][']'] = ts_after_csquare,
 			[ts_after_csquare][ANY] = ts_csqaure,

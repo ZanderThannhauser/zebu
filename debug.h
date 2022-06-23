@@ -35,6 +35,10 @@
 	struct tokenizer;
 	struct regex;
 	struct memory_arena;
+	struct avl_node_t;
+	struct avl_tree_t;
+	struct regex_ll;
+	struct gegex;
 	
 #endif
 

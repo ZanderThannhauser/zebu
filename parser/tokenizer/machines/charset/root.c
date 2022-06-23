@@ -1,8 +1,9 @@
 
 #include "../ANY.h"
+
 #include "root.h"
 
-enum tokenizer_state charset_root_machine[number_of_tokenizer_states][256] = {
+const enum tokenizer_state charset_root_machine[number_of_tokenizer_states][256] = {
 	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,

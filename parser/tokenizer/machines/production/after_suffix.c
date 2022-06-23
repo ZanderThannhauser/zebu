@@ -3,7 +3,7 @@
 
 #include "after_suffix.h"
 
-enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_states][256] = {
+const enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_states][256] = {
 	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,
@@ -45,6 +45,11 @@ enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_states]
 			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
 			[ts_read_character_literal3][ANY] = ts_character_literal,
 	
+	// subroot:
+		// percent:
+		[ts_start]['%'] = ts_after_percent,
+			[ts_after_percent][ANY] = ts_percent,
+	
 	// or operator:
 	[ts_start]['|'] = ts_after_vertical_bar,
 		[ts_after_vertical_bar][ANY] = ts_vertical_bar,
@@ -53,6 +58,10 @@ enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_states]
 		// close paren:
 		[ts_start][')'] = ts_after_cparen,
 			[ts_after_cparen][ANY] = ts_cparen,
+		
+		// colon:
+		[ts_start][':'] = ts_after_colon,
+			[ts_after_colon][ANY] = ts_colon,
 		
 		// semicolon
 		[ts_start][';'] = ts_after_semicolon,

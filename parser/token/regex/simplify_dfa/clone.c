@@ -12,6 +12,8 @@
 #include "../state/add_transition.h"
 #include "../state/set_default_transition.h"
 
+#include "regex_ll/find.h"
+
 #include "clone.h"
 
 static struct mapping {
@@ -40,7 +42,7 @@ struct memory_arena;
 static struct regex* clone_helper(
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena,
-	struct avl_tree_t* unique_nodes,
+	struct regex_ll* unique_nodes,
 	struct regex* old)
 {
 	struct avl_node_t* node;
@@ -71,12 +73,7 @@ static struct regex* clone_helper(
 			dpv(ele->value);
 			dpv(ele->to);
 			
-			struct regex* cloneme;
-			{
-				node = avl_search(unique_nodes, ele->to);
-				assert(node);
-				cloneme = node->item;
-			}
+			struct regex* cloneme = regex_ll_find(unique_nodes, ele->to);
 			
 			dpv(cloneme);
 			
@@ -94,12 +91,7 @@ static struct regex* clone_helper(
 		// for default transition:
 		if (old->default_transition_to)
 		{
-			struct regex* cloneme;
-			{
-				node = avl_search(unique_nodes, old->default_transition_to);
-				assert(node);
-				cloneme = node->item;
-			}
+			struct regex* cloneme = regex_ll_find(unique_nodes, old->default_transition_to);
 			
 			dpv(cloneme);
 			
@@ -118,7 +110,7 @@ static struct regex* clone_helper(
 }
 
 struct regex* simplify_dfa_clone(
-	struct avl_tree_t* unique_nodes,
+	struct regex_ll* unique_nodes,
 	struct regex* original_start,
 	struct memory_arena* arena)
 {
@@ -128,12 +120,7 @@ struct regex* simplify_dfa_clone(
 	
 	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free);
 	
-	struct regex* cloneme;
-	{
-		struct avl_node_t* node = avl_search(unique_nodes, original_start);
-		assert(node);
-		cloneme = node->item;
-	}
+	struct regex* cloneme = regex_ll_find(unique_nodes, original_start);
 	
 	dpv(cloneme);
 	

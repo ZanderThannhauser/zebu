@@ -2,10 +2,11 @@
 
 #include <debug.h>
 
+#include <misc/phase_counter.h>
+
 #include "state/struct.h"
 #include "state/add_lambda_transition.h"
 
-#include "phase_counter.h"
 #include "lambda_all_accepting_states.h"
 
 static void helper(

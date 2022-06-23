@@ -11,7 +11,7 @@
 #include "struct.h"
 #include "push.h"
 
-void scope_push(struct scope* this, const char* layer_name)
+void scope_push(struct scope* this)
 {
 	ENTER;
 	
@@ -21,15 +21,24 @@ void scope_push(struct scope* this, const char* layer_name)
 	avl_init_tree(&new->tokens,   compare_named_names, free_named_name);
 	avl_init_tree(&new->grammar,  compare_named_names, free_named_name);
 	
+	new->sublayer_counter = 0;
+	
 	new->prefix_len = this->prefix.n;
 	
 	new->prev = this->layer;
 	
+	if (this->layer)
+	{
+		char number[30];
+		
+		sprintf(number, "%u", this->layer->sublayer_counter++);
+		
+		private_scope_append_prefix(this, number);
+	}
+	
 	this->layer = new;
 	
 	dpv(this->layer);
-	
-	private_scope_append_prefix(this, layer_name);
 	
 	EXIT;
 }

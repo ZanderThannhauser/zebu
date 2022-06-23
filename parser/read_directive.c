@@ -40,8 +40,6 @@ void read_directive(
 		dpvs(options->start_rule);
 		
 		read_token(tokenizer, semicolon_machine);
-		
-		read_token(tokenizer, root_machine);
 	}
 	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
 	{
@@ -78,8 +76,6 @@ void read_directive(
 				TODO;
 				break;
 		}
-		
-		read_token(tokenizer, root_machine);
 	}
 	else
 	{

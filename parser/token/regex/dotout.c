@@ -3,9 +3,9 @@
 
 #include <debug.h>
 
-#include "state/struct.h"
+#include <misc/phase_counter.h>
 
-#include "phase_counter.h"
+#include "state/struct.h"
 #include "dotout.h"
 
 static void helper(FILE* out, struct regex* state)
@@ -21,9 +21,9 @@ static void helper(FILE* out, struct regex* state)
 		fprintf(out, ""
 			"\"%p\" [" "\n"
 				"\t" "shape = %s;" "\n"
-				"\t" "label = \"\";" "\n"
+				"\t" "label = \"%p\";" "\n"
 			"]" "\n"
-		"", state, state->is_accepting ? "doublecircle" : "circle");
+		"", state, state->is_accepting ? "doublecircle" : "circle", state);
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)

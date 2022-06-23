@@ -20,7 +20,7 @@ static void append(struct tokenizer* this, char c)
 
 enum token read_token(
 	struct tokenizer* this,
-	enum tokenizer_state machine[number_of_tokenizer_states][256])
+	const enum tokenizer_state machine[number_of_tokenizer_states][256])
 {
 	ENTER;
 	
@@ -104,6 +104,8 @@ enum token read_token(
 			TODO;
 			break;
 		
+		case ts_comma: this->token = t_comma; break;
+		
 		case ts_emark: this->token = t_emark; break;
 		
 		case ts_qmark: this->token = t_qmark; break;
@@ -147,6 +149,8 @@ enum token read_token(
 		case ts_gravemark: this->token = t_gravemark; break;
 		
 		case ts_hypen: this->token = t_hypen; break;
+		
+		case ts_percent: this->token = t_percent; break;
 		
 		default:
 			TODO;

@@ -1,4 +1,6 @@
 
+#undef DEBUGGING
+
 #ifdef DEBUGGING
 
 #include <debug.h>
@@ -17,7 +19,6 @@ void arena_prettyprint(
 	struct memory_arena_header* header;
 	struct memory_arena_footer* footer;
 	
-	#if 0
 	ENTER;
 	
 	dpv(this->free_list.head);
@@ -86,7 +87,6 @@ void arena_prettyprint(
 	assert(this->free_list.tail == free_tail);
 	
 	EXIT;
-	#endif
 }
 
 

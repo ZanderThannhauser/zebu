@@ -31,8 +31,6 @@ struct bundle read_or_production(
 		gegex_add_lambda_transition(sub.end, scratchpad, retval.end);
 	}
 	
-	TODO;
-	
 	EXIT;
 	return retval;
 }

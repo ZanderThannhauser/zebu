@@ -36,6 +36,7 @@ enum tokenizer_state
 	ts_semicolon,
 	ts_gravemark,
 	ts_csquare,
+	ts_percent,
 	
 	ts_character_literal,
 	

@@ -3,7 +3,7 @@
 
 #include "after_highest.h"
 
-enum tokenizer_state production_after_highest_machine[number_of_tokenizer_states][256] = {
+const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_states][256] = {
 	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,
@@ -56,6 +56,11 @@ enum tokenizer_state production_after_highest_machine[number_of_tokenizer_states
 		[ts_start]['?'] = ts_after_qmark,
 			[ts_after_qmark][ANY] = ts_qmark,
 	
+	// subroot:
+		// percent:
+		[ts_start]['%'] = ts_after_percent,
+			[ts_after_percent][ANY] = ts_percent,
+	
 	// or:
 		// vertical bar:
 		[ts_start]['|'] = ts_after_vertical_bar,
@@ -65,6 +70,10 @@ enum tokenizer_state production_after_highest_machine[number_of_tokenizer_states
 		// close paren:
 		[ts_start][')'] = ts_after_cparen,
 			[ts_after_cparen][ANY] = ts_cparen,
+		
+		// colon:
+		[ts_start][':'] = ts_after_colon,
+			[ts_after_colon][ANY] = ts_colon,
 		
 		// semicolon
 		[ts_start][';'] = ts_after_semicolon,

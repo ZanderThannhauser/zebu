@@ -4,9 +4,6 @@
 
 enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 	
-	// EOF:
-	[ts_start][ 0 ] = ts_EOF,
-	
 	// skip whitespace:
 	[ts_start][' ' ] = ts_start,
 	[ts_start]['\t'] = ts_start,
@@ -39,5 +36,9 @@ enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 	[ts_start]['a' ... 'z'] = ts_reading_identifier,
 		[ts_reading_identifier][ANY] = ts_identifier,
 		[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
+	
+	// EOF:
+	[ts_start][ 0 ] = ts_EOF,
+	
 };
 

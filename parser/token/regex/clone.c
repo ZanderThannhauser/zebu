@@ -10,6 +10,7 @@
 #include "state/struct.h"
 #include "state/new.h"
 #include "state/add_transition.h"
+#include "state/set_default_transition.h"
 
 #include "dotout.h"
 #include "clone.h"
@@ -87,7 +88,12 @@ static struct regex* clone_helper(
 		// for default transition:
 		if (old->default_transition_to)
 		{
-			TODO;
+			regex_set_default_transition(
+				/* from: */ new,
+				/* to */ clone_helper(
+					/* mappings: */ mappings,
+					/* arena: */ arena,
+					/* in: */ old->default_transition_to));
 		}
 		
 		EXIT;

@@ -19,6 +19,8 @@ struct scope
 		
 		size_t prefix_len;
 		
+		unsigned sublayer_counter;
+		
 		struct scope_layer* prev;
 	}* layer;
 };

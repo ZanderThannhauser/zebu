@@ -70,7 +70,6 @@ void recursive_parse(
 			switch (tokenizer->token)
 			{
 				case t_directive:
-				{
 					read_directive(
 						/* tokenizer:      */ tokenizer,
 						/* options:        */ options,
@@ -81,40 +80,35 @@ void recursive_parse(
 						/* relative_dirfd: */ relative_dirfd,
 						/* lex:            */ lex);
 					break;
-				}
 				
 				case t_charset:
-				{
 					read_charset(
 						/* tokenizer: */ tokenizer,
 						/* scope      */ scope);
 					break;
-				}
 				
 				case t_fragment:
-				{
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
 						/* scratchpad: */ scratchpad,
 						/* scope       */ scope);
 					break;
-				}
 				
 				case t_identifier:
-				{
 					read_grammar(
 						/* tokenizer:  */ tokenizer,
 						/* scratchpad: */ scratchpad,
 						/* scope       */ scope,
 						/* lex: */ lex);
 					break;
-				}
 				
 				default:
 					dpv(tokenizer->token);
 					TODO;
 					break;
 			}
+			
+			read_token(tokenizer, root_machine);
 		}
 		
 		free_tokenizer(tokenizer);

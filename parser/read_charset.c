@@ -15,11 +15,10 @@
 
 #include "read_charset.h"
 
-int read_charset(
+void read_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
-	int error = 0;
 	ENTER;
 	
 	assert(tokenizer->token == t_charset);
@@ -36,18 +35,17 @@ int read_charset(
 	
 	struct charset* charset = read_root_charset(tokenizer, scope);
 	
-	if (tokenizer->token != t_semicolon)
-	{
-		TODO;
-		exit(1);
-	}
-	
 	scope_declare_charset(scope, name, charset);
 	
-	read_token(tokenizer, root_machine);
+	if (true
+		&& tokenizer->token != t_semicolon
+		&& tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(e_syntax_error);
+	}
 	
 	EXIT;
-	return error;
 }
 
 

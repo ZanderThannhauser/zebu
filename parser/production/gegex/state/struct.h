@@ -14,7 +14,8 @@ struct gegex
 	
 	struct {
 		struct gtransition {
-			const char* grammar;
+			char* grammar;
+			struct gegex* start;
 			struct gegex* to;
 		}** data;
 		size_t n, cap;
