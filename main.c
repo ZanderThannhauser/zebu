@@ -13,14 +13,14 @@
 
 #include <parser/mains_parse.h>
 #include <parser/options/new.h>
-/*#include <parser/options/free.h>*/
+#include <parser/options/free.h>
 #include <parser/scope/new.h>
 #include <parser/scope/free.h>
 
 #include <memory/arena/new.h>
 #include <memory/arena/free.h>
 
-/*#include <yacc/yacc.h>*/
+#include <yacc/yacc.h>
 
 /*#include <out/out.h>*/
 
@@ -41,27 +41,23 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
+	yacc();
+	
 	TODO;
 	
 	#if 0
-	void* LRP = yacc(&LRP, grammar, lex, flags->debug.yacc);
-	
 	out(LRP, flags->output_path);
 	
 	free(LRP);
-	
-	avl_free_tree(grammar);
 	
 	free_lex(lex);
 	#endif
 	
 	free_memory_arena(scratchpad);
 	
-/*	free_scope(scope);*/
-	TODO;
+	free_scope(scope);
 	
-/*	free_options(options);*/
-	TODO;
+	free_options(options);
 	
 	free_cmdln(flags);
 	
