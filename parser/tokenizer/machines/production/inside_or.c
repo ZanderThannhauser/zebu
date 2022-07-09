@@ -17,6 +17,10 @@ const enum tokenizer_state production_inside_or_machine[number_of_tokenizer_stat
 			[ts_skipping_comment]['\n'] = ts_start,
 	
 	// highest:
+		// charset expression:
+		[ts_start]['['] = ts_after_osquare,
+			[ts_after_osquare][ANY] = ts_osquare,
+		
 		// token expression:
 		[ts_start]['`'] = ts_after_gravemark,
 			[ts_after_gravemark][ANY] = ts_gravemark,

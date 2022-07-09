@@ -1,7 +1,7 @@
 
 #include <stdbool.h>
 
-#include <avl/avl.h>
+#include <avl/tree_t.h>
 
 struct lex
 {
@@ -9,6 +9,6 @@ struct lex
 	
 	unsigned next_id;
 	
-	struct avl_tree_t nodes;
+	struct avl_tree_t* tokens; // token -> id
 	
 };

@@ -1,5 +1,5 @@
 
-#undef DEBUGGING
+#include <assert.h>
 
 #include <debug.h>
 

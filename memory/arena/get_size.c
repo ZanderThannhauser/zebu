@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <debug.h>
 
 #include "header.h"

@@ -10,51 +10,52 @@
 #include "highest.h"
 #include "prefixes.h"
 
-struct bundle read_prefixes_token_expression(
+struct rbundle read_prefixes_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
 	ENTER;
 	
-	bool emark = false;
-	
 	if (tokenizer->token == t_emark)
 	{
-		emark = true;
 		read_token(tokenizer, expression_root_machine);
-	}
-	
-	struct bundle retval;
-	struct bundle inner = read_highest_token_expression(tokenizer, scratchpad, scope);
-	
-	if (emark)
-	{
+		
+		struct rbundle inner = read_highest_token_expression(tokenizer, scratchpad, scope);
+		
 		struct regex* machine;
 		
 		if (inner.is_nfa)
 		{
+/*			right.nfa.end->is_accepting = true;*/
+/*			*/
+/*			struct regex* nfa = right.nfa.start;*/
+/*			struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);*/
+/*			*/
+/*			right_machine = regex_simplify_dfa(dfa, scratchpad);*/
+/*			*/
+/*			free_regex(nfa, scratchpad), free_regex(dfa, scratchpad);*/
 			TODO;
 		}
 		else
 		{
-			machine = inner.regex;
+			machine = inner.dfa;
 		}
 		
 		regex_complement(machine);
 		
-		retval = (struct bundle) {
-			.regex = machine,
+		EXIT;
+		return (struct rbundle) {
 			.is_nfa = false,
+			.dfa = machine,
 		};
 	}
 	else
 	{
-		retval = inner;
+		struct rbundle retval = read_highest_token_expression(tokenizer, scratchpad, scope);
+		EXIT;
+		return retval;
 	}
-	
-	EXIT;
-	return inner;
 }
 
 

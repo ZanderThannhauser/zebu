@@ -1,4 +1,5 @@
 
+#include <avl/insert.h>
 #include <avl/avl.h>
 
 #include <debug.h>

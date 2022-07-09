@@ -1,5 +1,5 @@
 
-#include <avl/avl.h>
+#include <avl/alloc_tree.h>
 
 #include <debug.h>
 
@@ -17,7 +17,7 @@ struct lex* new_lex(bool verbose)
 	
 	struct lex* this = smalloc(sizeof(*this));
 	
-	avl_init_tree(&this->nodes, compare_nodes, free_node);
+	this->tokens = avl_alloc_tree(compare_nodes, free_node);
 	
 	this->next_id = 1;
 	

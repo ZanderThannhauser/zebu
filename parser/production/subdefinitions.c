@@ -18,13 +18,13 @@
 #include "suffixes.h"
 #include "subdefinitions.h"
 
-struct bundle read_subdefinitions_production(
+struct gbundle read_subdefinitions_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct lex* lex)
 {
-	struct bundle retval;
+	struct gbundle retval;
 	ENTER;
 	
 	if (tokenizer->token == t_percent)

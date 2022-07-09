@@ -1,7 +1,7 @@
 
-#include "bundle.h"
+#include "gbundle.h"
 
-struct bundle read_suffixes_production(
+struct gbundle read_suffixes_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,

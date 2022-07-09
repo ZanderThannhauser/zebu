@@ -1,4 +1,4 @@
 
-struct avl_tree_t;
+#include "tree_t.h"
 
-int avl_tree_insert(struct avl_tree_t* tree, void* element);
+avl_node_t *avl_insert(avl_tree_t *avltree, void *item);

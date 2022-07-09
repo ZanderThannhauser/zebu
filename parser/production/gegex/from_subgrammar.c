@@ -6,7 +6,7 @@
 
 #include "from_subgrammar.h"
 
-struct bundle gegex_from_subgrammar(
+struct gbundle gegex_from_subgrammar(
 	char* grammar_name,
 	struct memory_arena* arena)
 {
@@ -19,6 +19,6 @@ struct bundle gegex_from_subgrammar(
 	gegex_add_grammar_transition(start, arena, grammar_name, end);
 	
 	EXIT;
-	return (struct bundle) {start, end};
+	return (struct gbundle) {start, end};
 }
 

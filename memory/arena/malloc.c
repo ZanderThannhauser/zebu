@@ -1,6 +1,5 @@
 
-#undef DEBUGGING
-
+#include <assert.h>
 #include <debug.h>
 
 #include <valgrind/memcheck.h>
@@ -90,7 +89,6 @@ static void* private_arena_find_block(struct memory_arena* this, size_t* size)
 
 void* arena_malloc(struct memory_arena* this, size_t user_size)
 {
-	int error = 0;
 	struct memory_arena_header* header;
 	struct memory_arena_footer* footer;
 	ENTER;

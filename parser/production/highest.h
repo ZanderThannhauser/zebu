@@ -1,9 +1,9 @@
 
 struct memory_arena;
 
-#include "bundle.h"
+#include "gbundle.h"
 
-struct bundle read_highest_production(
+struct gbundle read_highest_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,

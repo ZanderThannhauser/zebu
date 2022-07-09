@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <sys/mman.h>
 
 #include <debug.h>
@@ -10,8 +11,8 @@
 
 void free_memory_arena(struct memory_arena* this)
 {
-	size_t i, n;
-	typeof(*this->mmaps.data)* mentry;
+/*	size_t i, n;*/
+/*	typeof(*this->mmaps.data)* mentry;*/
 	ENTER;
 	
 	TODO;

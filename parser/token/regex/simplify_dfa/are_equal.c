@@ -1,10 +1,11 @@
 
 #include <avl/avl.h>
+#include <avl/search.h>
 #include <avl/safe_insert.h>
 
 #include <debug.h>
 
-#include "../struct.h"
+#include "../state/struct.h"
 
 #include "cache/struct.h"
 #include "cache/new.h"
@@ -116,26 +117,25 @@ bool regex_are_equal(
 				TODO;
 			}
 			
-			if (a_i < a_n)
+			if (are_equal)
 			{
-				are_equal = false;
-			}
-			else if (b_i < b_n)
-			{
-				are_equal = false;
-			}
-			else if (a->default_transition_to && !b->default_transition_to)
-			{
-				TODO;
-			}
-			else if (!a->default_transition_to && b->default_transition_to)
-			{
-				TODO;
-			}
-			else if (a->default_transition_to && b->default_transition_to)
-			{
-				are_equal = regex_are_equal(cache,
-					a->default_transition_to, b->default_transition_to);
+				if (a_i < a_n || b_i < b_n)
+				{
+					are_equal = false;
+				}
+				else if (a->default_transition_to && !b->default_transition_to)
+				{
+					TODO;
+				}
+				else if (!a->default_transition_to && b->default_transition_to)
+				{
+					TODO;
+				}
+				else if (a->default_transition_to && b->default_transition_to)
+				{
+					are_equal = regex_are_equal(cache,
+						a->default_transition_to, b->default_transition_to);
+				}
 			}
 		}
 		

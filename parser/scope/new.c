@@ -3,7 +3,7 @@
 
 #include <memory/smalloc.h>
 
-#include <avl/avl.h>
+#include <avl/init_tree.h>
 
 #include "named/charset/compare.h"
 #include "named/charset/free.h"

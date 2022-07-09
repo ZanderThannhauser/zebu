@@ -4,7 +4,7 @@
 #include "or.h"
 #include "root.h"
 
-struct bundle read_root_production(
+struct gbundle read_root_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,
@@ -12,7 +12,7 @@ struct bundle read_root_production(
 {
 	ENTER;
 	
-	struct bundle inner = read_or_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle inner = read_or_production(tokenizer, scratchpad, scope, lex);
 	
 	EXIT;
 	return inner;

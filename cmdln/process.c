@@ -21,11 +21,10 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 {
 	ENTER;
 	
-	
 	const char* input_path = NULL;
 	const char* output_path = NULL;
 	
-	bool build_depends = false;
+/*	bool build_depends = false;*/
 	bool debug_lex = false;
 	bool debug_yacc = false;
 	bool verbose = false;
@@ -53,9 +52,9 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 				output_path = optarg;
 				break;
 			
-			case 'M':
-				build_depends = true;
-				break;
+/*			case 'M':*/
+/*				build_depends = true;*/
+/*				break;*/
 			
 			case 'd':
 				if (strequals(optarg, "lex")) {

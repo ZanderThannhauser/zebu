@@ -1,12 +1,10 @@
 
 #include <debug.h>
 
+#include <avl/free_tree.h>
 #include <avl/new.h>
 #include <avl/safe_insert.h>
-
-#include <parser/token/regex/state/are_equal/are_equal.h>
-#include <parser/token/regex/state/are_equal/cache/compare.h>
-#include <parser/token/regex/state/are_equal/cache/free.h>
+#include <avl/search.h>
 
 #include "node/struct.h"
 #include "node/new.h"
@@ -24,28 +22,22 @@ unsigned lex_get_token_id(
 	
 	struct avl_node_t* node;
 	
-	struct avl_tree_t* cache = new_avl_tree(compare_caches, free_cache);
-	
-	for (node = this->nodes.head; node; node = node->next)
+	if ((node = avl_search(this->tokens, &token)))
 	{
-		const struct node* const ele = node->item;
+		struct node* found = node->item;
 		
-		dpv(ele);
-		
-		if (regex_are_equal(cache, ele->token, token))
-		{
-			retval = ele->id;
-			break;
-		}
+		retval = found->id;
 	}
-	
-	if (!node)
+	else
 	{
 		retval = this->next_id++;
-		safe_avl_insert(&this->nodes, new_node(retval, token));
+		
+		struct node* new = new_node(retval, token);
+		
+		safe_avl_insert(this->tokens, new);
 	}
 	
-	avl_free_tree(cache);
+	dpv(retval);
 	
 	EXIT;
 	return retval;

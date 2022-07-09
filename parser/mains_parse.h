@@ -1,7 +1,8 @@
 
 struct options;
-
+struct memory_arena;
 struct lex;
+struct scope;
 
 void mains_parse(
 	struct options* options,

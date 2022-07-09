@@ -1,4 +1,6 @@
 
+#include <avl/search.h>
+
 #include <debug.h>
 
 #include "struct.h"

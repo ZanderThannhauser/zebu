@@ -17,8 +17,8 @@ const enum tokenizer_state expression_root_machine[number_of_tokenizer_states][2
 	
 	// highest:
 		// open sqaure:
-		[ts_start]['['] = ts_after_osqaure,
-			[ts_after_osqaure][ANY] = ts_osqaure,
+		[ts_start]['['] = ts_after_osquare,
+			[ts_after_osquare][ANY] = ts_osquare,
 		
 		// open paren:
 		[ts_start]['('] = ts_after_oparen,

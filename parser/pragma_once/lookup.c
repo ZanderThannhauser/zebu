@@ -1,4 +1,5 @@
 
+#include <avl/search.h>
 #include <avl/safe_insert.h>
 
 #include <debug.h>

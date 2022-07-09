@@ -3,20 +3,21 @@
 
 #include "../tokenizer/struct.h"
 
-#include "regex/concat.h"
+#include "regex/dfa_to_nfa.h"
+#include "regex/dotout.h"
+#include "regex/state/add_lambda_transition.h"
 
 #include "suffixes.h"
 #include "concat.h"
 
-struct bundle read_concat_token_expression(
+struct rbundle read_concat_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
 	ENTER;
 	
-	struct bundle retval;
-	struct bundle inner = read_suffixes_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_suffixes_token_expression(tokenizer, scratchpad, scope);
 	
 	switch (tokenizer->token)
 	{
@@ -25,18 +26,35 @@ struct bundle read_concat_token_expression(
 		case t_string_literal:
 		case t_dot:
 		{
-			struct bundle next = read_concat_token_expression(tokenizer, scratchpad, scope);
+			struct rbundle next = read_concat_token_expression(tokenizer, scratchpad, scope);
 			
-			regex_concat(scratchpad, inner.regex, next.regex);
+			if (!retval.is_nfa)
+				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
 			
-			retval = (struct bundle) {
+			if (!next.is_nfa)
+				next = regex_dfa_to_nfa(next.dfa, scratchpad);
+			
+			regex_add_lambda_transition(retval.nfa.end, scratchpad, next.nfa.start);
+			
+			retval = (struct rbundle) {
 				.is_nfa = true,
-				.regex = inner.regex,
+				.nfa.start = retval.nfa.start,
+				.nfa.end = next.nfa.end,
 			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.nfa.start);
+			#endif
 		}
 		
+		case t_gravemark:
+		case t_cparen:
+		case t_ampersand:
+		case t_semicolon:
+			break;
+		
 		default:
-			retval = inner;
+			TODO;
 			break;
 	}
 	

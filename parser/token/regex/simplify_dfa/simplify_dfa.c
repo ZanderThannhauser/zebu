@@ -1,6 +1,7 @@
 
 #include <avl/avl.h>
 #include <avl/new.h>
+#include <avl/free_tree.h>
 
 #include <debug.h>
 
@@ -11,8 +12,9 @@
 #include "../dotout.h"
 
 #include "../state/struct.h"
-#include "../state/are_equal/cache/compare.h"
-#include "../state/are_equal/cache/free.h"
+
+#include "cache/compare.h"
+#include "cache/free.h"
 
 #include "regex_ll/new.h"
 #include "regex_ll/free.h"

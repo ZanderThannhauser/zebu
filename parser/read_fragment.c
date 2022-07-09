@@ -10,12 +10,13 @@
 
 #include "token/regex/simplify_dfa/simplify_dfa.h"
 
+#include "token/regex/state/struct.h"
 #include "token/regex/state/free.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/colon.h"
-#include "tokenizer/machines/root.h"
+/*#include "tokenizer/machines/root.h"*/
 #include "tokenizer/machines/expression/root.h"
 
 #include "token/root.h"
@@ -43,11 +44,13 @@ void read_fragment(
 	
 	read_token(tokenizer, expression_root_machine);
 	
-	struct bundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
 	
 	if (bun.is_nfa)
 	{
-		struct regex* nfa = bun.regex;
+		struct regex* nfa = bun.nfa.start;
+		
+		bun.nfa.end->is_accepting = true;
 		
 		struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
 		
@@ -57,12 +60,11 @@ void read_fragment(
 		
 		free_regex(dfa, scratchpad);
 		
-		scope_declare_token(scope, name, simp);
+		bun.is_nfa = false;
+		bun.dfa = simp;
 	}
-	else
-	{
-		scope_declare_token(scope, name, bun.regex);
-	}
+	
+	scope_declare_token(scope, name, bun.dfa);
 	
 	if (true
 		&& tokenizer->token != t_semicolon

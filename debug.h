@@ -111,6 +111,10 @@
 		assert(debug_depth >= 0);\
 		printf("%*s" #b " == %s\n", debug_depth, "", (b) ? "true" : "false");
 	
+	#define dputs(str) \
+		assert(debug_depth >= 0);\
+		printf("%*s" "%s\n", debug_depth, "", str);
+	
 	#define dpvc(ch) \
 		real_dpvc(#ch, ch);
 	

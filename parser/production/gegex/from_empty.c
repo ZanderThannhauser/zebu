@@ -7,7 +7,7 @@
 
 #include "from_empty.h"
 
-struct bundle gegex_from_empty(
+struct gbundle gegex_from_empty(
 	struct memory_arena* arena)
 {
 	ENTER;
@@ -18,6 +18,6 @@ struct bundle gegex_from_empty(
 	gegex_add_lambda_transition(start, arena, end);
 	
 	EXIT;
-	return (struct bundle) {start, end};
+	return (struct gbundle) {start, end};
 }
 

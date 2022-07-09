@@ -40,7 +40,7 @@ void read_grammar(
 	read_token(tokenizer, production_root_machine);
 	
 	// read a prodution rule:
-	struct bundle bundle = read_root_production(
+	struct gbundle bundle = read_root_production(
 		/* tokenizer: */ tokenizer,
 		/* scratchpad: */ scratchpad,
 		/* scope: */ scope,
@@ -56,7 +56,6 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
-	
 	EXIT;
 }
 

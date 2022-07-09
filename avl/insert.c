@@ -1,19 +1,28 @@
 
-#if 0
-#include <debug.h>
+#include <errno.h>
+#include <stdlib.h>
 
-#include "avl.h"
+#include "tree_t.h"
 #include "insert.h"
 
-int avl_tree_insert(struct avl_tree_t* tree, void* element)
-{
-	int error = 0;
-	
-	if (!avl_insert(tree, element))
-		fprintf(stderr, "%s: malloc: %m\n", argv0),
-		error = e_out_of_memory;
-	
-	return error;
+#include "init_node.h"
+#include "insert_node.h"
+
+/*
+ * avl_insert:
+ * Create a new node and insert an item there.
+ * Returns the new node on success or NULL if no memory could be allocated.
+ */
+avl_node_t *avl_insert(avl_tree_t *avltree, void *item) {
+	avl_node_t *newnode;
+
+	newnode = avl_init_node(malloc(sizeof(avl_node_t)), item);
+	if(newnode) {
+		if(avl_insert_node(avltree, newnode))
+			return newnode;
+		free(newnode);
+		errno = EEXIST;
+	}
+	return NULL;
 }
 
-#endif

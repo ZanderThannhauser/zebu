@@ -1,4 +1,5 @@
 
+#include <avl/free_tree.h>
 #include <avl/avl.h>
 #include <avl/new.h>
 /*#include <avl/insert.h>*/

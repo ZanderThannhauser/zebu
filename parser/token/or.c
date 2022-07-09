@@ -6,15 +6,15 @@
 #include "and.h"
 #include "or.h"
 
-struct bundle read_or_token_expression(
+struct rbundle read_or_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
-	struct bundle retval;
+	struct rbundle retval;
 	ENTER;
 	
-	struct bundle inner = read_and_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle inner = read_and_token_expression(tokenizer, scratchpad, scope);
 	
 	if (tokenizer->token == t_vertical_bar)
 	{

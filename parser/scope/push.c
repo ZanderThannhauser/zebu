@@ -1,4 +1,6 @@
 
+#include <avl/init_tree.h>
+
 #include <debug.h>
 
 #include <memory/smalloc.h>

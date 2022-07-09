@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/init_tree.h>
+
 #include <memory/smalloc.h>
 
 #include "struct.h"

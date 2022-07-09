@@ -20,32 +20,29 @@
 #include "root.h"
 #include "highest.h"
 
-struct bundle read_highest_token_expression(
+struct rbundle read_highest_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
-	struct bundle retval;
+	struct rbundle retval;
 	ENTER;
 	
 	switch (tokenizer->token)
 	{
 		case t_string_literal:
 		{
-			dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
-			
 			dpvsn(tokenizer->tokenchars.chars + 1, tokenizer->tokenchars.n - 2);
 			
-			struct regex* start = regex_from_literal(
+			struct regex* dfa = regex_from_literal(
 				/* scratchpad: */ scratchpad,
 				/* chars:      */ tokenizer->tokenchars.chars + 1,
 				/* strlen:     */ tokenizer->tokenchars.n - 2);
 			
-			retval = (struct bundle) {
-				.regex = start,
+			retval = (struct rbundle) {
 				.is_nfa = false,
+				.dfa = dfa,
 			};
-			
 			break;
 		}
 		
@@ -57,11 +54,10 @@ struct bundle read_highest_token_expression(
 			
 			struct regex* start = regex_clone(scratchpad, original);
 			
-			retval = (struct bundle) {
-				.regex = start,
+			retval = (struct rbundle) {
 				.is_nfa = false,
+				.dfa = start,
 			};
-			
 			break;
 		}
 		
@@ -81,11 +77,10 @@ struct bundle read_highest_token_expression(
 				exit(1);
 			}
 			
-			retval = (struct bundle) {
-				.regex = regex_from_charset(charset, scratchpad),
+			retval = (struct rbundle) {
 				.is_nfa = false,
+				.dfa = regex_from_charset(charset, scratchpad),
 			};
-			
 			break;
 		}
 		
@@ -102,17 +97,15 @@ struct bundle read_highest_token_expression(
 				TODO;
 				exit(1);
 			}
-			
 			break;
 		}
 		
 		case t_dot:
 		{
-			retval = (struct bundle) {
-				.regex = regex_from_dot(scratchpad),
+			retval = (struct rbundle) {
 				.is_nfa = false,
+				.dfa = regex_from_dot(scratchpad),
 			};
-			
 			break;
 		}
 		

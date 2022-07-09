@@ -3,7 +3,7 @@
 
 #include <memory/smalloc.h>
 
-#include "../../state/are_equal/are_equal.h"
+#include "../are_equal.h"
 
 #include "struct.h"
 #include "add.h"

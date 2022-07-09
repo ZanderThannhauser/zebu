@@ -8,7 +8,7 @@
 #include "subdefinitions.h"
 #include "concat.h"
 
-struct bundle read_concat_production(
+struct gbundle read_concat_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,
@@ -16,9 +16,9 @@ struct bundle read_concat_production(
 {
 	ENTER;
 	
-	struct bundle retval;
+	struct gbundle retval;
 	
-	struct bundle left = read_subdefinitions_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle left = read_subdefinitions_production(tokenizer, scratchpad, scope, lex);
 	
 	switch (tokenizer->token)
 	{
@@ -27,12 +27,13 @@ struct bundle read_concat_production(
 		case t_oparen:
 		case t_identifier:
 		case t_gravemark:
+		case t_osquare:
 		{
-			struct bundle right = read_concat_production(tokenizer, scratchpad, scope, lex);
+			struct gbundle right = read_concat_production(tokenizer, scratchpad, scope, lex);
 			
 			gegex_add_lambda_transition(left.end, scratchpad, right.start);
 			
-			retval = (struct bundle) {left.start, right.end};
+			retval = (struct gbundle) {left.start, right.end};
 			break;
 		}
 		

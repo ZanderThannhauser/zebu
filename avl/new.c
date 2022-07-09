@@ -1,14 +1,21 @@
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <defines/argv0.h>
+
+#include <enums/error.h>
+
 #include <debug.h>
 
-#include "avl.h"
+#include "tree_t.h"
+#include "alloc_tree.h"
 #include "new.h"
 
 struct avl_tree_t* new_avl_tree(
 	int (*compare)(const void *, const void *),
 	void (*freeitem)(void *))
 {
-	int error = 0;
 	ENTER;
 	
 	struct avl_tree_t* retval = avl_alloc_tree(compare, freeitem);

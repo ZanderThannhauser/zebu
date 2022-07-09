@@ -1,8 +1,4 @@
 
-#undef DEBUGGING
-
-#ifdef DEBUGGING
-
 #include <debug.h>
 
 #include "struct.h"
@@ -91,7 +87,6 @@ void arena_prettyprint(
 
 
 
-#endif
 
 
 

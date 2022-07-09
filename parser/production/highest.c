@@ -12,12 +12,17 @@
 #include "../tokenizer/machines/production/root.h"
 #include "../tokenizer/machines/production/after_highest.h"
 #include "../tokenizer/machines/expression/root.h"
+#include "../tokenizer/machines/charset/root.h"
 
 #include "../token/regex/from_literal.h"
+#include "../token/regex/from_charset.h"
 #include "../token/regex/nfa_to_dfa/nfa_to_dfa.h"
 #include "../token/regex/simplify_dfa/simplify_dfa.h"
+#include "../token/regex/state/struct.h"
 #include "../token/regex/state/free.h"
 #include "../token/root.h"
+
+#include "../charset/root.h"
 
 #include "../scope/struct.h"
 /*#include "../scope/push.h"*/
@@ -35,13 +40,13 @@
 #include "root.h"
 #include "highest.h"
 
-struct bundle read_highest_production(
+struct gbundle read_highest_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct lex* lex)
 {
-	struct bundle retval;
+	struct gbundle retval;
 	ENTER;
 	
 	switch (tokenizer->token)
@@ -114,13 +119,45 @@ struct bundle read_highest_production(
 			break;
 		}
 		
+		case t_osquare:
+		{
+			read_token(
+				/* tokenizer: */ tokenizer,
+				/* machine:   */ charset_root_machine);
+				
+			struct charset* charset = read_root_charset(tokenizer, scope);
+			
+			dpv(charset);
+			
+			if (tokenizer->token != t_csquare)
+			{
+				TODO;
+				exit(1);
+			}
+			
+			struct regex* start = regex_from_charset(charset, scratchpad);
+			
+			unsigned token_id = lex_get_token_id(lex, start);
+			
+			dpv(token_id);
+			
+			retval = gegex_from_token(
+				/* scratchpad: */ scratchpad,
+				/* token_id: */ token_id);
+			
+			read_token(
+				/* tokenizer: */ tokenizer,
+				/* machine:   */ production_after_highest_machine);
+			break;
+		}
+		
 		case t_gravemark:
 		{
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ expression_root_machine);
 			
-			struct bundle regex = read_root_token_expression(tokenizer, scratchpad, scope);
+			struct rbundle regex = read_root_token_expression(tokenizer, scratchpad, scope);
 			
 			if (tokenizer->token != t_gravemark)
 			{
@@ -132,7 +169,9 @@ struct bundle read_highest_production(
 			
 			if (regex.is_nfa)
 			{
-				struct regex* nfa = regex.regex;
+				regex.nfa.end->is_accepting = true;
+				
+				struct regex* nfa = regex.nfa.start;
 				struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
 				
 				start = regex_simplify_dfa(dfa, scratchpad);
@@ -141,7 +180,7 @@ struct bundle read_highest_production(
 			}
 			else
 			{
-				start = regex.regex;
+				start = regex.dfa;
 			}
 			
 			unsigned token_id = lex_get_token_id(lex, start);
@@ -203,7 +242,9 @@ struct bundle read_highest_production(
 			break;
 	}
 	
-		
+	dpv(retval.start);
+	dpv(retval.end);
+	
 	EXIT;
 	return retval;
 }

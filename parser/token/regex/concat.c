@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "dotout.h"
@@ -25,3 +26,4 @@ void regex_concat(
 	EXIT;
 }
 
+#endif

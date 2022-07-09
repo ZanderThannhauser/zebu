@@ -75,7 +75,7 @@ const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_sta
 		
 		// close square:
 		[ts_start][']'] = ts_after_csquare,
-			[ts_after_csquare][ANY] = ts_csqaure,
+			[ts_after_csquare][ANY] = ts_csquare,
 	
 };
 

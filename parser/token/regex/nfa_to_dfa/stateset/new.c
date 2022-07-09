@@ -1,4 +1,5 @@
 
+#include <avl/init_tree.h>
 #include <avl/avl.h>
 
 #include <debug.h>

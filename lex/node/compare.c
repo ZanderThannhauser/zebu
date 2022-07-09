@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <parser/token/regex/compare.h>
+
 #include "struct.h"
 #include "compare.h"
 
@@ -11,12 +13,9 @@ int compare_nodes(const void* a, const void* b)
 	
 	const struct node* A = a, *B = b;
 	
-	if (A->id > B->id)
-		cmp = +1;
-	else if (A->id < B->id)
-		cmp = -1;
-	else
-		cmp = +0;
+	cmp = compare_regexes(A->token, B->token);
+	
+	dpv(cmp);
 	
 	EXIT;
 	return cmp;

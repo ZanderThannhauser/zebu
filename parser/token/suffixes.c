@@ -1,8 +1,12 @@
 
 #include <debug.h>
 
-#include "regex/one_or_more.h"
-#include "regex/zero_or_more.h"
+#include "regex/state/new.h"
+#include "regex/dfa_to_nfa.h"
+#include "regex/dotout.h"
+#include "regex/state/add_lambda_transition.h"
+/*#include "regex/lambda_all_accepting_states.h"*/
+/*#include "regex/zero_or_more.h"*/
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -11,16 +15,14 @@
 #include "prefixes.h"
 #include "suffixes.h"
 
-struct bundle read_suffixes_token_expression(
+struct rbundle read_suffixes_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
-	struct bundle retval;
-	
 	ENTER;
 	
-	struct bundle inner = read_prefixes_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_prefixes_token_expression(tokenizer, scratchpad, scope);
 	
 	switch (tokenizer->token)
 	{
@@ -30,42 +32,45 @@ struct bundle read_suffixes_token_expression(
 		
 		case t_asterisk:
 		{
-			struct regex* nfa = regex_zero_or_more(
-				/* scratchpad: */ scratchpad,
-				/* in:         */ inner.regex);
+			// convert into nfa:
+			if (!retval.is_nfa)
+				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+			
+			regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
+			regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ expression_after_suffix_machine);
 			
-			retval = (struct bundle) {
-				.is_nfa = true,
-				.regex = nfa,
-			};
-			
+			#ifdef DEBUGGING
+			regex_dotout(retval.nfa.start);
+			#endif
 			break;
 		}
 		
 		case t_plus:
 		{
-			struct regex* nfa = regex_one_or_more(
-				/* scratchpad: */ scratchpad,
-				/* in:         */ inner.regex);
+			// convert into nfa:
+			if (!retval.is_nfa)
+				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+			
+			regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ expression_after_suffix_machine);
 			
-			retval = (struct bundle) {
-				.is_nfa = true,
-				.regex = nfa,
-			};
-			
+			#ifdef DEBUGGING
+			regex_dotout(retval.nfa.start);
+			#endif
 			break;
 		}
 		
 		case t_ocurly:
 		{
+			TODO;
+			#if 0
 			TODO;
 			#if 0
 			// repeated clones and concat
@@ -75,11 +80,11 @@ struct bundle read_suffixes_token_expression(
 			TODO;
 			#endif
 			TODO;
+			#endif
 			break;
 		}
 		
 		default:
-			retval = inner;
 			break;
 	}
 	

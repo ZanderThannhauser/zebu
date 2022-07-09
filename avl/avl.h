@@ -1,3 +1,5 @@
+
+#if 0
 /*****************************************************************************
 
     avl.h - Source code for the AVL-tree library.
@@ -27,62 +29,11 @@
 
 *****************************************************************************/
 
-#ifndef _AVL_H
-#define _AVL_H
-
-/* We need either depths, counts or both (the latter being the default) */
-#if !defined(AVL_DEPTH) && !defined(AVL_COUNT)
-#define AVL_DEPTH
-#define AVL_COUNT
-#endif
-
-/* User supplied function to compare two items like strcmp() does.
- * For example: cmp(a,b) will return:
- *   -1  if a < b
- *    0  if a = b
- *    1  if a > b
- */
-typedef int (*avl_compare_t)(const void *, const void *);
-
-/* User supplied function to delete an item when a node is free()d.
- * If NULL, the item is not free()d.
- */
-typedef void (*avl_freeitem_t)(void *);
-
-typedef struct avl_node_t {
-	struct avl_node_t *next;
-	struct avl_node_t *prev;
-	struct avl_node_t *parent;
-	struct avl_node_t *left;
-	struct avl_node_t *right;
-	void *item;
-#ifdef AVL_COUNT
-	unsigned int count;
-#endif
-#ifdef AVL_DEPTH
-	unsigned char depth;
-#endif
-} avl_node_t;
-
-typedef struct avl_tree_t {
-	avl_node_t *head;
-	avl_node_t *tail;
-	avl_node_t *top;
-	avl_compare_t cmp;
-	avl_freeitem_t freeitem;
-} avl_tree_t;
-
 /* Initializes a new tree for elements that will be ordered using
  * the supplied strcmp()-like function.
  * Returns the value of avltree (even if it's NULL).
  * O(1) */
 extern avl_tree_t *avl_init_tree(avl_tree_t *avltree, avl_compare_t, avl_freeitem_t);
-
-/* Allocates and initializes a new tree for elements that will be
- * ordered using the supplied strcmp()-like function.
- * Returns NULL if memory could not be allocated.
- * O(1) */
-extern avl_tree_t *avl_alloc_tree(avl_compare_t, avl_freeitem_t);
 
 /* Frees the entire tree efficiently. Nodes will be free()d.
  * If the tree's freeitem is not NULL it will be invoked on every item.
@@ -99,20 +50,11 @@ extern void avl_clear_tree(avl_tree_t *);
  * O(n) */
 extern void avl_free_nodes(avl_tree_t *);
 
-/* Initializes memory for use as a node. Returns NULL if avlnode is NULL.
- * O(1) */
-extern avl_node_t *avl_init_node(avl_node_t *avlnode, void *item);
-
 /* Insert an item into the tree and return the new node.
  * Returns NULL and sets errno if memory for the new node could not be
  * allocated or if the node is already in the tree (EEXIST).
  * O(lg n) */
 extern avl_node_t *avl_insert(avl_tree_t *, void *item);
-
-/* Insert a node into the tree and return it.
- * Returns NULL if the node is already in the tree.
- * O(lg n) */
-extern avl_node_t *avl_insert_node(avl_tree_t *, avl_node_t *);
 
 /* Insert a node in an empty tree. If avlnode is NULL, the tree will be
  * cleared and ready for re-use.
@@ -170,7 +112,6 @@ extern avl_node_t *avl_search(const avl_tree_t *, const void *item);
 
 avl_node_t *avl_search2(const avl_tree_t *avltree, const void *item, avl_compare_t cmp);
 
-#ifdef AVL_COUNT
 /* Returns the number of nodes in the tree.
  * O(1) */
 extern unsigned int avl_count(const avl_tree_t *);
@@ -183,6 +124,4 @@ extern avl_node_t *avl_at(const avl_tree_t *, unsigned int);
 /* Returns the rank of a node in the list. Counting starts at 0.
  * O(lg n) */
 extern unsigned int avl_index(const avl_node_t *);
-#endif
-
 #endif

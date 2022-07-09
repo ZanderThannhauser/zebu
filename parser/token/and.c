@@ -5,6 +5,7 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/expression/inside_and.h"
 
+#include "regex/state/struct.h"
 #include "regex/state/free.h"
 #include "regex/intersect_dfas/intersect_dfas.h"
 #include "regex/nfa_to_dfa/nfa_to_dfa.h"
@@ -13,21 +14,21 @@
 #include "concat.h"
 #include "and.h"
 
-struct bundle read_and_token_expression(
+struct rbundle read_and_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
-	struct bundle retval;
+	struct rbundle retval;
 	ENTER;
 	
-	struct bundle left = read_concat_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle left = read_concat_token_expression(tokenizer, scratchpad, scope);
 	
 	if (tokenizer->token == t_ampersand)
 	{
 		read_token(tokenizer, expression_inside_and_machine);
 		
-		struct bundle right = read_and_token_expression(tokenizer, scratchpad, scope);
+		struct rbundle right = read_and_token_expression(tokenizer, scratchpad, scope);
 		
 		struct regex* left_machine;
 		
@@ -37,14 +38,16 @@ struct bundle read_and_token_expression(
 		}
 		else
 		{
-			left_machine = left.regex;
+			left_machine = left.dfa;
 		}
 		
 		struct regex* right_machine;
 		
 		if (right.is_nfa)
 		{
-			struct regex* nfa = right.regex;
+			right.nfa.end->is_accepting = true;
+			
+			struct regex* nfa = right.nfa.start;
 			struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
 			
 			right_machine = regex_simplify_dfa(dfa, scratchpad);
@@ -65,9 +68,9 @@ struct bundle read_and_token_expression(
 		
 		free_regex(intersected, scratchpad);
 		
-		retval = (struct bundle) {
-			.regex = outgoing,
+		retval = (struct rbundle) {
 			.is_nfa = false,
+			.dfa = outgoing,
 		};
 	}
 	else

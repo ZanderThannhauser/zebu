@@ -1,4 +1,5 @@
 
+#include <avl/free_nodes.h>
 #include <avl/avl.h>
 
 #include <debug.h>

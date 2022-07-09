@@ -20,12 +20,17 @@ struct regex* regex_from_charset(
 	struct regex* start = new_regex(arena);
 	
 	struct regex* inside = new_regex(arena);
-	struct regex* outside = new_regex(arena);
+	
+	struct regex* outside;
+	
+	if (charset->is_complement)
+		outside = new_regex(arena);
 	
 	for (size_t i = 0, n = charset->len; i < n; i++)
 		regex_add_transition(start, arena, charset->chars[i], inside);
 	
-	regex_set_default_transition(start, outside);
+	if (charset->is_complement)
+		regex_set_default_transition(start, outside);
 	
 	if (charset->is_complement)
 		outside->is_accepting = true;
@@ -39,4 +44,14 @@ struct regex* regex_from_charset(
 	EXIT;
 	return start;
 }
+
+
+
+
+
+
+
+
+
+
 

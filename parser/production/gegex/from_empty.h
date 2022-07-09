@@ -1,7 +1,7 @@
 
 struct memory_arena;
 
-#include "../bundle.h"
+#include "../gbundle.h"
 
-struct bundle gegex_from_empty(
+struct gbundle gegex_from_empty(
 	struct memory_arena* arena);

@@ -10,7 +10,7 @@
 #include "concat.h"
 #include "or.h"
 
-struct bundle read_or_production(
+struct gbundle read_or_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
 	struct scope* scope,
@@ -18,13 +18,13 @@ struct bundle read_or_production(
 {
 	ENTER;
 	
-	struct bundle retval = read_concat_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle retval = read_concat_production(tokenizer, scratchpad, scope, lex);
 	
 	while (tokenizer->token == t_vertical_bar)
 	{
 		read_token(tokenizer, production_inside_or_machine);
 		
-		struct bundle sub = read_concat_production(tokenizer, scratchpad, scope, lex);
+		struct gbundle sub = read_concat_production(tokenizer, scratchpad, scope, lex);
 		
 		gegex_add_lambda_transition(retval.start, scratchpad, sub.start);
 		

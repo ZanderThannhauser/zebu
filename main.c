@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <debug.h>
 
 #include <avl/avl.h>
@@ -26,16 +27,15 @@
 
 int main(int argc, char* argv[])
 {
-	int error = 0;
 	ENTER;
 	
 	struct cmdln* flags = cmdln_process(argc, argv);
 	
+	struct memory_arena* scratchpad = new_memory_arena();
+	
 	struct scope* scope = new_scope();
 	
 	struct options* options = new_options();
-	
-	struct memory_arena* scratchpad = new_memory_arena();
 	
 	struct lex* lex = new_lex(flags->debug.lex);
 	
@@ -53,9 +53,9 @@ int main(int argc, char* argv[])
 	free_lex(lex);
 	#endif
 	
-	free_memory_arena(scratchpad);
-	
 	free_scope(scope);
+	
+	free_memory_arena(scratchpad);
 	
 	free_options(options);
 	
