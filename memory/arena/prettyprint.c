@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "struct.h"
@@ -105,3 +106,4 @@ void arena_prettyprint(
 
 
 
+#endif

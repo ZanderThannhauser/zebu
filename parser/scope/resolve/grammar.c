@@ -23,12 +23,12 @@ struct gegex* scope_resolve_grammar(
 	
 	dpvs(full_name);
 	
-	struct avl_node_t* node = avl_search(&this->grammar, &full_name);
+	struct avl_node_t* node = avl_search(this->grammar, &full_name);
 	
 	while (!node && (dot = rindex(full_name, '.')))
 	{
 		TODO;
-		node = avl_search(&this->grammar, &full_name);
+		node = avl_search(this->grammar, &full_name);
 	}
 	
 	*full_name_in_out = full_name;

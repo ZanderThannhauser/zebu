@@ -54,11 +54,6 @@ const enum tokenizer_state production_inside_subdefinitions_machine[number_of_to
 		[ts_start]['%'] = ts_after_percent,
 			[ts_after_percent][ANY] = ts_percent,
 	
-	// or:
-		// vertical bar:
-		[ts_start]['|'] = ts_after_vertical_bar,
-			[ts_after_vertical_bar][ANY] = ts_vertical_bar,
-	
 	// end of expression:
 		// close paren:
 		[ts_start][')'] = ts_after_cparen,

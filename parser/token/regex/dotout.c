@@ -4,6 +4,7 @@
 #include <debug.h>
 
 #include <misc/phase_counter.h>
+#include <misc/frame_counter.h>
 
 #include "state/struct.h"
 #include "dotout.h"
@@ -78,8 +79,6 @@ static void helper(FILE* out, struct regex* state)
 	
 	EXIT;
 }
-
-static unsigned frame_counter = 0;
 
 void regex_dotout(struct regex* state)
 {

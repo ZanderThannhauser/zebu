@@ -9,7 +9,7 @@
 #include "header.h"
 #include "footer.h"
 #include "struct.h"
-#include "prettyprint.h"
+/*#include "prettyprint.h"*/
 #include "sbrk.h"
 #include "malloc.h"
 
@@ -115,9 +115,9 @@ void* arena_malloc(struct memory_arena* this, size_t user_size)
 	VALGRIND_MAKE_MEM_UNDEFINED(payload,
 		block_size - sizeof(*footer) - sizeof(*header));
 	
-	#ifdef DEBUGGING
-	arena_prettyprint(this);
-	#endif
+/*	#ifdef DEBUGGING*/
+/*	arena_prettyprint(this);*/
+/*	#endif*/
 	
 	EXIT;
 	return payload;

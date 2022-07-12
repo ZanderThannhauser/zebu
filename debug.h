@@ -30,6 +30,19 @@
 	
 	#include <enums/error.h>
 	
+	#include <memory/smalloc.h>
+	#include <memory/srealloc.h>
+	
+	#include <avl/new.h>
+	#include <avl/search.h>
+	#include <avl/insert.h>
+	#include <avl/free_nodes.h>
+	#include <avl/free_tree.h>
+	
+	#include <parser/scope/named/grammar/struct.h>
+	
+	struct strset;
+	struct tokenset;
 	struct scope;
 	struct lex;
 	struct tokenizer;

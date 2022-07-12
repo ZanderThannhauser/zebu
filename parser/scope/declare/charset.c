@@ -32,9 +32,9 @@ void scope_declare_charset(
 	
 	dpvs(full_name);
 	
-	safe_avl_insert(&this->charsets, new_named_charset(full_name, charset));
+	safe_avl_insert(this->charsets, new_named_charset(full_name, charset));
 	
-	safe_avl_insert(&this->layer->charsets, new_named_name(name, full_name));
+	safe_avl_insert(this->layer->charsets, new_named_name(name, full_name));
 	
 	this->prefix.n = old_len;
 	

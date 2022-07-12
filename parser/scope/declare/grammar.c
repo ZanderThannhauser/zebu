@@ -33,9 +33,9 @@ void scope_declare_grammar(
 	
 	dpvs(full_name);
 	
-	safe_avl_insert(&this->grammar, new_named_grammar(full_name, start, end));
+	safe_avl_insert(this->grammar, new_named_grammar(full_name, start, end));
 	
-	safe_avl_insert(&this->layer->grammar, new_named_name(name, full_name));
+	safe_avl_insert(this->layer->grammar, new_named_name(name, full_name));
 	
 	this->prefix.n = old_len;
 	

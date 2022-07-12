@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/new.h>
+
 #include <memory/smalloc.h>
 
 #include <avl/init_tree.h>
@@ -22,9 +24,9 @@ struct scope* new_scope()
 	
 	struct scope* this = smalloc(sizeof(*this));
 	
-	avl_init_tree(&this->charsets, compare_named_charsets, free_named_charset);
-	avl_init_tree(&this->tokens,   compare_named_tokens,   free_named_token);
-	avl_init_tree(&this->grammar,  compare_named_grammar,  free_named_grammar);
+	this->charsets = new_avl_tree(compare_named_charsets, free_named_charset);
+	this->tokens  = new_avl_tree(compare_named_tokens,   free_named_token);
+	this->grammar = new_avl_tree(compare_named_grammar,  free_named_grammar);
 	
 	this->prefix.chars = NULL;
 	this->prefix.n = 0;

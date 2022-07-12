@@ -6,6 +6,7 @@
 #include "../tokenizer/machines/production/inside_or.h"
 
 #include "gegex/state/add_lambda_transition.h"
+#include "gegex/dotout.h"
 
 #include "concat.h"
 #include "or.h"
@@ -29,6 +30,10 @@ struct gbundle read_or_production(
 		gegex_add_lambda_transition(retval.start, scratchpad, sub.start);
 		
 		gegex_add_lambda_transition(sub.end, scratchpad, retval.end);
+		
+		#ifdef DEBUGGING
+		gegex_dotout(retval.start, retval.end);
+		#endif
 	}
 	
 	EXIT;

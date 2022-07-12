@@ -8,7 +8,7 @@
 #include "header.h"
 #include "footer.h"
 #include "struct.h"
-#include "prettyprint.h"
+/*#include "prettyprint.h"*/
 #include "dealloc.h"
 
 void arena_dealloc(struct memory_arena* this, void* ptr)
@@ -91,9 +91,9 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	
 	this->free_list.head = header;
 	
-	#ifdef DEBUGGING
-	arena_prettyprint(this);
-	#endif
+/*	#ifdef DEBUGGING*/
+/*	arena_prettyprint(this);*/
+/*	#endif*/
 	
 	EXIT;
 }

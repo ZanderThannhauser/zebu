@@ -68,7 +68,7 @@ void resolve_grammar_names(struct scope* scope)
 	
 	phase_counter++;
 	
-	for (struct avl_node_t* i = scope->grammar.head; i; i = i->next)
+	for (struct avl_node_t* i = scope->grammar->head; i; i = i->next)
 	{
 		const struct named_grammar* const ele = i->item;
 		

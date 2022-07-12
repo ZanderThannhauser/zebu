@@ -4,6 +4,7 @@
 #include "../tokenizer/struct.h"
 
 #include "gegex/state/add_lambda_transition.h"
+#include "gegex/dotout.h"
 
 #include "subdefinitions.h"
 #include "concat.h"
@@ -34,6 +35,10 @@ struct gbundle read_concat_production(
 			gegex_add_lambda_transition(left.end, scratchpad, right.start);
 			
 			retval = (struct gbundle) {left.start, right.end};
+			
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		

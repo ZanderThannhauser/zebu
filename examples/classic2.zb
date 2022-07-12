@@ -33,7 +33,7 @@
 %contextless singleline_comment: /"//" [^'\n']* "\n"/;
 %contextless multiline_comment: "/*" skip ( multiline_comment skip )* "*/";
 
-skip: /!(.*"*/") & !(.*"/*")/ ;
+`skip`: !(.*"*/") & !(.*"/*");
 
 %start start: /['x', 'y', 'z']/ ':' /['w', 'y', 'x']/ {
 	printf("'%c':'%c'\n", $1, $3);

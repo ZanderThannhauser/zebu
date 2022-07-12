@@ -15,7 +15,7 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 {
 	ENTER;
 	
-	struct avl_node_t* node = avl_search(&this->layer->charsets, &name);
+	struct avl_node_t* node = avl_search(this->layer->charsets, &name);
 	
 	if (!node)
 	{
@@ -27,7 +27,7 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 	
 	dpvs(nname->value);
 	
-	node = avl_search(&this->charsets, &nname->value);
+	node = avl_search(this->charsets, &nname->value);
 	
 	assert(node);
 	

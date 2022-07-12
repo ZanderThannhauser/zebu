@@ -50,7 +50,6 @@ void mains_parse(
 	resolve_grammar_names(scope);
 	
 	EXIT;
-	// return (options, scope, scratchpad);
 }
 
 

@@ -1,4 +1,7 @@
 
+#ifndef STRUCT_NAMED_GRAMMAR_H
+#define STRUCT_NAMED_GRAMMAR_H
+
 struct named_grammar
 {
 	char* name;
@@ -6,3 +9,4 @@ struct named_grammar
 	struct gegex* end;
 };
 
+#endif

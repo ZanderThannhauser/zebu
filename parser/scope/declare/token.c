@@ -33,9 +33,9 @@ void scope_declare_token(
 	
 	dpvs(full_name);
 	
-	safe_avl_insert(&this->tokens, new_named_token(full_name, token));
+	safe_avl_insert(this->tokens, new_named_token(full_name, token));
 	
-	safe_avl_insert(&this->layer->tokens, new_named_name(name, full_name));
+	safe_avl_insert(this->layer->tokens, new_named_name(name, full_name));
 	
 	this->prefix.n = old_len;
 	

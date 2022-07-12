@@ -12,6 +12,7 @@
 
 #include "../charset/root.h"
 
+#include "regex/dotout.h"
 #include "regex/clone.h"
 #include "regex/from_dot.h"
 #include "regex/from_charset.h"
@@ -43,6 +44,10 @@ struct rbundle read_highest_token_expression(
 				.is_nfa = false,
 				.dfa = dfa,
 			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.dfa);
+			#endif
 			break;
 		}
 		
@@ -58,6 +63,10 @@ struct rbundle read_highest_token_expression(
 				.is_nfa = false,
 				.dfa = start,
 			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.dfa);
+			#endif
 			break;
 		}
 		
@@ -81,6 +90,10 @@ struct rbundle read_highest_token_expression(
 				.is_nfa = false,
 				.dfa = regex_from_charset(charset, scratchpad),
 			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.dfa);
+			#endif
 			break;
 		}
 		
@@ -106,6 +119,10 @@ struct rbundle read_highest_token_expression(
 				.is_nfa = false,
 				.dfa = regex_from_dot(scratchpad),
 			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.dfa);
+			#endif
 			break;
 		}
 		

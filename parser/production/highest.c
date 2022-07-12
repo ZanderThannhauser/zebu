@@ -36,6 +36,7 @@
 #include "gegex/from_token.h"
 #include "gegex/from_empty.h"
 #include "gegex/from_subgrammar.h"
+#include "gegex/dotout.h"
 
 #include "root.h"
 #include "highest.h"
@@ -91,6 +92,10 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		
@@ -116,6 +121,9 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		
@@ -148,6 +156,9 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		
@@ -194,6 +205,10 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		
@@ -225,15 +240,9 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
-			break;
-		}
-		
-		case t_vertical_bar:
-		case t_ampersand:
-		case t_cparen:
-		{
-			retval = gegex_from_empty(
-				/* scratchpad: */ scratchpad);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		}
 		

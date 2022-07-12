@@ -15,6 +15,7 @@
 #include <parser/mains_parse.h>
 #include <parser/options/new.h>
 #include <parser/options/free.h>
+#include <parser/scope/struct.h>
 #include <parser/scope/new.h>
 #include <parser/scope/free.h>
 
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	yacc();
+	yacc(scope->grammar);
 	
 	TODO;
 	

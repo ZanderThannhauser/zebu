@@ -6,6 +6,7 @@
 #include "../tokenizer/machines/production/after_suffix.h"
 
 #include "gegex/state/add_lambda_transition.h"
+#include "gegex/dotout.h"
 
 #include "highest.h"
 #include "suffixes.h"
@@ -29,6 +30,9 @@ struct gbundle read_suffixes_production(
 			dputs("t_plus");
 			gegex_add_lambda_transition(retval.end, scratchpad, retval.start);
 			read_token(tokenizer, production_after_suffix_machine);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		
 		case t_asterisk:
@@ -36,12 +40,18 @@ struct gbundle read_suffixes_production(
 			gegex_add_lambda_transition(retval.end, scratchpad, retval.start);
 			gegex_add_lambda_transition(retval.start, scratchpad, retval.end);
 			read_token(tokenizer, production_after_suffix_machine);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		
 		case t_qmark:
 			dputs("t_qmark");
 			gegex_add_lambda_transition(retval.start, scratchpad, retval.end);
 			read_token(tokenizer, production_after_suffix_machine);
+			#ifdef DEBUGGING
+			gegex_dotout(retval.start, retval.end);
+			#endif
 			break;
 		
 		default:

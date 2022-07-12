@@ -66,31 +66,7 @@ static struct regex* clone_helper(
 		
 		safe_avl_insert(mappings, new_mapping(old, new));
 		
-		// for each transition:
-		size_t i, n;
-		for (i = 0, n = old->transitions.n; i < n; i++)
-		{
-			struct transition* const ele = old->transitions.data[i];
-			
-			dpv(ele->value);
-			dpv(ele->to);
-			
-			struct regex* cloneme = regex_ll_find(unique_nodes, ele->to);
-			
-			dpv(cloneme);
-			
-			regex_add_transition(
-				/* from: */ new,
-				/* arena */ arena,
-				/* value: */ ele->value,
-				/* to */ clone_helper(
-					/* mappings: */ mappings,
-					/* arena: */ arena,
-					/* unique_nodes: */ unique_nodes,
-					/* in: */ cloneme));
-		}
-		
-		// for default transition:
+		// calculate default transition first,
 		if (old->default_transition_to)
 		{
 			struct regex* cloneme = regex_ll_find(unique_nodes, old->default_transition_to);
@@ -104,6 +80,34 @@ static struct regex* clone_helper(
 					/* arena: */ arena,
 					/* unique_nodes: */ unique_nodes,
 					/* in: */ cloneme));
+		}
+		
+		// for each transition:
+		size_t i, n;
+		for (i = 0, n = old->transitions.n; i < n; i++)
+		{
+			struct transition* const ele = old->transitions.data[i];
+			
+			dpv(ele->value);
+			dpv(ele->to);
+			
+			struct regex* cloneme = regex_ll_find(unique_nodes, ele->to);
+			
+			dpv(cloneme);
+			
+			struct regex* to = clone_helper(
+				/* mappings: */ mappings,
+				/* arena: */ arena,
+				/* unique_nodes: */ unique_nodes,
+				/* in: */ cloneme);
+			
+			// don't add the transition if the default already covers it
+			if (to != new->default_transition_to)
+				regex_add_transition(
+					/* from: */ new,
+					/* arena */ arena,
+					/* value: */ ele->value,
+					/* to: */ to);
 		}
 		
 		EXIT;

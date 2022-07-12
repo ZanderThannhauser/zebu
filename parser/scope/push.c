@@ -1,5 +1,5 @@
 
-#include <avl/init_tree.h>
+#include <avl/new.h>
 
 #include <debug.h>
 
@@ -19,9 +19,9 @@ void scope_push(struct scope* this)
 	
 	struct scope_layer* new = smalloc(sizeof(*new));
 	
-	avl_init_tree(&new->charsets, compare_named_names, free_named_name);
-	avl_init_tree(&new->tokens,   compare_named_names, free_named_name);
-	avl_init_tree(&new->grammar,  compare_named_names, free_named_name);
+	new->charsets = new_avl_tree(compare_named_names, free_named_name);
+	new->tokens = new_avl_tree(compare_named_names, free_named_name);
+	new->grammar = new_avl_tree(compare_named_names, free_named_name);
 	
 	new->sublayer_counter = 0;
 	

@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "state/struct.h"
@@ -21,3 +22,4 @@ struct gbundle gegex_from_empty(
 	return (struct gbundle) {start, end};
 }
 
+#endif
