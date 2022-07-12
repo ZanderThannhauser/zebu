@@ -1,6 +1,6 @@
 
 struct options
 {
-	char* start_rule;
+	char* start;
 };
 

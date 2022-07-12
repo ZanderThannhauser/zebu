@@ -10,7 +10,9 @@
 
 /*#include "scope/new.h"*/
 
-/*#include "options/new.h"*/
+#include <strset/add.h>
+
+#include "options/struct.h"
 
 #include "pragma_once/new.h"
 #include "pragma_once/free.h"
@@ -42,6 +44,14 @@ void mains_parse(
 		/* path: */ dup,
 		/* lex: */ lex
 	);
+	
+	if (!options->start)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	dpvs(options->start);
 	
 	free_pragma_once(pragma_once);
 	

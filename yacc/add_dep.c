@@ -1,6 +1,12 @@
 
-#if 0
-static void add_dep(struct avl_tree_t* tree, const char* they, const char* need_me)
+#include <debug.h>
+
+#include <named/strset/struct.h>
+#include <named/strset/new.h>
+
+#include "add_dep.h"
+
+void add_dep(struct avl_tree_t* tree, const char* they, const char* need_me)
 {
 	ENTER;
 	
@@ -23,4 +29,3 @@ static void add_dep(struct avl_tree_t* tree, const char* they, const char* need_
 	EXIT;
 }
 
-#endif

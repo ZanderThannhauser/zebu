@@ -10,7 +10,7 @@ struct options* new_options()
 {
 	struct options* this = smalloc(sizeof(*this));
 	
-	this->start_rule = NULL;
+	this->start = NULL;
 	
 	return this;
 }

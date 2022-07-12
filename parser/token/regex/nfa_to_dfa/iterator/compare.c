@@ -6,14 +6,16 @@
 #include "struct.h"
 #include "compare.h"
 
-int compare_iterators(struct iterator* a, struct iterator* b)
+int compare_iterators(const void* a, const void* b)
 {
-	if (a->moving < a->end)
+	const struct iterator* A = a, *B = b;
+	
+	if (A->moving < A->end)
 	{
-		if (b->moving < b->end)
+		if (B->moving < B->end)
 		{
-			struct regex* const state_a = a->moving[0]->to;
-			struct regex* const state_b = b->moving[0]->to;
+			struct regex* const state_a = A->moving[0]->to;
+			struct regex* const state_b = B->moving[0]->to;
 			
 			if (state_a > state_b)
 				return 1;
@@ -29,7 +31,7 @@ int compare_iterators(struct iterator* a, struct iterator* b)
 	}
 	else
 	{
-		if (b->moving < b->end)
+		if (B->moving < B->end)
 		{
 			TODO;
 		}
@@ -39,4 +41,12 @@ int compare_iterators(struct iterator* a, struct iterator* b)
 		}
 	}
 }
+
+
+
+
+
+
+
+
 

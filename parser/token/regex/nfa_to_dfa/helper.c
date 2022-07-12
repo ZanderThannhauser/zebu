@@ -14,14 +14,17 @@
 #include "add_lamda_states.h"
 #include "helper.h"
 
-#include "heap/struct.h"
-#include "heap/new.h"
-#include "heap/push.h"
-#include "heap/pop.h"
-#include "heap/free.h"
+/*#include <heap/struct.h>*/
+#include <heap/new.h>
+#include <heap/struct.h>
+#include <heap/is_nonempty.h>
+#include <heap/push.h>
+#include <heap/pop.h>
+#include <heap/free.h>
 
 #include "iterator/struct.h"
 #include "iterator/new.h"
+#include "iterator/compare.h"
 #include "iterator/free.h"
 
 #include "stateset/struct.h"
@@ -77,7 +80,7 @@ struct regex* nfa_to_dfa_helper(
 		}
 		
 		// create heap:
-		struct heap* heap = new_heap();
+		struct heap* heap = new_heap(compare_iterators);
 		
 		// create default iterator list:
 		struct {
@@ -128,15 +131,15 @@ struct regex* nfa_to_dfa_helper(
 		
 		unsigned round = 0;
 		
-		while (heap->n)
+		while (is_heap_nonempty(heap))
 		{
-			unsigned min_value = heap->data[0]->moving[0]->value;
+			unsigned min_value = heap->datai[0]->moving[0]->value;
 			
 			dpv(min_value);
 			
 			struct stateset* substateset = new_stateset();
 			
-			while (heap->n && heap->data[0]->moving[0]->value == min_value)
+			while (heap->n && heap->datai[0]->moving[0]->value == min_value)
 			{
 				struct iterator* iter = heap_pop(heap);
 				

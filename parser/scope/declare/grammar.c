@@ -9,9 +9,9 @@
 
 #include "../private/append_prefix.h"
 
-#include "../named/grammar/new.h"
+#include <named/grammar/new.h>
 
-#include "../named/name/new.h"
+#include <named/name/new.h>
 
 #include "grammar.h"
 

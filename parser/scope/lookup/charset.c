@@ -5,9 +5,9 @@
 
 #include "../struct.h"
 
-#include "../named/name/struct.h"
+#include <named/name/struct.h>
 
-#include "../named/charset/struct.h"
+#include <named/charset/struct.h>
 
 #include "charset.h"
 

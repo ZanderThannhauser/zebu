@@ -1,18 +1,16 @@
 
 struct shared
 {
-	// todo = [];
+	struct heap* todo;
 	
-	// done = set();
+	struct avl_tree_t* done;
 	
-	// struct {
-		// dict<const char*, tokenset*> lookup;
-		// dict<const char*, strset*> dependant_of, dependant_on;
-	// } firsts, lookaheads;
+	struct {
+		struct avl_tree_t *sets; // named_tokensets
+		struct avl_tree_t *dependant_of, *dependant_on; // named_strsets
+	} firsts;
 	
 	// FILE* dotout_mk;
 	
-	// unsigned frame_counter;
-	
-	// struct avl_tree_t* grammar;
+	struct avl_tree_t* grammars;
 };

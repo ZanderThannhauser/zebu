@@ -9,9 +9,9 @@
 
 #include "../private/append_prefix.h"
 
-#include "../named/charset/new.h"
+#include <named/charset/new.h>
 
-#include "../named/name/new.h"
+#include <named/name/new.h>
 
 #include "charset.h"
 

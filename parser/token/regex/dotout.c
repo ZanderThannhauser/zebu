@@ -22,9 +22,9 @@ static void helper(FILE* out, struct regex* state)
 		fprintf(out, ""
 			"\"%p\" [" "\n"
 				"\t" "shape = %s;" "\n"
-				"\t" "label = \"%p\";" "\n"
+				"\t" "label = \"\";" "\n"
 			"]" "\n"
-		"", state, state->is_accepting ? "doublecircle" : "circle", state);
+		"", state, state->is_accepting ? "doublecircle" : "circle");
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)

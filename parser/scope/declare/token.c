@@ -10,9 +10,9 @@
 
 #include "../private/append_prefix.h"
 
-#include "../named/token/new.h"
+#include <named/token/new.h>
 
-#include "../named/name/new.h"
+#include <named/name/new.h>
 
 #include "token.h"
 

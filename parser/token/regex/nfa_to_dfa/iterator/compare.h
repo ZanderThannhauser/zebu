@@ -1,4 +1,2 @@
 
-struct iterator;
-
-int compare_iterators(struct iterator* a, struct iterator* b);
+int compare_iterators(const void* a, const void* b);

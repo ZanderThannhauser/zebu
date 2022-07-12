@@ -7,7 +7,7 @@
 
 #include "../struct.h"
 
-#include "../named/grammar/struct.h"
+#include <named/grammar/struct.h>
 
 #include "grammar.h"
 

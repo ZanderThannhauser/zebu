@@ -9,16 +9,16 @@
 #include <memory/arena/dealloc.h>
 
 #include <misc/phase_counter.h>
+#include <named/grammar/struct.h>
 
 #include "scope/struct.h"
-#include "scope/named/grammar/struct.h"
 #include "scope/resolve/grammar.h"
 
 #include "production/gegex/state/struct.h"
 
 #include "resolve_grammar_names.h"
 
-static void fix(
+static void resolve(
 	struct gegex* state,
 	struct scope* scope)
 {
@@ -33,7 +33,7 @@ static void fix(
 		for (i = 0, n = state->transitions.n; i < n; i++)
 		{
 			const struct transition* const ele = state->transitions.data[i];
-			fix(ele->to, scope);
+			resolve(ele->to, scope);
 		}
 		
 		// grammar_transitions:
@@ -49,13 +49,13 @@ static void fix(
 			
 			dpv(ele->start);
 			
-			fix(ele->to, scope);
+			resolve(ele->to, scope);
 		}
 		
 		// lambda_transitions:
 		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
-			fix(state->lambda_transitions.data[i], scope);
+			resolve(state->lambda_transitions.data[i], scope);
 		}
 	}
 	
@@ -74,7 +74,7 @@ void resolve_grammar_names(struct scope* scope)
 		
 		dpvs(ele->name);
 		
-		fix(ele->start, scope);
+		resolve(ele->start, scope);
 	}
 	
 	EXIT;

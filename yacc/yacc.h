@@ -1,1 +1,4 @@
-void yacc(struct avl_tree_t* grammar);
+
+void yacc(
+	const char* start,
+	struct avl_tree_t* grammar);

@@ -36,11 +36,25 @@
 	#include <avl/new.h>
 	#include <avl/search.h>
 	#include <avl/insert.h>
+	#include <avl/safe_insert.h>
 	#include <avl/free_nodes.h>
 	#include <avl/free_tree.h>
 	
-	#include <parser/scope/named/grammar/struct.h>
+	#include <strset/struct.h>
+	#include <strset/new.h>
+	#include <strset/add.h>
 	
+	#include <named/tokenset/struct.h>
+	#include <named/grammar/struct.h>
+	
+	#include <tokenset/print.h>
+	
+/*	#include <parser/scope/named/grammar/struct.h>*/
+	
+	struct shared;
+	struct task;
+	struct heap;
+	struct ptrset;
 	struct strset;
 	struct tokenset;
 	struct scope;

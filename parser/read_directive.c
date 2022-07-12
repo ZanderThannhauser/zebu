@@ -33,11 +33,15 @@ void read_directive(
 	{
 		read_token(tokenizer, identifier_machine);
 		
-		free(options->start_rule);
+		if (options->start)
+		{
+			TODO;
+			exit(1);
+		}
 		
-		options->start_rule = sstrdup(tokenizer->tokenchars.chars);
+		options->start = sstrdup(tokenizer->tokenchars.chars);
 		
-		dpvs(options->start_rule);
+		dpvs(options->start);
 		
 		read_token(tokenizer, semicolon_machine);
 	}

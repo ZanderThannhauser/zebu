@@ -1,46 +1,58 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+/*#include <misc/phase_counter.h>*/
 
-#include <parser/production/gegex/state/struct.h>
+/*#include <parser/production/gegex/state/struct.h>*/
 
-#include "strset/new.h"
-#include "strset/is_empty.h"
-#include "strset/pop.h"
-#include "strset/add.h"
-#include "strset/print.h"
-#include "strset/foreach.h"
-#include "strset/update.h"
-#include "strset/free.h"
+/*#include "strset/new.h"*/
+/*#include "strset/is_empty.h"*/
+/*#include "strset/pop.h"*/
+/*#include "strset/add.h"*/
+/*#include "strset/print.h"*/
+#include <avl/foreach.h>
+/*#include "strset/update.h"*/
+/*#include "strset/free.h"*/
 
-#include "tokenset/new.h"
-#include "tokenset/add.h"
-#include "tokenset/print.h"
-#include "tokenset/update.h"
-#include "tokenset/free.h"
+/*#include "tokenset/new.h"*/
+/*#include "tokenset/add.h"*/
+/*#include "tokenset/print.h"*/
+/*#include "tokenset/update.h"*/
+/*#include "tokenset/free.h"*/
 
+#include <named/grammar/struct.h>
+
+#include <tokenset/new.h>
+
+#include <named/tokenset/new.h>
+#include <named/tokenset/compare.h>
+#include <named/tokenset/free.h>
+
+#include <named/strset/new.h>
+#include <named/strset/compare.h>
+#include <named/strset/free.h>
+
+#include "task/explore_firsts/new.h"
+#include "task/compare.h"
+#include "task/process.h"
+#include "task/dotout.h"
+#include "task/free.h"
+
+#include "heap/new.h"
+#include "heap/pop.h"
+#include "heap/is_nonempty.h"
+#include "heap/push.h"
+
+#include "shared.h"
 #include "yacc.h"
 
-void yacc(struct avl_tree_t* grammar)
+void yacc(
+	const char* start,
+	struct avl_tree_t* grammars)
 {
 	ENTER;
 	
-	// explore_first_task::process(grammar, node):
-		// tuple = ("explore-first", node);
-		// if tuple in done: return set();
-		// done.add(tuple);
-		// todo = set();
-		// first = firsts.lookup.setdefault(grammar, set());
-		// first.update(t.value for t in node->transitions)
-		// for g in node->grammars:
-			// firsts.dependant_on.setdefault(grammar, set()).add(g->name);
-			// firsts.dependant_of.setdefault(g->name, set()).add(grammar);
-		// for l in node->lambdas:
-			// todo.add(new explore_first_task(l));
-		// return todo;
-	
-	// percolate_first_task(grammar):
+	// percolate_firsts_task(grammar):
 		// tuple = ("percolate-first", node);
 		// if tuple in done: return set();
 		// done.add(tuple);
@@ -54,7 +66,7 @@ void yacc(struct avl_tree_t* grammar)
 				// todo.add(percolate_first_task(dep));
 		// return todo;
 	
-	// explore_lookahead_task::process(grammar, node, end, invocation = None):
+	// explore_lookaheads_task::process(grammar, node, end, invocation = None):
 		// tuple = ("explore-lookahead", node, invocation);
 		// if tuple in done: return set();
 		// done.add(tuple);
@@ -75,7 +87,7 @@ void yacc(struct avl_tree_t* grammar)
 			// todo.add(new explore_first_task(l, invocation = invocation));
 		// return todo;
 	
-	// percolate_lookahead_task(grammar):
+	// percolate_lookaheads_task(grammar):
 		// tuple = ("percolate-lookahead", node);
 		// if tuple in done: return set();
 		// before = lookaheads[grammar];
@@ -133,15 +145,42 @@ void yacc(struct avl_tree_t* grammar)
 			// state.add_transition(next, substate);
 			// todo.add(nfa_to_dfa_task(subnodes));
 	
-	// or maybe run the explorers on the start grammar?
-		// which launches sub explorers for the subgrammars?
+	struct shared* shared = smalloc(sizeof(*shared));
 	
-	// for g in grammar:
-		// heapush(heap,       explore_first_task(g->start));
-		// heapush(heap,     percolate_first_task(g->start));
-		// heapush(heap,   explore_lookahead_task(g->start, g->end));
-		// heapush(heap, percolate_lookahead_task(g->start));
-		// heapush(heap,      add_reductions_task(g->end));
+	struct heap* todo = new_heap(compare_tasks);
+	
+	shared->done = new_avl_tree(compare_tasks, free_task);
+	shared->grammars = grammars;
+	shared->todo = todo;
+	
+	shared->firsts.sets = new_avl_tree(compare_named_tokensets, free_named_tokenset);
+	shared->firsts.dependant_of = new_avl_tree(compare_named_strsets, free_named_strset);
+	shared->firsts.dependant_on = new_avl_tree(compare_named_strsets, free_named_strset);
+	
+	avl_tree_foreach(grammars, ({
+		void run (const void* item) {
+			const struct named_grammar* ng = item;
+			
+			avl_insert(shared->firsts.sets, new_named_tokenset(ng->name, new_tokenset()));
+			
+			heap_push(todo, new_explore_firsts_task(ng->name, ng->start));
+			
+			// heapush(heap,       explore_first_task(g->start));
+			// heapush(heap,     percolate_first_task(g->start));
+			// heapush(heap,   explore_lookahead_task(g->start, g->end));
+			// heapush(heap, percolate_lookahead_task(g->start));
+			// heapush(heap,      add_reductions_task(g->end));
+		}
+		run;
+	}));
+	
+	while (is_heap_nonempty(todo))
+	{
+		struct task* task = heap_pop(todo);
+		task_process(task, shared);
+		task_dotout(task, shared);
+		free_task(task);
+	}
 	
 	// heapush(heap, nfa_to_dfa_task(add_lambda_transitions(start->start)));
 	TODO;
@@ -149,20 +188,23 @@ void yacc(struct avl_tree_t* grammar)
 	// dfa-simplify
 	TODO;
 	
-	// while todo:
-		// runme = heappop(todo);
-		// more = runme.process();
-		// runme.dotout();
-		// for m in more:
-			// heappush(todo, more);
+/*	avl_free_tree(firsts);*/
 	
-	avl_free_tree(firsts);
-	
-	avl_free_tree(lookaheads);
+/*	avl_free_tree(lookaheads);*/
 	
 	EXIT;
 	// return start, machines
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

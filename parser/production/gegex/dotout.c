@@ -22,9 +22,9 @@ static void helper(FILE* out, struct gegex* state)
 		fprintf(out, ""
 			"\"%p\" [" "\n"
 				"\t" "shape = circle;" "\n"
-				"\t" "label = \"%p\";" "\n"
+				"\t" "label = \"\";" "\n"
 			"]" "\n"
-		"", state, state);
+		"", state);
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)

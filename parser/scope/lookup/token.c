@@ -5,9 +5,9 @@
 
 #include "../struct.h"
 
-#include "../named/name/struct.h"
+#include <named/name/struct.h>
 
-#include "../named/token/struct.h"
+#include <named/token/struct.h>
 
 #include "token.h"
 

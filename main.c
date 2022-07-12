@@ -13,6 +13,7 @@
 #include <lex/free.h>
 
 #include <parser/mains_parse.h>
+#include <parser/options/struct.h>
 #include <parser/options/new.h>
 #include <parser/options/free.h>
 #include <parser/scope/struct.h>
@@ -42,7 +43,7 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	yacc(scope->grammar);
+	yacc(options->start, scope->grammar);
 	
 	TODO;
 	
