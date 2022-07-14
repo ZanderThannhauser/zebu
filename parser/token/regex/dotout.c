@@ -100,9 +100,10 @@ void regex_dotout(struct regex* state)
 	
 	fprintf(out, "digraph {" "\n");
 	
-	fprintf(out, "\t" "edge [minlen = 2];" "\n");
-	fprintf(out, "\t" "overlap = false;" "\n");
-	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");
+/*	fprintf(out, "\t" "edge [minlen = 2];" "\n");*/
+/*	fprintf(out, "\t" "overlap = false;" "\n");*/
+/*	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");*/
+	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
 	

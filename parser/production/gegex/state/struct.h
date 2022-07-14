@@ -14,12 +14,20 @@ struct gegex
 	
 	struct {
 		struct gtransition {
-			char* grammar;
+			char* grammar; // will arena-free
 			struct gegex* start;
 			struct gegex* to;
 		}** data;
 		size_t n, cap;
 	} grammar_transitions;
+	
+	struct {
+		struct rtransition {
+			unsigned token;
+			char* reduce_as; // will arena-free
+		}** data;
+		size_t n, cap;
+	} reduction_transitions;
 	
 	struct {
 		struct gegex** data;

@@ -63,6 +63,8 @@ void real_dpvsn(const char* e, const char* s, size_t n)
 	char str[5] = {};
 	
 	printf("%*s%s == \"", debug_depth, "", e);
+	if (!s)
+		s = "(null)";
 	while (n-- && *s)
 	{
 		escape(str, *s++);

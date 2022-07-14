@@ -10,6 +10,9 @@ int compare_explore_firsts_tasks(const struct task* a, const struct task* b)
 	const struct explore_firsts_task* A = (void*) a, *B = (void*) b;
 	ENTER;
 	
+	assert(a->kind == tk_explore_firsts);
+	assert(b->kind == tk_explore_firsts);
+	
 	cmp = strcmp(A->name, B->name);
 	
 	if (!cmp)

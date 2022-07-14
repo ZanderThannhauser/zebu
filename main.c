@@ -43,9 +43,9 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	yacc(options->start, scope->grammar);
+	yacc(scope->grammar, scratchpad);
 	
-	TODO;
+/*	TODO;*/
 	
 	#if 0
 	out(LRP, flags->output_path);

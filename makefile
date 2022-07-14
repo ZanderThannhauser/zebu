@@ -93,7 +93,7 @@ $(buildprefix)/zebu: $(objs)
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 dot/%.png: dot/%.dot
-	neato -Tpng < $< > $@
+	dot -Tpng < $< > $@
 
 clean:
 	for l in $$(cat .gitignore); do rm -rvf $$l; done

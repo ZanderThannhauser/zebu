@@ -1,7 +1,12 @@
 
-#if 0
+#include <debug.h>
 
-static struct strset* get_deps(struct avl_tree_t* tree, const char* name)
+#include <named/strset/struct.h>
+#include <named/strset/new.h>
+
+#include "get_deps.h"
+
+struct strset* get_deps(struct avl_tree_t* tree, const char* name)
 {
 	struct strset* retval;
 	ENTER;
@@ -25,4 +30,3 @@ static struct strset* get_deps(struct avl_tree_t* tree, const char* name)
 	return retval;
 }
 
-#endif

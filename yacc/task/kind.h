@@ -5,6 +5,16 @@
 enum task_kind
 {
 	tk_explore_firsts,
+	
+	tk_percolate_firsts,
+	
+	tk_explore_lookaheads,
+	
+	tk_percolate_lookaheads,
+	
+	tk_add_reductions,
+	
+	tk_lambda_subgrammars,
 };
 
 #endif

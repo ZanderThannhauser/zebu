@@ -37,7 +37,9 @@ void tokenset_add(struct tokenset* this, unsigned token)
 		}
 		else
 		{
-			TODO;
+			ddprintf("token is already in set!\n");
+			EXIT;
+			return;
 		}
 	}
 	
@@ -45,4 +47,21 @@ void tokenset_add(struct tokenset* this, unsigned token)
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

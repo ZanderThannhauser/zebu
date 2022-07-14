@@ -12,6 +12,10 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	unsigned i = 0, n = this->n;
 	unsigned j = 0, m = them->n;
 	
+	unsigned  new_cap = this->n + them->n;
+	unsigned  new_n = 0;
+	unsigned* new_data = smalloc(sizeof(*new_data) * new_cap);
+	
 	while (i < n && j < m)
 	{
 		unsigned a = this->data[i], b = them->data[j];
@@ -20,37 +24,35 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 		dpv(b);
 		
 		if (a < b)
-		{
-			i++;
-		}
+			new_data[new_n++] = a, i++;
 		else if (b < a)
-		{
-			TODO;
-		}
+			new_data[new_n++] = them->data[j++], changed = true;
 		else
-		{
-			TODO;
-		}
+			new_data[new_n++] = a, i++, j++;
 	}
 	
-	while (j < m)
+	while (i < n) new_data[new_n++] = this->data[i++];
+	
+	if (j < m)
 	{
-		unsigned b = them->data[j++];
-		
-		dpv(b);
-		
-		if (this->n + 1 > this->cap)
-		{
-			this->cap = this->cap << 1 ?: 1;
-			this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
-		}
-		
-		this->data[this->n++] = b;
-		
 		changed = true;
+		do new_data[new_n++] = them->data[j++]; while (j < m);
 	}
 	
 	dpvb(changed);
+	
+	if (changed)
+	{
+		free(this->data);
+		
+		this->data = new_data;
+		this->n = new_n;
+		this->cap = new_cap;
+	}
+	else
+	{
+		free(new_data);
+	}
 	
 	EXIT;
 	return changed;

@@ -9,6 +9,7 @@
 
 #include "../../shared.h"
 #include "../../add_dep.h"
+#include "../../lookup_tokenset.h"
 
 #include "struct.h"
 #include "new.h"
@@ -23,14 +24,7 @@ void explore_firsts_task_process(struct task* super, struct shared* shared)
 	
 	if (!avl_search(shared->done, this))
 	{
-		// first = firsts.lookup.setdefault(grammar, set());
-		struct tokenset* first;
-		{
-			struct avl_node_t* node = avl_search(shared->firsts.sets, &this->name);
-			assert(node);
-			struct named_tokenset* nt = node->item;
-			first = nt->tokenset;
-		}
+		struct tokenset* first = lookup_tokenset(shared->firsts.sets, this->name);
 		
 		tokenset_print(first);
 		
@@ -52,12 +46,12 @@ void explore_firsts_task_process(struct task* super, struct shared* shared)
 		
 		for (i = 0, n = this->node->lambda_transitions.n; i < n; i++)
 		{
-			heap_push(shared->todo, new_explore_firsts_task(
-				this->name, this->node->lambda_transitions.data[i]));
+			struct gegex* to = this->node->lambda_transitions.data[i];
+			
+			heap_push(shared->todo, new_explore_firsts_task(this->name, to));
 		}
 		
 		super->refcount++;
-		
 		safe_avl_insert(shared->done, this);
 	}
 	

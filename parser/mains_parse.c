@@ -19,6 +19,7 @@
 
 #include "resolve_grammar_names.h"
 #include "recursive_parse.h"
+#include "create_start_rule.h"
 #include "mains_parse.h"
 
 void mains_parse(
@@ -51,7 +52,7 @@ void mains_parse(
 		exit(1);
 	}
 	
-	dpvs(options->start);
+	create_start_rule(scope, scratchpad, options->start);
 	
 	free_pragma_once(pragma_once);
 	

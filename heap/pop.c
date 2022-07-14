@@ -19,13 +19,17 @@ void* heap_pop(struct heap* this)
 		
 		data[0] = data[this->n];
 		
-		again: l = 2 * i + 1, r = l + 1, smallest = i;
+		again: l = 2 * i + 1, r = 2 * i + 2, smallest = i;
+		
+		dpv(i);
 		
 		if (l < this->n && this->cmp(data[l], data[i]) < 0)
 			smallest = l;
 		
 		if (r < this->n && this->cmp(data[r], data[smallest]) < 0)
 			smallest = r;
+		
+		dpv(smallest);
 		
 		if (smallest != i)
 		{

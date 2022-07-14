@@ -23,6 +23,7 @@
 #include <named/grammar/struct.h>
 
 #include <tokenset/new.h>
+#include <tokenset/add.h>
 
 #include <named/tokenset/new.h>
 #include <named/tokenset/compare.h>
@@ -33,6 +34,11 @@
 #include <named/strset/free.h>
 
 #include "task/explore_firsts/new.h"
+#include "task/percolate_firsts/new.h"
+#include "task/explore_lookaheads/new.h"
+#include "task/percolate_lookaheads/new.h"
+#include "task/add_reductions/new.h"
+
 #include "task/compare.h"
 #include "task/process.h"
 #include "task/dotout.h"
@@ -47,58 +53,10 @@
 #include "yacc.h"
 
 void yacc(
-	const char* start,
-	struct avl_tree_t* grammars)
+	struct avl_tree_t* grammars,
+	struct memory_arena* scratchpad)
 {
 	ENTER;
-	
-	// percolate_firsts_task(grammar):
-		// tuple = ("percolate-first", node);
-		// if tuple in done: return set();
-		// done.add(tuple);
-		// before = firsts[grammar];
-		// after = before.copy();
-		// for dep in firsts.dependant_on[grammar]:
-			// after.update(firsts[dep]);
-		// todo = set();
-		// if before != after:
-			// for dep in firsts.dependant_of[grammar]:
-				// todo.add(percolate_first_task(dep));
-		// return todo;
-	
-	// explore_lookaheads_task::process(grammar, node, end, invocation = None):
-		// tuple = ("explore-lookahead", node, invocation);
-		// if tuple in done: return set();
-		// done.add(tuple);
-		// todo = set();
-		// if node == end:
-			// lookaheads.dependant_on.setdefault(invocation, set()).add(grammar);
-			// lookaheads.dependant_of.setdefault(grammar, set()).add(invocation);
-		// for t in node->transitions:
-			// if invocation:
-				// invocation.add(t->value);
-			// todo.add(new explore_lookahead_task(t->to, invocation = None));
-		// for g in node->grammars:
-			// if invocation:
-				// invocation.update(firsts[g]);
-			// todo.add(new explore_lookahead_task(g->to, invocation = lookaheads[g]));
-			// todo.add(new lambda_subgrammars_task(node));
-		// for l in node->lambdas:
-			// todo.add(new explore_first_task(l, invocation = invocation));
-		// return todo;
-	
-	// percolate_lookaheads_task(grammar):
-		// tuple = ("percolate-lookahead", node);
-		// if tuple in done: return set();
-		// before = lookaheads[grammar];
-		// after = before.copy();
-		// for dep in lookaheads.dependant_on[grammar]:
-			// after.update(lookaheads[dep]);
-		// todo = set();
-		// if before != after:
-			// for dep in lookaheads.dependant_of[grammar]:
-				// todo.add(percolate_lookahead_task(dep));
-		// return todo;
 	
 	// add_reductions_task(name, end):
 		// reduce = new_gegex();
@@ -124,14 +82,24 @@ void yacc(
 		// acceptable_tokens = set();
 		// for n in nodes:
 			// acceptable_tokens.update(t.value for t in n.transitions)
-		// tokenizer_lookup[state], patches = get_tokenizer_id(acceptable_tokens);
+			// acceptable_tokens.update(t.value for t in n.reduction_transitions)
+		// machine_id, combined_tokens = get_tokenizer_id(acceptable_tokens);
 		// iterators = set();
 		// for n in nodes:
 			// if n.transitions:
 				// iterators.add(iter(n.transitions));
-		// for new_token, source_tokens in patches:
-			// maybe add new iterators?
-			// or add more transitions to existing iterators?
+		
+		// for combined_token in combined_tokens:
+			// source_tokens = lex_lookup_combined_tokens(combined_token);
+			// for i in iterators:
+				// for t in i:
+					// if t.value in source_tokens:
+						// i.append(new transition(value = combined_token, to = t.to));
+			
+			// if we would reduce on this:
+				// remember to fix other places:
+				// todo.append(new insert_combined_tokens_transitions_task(combined_token));
+		
 		// while iterators:
 			// next = min(i.value for i in iterators);
 			// subnodes = set();
@@ -145,6 +113,13 @@ void yacc(
 			// state.add_transition(next, substate);
 			// todo.add(nfa_to_dfa_task(subnodes));
 	
+	// simplify_explore(node):
+		// if unique:
+			// add to lookup
+	
+	// simplify_clone(node):
+		// todo
+	
 	struct shared* shared = smalloc(sizeof(*shared));
 	
 	struct heap* todo = new_heap(compare_tasks);
@@ -157,43 +132,63 @@ void yacc(
 	shared->firsts.dependant_of = new_avl_tree(compare_named_strsets, free_named_strset);
 	shared->firsts.dependant_on = new_avl_tree(compare_named_strsets, free_named_strset);
 	
+	shared->lookaheads.sets = new_avl_tree(compare_named_tokensets, free_named_tokenset);
+	shared->lookaheads.dependant_of = new_avl_tree(compare_named_strsets, free_named_strset);
+	shared->lookaheads.dependant_on = new_avl_tree(compare_named_strsets, free_named_strset);
+	
 	avl_tree_foreach(grammars, ({
 		void run (const void* item) {
 			const struct named_grammar* ng = item;
 			
-			avl_insert(shared->firsts.sets, new_named_tokenset(ng->name, new_tokenset()));
+			dpvs(ng->name);
+			
+			struct tokenset* firsts = new_tokenset();
+			
+			struct tokenset* lookaheads = new_tokenset();
+			
+			if (strequals(ng->name, "(start)"))
+				tokenset_add(lookaheads, /* EOF token: */ 0);
+			
+			avl_insert(shared->firsts.sets, new_named_tokenset(ng->name, firsts));
+			
+			avl_insert(shared->lookaheads.sets, new_named_tokenset(ng->name, lookaheads));
 			
 			heap_push(todo, new_explore_firsts_task(ng->name, ng->start));
 			
-			// heapush(heap,       explore_first_task(g->start));
-			// heapush(heap,     percolate_first_task(g->start));
-			// heapush(heap,   explore_lookahead_task(g->start, g->end));
-			// heapush(heap, percolate_lookahead_task(g->start));
-			// heapush(heap,      add_reductions_task(g->end));
-		}
+			heap_push(todo, new_percolate_firsts_task(ng->name));
+			
+			heap_push(todo, new_explore_lookaheads_task(ng->name, ng->start, NULL, ng->end, scratchpad));
+			
+			heap_push(todo, new_percolate_lookaheads_task(ng->name));
+			
+			heap_push(todo, new_add_reductions_task(ng->name, ng->end, scratchpad));
+ 		}
 		run;
 	}));
 	
 	while (is_heap_nonempty(todo))
 	{
 		struct task* task = heap_pop(todo);
+		
 		task_process(task, shared);
+		
 		task_dotout(task, shared);
+		
 		free_task(task);
 	}
 	
 	// heapush(heap, nfa_to_dfa_task(add_lambda_transitions(start->start)));
-	TODO;
+/*	TODO;*/
 	
 	// dfa-simplify
-	TODO;
+/*	TODO;*/
 	
 /*	avl_free_tree(firsts);*/
 	
 /*	avl_free_tree(lookaheads);*/
 	
 	EXIT;
-	// return start, machines
+	// return (start, machines)
 }
 
 

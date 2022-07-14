@@ -12,15 +12,20 @@ int compare_tasks(const void* a, const void* b)
 	
 	const struct task* A = a, *B = b;
 	
-	if (A->kind > B->kind)
-		cmp = +1;
-	else if (A->kind < B->kind)
+	dpv(A->kind);
+	dpv(B->kind);
+	
+	if (A->kind < B->kind)
 		cmp = -1;
+	else if (A->kind > B->kind)
+		cmp = +1;
 	else
 	{
 		assert(A->inheritance->compare);
 		cmp = (A->inheritance->compare)(A, B);
 	}
+	
+	dpv(cmp);
 	
 	EXIT;
 	return cmp;

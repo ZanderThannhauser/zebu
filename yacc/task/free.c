@@ -2,6 +2,7 @@
 #include <debug.h>
 
 #include "struct.h"
+#include "inheritance.h"
 #include "free.h"
 
 void free_task(void* ptr)
@@ -11,7 +12,11 @@ void free_task(void* ptr)
 	
 	if (this && !--this->refcount)
 	{
-		TODO;
+		assert(this->inheritance->free);
+		
+		(this->inheritance->free)(this);
+		
+		free(this);
 	}
 	
 	EXIT;

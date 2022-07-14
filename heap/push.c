@@ -17,19 +17,17 @@ void heap_push(struct heap* this, void* new)
 		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
 	}
 	
-	size_t i;
+	size_t i = this->n++, j;
 	void** const data = this->data, *swap;
 	
-	data[this->n] = new;
+	data[i] = new;
 	
-	for (i = this->n; i > 0 && this->cmp(data[i / 2], data[i]) > 0; i >>= 1)
+	for (; i > 0 && this->cmp(data[j = (i - 1) / 2], data[i]) > 0; i = j)
 	{
 		swap = data[i];
-		data[i] = data[i / 2];
-		data[i / 2] = swap;
+		data[i] = data[j];
+		data[j] = swap;
 	}
-	
-	this->n++;
 	
 	EXIT;
 }

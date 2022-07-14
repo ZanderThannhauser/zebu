@@ -240,6 +240,7 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
 			#endif

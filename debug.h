@@ -33,9 +33,12 @@
 	#include <memory/smalloc.h>
 	#include <memory/srealloc.h>
 	
+	#include <macros/strequals.h>
+	
 	#include <avl/new.h>
 	#include <avl/search.h>
 	#include <avl/insert.h>
+	#include <avl/foreach.h>
 	#include <avl/safe_insert.h>
 	#include <avl/free_nodes.h>
 	#include <avl/free_tree.h>

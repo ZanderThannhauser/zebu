@@ -19,7 +19,7 @@ struct lex* new_lex(bool verbose)
 	
 	this->tokens = avl_alloc_tree(compare_nodes, free_node);
 	
-	this->next_id = 1;
+	this->next_id = 1; // because token 0 is for EOF
 	
 	this->verbose = verbose;
 	

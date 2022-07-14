@@ -5,6 +5,6 @@
 
 void free_scope(struct scope* this)
 {
-	TODO;
+	HERE;
 }
 

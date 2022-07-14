@@ -24,6 +24,9 @@ static void helper(FILE* out, struct gegex* state)
 		fprintf(out, ""
 			"\"%p\" [" "\n"
 				"\t" "shape = circle;" "\n"
+				"\t" "style = filled;" "\n"
+				"\t" "color = black;" "\n"
+				"\t" "fillcolor = white;" "\n"
 				"\t" "label = \"\";" "\n"
 			"]" "\n"
 		"", state);
@@ -99,20 +102,22 @@ void explore_firsts_task_dotout(struct task* super, struct shared* shared)
 	
 	fprintf(out, "digraph {" "\n");
 	
-	fprintf(out, "\t" "edge [minlen = 2];" "\n");
-	fprintf(out, "\t" "overlap = false;" "\n");
-	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");
+/*	fprintf(out, "\t" "edge [minlen = 2];" "\n");*/
+/*	fprintf(out, "\t" "overlap = false;" "\n");*/
+/*	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");*/
+	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
-	fprintf(out, "\"%p\" [ style = bold; ];" "\n", this->node);
-
 	phase_counter++;
 	
-	{
-		struct avl_node_t* node = avl_search(shared->grammars, &this->name);
-		struct named_grammar* ng = node->item;
-		helper(out, ng->start);
-	}
+	struct avl_node_t* node = avl_search(shared->grammars, &this->name);
+	struct named_grammar* ng = node->item;
+	helper(out, ng->start);
 	
+	fprintf(out, "\"%p\" [ shape = square ];" "\n", ng->start);
+	fprintf(out, "\"%p\" [ shape = doublecircle ];" "\n", ng->end);
+	
+	fprintf(out, "\"%p\" [ fillcolor = grey ];" "\n", this->node);
+
 	fprintf(out, "}" "\n");
 	
 	fclose(out);

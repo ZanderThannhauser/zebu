@@ -15,8 +15,8 @@ void free_memory_arena(struct memory_arena* this)
 /*	typeof(*this->mmaps.data)* mentry;*/
 	ENTER;
 	
-	TODO;
 	#if 0
+	TODO;
 	
 	if (this)
 	{

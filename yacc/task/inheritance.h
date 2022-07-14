@@ -9,5 +9,7 @@ struct task_inheritance
 	void (*process)(struct task*, struct shared*);
 	
 	void (*dotout)(struct task*, struct shared*);
+	
+	void (*free)(struct task*);
 };
 
