@@ -8,6 +8,7 @@
 #include "charset/struct.h"
 #include "charset/inc.h"
 #include "charset/union.h"
+#include "charset/difference.h"
 #include "charset/free.h"
 
 #include "range.h"
@@ -32,9 +33,7 @@ struct charset* read_intersect_charset(
 		if (left->is_complement)
 		{
 			if (right->is_complement)
-			{
 				retval = charset_union(left, right, true);
-			}
 			else
 			{
 				TODO;
@@ -43,9 +42,7 @@ struct charset* read_intersect_charset(
 		else
 		{
 			if (right->is_complement)
-			{
-				TODO;
-			}
+				retval = charset_difference(left, right, false);
 			else
 			{
 				TODO;

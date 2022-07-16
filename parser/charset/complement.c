@@ -34,7 +34,7 @@ struct charset* read_complement_charset(
 	{
 		retval = new_charset(
 			inner->chars, inner->len,
-			/* is_complement: */ true);
+			/* is_complement: */ !inner->is_complement);
 	}
 	else
 	{
