@@ -25,8 +25,6 @@
 
 #include <yacc/yacc.h>
 
-/*#include <out/out.h>*/
-
 int main(int argc, char* argv[])
 {
 	ENTER;

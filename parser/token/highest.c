@@ -12,11 +12,11 @@
 
 #include "../charset/root.h"
 
-#include "regex/dotout.h"
-#include "regex/clone.h"
-#include "regex/from_dot.h"
-#include "regex/from_charset.h"
-#include "regex/from_literal.h"
+#include <lex/regex/dotout.h>
+#include <lex/regex/clone.h>
+#include <lex/regex/from_dot.h>
+#include <lex/regex/from_charset.h>
+#include <lex/regex/from_literal.h>
 
 #include "root.h"
 #include "highest.h"

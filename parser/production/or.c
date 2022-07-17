@@ -5,8 +5,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/production/inside_or.h"
 
-#include "gegex/state/add_lambda_transition.h"
-#include "gegex/dotout.h"
+#include <yacc/gegex/state/add_lambda_transition.h>
+#include <yacc/gegex/dotout.h>
 
 #include "concat.h"
 #include "or.h"

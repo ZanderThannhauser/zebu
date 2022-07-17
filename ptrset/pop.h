@@ -1,1 +1,2 @@
-const char* ptrset_pop(struct ptrset* this);
+
+const void* ptrset_pop(struct ptrset* this);

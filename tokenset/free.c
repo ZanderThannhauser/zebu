@@ -1,10 +1,16 @@
 
 #include <debug.h>
 
+#include "struct.h"
 #include "free.h"
 
 void free_tokenset(struct tokenset* this)
 {
-	TODO;
+	ENTER;
+	
+	free(this->data);
+	free(this);
+	
+	EXIT;
 }
 

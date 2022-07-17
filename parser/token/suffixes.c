@@ -1,12 +1,10 @@
 
 #include <debug.h>
 
-#include "regex/state/new.h"
-#include "regex/dfa_to_nfa.h"
-#include "regex/dotout.h"
-#include "regex/state/add_lambda_transition.h"
-/*#include "regex/lambda_all_accepting_states.h"*/
-/*#include "regex/zero_or_more.h"*/
+/*#include "regex/state/new.h"*/
+#include <lex/regex/dfa_to_nfa.h>
+#include <lex/regex/dotout.h>
+#include <lex/regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -71,14 +69,10 @@ struct rbundle read_suffixes_token_expression(
 		{
 			TODO;
 			#if 0
-			TODO;
-			#if 0
 			// repeated clones and concat
 			// require accepting
 			// nfa_to_dfa
 			// simplify
-			TODO;
-			#endif
 			TODO;
 			#endif
 			break;

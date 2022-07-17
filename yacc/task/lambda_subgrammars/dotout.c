@@ -1,18 +1,16 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
+#include <avl/search.h>
+
+#include <named/grammar/struct.h>
+
+#include <yacc/gegex/state/struct.h>
 
 #include <misc/frame_counter.h>
 #include <misc/phase_counter.h>
 
-/*#include <strset/foreach.h>*/
-
-/*#include <tokenset/to_string.h>*/
-
 #include "../../shared.h"
-/*#include "../../get_deps.h"*/
-/*#include "../../lookup_tokenset.h"*/
 
 #include "struct.h"
 #include "dotout.h"

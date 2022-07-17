@@ -5,9 +5,9 @@
 
 #include "scope/declare/grammar.h"
 
-#include "production/gegex/dotout.h"
-#include "production/gegex/state/new.h"
-#include "production/gegex/state/add_grammar_transition.h"
+#include <yacc/gegex/dotout.h>
+#include <yacc/gegex/state/new.h>
+#include <yacc/gegex/state/add_grammar_transition.h>
 
 #include "create_start_rule.h"
 

@@ -3,18 +3,19 @@
 
 #include <debug.h>
 
-#include <memory/sstrndup.h>
-#include <memory/smalloc.h>
-#include <memory/arena/strdup.h>
-#include <memory/arena/dealloc.h>
+/*#include <memory/sstrndup.h>*/
+/*#include <memory/smalloc.h>*/
+/*#include <memory/arena/strdup.h>*/
+/*#include <memory/arena/dealloc.h>*/
 
 #include <misc/phase_counter.h>
+
 #include <named/grammar/struct.h>
 
 #include "scope/struct.h"
 #include "scope/resolve/grammar.h"
 
-#include "production/gegex/state/struct.h"
+#include <yacc/gegex/state/struct.h>
 
 #include "resolve_grammar_names.h"
 

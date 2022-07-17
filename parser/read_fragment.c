@@ -1,27 +1,25 @@
 
 #include <debug.h>
 
-#include <avl/avl.h>
-#include <avl/safe_insert.h>
+/*#include <avl/avl.h>*/
+/*#include <avl/safe_insert.h>*/
 
 #include <memory/sstrndup.h>
 
-#include "token/regex/nfa_to_dfa/nfa_to_dfa.h"
+#include <lex/regex/simplify_dfa/simplify_dfa.h>
+#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
+#include <lex/regex/state/struct.h>
+#include <lex/regex/state/free.h>
 
-#include "token/regex/simplify_dfa/simplify_dfa.h"
-
-#include "token/regex/state/struct.h"
-#include "token/regex/state/free.h"
+#include "scope/declare/token.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/colon.h"
-/*#include "tokenizer/machines/root.h"*/
 #include "tokenizer/machines/expression/root.h"
 
 #include "token/root.h"
-
-#include "scope/declare/token.h"
+#include "token/rbundle.h"
 
 #include "read_fragment.h"
 

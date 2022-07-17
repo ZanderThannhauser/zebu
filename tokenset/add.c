@@ -22,9 +22,6 @@ void tokenset_add(struct tokenset* this, unsigned token)
 	
 	for (i = 0, n = this->n; i < n; i++)
 	{
-		dpv(token);
-		dpv(this->data[i]);
-		
 		if (token < this->data[i])
 		{
 			unsigned temp = this->data[i];

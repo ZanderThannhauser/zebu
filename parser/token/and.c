@@ -5,11 +5,11 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/expression/inside_and.h"
 
-#include "regex/state/struct.h"
-#include "regex/state/free.h"
-#include "regex/intersect_dfas/intersect_dfas.h"
-#include "regex/nfa_to_dfa/nfa_to_dfa.h"
-#include "regex/simplify_dfa/simplify_dfa.h"
+#include <lex/regex/state/struct.h>
+#include <lex/regex/state/free.h>
+#include <lex/regex/intersect_dfas/intersect_dfas.h>
+#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
+#include <lex/regex/simplify_dfa/simplify_dfa.h>
 
 #include "concat.h"
 #include "and.h"

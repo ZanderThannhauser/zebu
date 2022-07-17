@@ -5,8 +5,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/production/after_suffix.h"
 
-#include "gegex/state/add_lambda_transition.h"
-#include "gegex/dotout.h"
+#include <yacc/gegex/state/add_lambda_transition.h>
+#include <yacc/gegex/dotout.h>
 
 #include "highest.h"
 #include "suffixes.h"
@@ -36,12 +36,15 @@ struct gbundle read_suffixes_production(
 			break;
 		
 		case t_asterisk:
+			TODO;
+			#if 0
 			dputs("t_asterisk");
 			gegex_add_lambda_transition(retval.end, scratchpad, retval.start);
 			gegex_add_lambda_transition(retval.start, scratchpad, retval.end);
 			read_token(tokenizer, production_after_suffix_machine);
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
+			#endif
 			#endif
 			break;
 		

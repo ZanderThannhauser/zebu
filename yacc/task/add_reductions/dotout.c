@@ -1,12 +1,16 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
+#include <avl/search.h>
+
+#include <named/grammar/struct.h>
+
+#include <yacc/gegex/state/struct.h>
 
 #include <misc/frame_counter.h>
 #include <misc/phase_counter.h>
 
-#include <strset/foreach.h>
+/*#include <strset/foreach.h>*/
 
 /*#include <tokenset/to_string.h>*/
 
@@ -110,7 +114,6 @@ static void helper(FILE* out, struct gegex* state)
 	
 	EXIT;
 }
-
 
 void add_reductions_task_dotout(struct task* super, struct shared* shared)
 {

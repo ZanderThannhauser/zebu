@@ -1,7 +1,11 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
+#include <avl/search.h>
+
+#include <named/grammar/struct.h>
+
+#include <yacc/gegex/state/struct.h>
 
 #include <misc/phase_counter.h>
 #include <misc/frame_counter.h>
@@ -97,14 +101,10 @@ void explore_firsts_task_dotout(struct task* super, struct shared* shared)
 	dpvs(path);
 	
 	FILE* out = fopen(path, "w");
-	
 	assert(out);
 	
 	fprintf(out, "digraph {" "\n");
 	
-/*	fprintf(out, "\t" "edge [minlen = 2];" "\n");*/
-/*	fprintf(out, "\t" "overlap = false;" "\n");*/
-/*	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");*/
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
 	phase_counter++;

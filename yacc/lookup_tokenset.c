@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <named/tokenset/struct.h>
+
+#include <avl/search.h>
+
 #include "lookup_tokenset.h"
 
 struct tokenset* lookup_tokenset(

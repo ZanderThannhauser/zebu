@@ -5,6 +5,8 @@
 
 void free_explore_firsts_task(struct task* super)
 {
-	TODO;
+	ENTER;
+	HERE;
+	EXIT;
 }
 

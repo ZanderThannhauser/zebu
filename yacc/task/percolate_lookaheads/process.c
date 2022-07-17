@@ -1,17 +1,17 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
+/*#include <parser/production/gegex/state/struct.h>*/
 
-#include <tokenset/add.h>
+/*#include <tokenset/add.h>*/
+#include <tokenset/update.h>
 
 #include <strset/foreach.h>
-#include <tokenset/update.h>
 
 #include <heap/push.h>
 
 #include "../../shared.h"
-#include "../../add_dep.h"
+/*#include "../../add_dep.h"*/
 #include "../../get_deps.h"
 #include "../../lookup_tokenset.h"
 
@@ -38,7 +38,6 @@ void percolate_lookaheads_task_process(struct task* super, struct shared* shared
 			// for dep in lookaheads.dependant_of[grammar]:
 				// todo.add(percolate_lookahead_task(dep));
 		// return todo;
-	
 	
 	struct tokenset* lookaheads = lookup_tokenset(shared->lookaheads.sets, this->name);
 	

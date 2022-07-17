@@ -10,11 +10,10 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 	
 	dpv(ptr);
 	
-	TODO;
-	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
+		
 		dpv(this->cap);
 		
 		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
@@ -24,18 +23,14 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 	
 	for (i = 0, n = this->n; i < n; i++)
 	{
-		dpvs(str);
-		dpvs(this->data[i]);
+		const void* ele = this->data[i];
 		
-		int cmp = strcmp(str, this->data[i]);
-		
-		if (cmp < 0)
+		if (ptr < ele)
 		{
-			const char* temp = this->data[i];
-			this->data[i] = str;
-			str = temp;
+			this->data[i] = ptr;
+			ptr = ele;
 		}
-		else if (cmp > 0)
+		else if (ptr > ele)
 		{
 			i++;
 		}
@@ -45,8 +40,7 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 		}
 	}
 	
-	this->data[this->n++] = str;
-	#endif
+	this->data[this->n++] = ptr;
 	
 	EXIT;
 }

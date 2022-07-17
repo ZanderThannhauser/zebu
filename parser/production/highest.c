@@ -5,22 +5,13 @@
 
 #include <memory/arena/malloc.h>
 
-#include "../tokenizer/struct.h"
-#include "../tokenizer/read_token.h"
-
-#include "../tokenizer/machines/subroot.h"
-#include "../tokenizer/machines/production/root.h"
-#include "../tokenizer/machines/production/after_highest.h"
-#include "../tokenizer/machines/expression/root.h"
-#include "../tokenizer/machines/charset/root.h"
-
-#include "../token/regex/from_literal.h"
-#include "../token/regex/from_charset.h"
-#include "../token/regex/nfa_to_dfa/nfa_to_dfa.h"
-#include "../token/regex/simplify_dfa/simplify_dfa.h"
-#include "../token/regex/state/struct.h"
-#include "../token/regex/state/free.h"
-#include "../token/root.h"
+#include <lex/regex/from_literal.h>
+#include <lex/regex/from_charset.h>
+#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
+#include <lex/regex/simplify_dfa/simplify_dfa.h>
+#include <lex/regex/state/struct.h>
+#include <lex/regex/state/free.h>
+/*#include "../token/root.h"*/
 
 #include "../charset/root.h"
 
@@ -33,10 +24,22 @@
 /*#include "../read_fragment.h"*/
 /*#include "../read_grammar.h"*/
 
-#include "gegex/from_token.h"
-#include "gegex/from_empty.h"
-#include "gegex/from_subgrammar.h"
-#include "gegex/dotout.h"
+#include <yacc/gegex/from_token.h>
+/*#include "gegex/from_empty.h"*/
+#include <yacc/gegex/from_subgrammar.h>
+#include <yacc/gegex/dotout.h>
+
+#include "../token/rbundle.h"
+#include "../token/root.h"
+
+#include "../tokenizer/struct.h"
+#include "../tokenizer/read_token.h"
+
+/*#include "../tokenizer/machines/subroot.h"*/
+#include "../tokenizer/machines/production/root.h"
+#include "../tokenizer/machines/production/after_highest.h"
+#include "../tokenizer/machines/expression/root.h"
+#include "../tokenizer/machines/charset/root.h"
 
 #include "root.h"
 #include "highest.h"

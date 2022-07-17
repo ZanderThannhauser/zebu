@@ -3,22 +3,14 @@
 
 #include <memory/arena/strdup.h>
 
-#include <parser/production/gegex/state/add_reduction_transition.h>
+#include <yacc/gegex/state/add_reduction_transition.h>
 
-/*#include <tokenset/add.h>*/
-
-/*#include <strset/foreach.h>*/
 #include <tokenset/foreach.h>
 
-/*#include <heap/push.h>*/
-
 #include "../../shared.h"
-/*#include "../../add_dep.h"*/
-/*#include "../../get_deps.h"*/
 #include "../../lookup_tokenset.h"
 
 #include "struct.h"
-/*#include "new.h"*/
 #include "process.h"
 
 void add_reductions_task_process(struct task* super, struct shared* shared)
@@ -41,7 +33,6 @@ void add_reductions_task_process(struct task* super, struct shared* shared)
 		}
 		runme;
 	}));
-	
 	
 	EXIT;
 }

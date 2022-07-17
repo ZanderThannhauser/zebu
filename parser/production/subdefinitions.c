@@ -13,7 +13,7 @@
 #include "../read_fragment.h"
 #include "../read_grammar.h"
 
-#include "gegex/state/add_lambda_transition.h"
+/*#include "gegex/state/add_lambda_transition.h"*/
 
 #include "suffixes.h"
 #include "subdefinitions.h"

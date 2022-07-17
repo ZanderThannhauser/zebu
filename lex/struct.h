@@ -9,8 +9,7 @@ struct lex
 	
 	unsigned next_id;
 	
-	struct avl_tree_t* tokens; // token -> token id
+	struct avl_tree_t* dfa_to_id; // token -> token id
 	
-	// what if:
-		// # set(token ids) -> machine id
+	// # set(token ids) -> machine id
 };

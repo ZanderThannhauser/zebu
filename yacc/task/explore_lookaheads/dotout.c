@@ -1,7 +1,11 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
+#include <avl/search.h>
+
+#include <named/grammar/struct.h>
+
+#include <yacc/gegex/state/struct.h>
 
 #include <misc/phase_counter.h>
 #include <misc/frame_counter.h>

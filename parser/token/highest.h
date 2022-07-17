@@ -1,5 +1,5 @@
 
-/*#include "bundle.h"*/
+#include "rbundle.h"
 
 struct regex_state;
 struct tokenizer;

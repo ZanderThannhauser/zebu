@@ -3,16 +3,18 @@
 
 #include <memory/sstrdup.h>
 
+/*#include <yacc/gegex/state/struct.h>*/
+#include <yacc/gegex/state/new.h>
+
+#include "production/root.h"
+#include "production/gbundle.h"
+
+#include "scope/declare/grammar.h"
+
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/colon.h"
 #include "tokenizer/machines/production/root.h"
-
-#include "production/gegex/state/struct.h"
-#include "production/gegex/state/new.h"
-#include "production/root.h"
-
-#include "scope/declare/grammar.h"
 
 #include "read_grammar.h"
 
@@ -56,6 +58,7 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
+	
 	EXIT;
 }
 

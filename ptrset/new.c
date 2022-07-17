@@ -4,12 +4,10 @@
 #include "struct.h"
 #include "new.h"
 
-struct ptrset* new_ptrset(int (*cmp)(const void*, const void*))
+struct ptrset* new_ptrset()
 {
 	ENTER;
 	struct ptrset* this = smalloc(sizeof(*this));
-	
-	this->cmp = cmp;
 	
 	this->data = NULL;
 	this->cap = 0;

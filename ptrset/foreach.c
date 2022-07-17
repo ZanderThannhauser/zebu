@@ -4,7 +4,9 @@
 #include "struct.h"
 #include "foreach.h"
 
-void ptrset_foreach(struct ptrset* this, void (*runme)(const void* str))
+void ptrset_foreach(
+	const struct ptrset* this,
+	void (*runme)(const void* str))
 {
 	ENTER;
 	unsigned i, n;

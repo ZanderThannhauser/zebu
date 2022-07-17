@@ -1,23 +1,15 @@
 
 #include <debug.h>
 
-#include <parser/production/gegex/state/struct.h>
-#include <parser/production/gegex/state/add_lambda_transition.h>
+#include <avl/search.h>
+#include <avl/safe_insert.h>
 
-/*#include <tokenset/add.h>*/
-
-/*#include <strset/foreach.h>*/
-/*#include <tokenset/update.h>*/
-
-/*#include <heap/push.h>*/
+#include <yacc/gegex/state/struct.h>
+#include <yacc/gegex/state/add_lambda_transition.h>
 
 #include "../../shared.h"
-/*#include "../../add_dep.h"*/
-/*#include "../../get_deps.h"*/
-/*#include "../../lookup_tokenset.h"*/
 
 #include "struct.h"
-/*#include "new.h"*/
 #include "process.h"
 
 void lambda_subgrammars_task_process(struct task* super, struct shared* shared)

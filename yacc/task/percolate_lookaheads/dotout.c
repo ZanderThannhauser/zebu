@@ -1,7 +1,9 @@
 
 #include <debug.h>
 
-/*#include <parser/production/gegex/state/struct.h>*/
+#include <avl/foreach.h>
+
+#include <named/grammar/struct.h>
 
 #include <misc/frame_counter.h>
 

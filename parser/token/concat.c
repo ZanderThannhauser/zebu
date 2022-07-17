@@ -1,11 +1,11 @@
 
 #include <debug.h>
 
-#include "../tokenizer/struct.h"
+#include <lex/regex/dfa_to_nfa.h>
+#include <lex/regex/dotout.h>
+#include <lex/regex/state/add_lambda_transition.h>
 
-#include "regex/dfa_to_nfa.h"
-#include "regex/dotout.h"
-#include "regex/state/add_lambda_transition.h"
+#include "../tokenizer/struct.h"
 
 #include "suffixes.h"
 #include "concat.h"
@@ -45,6 +45,7 @@ struct rbundle read_concat_token_expression(
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start);
 			#endif
+			break;
 		}
 		
 		case t_gravemark:

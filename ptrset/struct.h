@@ -1,13 +1,7 @@
 
 struct ptrset
 {
-	int (*cmp)(const void*, const void*);
-	
-	union
-	{
-		const void** data;
-		const char** datac;
-	};
+	const void** data;
 	
 	unsigned cap, n;
 };

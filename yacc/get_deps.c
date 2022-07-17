@@ -1,6 +1,11 @@
 
 #include <debug.h>
 
+#include <avl/search.h>
+#include <avl/insert.h>
+
+#include <strset/new.h>
+
 #include <named/strset/struct.h>
 #include <named/strset/new.h>
 

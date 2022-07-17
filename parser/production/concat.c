@@ -1,10 +1,11 @@
 
 #include <debug.h>
 
-#include "../tokenizer/struct.h"
+#include <yacc/gegex/state/add_lambda_transition.h>
 
-#include "gegex/state/add_lambda_transition.h"
-#include "gegex/dotout.h"
+#include <yacc/gegex/dotout.h>
+
+#include "../tokenizer/struct.h"
 
 #include "subdefinitions.h"
 #include "concat.h"
@@ -50,4 +51,24 @@ struct gbundle read_concat_production(
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

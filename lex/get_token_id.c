@@ -6,8 +6,9 @@
 #include <avl/safe_insert.h>
 #include <avl/search.h>
 
-#include "node/struct.h"
-#include "node/new.h"
+#include "dfa_to_id/struct.h"
+#include "dfa_to_id/new.h"
+
 #include "struct.h"
 #include "get_token_id.h"
 
@@ -22,9 +23,9 @@ unsigned lex_get_token_id(
 	
 	struct avl_node_t* node;
 	
-	if ((node = avl_search(this->tokens, &token)))
+	if ((node = avl_search(this->dfa_to_id, &token)))
 	{
-		struct node* found = node->item;
+		struct dfa_to_id_node* found = node->item;
 		
 		retval = found->id;
 	}
@@ -32,9 +33,9 @@ unsigned lex_get_token_id(
 	{
 		retval = this->next_id++;
 		
-		struct node* new = new_node(retval, token);
+		struct dfa_to_id_node* new = new_dfa_to_id_node(retval, token);
 		
-		safe_avl_insert(this->tokens, new);
+		safe_avl_insert(this->dfa_to_id, new);
 	}
 	
 	dpv(retval);
