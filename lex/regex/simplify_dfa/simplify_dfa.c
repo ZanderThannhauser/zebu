@@ -19,7 +19,7 @@
 #include "regex_ll/new.h"
 #include "regex_ll/free.h"
 
-#include "helper.h"
+#include "survey.h"
 #include "clone.h"
 #include "simplify_dfa.h"
 
@@ -35,7 +35,7 @@ struct regex* regex_simplify_dfa(
 	
 	phase_counter++;
 	
-	simplify_dfa_helper(unique_nodes, original_start);
+	simplify_dfa_survey(unique_nodes, original_start);
 	
 	struct regex* new_start = simplify_dfa_clone(
 		unique_nodes, original_start, arena);

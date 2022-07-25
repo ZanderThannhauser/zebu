@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/search.h>
 
 #include <debug.h>
@@ -10,3 +11,4 @@ bool stateset_contains(struct stateset* this, struct regex* element)
 {
 	return !!avl_search(&this->tree, element);
 }
+#endif

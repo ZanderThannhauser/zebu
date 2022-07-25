@@ -48,7 +48,8 @@ void read_fragment(
 	{
 		struct regex* nfa = bun.nfa.start;
 		
-		bun.nfa.end->is_accepting = true;
+		// bun.nfa.end->is_accepting = true;
+		TODO;
 		
 		struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
 		

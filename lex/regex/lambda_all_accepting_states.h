@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 struct regex;
 struct memory_arena;
 

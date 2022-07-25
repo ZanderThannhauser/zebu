@@ -1,4 +1,7 @@
 
+#include <assert.h>
+#include <stdlib.h>
+
 #include <avl/search.h>
 #include <avl/free_tree.h>
 #include <avl/new.h>

@@ -1,4 +1,6 @@
 
+#if 0
+
 #include <debug.h>
 
 #include "compare.h"
@@ -12,3 +14,4 @@ int compare_states(const void* a, const void* b)
 	return 0;
 }
 
+#endif

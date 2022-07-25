@@ -8,9 +8,9 @@
 
 #include <misc/frame_counter.h>
 
-#include <strset/foreach.h>
+#include <set/of_strs/foreach.h>
 
-#include <tokenset/to_string.h>
+#include <set/of_tokens/to_string.h>
 
 #include "../../shared.h"
 #include "../../get_deps.h"

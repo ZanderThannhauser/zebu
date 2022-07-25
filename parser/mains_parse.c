@@ -10,7 +10,7 @@
 
 /*#include "scope/new.h"*/
 
-#include <strset/add.h>
+#include <set/of_strs/add.h>
 
 #include "options/struct.h"
 

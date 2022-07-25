@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <strset/free.h>
+#include <set/of_strs/free.h>
 
 #include "struct.h"
 #include "free.h"

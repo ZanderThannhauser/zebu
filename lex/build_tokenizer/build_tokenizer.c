@@ -1,36 +1,71 @@
 
+#include <avl/search.h>
+
 #include <debug.h>
+
+#include <assert.h>
+
+#include <stddef.h>
+
+#include <set/of_tokens/struct.h>
+#include <set/of_tokens/foreach.h>
+
+#include "../struct.h"
+#include "../lookup/id_to_dfa.h"
 
 #include "build_tokenizer.h"
 
-static struct regex* dfas_to_dfa(
-	struct regex* fingers, size_t n)
-{
-	ENTER;
-	TODO;
-	EXIT;
-}
-
 struct regex* lex_build_tokenzer(
+	struct lex* this,
 	struct tokenset* token_ids)
 {
 	ENTER;
 	
 	// check cache
-	TODO;
+	struct avl_node_t* cache_node = avl_search(this->tokenset_to_tokenizer, &token_ids);
 	
-	// build dfa of all tokens' dfas
-		// lookup dfas for each id
-	TODO;
-	
-	// iterate through states, possibly adding to lookup
-	TODO;
-	
-	// clone/simplifiy dfa
-	TODO;
-	
-	// free original dfa
-	TODO;
+	if (cache_node)
+	{
+		// we've built this tokenizer before, what did we say last time?
+		// return start state, and set of set of tokens
+		TODO;
+	}
+	else
+	{
+		// build dfa of all tokens' dfas
+			// lookup dfas for each id
+		{
+			TODO;
+			#if 0
+			size_t i = 0, n = token_ids->n;
+			struct regex* (*starts)[n] = smalloc(sizeof(*starts));
+			
+			tokenset_foreach(token_ids, ({
+				void runme(unsigned token) {
+					dpv(token);
+					(*starts)[i++] = lex_id_to_dfa(this, token);
+				}
+				runme;
+			}));
+			
+			struct regex* new_start = dfas_to_dfa(*starts, n);
+			
+			TODO;
+			
+			free(starts);
+			#endif
+		}
+		
+		// iterate through states, possibly adding to tree
+		// clone/simplifiy dfa
+		TODO;
+		
+		// add new tokenizer to cache
+		TODO;
+		
+		// free original dfa
+		TODO;
+	}
 	
 	EXIT;
 }

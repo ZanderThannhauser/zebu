@@ -6,14 +6,6 @@
 
 #include <memory/srealloc.h>
 
-#include "../state/struct.h"
-#include "../state/new.h"
-#include "../state/add_transition.h"
-#include "../state/set_default_transition.h"
-
-#include "add_lamda_states.h"
-#include "helper.h"
-
 /*#include <heap/struct.h>*/
 #include <heap/new.h>
 #include <heap/struct.h>
@@ -27,9 +19,17 @@
 #include "iterator/compare.h"
 #include "iterator/free.h"
 
-#include "stateset/struct.h"
-#include "stateset/insert.h"
-#include "stateset/new.h"
+#include "../state/struct.h"
+#include "../state/new.h"
+#include "../state/add_transition.h"
+#include "../state/set_default_transition.h"
+
+#include "add_lamda_states.h"
+#include "helper.h"
+
+/*#include "stateset/struct.h"*/
+/*#include "stateset/insert.h"*/
+/*#include "stateset/new.h"*/
 
 #include "mapping/struct.h"
 #include "mapping/new.h"

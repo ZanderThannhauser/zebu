@@ -9,14 +9,14 @@
 
 #include <lex/build_tokenizer/build_tokenizer.h>
 
-#include <ptrset/new.h>
-#include <ptrset/contains.h>
-#include <ptrset/foreach.h>
-#include <ptrset/add.h>
-#include <ptrset/clone.h>
+#include <set/of_gegexs/new.h>
+#include <set/of_gegexs/contains.h>
+#include <set/of_gegexs/foreach.h>
+#include <set/of_gegexs/add.h>
+#include <set/of_gegexs/clone.h>
 
-#include <tokenset/new.h>
-#include <tokenset/add.h>
+#include <set/of_tokens/new.h>
+#include <set/of_tokens/add.h>
 /*#include <tokenset/is_disjoint.h>*/
 
 #include <named/grammar/struct.h>
@@ -27,15 +27,15 @@
 #include "nfa_to_dfa.h"
 
 static void add_lambda_states(
-	struct ptrset* outgoing,
+	struct gegexset* outgoing,
 	struct gegex* state)
 {
 	unsigned i, n;
 	ENTER;
 	
-	if (!ptrset_contains(outgoing, state))
+	if (!gegexset_contains(outgoing, state))
 	{
-		ptrset_add(outgoing, state);
+		gegexset_add(outgoing, state);
 		
 		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
 			add_lambda_states(outgoing, state->lambda_transitions.data[i]);
@@ -46,17 +46,17 @@ static void add_lambda_states(
 
 struct cache_node
 {
-	struct ptrset* source_states; // should be freed
+	struct gegexset* source_states; // should be freed
 	struct yacc_state* state;
 };
 
-struct cache_node* new_cache_node(
+static struct cache_node* new_cache_node(
 	const struct ptrset* source_states,
 	struct yacc_state* state)
 {
 	ENTER;
 	
-	struct ptrset* my_source_states = ptrset_clone(source_states);
+	struct gegexset* my_source_states = gegexset_clone(source_states);
 	
 	struct cache_node* this = smalloc(sizeof(*this));
 	
@@ -77,7 +77,60 @@ static void free_cache_node(void* a)
 	TODO;
 }
 
+struct shift_node
+{
+	unsigned token;
+	struct gegexset* destinations;
+};
+
+static struct shift_node* new_shift_node()
+{
+	TODO;
+}
+
+static void add_shift()
+{
+	TODO;
+}
+
+static int compare_shift_nodes()
+{
+	TODO;
+}
+
+static void free_shift_node()
+{
+	TODO;
+}
+
+struct reduce_node
+{
+	unsigned token;
+	char* grammar;
+};
+
+static struct reduce_node* new_reduce_node()
+{
+	TODO;
+}
+
+static void add_reduce()
+{
+	TODO;
+}
+
+static int compare_reduce_nodes()
+{
+	TODO;
+}
+
+static void free_reduce_node()
+{
+	TODO;
+}
+
 static struct yacc_state* helper(
+	struct lex* lex,
 	struct avl_tree_t* cache,
 	struct memory_arena* scratchpad,
 	const struct ptrset* source_states)
@@ -94,16 +147,16 @@ static struct yacc_state* helper(
 	}
 	else
 	{
-		// add new yacc_state to cache
-		struct yacc_state* state = new_yacc_state(scratchpad);
-		
-		safe_avl_insert(cache, new_cache_node(source_states, state));
-		
-		struct tokenset* shift_tokens = new_tokenset();
-		struct tokenset* reduce_tokens = new_tokenset();
+		// create set for all tokens accepted by all gegex states:
 		struct tokenset* all_tokens = new_tokenset();
 		
-		// make a set of all shift tokens, and a set of reduce tokens
+		// map from token to set of gegex states:
+		struct avl_tree_t* shift_tokens = new_avl_tree(compare_shift_nodes, free_shift_node);
+		
+		// map from token to name to reduce by:
+		struct avl_tree_t* reduce_tokens = new_avl_tree(compare_reduce_nodes, free_reduce_node);
+		
+		// fill in the above sets:
 		ptrset_foreach(source_states, ({
 			void runme(const void* ptr)
 			{
@@ -114,7 +167,9 @@ static struct yacc_state* helper(
 				{
 					unsigned token = state->transitions.data[i]->token;
 					
-					tokenset_add(shift_tokens, token);
+					add_shift(shift_tokens, token,
+						state->transitions.data[i]->next);
+					
 					tokenset_add(all_tokens, token);
 				}
 				
@@ -122,71 +177,51 @@ static struct yacc_state* helper(
 				{
 					unsigned token = state->reduction_transitions.data[i]->token;
 					
-					tokenset_add(reduce_tokens, token);
+					add_reduce(reduce_tokens, token,
+						state->reduction_transitions.data[i]->reduce_as);
+					
 					tokenset_add(all_tokens, token);
 				}
 			}
 			runme;
 		}));
 		
-		// build a tokenizer (on the union), which returns a machine id
-		// and a list of extra tokens (lex function to lookup source tokens?)
-		state->tokenizer_start = lex_build_tokenzer(all_tokens);
-		TODO;
+		// create and add new yacc_state to cache:
+		struct yacc_state* state = new_yacc_state(scratchpad);
 		
-		TODO;
-		#if 0
-		// add extra tokens to source-tokens' sets
-		TODO;
+		safe_avl_insert(cache, new_cache_node(source_states, state));
 		
-		// make sure they're "disjoint"
-		if (!tokenset_is_disjoint(shift_tokens, reduce_tokens))
+		struct tokensetset* tokens = lex_build_tokenzer(&state->tokenizer_start, lex, all_tokens);
+		
+		for (unsigned i = 0, n = tokens->n; i < n; i++)
 		{
-			TODO;
+			const struct tokenset* ele = tokens->data[i];
+			
+			dpv(ele);
+			dpv(ele->n);
+			
+			// if ele in shifts:
+				// destinations = set();
+				// for t in ele:
+					// assert(t not in reduce)
+					// destinations.update(shifts[t]);
+				// call myself for destinations
+				// add transition
+			// else:
+				// assert(ele in reduces);
+				// add transition
+				TODO;
 		}
-		
-		// add transitions in relevant states
-		TODO;
-		
-		// for each token in shift tokens:
-			// make a set of destinations
-			// add_lambda_states
-			// call self
-			// add transition
-		TODO;
-		
-		// for each token in reduce tokens:
-			// check that all transitions for this token have the same reduction
-			// add_lambda_states
-			// call self
-			// add transition
-		TODO;
-		
-		// make a list of grammar iterators
-		TODO;
-		
-		// while len(token iterators) > 0:
-			// skim through list, finding minimum value and set of destinations
-			TODO;
-			
-			// add_lambda_states for each
-			TODO;
-			
-			// call self on set
-			TODO;
-			
-			// add grammar transition 
-			TODO;
 		
 		// cleanup
 		TODO;
-		#endif
 	}
 	
 	EXIT;
 }
 
 struct gegex* yacc_nfa_to_dfa(
+	struct lex* lex,
 	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad)
 {
@@ -201,9 +236,10 @@ struct gegex* yacc_nfa_to_dfa(
 	dpv(start);
 	
 	struct ptrset* states = new_ptrset();
+	
 	add_lambda_states(states, start->start);
 	
-	struct yacc_state* new_start = helper(cache, scratchpad, states);
+	struct yacc_state* new_start = helper(lex, cache, scratchpad, states);
 	
 	TODO;
 	

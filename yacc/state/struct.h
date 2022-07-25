@@ -28,7 +28,7 @@ struct yacc_state
 		size_t n, cap;
 	} reduction_transitions;
 	
-	struct regex* tokenizer_start;
+	struct lex_state* tokenizer_start;
 	
 	// unsigned phase;
 };

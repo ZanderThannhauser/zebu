@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/tree_t.h>
 
 struct stateset
@@ -7,3 +8,4 @@ struct stateset
 	size_t n;
 };
 
+#endif

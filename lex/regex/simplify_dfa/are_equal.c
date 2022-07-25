@@ -44,12 +44,12 @@ bool regex_are_equal(
 			ddprintf("exactly same\n");
 			are_equal = true;
 		}
-		else if (a->is_accepting > b->is_accepting)
+		else if (!!a->is_accepting > !!b->is_accepting)
 		{
 			ddprintf("A is accepting and B is not\n");
 			are_equal = false;
 		}
-		else if (a->is_accepting < b->is_accepting)
+		else if (!!a->is_accepting < !!b->is_accepting)
 		{
 			ddprintf("B is accepting and A is not\n");
 			are_equal = false;

@@ -1,12 +1,23 @@
 
-#if 0
-#include <debug.h>
+// assigns parser state ids
 
-#include "out.h"
+// assigns tokenizer state ids
 
-int out(void* LRP, const char* output_path)
-{
-	TODO;
-}
+// assigns grammar ids
 
-#endif
+// declares parser start state
+
+// builds tables:
+	// (parser state id, ) -> (tokenizer start state id, )
+	
+	// (tokenizer state id, next char) -> (
+		// unaccepting: next tokenizer state id |
+		//   accepting: token id)
+	
+	// (parser state id, token id) -> (
+		//  shift: new parser state id |
+		// reduce: grammar id)
+	
+	// (parser state, grammar id) -> new parser state id
+	
+

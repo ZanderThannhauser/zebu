@@ -1,6 +1,9 @@
 
 #include <debug.h>
 
+#include <stdlib.h>
+#include <assert.h>
+
 #include <memory/smalloc.h>
 
 #include <avl/safe_insert.h>

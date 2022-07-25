@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "struct.h"
@@ -42,3 +43,4 @@ int compare_statesets(struct stateset* A, struct stateset* B)
 
 
 
+#endif

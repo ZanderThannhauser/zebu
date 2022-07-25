@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/free_nodes.h>
 #include <avl/avl.h>
 
@@ -20,3 +21,4 @@ void free_stateset(struct stateset* this)
 	EXIT;
 }
 
+#endif

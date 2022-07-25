@@ -1,3 +1,4 @@
 
 struct regex* lex_build_tokenzer(
-	struct tokenset* tokens);
+	struct lex* this,
+	struct tokenset* token_ids);

@@ -7,8 +7,8 @@
 #include <avl/foreach.h>
 #include <avl/free_tree.h>
 
-#include <tokenset/new.h>
-#include <tokenset/add.h>
+#include <set/of_tokens/new.h>
+#include <set/of_tokens/add.h>
 
 #include <named/grammar/struct.h>
 
@@ -83,6 +83,7 @@ void run_tasks(
 			heap_push(todo, new_explore_lookaheads_task(ng->name, ng->start, NULL, ng->end, scratchpad));
 			heap_push(todo, new_percolate_lookaheads_task(ng->name));
 			heap_push(todo, new_add_reductions_task(ng->name, ng->end, scratchpad));
+			// heap.push(new lambda_subgrammars()) //
  		}
 		run;
 	}));

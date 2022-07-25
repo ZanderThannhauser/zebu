@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/init_tree.h>
 #include <avl/avl.h>
 
@@ -25,3 +26,4 @@ struct stateset* new_stateset()
 	return this;
 }
 
+#endif

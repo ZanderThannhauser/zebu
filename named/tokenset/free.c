@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <tokenset/free.h>
+#include <set/of_tokens/free.h>
 
 #include "struct.h"
 #include "free.h"

@@ -253,6 +253,7 @@
 	#define dpvc(x) ;
 	#define dpvo(x) ;
 	#define dpvs(x) ;
+	#define dputs(x) ;
 	#define dpvsn(_, __) ;
 	#define ddprintf(...) ;
 	

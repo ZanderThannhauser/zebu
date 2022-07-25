@@ -10,6 +10,7 @@ struct lex
 	unsigned next_id;
 	
 	struct avl_tree_t* dfa_to_id; // token -> token id
+	struct avl_tree_t* dfa_from_id; // token id -> token
 	
-	// # set(token ids) -> machine id
+	struct avl_tree_t* tokenset_to_tokenizer; // # set(token ids) -> machine id
 };

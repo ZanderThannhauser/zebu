@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/insert.h>
 #include <avl/avl.h>
 
@@ -23,3 +24,4 @@ void stateset_insert(struct stateset* this, struct regex* element)
 	EXIT;
 }
 
+#endif

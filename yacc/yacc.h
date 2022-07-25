@@ -1,4 +1,5 @@
 
 void yacc(
-	struct avl_tree_t* grammar,
+	struct lex* lex,
+	struct avl_tree_t* grammars,
 	struct memory_arena* scratchpad);

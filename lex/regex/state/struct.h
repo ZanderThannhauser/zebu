@@ -2,10 +2,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+struct tokenset;
+
 struct regex
 {
-	bool is_accepting;
-	
 	struct {
 		struct transition {
 			unsigned char value;
@@ -22,6 +22,8 @@ struct regex
 	struct regex* default_transition_to;
 	
 	unsigned phase;
+	
+	struct tokenset* is_accepting;
 	
 	bool is_freeing;
 };

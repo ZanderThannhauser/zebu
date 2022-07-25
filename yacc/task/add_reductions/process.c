@@ -5,7 +5,7 @@
 
 #include <yacc/gegex/state/add_reduction_transition.h>
 
-#include <tokenset/foreach.h>
+#include <set/of_tokens/foreach.h>
 
 #include "../../shared.h"
 #include "../../lookup_tokenset.h"

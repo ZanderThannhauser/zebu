@@ -4,9 +4,9 @@
 /*#include <parser/production/gegex/state/struct.h>*/
 
 /*#include <tokenset/add.h>*/
-#include <tokenset/update.h>
+#include <set/of_tokens/update.h>
 
-#include <strset/foreach.h>
+#include <set/of_strs/foreach.h>
 
 #include <heap/push.h>
 

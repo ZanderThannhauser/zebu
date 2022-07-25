@@ -7,9 +7,9 @@
 
 #include "regex_ll/add.h"
 
-#include "helper.h"
+#include "survey.h"
 
-void simplify_dfa_helper(
+void simplify_dfa_survey(
 	struct regex_ll* unique_nodes,
 	struct regex* node)
 {
@@ -28,13 +28,13 @@ void simplify_dfa_helper(
 		for (i = 0, n = node->transitions.n; i < n; i++)
 		{
 			dpv(node->transitions.data[i]->value);
-			simplify_dfa_helper(unique_nodes, node->transitions.data[i]->to);
+			simplify_dfa_survey(unique_nodes, node->transitions.data[i]->to);
 		}
 		
 		if (node->default_transition_to)
 		{
 			ddprintf("has default\n");
-			simplify_dfa_helper(unique_nodes, node->default_transition_to);
+			simplify_dfa_survey(unique_nodes, node->default_transition_to);
 		}
 		
 		regex_ll_add(unique_nodes, node);

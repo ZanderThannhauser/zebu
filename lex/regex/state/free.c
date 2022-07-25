@@ -32,6 +32,9 @@ void free_regex(
 			free_regex(ele, arena);
 		}
 		
+		// free accepting-token set
+		TODO;
+		
 		arena_dealloc(arena, this->transitions.data);
 		
 		arena_dealloc(arena, this->lambda_transitions.data);

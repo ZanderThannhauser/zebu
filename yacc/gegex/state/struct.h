@@ -14,7 +14,7 @@ struct gegex
 	
 	struct {
 		struct gtransition {
-			char* grammar; // will arena-free
+			char* grammar; // arena-owned
 			struct gegex* start;
 			struct gegex* to;
 		}** data;
@@ -24,7 +24,7 @@ struct gegex
 	struct {
 		struct rtransition {
 			unsigned token;
-			char* reduce_as; // will arena-free
+			char* reduce_as; // arena-owned
 		}** data;
 		size_t n, cap;
 	} reduction_transitions;

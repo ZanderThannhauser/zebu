@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	yacc(scope->grammar, scratchpad);
+	yacc(lex, scope->grammar, scratchpad);
 	
 /*	TODO;*/
 	

@@ -6,8 +6,8 @@
 
 #include <yacc/gegex/state/struct.h>
 
-#include <tokenset/add.h>
-#include <tokenset/update.h>
+#include <set/of_tokens/add.h>
+#include <set/of_tokens/update.h>
 
 #include <heap/push.h>
 

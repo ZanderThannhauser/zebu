@@ -4,7 +4,7 @@
 #include <avl/search.h>
 #include <avl/insert.h>
 
-#include <strset/new.h>
+#include <set/of_strs/new.h>
 
 #include <named/strset/struct.h>
 #include <named/strset/new.h>

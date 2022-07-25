@@ -1,4 +1,7 @@
 
+#include <stdbool.h>
+#include <stddef.h>
+
 struct charset
 {
 	char* chars;
