@@ -6,9 +6,9 @@
 #include "struct.h"
 #include "new.h"
 
-struct cache* new_cache(const struct regex* a, const struct regex* b)
+struct regex_cache* new_regex_cache(const struct regex* a, const struct regex* b)
 {
-	struct cache* this = smalloc(sizeof(*this));
+	struct regex_cache* this = smalloc(sizeof(*this));
 	
 	this->a = a;
 	this->b = b;

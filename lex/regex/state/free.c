@@ -3,6 +3,8 @@
 
 #include <memory/arena/dealloc.h>
 
+#include <set/of_tokens/free.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -31,9 +33,6 @@ void free_regex(
 			
 			free_regex(ele, arena);
 		}
-		
-		// free accepting-token set
-		TODO;
 		
 		arena_dealloc(arena, this->transitions.data);
 		

@@ -1,6 +1,6 @@
 
-struct stateset;
+struct regexset;
 struct regex;
 
-struct mapping* new_mapping(struct stateset* set, struct regex* state);
+struct mapping* new_mapping(struct regexset* set, struct regex* state);
 

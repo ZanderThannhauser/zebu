@@ -5,10 +5,8 @@
 #include "to_string.h"
 
 char* tokenset_to_string(
-	struct tokenset* this)
+	const struct tokenset* this)
 {
-	ENTER;
-	
 	char* buffer = smalloc(this->n * 30 + 1);
 	
 	char* moving = buffer;
@@ -26,9 +24,6 @@ char* tokenset_to_string(
 	
 	*moving = '\0';
 	
-	dpvs(buffer);
-	
-	EXIT;
 	return buffer;
 }
 

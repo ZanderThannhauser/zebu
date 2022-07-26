@@ -112,9 +112,9 @@ int compare_regexes(
 			if (a != b)
 			{
 				// compare acceptance?
-				if (a->is_accepting > b->is_accepting)
+				if (!!a->is_accepting > !!b->is_accepting)
 					cmp = +1;
-				else if (a->is_accepting < b->is_accepting)
+				else if (!!a->is_accepting < !!b->is_accepting)
 					cmp = -1;
 				
 				unsigned a_i = 0, a_n = a->transitions.n,
@@ -152,6 +152,7 @@ int compare_regexes(
 				{
 					const struct regex* const at = a->default_transition_to;
 					const struct regex* const bt = b->default_transition_to;
+					
 					if (at)
 						if (bt)
 							cmp = helper(at, bt);

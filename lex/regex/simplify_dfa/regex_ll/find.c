@@ -20,11 +20,6 @@ struct regex* regex_ll_find(
 		if (regex_are_equal(this->cache, element, i->element))
 			retval = i->element;
 	
-	if (!retval)
-	{
-		TODO;
-	}
-	
 	EXIT;
 	return retval;
 }

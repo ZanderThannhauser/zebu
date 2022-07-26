@@ -3,21 +3,41 @@
 
 #include <yacc/gegex/state/struct.h>
 
+#include <yacc/state/dotout.h>
+#include <yacc/state/add_transition.h>
+#include <yacc/state/add_reduce_transition.h>
+#include <yacc/state/add_grammar_transition.h>
+
 #include <avl/new.h>
 #include <avl/search.h>
+#include <avl/free_tree.h>
 #include <avl/safe_insert.h>
 
 #include <lex/build_tokenizer/build_tokenizer.h>
 
-#include <set/of_gegexs/new.h>
-#include <set/of_gegexs/contains.h>
-#include <set/of_gegexs/foreach.h>
-#include <set/of_gegexs/add.h>
-#include <set/of_gegexs/clone.h>
+#include <set/of_gegexes/new.h>
+#include <set/of_gegexes/clear.h>
+#include <set/of_gegexes/free.h>
+#include <set/of_gegexes/contains.h>
+#include <set/of_gegexes/foreach.h>
+#include <set/of_gegexes/add.h>
+#include <set/of_gegexes/clone.h>
+#include <set/of_gegexes/update.h>
+#include <set/of_gegexes/compare.h>
 
+#include <set/of_tokens/struct.h>
 #include <set/of_tokens/new.h>
 #include <set/of_tokens/add.h>
-/*#include <tokenset/is_disjoint.h>*/
+#include <set/of_tokens/foreach.h>
+#include <set/of_tokens/free.h>
+
+#ifdef DEBUGGING
+#include <set/of_gegexes/struct.h>
+#include <set/of_tokensets/struct.h>
+#endif
+
+#include <set/of_tokensets/foreach.h>
+#include <set/of_tokensets/prettyprint.h>
 
 #include <named/grammar/struct.h>
 
@@ -51,7 +71,7 @@ struct cache_node
 };
 
 static struct cache_node* new_cache_node(
-	const struct ptrset* source_states,
+	const struct gegexset* source_states,
 	struct yacc_state* state)
 {
 	ENTER;
@@ -69,7 +89,8 @@ static struct cache_node* new_cache_node(
 
 static int compare_cache_nodes(const void* a, const void* b)
 {
-	TODO;
+	const struct cache_node* A = a, *B = b;
+	return compare_gegexsets(A->source_states, B->source_states);
 }
 
 static void free_cache_node(void* a)
@@ -79,62 +100,224 @@ static void free_cache_node(void* a)
 
 struct shift_node
 {
-	unsigned token;
-	struct gegexset* destinations;
+	unsigned token; // must be the first
+	struct gegexset* destinations; // "owned" by struct
 };
 
-static struct shift_node* new_shift_node()
+static struct shift_node* new_shift_node(unsigned token)
 {
-	TODO;
+	ENTER;
+	
+	struct shift_node* this = smalloc(sizeof(*this));
+	
+	this->token = token;
+	this->destinations = new_gegexset();
+	
+	EXIT;
+	return this;
 }
 
-static void add_shift()
+static void add_shift(
+	struct avl_tree_t* tree,
+	unsigned token,
+	struct gegex* destination)
 {
-	TODO;
+	ENTER;
+	
+	dpv(token);
+	
+	struct avl_node_t* node = avl_search(tree, &token);
+	
+	if (node)
+	{
+		struct shift_node* old = node->item;
+		
+		add_lambda_states(old->destinations, destination);
+	}
+	else
+	{
+		struct shift_node* new = new_shift_node(token);
+		
+		add_lambda_states(new->destinations, destination);
+		
+		safe_avl_insert(tree, new);
+	}
+	
+	EXIT;
 }
 
-static int compare_shift_nodes()
+static int compare_shift_nodes(const void* a, const void* b)
 {
-	TODO;
+	int cmp = 0;
+	
+	const struct shift_node* A = a, *B = b;
+	
+	if (A->token > B->token)
+		cmp = +1;
+	else if (A->token < B->token)
+		cmp = -1;
+	
+	return cmp;
 }
 
-static void free_shift_node()
+static void free_shift_node(void* ptr)
 {
-	TODO;
+	ENTER;
+	struct shift_node* this = ptr;
+	free_gegexset(this->destinations);
+	free(this);
+	EXIT;
 }
 
 struct reduce_node
 {
-	unsigned token;
-	char* grammar;
+	unsigned token; // must be the first
+	const char* grammar;
 };
 
-static struct reduce_node* new_reduce_node()
+static struct reduce_node* new_reduce_node(
+	unsigned token,
+	const char* grammar)
 {
-	TODO;
+	ENTER;
+	
+	struct reduce_node* this = smalloc(sizeof(*this));
+	
+	this->token = token;
+	this->grammar = grammar;
+	
+	dpv(this->token);
+	dpvs(this->grammar);
+	
+	EXIT;
+	return this;
 }
 
-static void add_reduce()
+static void add_reduce(
+	struct avl_tree_t* tree,
+	unsigned token,
+	const char* grammar)
 {
-	TODO;
+	ENTER;
+	
+	dpv(token);
+	
+	struct avl_node_t* node = avl_search(tree, &token);
+	
+	if (node)
+	{
+		TODO;
+	}
+	else
+	{
+		struct reduce_node* new = new_reduce_node(token, grammar);
+		
+		safe_avl_insert(tree, new);
+	}
+	
+	EXIT;
 }
 
-static int compare_reduce_nodes()
+static int compare_reduce_nodes(const void* a, const void* b)
 {
-	TODO;
+	const struct reduce_node* A = a, *B = b;
+	
+	if (A->token > B->token)
+		return +1;
+	else if (A->token < B->token)
+		return -1;
+	else
+		return +0;
 }
 
-static void free_reduce_node()
+static void free_reduce_node(void* ptr)
 {
-	TODO;
+	ENTER;
+	
+	struct reduce_node* this = ptr;
+	
+	free(this);
+	
+	EXIT;
+}
+
+struct subgrammar_node
+{
+	const char* grammar;
+	struct gegexset* destinations; // free me
+};
+
+static struct subgrammar_node* new_subgrammar_node(const char* grammar)
+{
+	ENTER;
+	
+	struct subgrammar_node* this = smalloc(sizeof(*this));
+	
+	this->grammar = grammar;
+	this->destinations = new_gegexset();
+	
+	dpvs(this->grammar);
+	
+	EXIT;
+	return this;
+}
+
+static void add_subgrammar(
+	struct avl_tree_t* tree,
+	const char* grammar,
+	struct gegex* destination)
+{
+	ENTER;
+	
+	dpvs(grammar);
+	
+	struct avl_node_t* node = avl_search(tree, &grammar);
+	
+	if (node)
+	{
+		struct subgrammar_node* old = node->item;
+		
+		add_lambda_states(old->destinations, destination);
+	}
+	else
+	{
+		struct subgrammar_node* new = new_subgrammar_node(grammar);
+		
+		add_lambda_states(new->destinations, destination);
+		
+		safe_avl_insert(tree, new);
+	}
+	
+	EXIT;
+}
+
+static int compare_subgrammar_nodes(const void* a, const void* b)
+{
+	const struct subgrammar_node* A = a, *B = b;
+	
+	return strcmp(A->grammar, B->grammar);
+}
+
+static void free_subgrammar_node(void* ptr)
+{
+	ENTER;
+	
+	struct subgrammar_node* this = ptr;
+	
+	free_gegexset(this->destinations);
+	
+	free(this);
+	
+	EXIT;
 }
 
 static struct yacc_state* helper(
 	struct lex* lex,
 	struct avl_tree_t* cache,
 	struct memory_arena* scratchpad,
-	const struct ptrset* source_states)
+	const struct gegexset* source_states)
 {
+	struct yacc_state* state;
 	ENTER;
 	
 	// lookup source_states in cache:
@@ -142,8 +325,8 @@ static struct yacc_state* helper(
 	
 	if (node)
 	{
-		// return yacc state
-		TODO;
+		struct cache_node* cache = node->item;
+		state = cache->state;
 	}
 	else
 	{
@@ -156,68 +339,194 @@ static struct yacc_state* helper(
 		// map from token to name to reduce by:
 		struct avl_tree_t* reduce_tokens = new_avl_tree(compare_reduce_nodes, free_reduce_node);
 		
+		// map from subgrammar name to set of gegex states:
+		struct avl_tree_t* subgrammars = new_avl_tree(compare_subgrammar_nodes, free_subgrammar_node);
+		
 		// fill in the above sets:
-		ptrset_foreach(source_states, ({
-			void runme(const void* ptr)
+		gegexset_foreach(source_states, ({
+			void runme(struct gegex* state)
 			{
+				ENTER;
+				dpv(state);
+				
 				unsigned i, n;
-				const struct gegex* state = ptr;
+				
+				dpv(state->transitions.n);
 				
 				for (i = 0, n = state->transitions.n; i < n; i++)
 				{
-					unsigned token = state->transitions.data[i]->token;
+					const struct transition* const ele = state->transitions.data[i];
 					
-					add_shift(shift_tokens, token,
-						state->transitions.data[i]->next);
+					unsigned token = ele->token;
+					
+					add_shift(shift_tokens, token, ele->to);
 					
 					tokenset_add(all_tokens, token);
 				}
 				
+				dpv(state->reduction_transitions.n);
+				
 				for (i = 0, n = state->reduction_transitions.n; i < n; i++)
 				{
-					unsigned token = state->reduction_transitions.data[i]->token;
+					const struct rtransition* const ele = state->reduction_transitions.data[i];
 					
-					add_reduce(reduce_tokens, token,
-						state->reduction_transitions.data[i]->reduce_as);
+					unsigned token = ele->token;
+					
+					add_reduce(reduce_tokens, token, ele->reduce_as);
 					
 					tokenset_add(all_tokens, token);
 				}
+				
+				// grammar transitions
+				dpv(state->grammar_transitions.n);
+				for (i = 0, n = state->grammar_transitions.n; i < n; i++)
+				{
+					const struct gtransition* t = state->grammar_transitions.data[i];
+					
+					dpvs(t->grammar);
+					
+					add_subgrammar(subgrammars, t->grammar, t->to);
+				}
+				
+				EXIT;
 			}
 			runme;
 		}));
 		
 		// create and add new yacc_state to cache:
-		struct yacc_state* state = new_yacc_state(scratchpad);
+		state = new_yacc_state(scratchpad);
 		
 		safe_avl_insert(cache, new_cache_node(source_states, state));
 		
-		struct tokensetset* tokens = lex_build_tokenzer(&state->tokenizer_start, lex, all_tokens);
+		// don't free 'tokens', lex will do that
+		struct tokensetset* tokens = lex_build_tokenzer(
+			/* (   out) struct lex_state* start: */ &state->tokenizer_start,
+			/* (in/out) struct lex* lex:         */ lex,
+			/* (in/out) struct memory_arena*     */ scratchpad,
+			/* (in)     struct tokenset* tokens: */ all_tokens);
 		
-		for (unsigned i = 0, n = tokens->n; i < n; i++)
+		struct gegexset* substates = new_gegexset();
+		
+		dpv(tokens->n);
+		
+		tokensetset_prettyprint(tokens);
+		
+		// CHECK_NTH(2);
+		
+		tokensetset_foreach(tokens, ({
+			void runme(struct tokenset* ele)
+			{
+				unsigned first = ele->data[0];
+				
+				dpv(first);
+				
+				// is this a shift or a reduce transition?
+				if (avl_search(shift_tokens, &first))
+				{
+					gegexset_clear(substates);
+					
+					tokenset_foreach(ele, ({
+						void runme(unsigned token) {
+							dpv(token);
+							
+							if (avl_search(reduce_tokens, &token))
+							{
+								TODO;
+								exit(1);
+							}
+							
+							struct avl_node_t* node = avl_search(shift_tokens, &token);
+							assert(node);
+							
+							struct shift_node* shift = node->item;
+							dpv(shift->destinations->n);
+							gegexset_update(substates, shift->destinations);
+						}
+						runme;
+					}));
+					
+					dpv(substates->n);
+					
+					// call myself for destinations
+					struct yacc_state* substate = helper(lex, cache, scratchpad, substates);
+					
+					// add transition
+					yacc_state_add_transition(state, scratchpad, ele, substate);
+				}
+				else if (avl_search(reduce_tokens, &first))
+				{
+					const char* grammar = NULL;
+					
+					tokenset_foreach(ele, ({
+						void runme(unsigned token) {
+							dpv(token);
+							
+							if (avl_search(shift_tokens, &token))
+							{
+								TODO;
+								exit(1);
+							}
+							
+							struct avl_node_t* node = avl_search(reduce_tokens, &first);
+							assert(node);
+							
+							struct reduce_node* reduce = node->item;
+							
+							dpvs(reduce->grammar);
+							
+							if (!grammar)
+								grammar = reduce->grammar;
+							else if (strcmp(grammar, reduce->grammar))
+							{
+								TODO;
+							}
+						}
+						runme;
+					}));
+					
+					dpvs(grammar);
+					assert(grammar);
+					
+					// add transition
+					yacc_state_add_reduce_transition(state, scratchpad, ele, grammar);
+				}
+				else
+				{
+					// huh?
+					abort();
+				}
+			}
+			runme;
+		}));
+		
+		// grammar transitions
+		for (struct avl_node_t* node = subgrammars->head; node; node = node->next)
 		{
-			const struct tokenset* ele = tokens->data[i];
+			struct subgrammar_node* ele = node->item;
 			
-			dpv(ele);
-			dpv(ele->n);
+			dpvs(ele->grammar);
 			
-			// if ele in shifts:
-				// destinations = set();
-				// for t in ele:
-					// assert(t not in reduce)
-					// destinations.update(shifts[t]);
-				// call myself for destinations
-				// add transition
-			// else:
-				// assert(ele in reduces);
-				// add transition
-				TODO;
+			dpv(ele->destinations->n);
+			
+			assert(ele->destinations->n);
+			
+			// call myself for destinations
+			struct yacc_state* substate = helper(lex, cache, scratchpad, ele->destinations);
+			
+			// add transition
+			yacc_state_add_grammar_transition(state, scratchpad, ele->grammar, substate);
 		}
 		
 		// cleanup
-		TODO;
+		free_tokenset(all_tokens);
+		avl_free_tree(shift_tokens);
+		avl_free_tree(reduce_tokens);
+		avl_free_tree(subgrammars);
+		free_gegexset(substates);
 	}
 	
 	EXIT;
+	return state;
 }
 
 struct gegex* yacc_nfa_to_dfa(
@@ -231,16 +540,22 @@ struct gegex* yacc_nfa_to_dfa(
 	
 	struct avl_node_t* node = avl_search(grammar, (char*[]) {"(start)"});
 	dpv(node);
+	assert(node);
 	
 	struct named_grammar* start = node->item;
 	dpv(start);
 	
-	struct ptrset* states = new_ptrset();
+	struct gegexset* states = new_gegexset();
 	
 	add_lambda_states(states, start->start);
 	
 	struct yacc_state* new_start = helper(lex, cache, scratchpad, states);
 	
+	#ifdef DEBUGGING
+	yacc_state_dotout(new_start);
+	#endif
+	
+	// cleanup and return
 	TODO;
 	
 	EXIT;

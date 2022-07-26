@@ -33,7 +33,7 @@ void strset_add(struct strset* this, const char* str)
 		}
 		else if (cmp > 0)
 		{
-			i++;
+			;
 		}
 		else
 		{

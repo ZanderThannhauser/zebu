@@ -6,6 +6,10 @@
 #include <misc/phase_counter.h>
 #include <misc/frame_counter.h>
 
+#include <set/of_regexes/foreach.h>
+
+#include <set/of_tokens/to_string.h>
+
 #include "state/struct.h"
 #include "dotout.h"
 
@@ -19,12 +23,24 @@ static void helper(FILE* out, struct regex* state)
 		
 		state->phase = phase_counter;
 		
-		fprintf(out, ""
-			"\"%p\" [" "\n"
-				"\t" "shape = %s;" "\n"
-				"\t" "label = \"\";" "\n"
-			"]" "\n"
-		"", state, state->is_accepting ? "doublecircle" : "circle");
+		if (state->is_accepting)
+		{
+			fprintf(out, ""
+				"\"%p\" [" "\n"
+					"\t" "shape = doublecircle;" "\n"
+					"\t" "label = \"%u\";" "\n"
+				"]" "\n"
+			"", state, state->is_accepting);
+		}
+		else
+		{
+			fprintf(out, ""
+				"\"%p\" [" "\n"
+					"\t" "shape = circle;" "\n"
+					"\t" "label = \"\";" "\n"
+				"]" "\n"
+			"", state);
+		}
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)
@@ -80,6 +96,47 @@ static void helper(FILE* out, struct regex* state)
 	EXIT;
 }
 
+void regex_dotout_set(struct regexset* set)
+{
+	ENTER;
+	
+	char path[PATH_MAX];
+	
+	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
+	
+	dpvs(path);
+	
+	FILE* out = fopen(path, "w");
+	
+	if (!out)
+	{
+		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		abort();
+	}
+	
+	fprintf(out, "digraph {" "\n");
+	
+	fprintf(out, "\t" "rankdir = LR;" "\n");
+	
+	phase_counter++;
+	
+	regexset_foreach(set, ({
+		void runme(struct regex* state) {
+			fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
+			
+			helper(out, state);
+		}
+		runme;
+	}));
+	
+	fprintf(out, "}" "\n");
+	
+	if (out)
+		fclose(out);
+	
+	EXIT;
+}
+
 void regex_dotout(struct regex* state)
 {
 	ENTER;
@@ -100,9 +157,6 @@ void regex_dotout(struct regex* state)
 	
 	fprintf(out, "digraph {" "\n");
 	
-/*	fprintf(out, "\t" "edge [minlen = 2];" "\n");*/
-/*	fprintf(out, "\t" "overlap = false;" "\n");*/
-/*	fprintf(out, "\t" "outputorder = edgesfirst;" "\n");*/
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);

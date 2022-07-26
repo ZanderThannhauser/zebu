@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <parser/production/gbundle.h>
+#include <parser/grammar/gbundle.h>
 
 #include "state/new.h"
 #include "state/add_transition.h"

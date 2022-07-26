@@ -1,122 +1,102 @@
 
-#include <avl/search.h>
-
 #include <debug.h>
 
 #include <assert.h>
 
 #include <stddef.h>
 
+#include <avl/search.h>
+#include <avl/safe_insert.h>
+
+#include <set/of_regexes/new.h>
+#include <set/of_regexes/add.h>
+
 #include <set/of_tokens/struct.h>
+#include <set/of_tokens/new.h>
 #include <set/of_tokens/foreach.h>
+#include <set/of_tokens/add.h>
+
+#ifdef DEBUGGING
+#include <set/of_tokensets/struct.h>
+#include <set/of_tokensets/add.h>
+#include <set/of_tokens/to_string.h>
+#endif
+
+#include <set/of_tokensets/new.h>
+
+#include "../state/free.h"
 
 #include "../struct.h"
+
 #include "../lookup/id_to_dfa.h"
 
+#include "node/struct.h"
+#include "node/new.h"
+
+#include "dfas_to_dfa.h"
 #include "build_tokenizer.h"
 
-struct regex* lex_build_tokenzer(
+struct tokensetset* lex_build_tokenzer(
+	struct lex_state** outgoing,
 	struct lex* this,
+	struct memory_arena* scratchpad,
 	struct tokenset* token_ids)
 {
+	struct tokensetset* retval;
 	ENTER;
 	
 	// check cache
-	struct avl_node_t* cache_node = avl_search(this->tokenset_to_tokenizer, &token_ids);
+	struct avl_node_t* cache_node = avl_search(this->tokenizer.cache, &token_ids);
 	
 	if (cache_node)
 	{
 		// we've built this tokenizer before, what did we say last time?
+		
+		struct build_tokenizer_node* node = cache_node->item;
+		
+		*outgoing = node->start;
+		
 		// return start state, and set of set of tokens
-		TODO;
+		retval = node->matches;
 	}
 	else
 	{
 		// build dfa of all tokens' dfas
-			// lookup dfas for each id
-		{
-			TODO;
-			#if 0
-			size_t i = 0, n = token_ids->n;
-			struct regex* (*starts)[n] = smalloc(sizeof(*starts));
-			
-			tokenset_foreach(token_ids, ({
-				void runme(unsigned token) {
-					dpv(token);
-					(*starts)[i++] = lex_id_to_dfa(this, token);
+		struct regexset* starts = new_regexset();
+		
+		retval = new_tokensetset();
+		
+		tokenset_foreach(token_ids, ({
+			void runme(unsigned token) {
+				if (token)
+				{
+					regexset_add(starts, lex_id_to_dfa(this, token));
 				}
-				runme;
-			}));
-			
-			struct regex* new_start = dfas_to_dfa(*starts, n);
-			
-			TODO;
-			
-			free(starts);
-			#endif
-		}
+				else
+				{
+					// EOF token:
+					struct tokenset* ts = new_tokenset();
+					tokenset_add(ts, 0);
+					tokensetset_add(retval, ts);
+				}
+			}
+			runme;
+		}));
 		
-		// iterate through states, possibly adding to tree
-		// clone/simplifiy dfa
-		TODO;
+		struct lex_state* new_state = dfas_to_dfa(retval, scratchpad, starts);
 		
-		// add new tokenizer to cache
-		TODO;
+		dpv(new_state);
+		dpv(retval->n);
 		
-		// free original dfa
-		TODO;
+		safe_avl_insert(this->tokenizer.cache,
+			new_build_tokenizer_node(token_ids, retval, new_state));
+		
+		*outgoing = new_state;
 	}
 	
 	EXIT;
+	return retval;
 }
-
-// import machines
-
-// lookup = dict()  # fingers -> state;
-
-// patches = dict() # set(token ids) -> token_ids
-
-// def build_tokenizer(token_ids):
-	// if token_ids in cached:
-		// return cached[token_ids];
-	// else:
-		// fingers = dict() # index -> state
-		
-		// for i, id in enumerate(token_ids):
-			// fingers[machines[id]] = i;
-			
-		// def helper(fingers):
-			// if list(fingers.values()) in lookup:
-				//
-			// else:
-				// state = new state();
-				// lookup[] = state;
-				// accepting = set(f for f in fingers if f.is_accepting);
-				// match len(accepting):
-					// case 0: pass
-					// case 1: state.is_accepting = true
-					// case _:
-						// ids = set(token_ids[fingers[a]] for a in accepting);
-						// if ids in patches:
-							//
-						// else:
-							// patches[ids] = counter;
-							// counter += 1;
-				
-				// transitions = set();
-				// for f in fingers:
-					// transitions.update(s.transitions);
-				// while transitions:
-					// value = transitions.pop();
-					// new_fingers = dict();
-					// for f, i in fingers.items():
-						// if value in f.transitions:
-							// new_fingers[f.transitions[value]] = i;
-					// state[value] = helper(new_fingers);
-
-		// start = helper(fingers);
-
-
 
 
 

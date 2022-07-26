@@ -8,8 +8,11 @@ void free_tokenset(struct tokenset* this)
 {
 	ENTER;
 	
-	free(this->data);
-	free(this);
+	if (this)
+	{
+		free(this->data);
+		free(this);
+	}
 	
 	EXIT;
 }

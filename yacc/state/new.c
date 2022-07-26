@@ -25,6 +25,8 @@ struct yacc_state* new_yacc_state(
 	this->reduction_transitions.n = 0;
 	this->reduction_transitions.cap = 0;
 	
+	this->phase = 0;
+	
 	EXIT;
 	return this;
 }

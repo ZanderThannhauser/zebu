@@ -1,42 +1,29 @@
 
 #include <debug.h>
 
-#include "../state/struct.h"
+#include <lex/regex/state/struct.h>
 
-#ifdef DEBUGGING
-#include "stateset/struct.h"
-#endif
-
-#include "stateset/contains.h"
-#include "stateset/insert.h"
+#include <set/of_regexes/contains.h>
+#include <set/of_regexes/add.h>
 
 #include "add_lamda_states.h"
 
-void add_lamda_states(struct stateset* stateset)
+void regex_add_lamda_states(
+	struct regexset* set, struct regex* ele)
 {
-	bool changed = true;
 	ENTER;
 	
-	while (changed)
+	dpv(ele);
+	
+	if (!regexset_contains(set, ele))
 	{
-		dpv(stateset->n);
+		regexset_add(set, ele);
 		
-		changed = false;
-		
-		for (struct avl_node_t* node = stateset->tree.head; node; node = node->next)
+		unsigned i, n;
+		for (i = 0, n = ele->lambda_transitions.n; i < n; i++)
 		{
-			struct regex* state = node->item;
-			
-			for (size_t i = 0, n = state->lambda_transitions.n; i < n; i++)
-			{
-				struct regex* lambda = state->lambda_transitions.data[i];
-				
-				if (!stateset_contains(stateset, lambda))
-				{
-					stateset_insert(stateset, lambda);
-					changed = true;
-				}
-			}
+			regex_add_lamda_states(set,
+				ele->lambda_transitions.data[i]);
 		}
 	}
 	

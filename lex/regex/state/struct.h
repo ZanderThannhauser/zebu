@@ -23,7 +23,7 @@ struct regex
 	
 	unsigned phase;
 	
-	struct tokenset* is_accepting;
+	unsigned is_accepting;
 	
 	bool is_freeing;
 };

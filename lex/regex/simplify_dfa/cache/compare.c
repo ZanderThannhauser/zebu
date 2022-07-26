@@ -4,9 +4,9 @@
 #include "struct.h"
 #include "compare.h"
 
-int compare_caches(const void* a, const void* b)
+int compare_regex_caches(const void* a, const void* b)
 {
-	const struct cache *A = a, *B = b;
+	const struct regex_cache *A = a, *B = b;
 	
 	if (A->a > B->a)
 		return +1;

@@ -14,6 +14,10 @@
 #include <heap/pop.h>
 #include <heap/free.h>
 
+#include <set/of_regexes/new.h>
+#include <set/of_regexes/add.h>
+#include <set/of_regexes/foreach.h>
+
 #include "iterator/struct.h"
 #include "iterator/new.h"
 #include "iterator/compare.h"
@@ -27,15 +31,15 @@
 #include "add_lamda_states.h"
 #include "helper.h"
 
-/*#include "stateset/struct.h"*/
-/*#include "stateset/insert.h"*/
-/*#include "stateset/new.h"*/
+/*#include "regexset/struct.h"*/
+/*#include "regexset/insert.h"*/
+/*#include "regexset/new.h"*/
 
 #include "mapping/struct.h"
 #include "mapping/new.h"
 
 struct regex* nfa_to_dfa_helper(
-	struct stateset* states,
+	struct regexset* states,
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena)
 {
@@ -64,15 +68,13 @@ struct regex* nfa_to_dfa_helper(
 			
 			bool is_accepting = false;
 			
-			for (node = states->tree.head; !is_accepting && node; node = node->next)
-			{
-				struct regex* ele = node->item;
-				
-				if (ele->is_accepting)
-				{
-					is_accepting = true;
+			regexset_foreach(states, ({
+				void runme(struct regex* ele) {
+					if (ele->is_accepting)
+						is_accepting = true;
 				}
-			}
+				runme;
+			}));
 			
 			state->is_accepting = is_accepting;
 			
@@ -95,38 +97,39 @@ struct regex* nfa_to_dfa_helper(
 		{
 			struct avl_node_t* node;
 			
-			for (node = states->tree.head; node; node = node->next)
-			{
-				struct regex* ele = node->item;
-				
-				struct iterator* iter = new_iterator(ele);
-				
-				bool needed = false;
-				
-				if (iter->moving < iter->end)
-				{
-					heap_push(heap, iter);
-					needed = true;
-				}
-				
-				if (iter->default_to)
-				{
-					if (defaults.n + 1 > defaults.cap)
+			regexset_foreach(states, ({
+				void runme(struct regex* ele) {
+					struct iterator* iter = new_iterator(ele);
+					
+					bool needed = false;
+					
+					if (iter->moving < iter->end)
 					{
-						defaults.cap = defaults.cap << 1 ?: 1;
-						defaults.data = srealloc(defaults.data,
-							sizeof(*defaults.data) * defaults.cap);
+						heap_push(heap, iter);
+						needed = true;
 					}
 					
-					defaults.data[defaults.n++] = iter;
-					needed = true;
+					if (iter->default_to)
+					{
+						if (defaults.n + 1 > defaults.cap)
+						{
+							defaults.cap = defaults.cap << 1 ?: 1;
+							defaults.data = srealloc(defaults.data,
+								sizeof(*defaults.data) * defaults.cap);
+						}
+						
+						defaults.data[defaults.n++] = iter;
+						needed = true;
+					}
+					
+					if (!needed)
+					{
+						free_iterator(iter);
+					}
 				}
-				
-				if (!needed)
-				{
-					free_iterator(iter);
-				}
-			}
+				runme;
+			}));
+			
 		}
 		
 		unsigned round = 0;
@@ -137,13 +140,13 @@ struct regex* nfa_to_dfa_helper(
 			
 			dpv(min_value);
 			
-			struct stateset* substateset = new_stateset();
+			struct regexset* subregexset = new_regexset();
 			
 			while (heap->n && heap->datai[0]->moving[0]->value == min_value)
 			{
 				struct iterator* iter = heap_pop(heap);
 				
-				stateset_insert(substateset, (*iter->moving++)->to);
+				regex_add_lamda_states(subregexset, (*iter->moving++)->to);
 				
 				iter->last_used = round;
 				
@@ -163,12 +166,9 @@ struct regex* nfa_to_dfa_helper(
 				}
 			}
 			
-			// add lambda states
-			add_lamda_states(substateset);
-			
 			// substate = myself(state-set);
 			struct regex* substate = nfa_to_dfa_helper(
-				/* states: */ substateset,
+				/* states: */ subregexset,
 				/* mappings: */ mappings,
 				/* arena: */ arena);
 			
@@ -180,18 +180,15 @@ struct regex* nfa_to_dfa_helper(
 		
 		if (defaults.n)
 		{
-			// create stateset of all defaults
-			struct stateset* substateset = new_stateset();
+			// create regexset of all defaults
+			struct regexset* subregexset = new_regexset();
 			
 			for (size_t i = 0, n = defaults.n; i < n; i++)
-				stateset_insert(substateset, defaults.data[i]->default_to);
-			
-			// add lambdas
-			add_lamda_states(substateset);
+				regex_add_lamda_states(subregexset, defaults.data[i]->default_to);
 			
 			// node.default = call myself
 			struct regex* substate = nfa_to_dfa_helper(
-				/* states: */ substateset,
+				/* states: */ subregexset,
 				/* mappings: */ mappings,
 				/* arena: */ arena);
 			

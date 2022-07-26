@@ -32,7 +32,7 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 		}
 		else if (ptr > ele)
 		{
-			i++;
+			;
 		}
 		else
 		{

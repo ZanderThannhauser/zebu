@@ -12,5 +12,7 @@ struct lex
 	struct avl_tree_t* dfa_to_id; // token -> token id
 	struct avl_tree_t* dfa_from_id; // token id -> token
 	
-	struct avl_tree_t* tokenset_to_tokenizer; // # set(token ids) -> machine id
+	struct {
+		struct avl_tree_t* cache; // # set(token ids) -> machine id
+	} tokenizer;
 };

@@ -1,7 +1,7 @@
 
-#include <avl/avl.h>
-#include <avl/new.h>
-#include <avl/free_tree.h>
+/*#include <avl/avl.h>*/
+/*#include <avl/new.h>*/
+/*#include <avl/free_tree.h>*/
 
 #include <debug.h>
 
@@ -12,9 +12,6 @@
 #include "../dotout.h"
 
 #include "../state/struct.h"
-
-#include "cache/compare.h"
-#include "cache/free.h"
 
 #include "regex_ll/new.h"
 #include "regex_ll/free.h"
@@ -29,9 +26,7 @@ struct regex* regex_simplify_dfa(
 {
 	ENTER;
 	
-	struct avl_tree_t* cache = new_avl_tree(compare_caches, free_cache);
-	
-	struct regex_ll* unique_nodes = new_regex_ll(cache);
+	struct regex_ll* unique_nodes = new_regex_ll();
 	
 	phase_counter++;
 	
@@ -41,8 +36,6 @@ struct regex* regex_simplify_dfa(
 		unique_nodes, original_start, arena);
 	
 	free_regex_ll(unique_nodes);
-	
-	avl_free_tree(cache);
 	
 	#ifdef DEBUGGING
 	regex_dotout(new_start);

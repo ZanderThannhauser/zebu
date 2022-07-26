@@ -84,8 +84,6 @@ struct gbundle read_highest_production(
 				/* chars:      */ tokenizer->tokenchars.chars + 1,
 				/* strlen:     */ 1);
 			
-			TODO;
-			#if 0
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
 			dpv(token_id);
@@ -100,7 +98,6 @@ struct gbundle read_highest_production(
 			
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
-			#endif
 			#endif
 			break;
 		}
@@ -116,8 +113,6 @@ struct gbundle read_highest_production(
 				/* chars:      */ tokenizer->tokenchars.chars + 1,
 				/* strlen:     */ tokenizer->tokenchars.n - 2);
 			
-			TODO;
-			#if 0
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
 			dpv(token_id);
@@ -131,7 +126,6 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
-			#endif
 			#endif
 			break;
 		}
@@ -154,8 +148,6 @@ struct gbundle read_highest_production(
 			
 			struct regex* start = regex_from_charset(charset, scratchpad);
 			
-			TODO;
-			#if 0
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
 			dpv(token_id);
@@ -169,7 +161,6 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
-			#endif
 			#endif
 			break;
 		}
@@ -206,8 +197,6 @@ struct gbundle read_highest_production(
 				start = regex.dfa;
 			}
 			
-			TODO;
-			#if 0
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
 			dpv(token_id);
@@ -222,7 +211,6 @@ struct gbundle read_highest_production(
 			
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
-			#endif
 			#endif
 			break;
 		}

@@ -30,7 +30,7 @@ void tokenset_add(struct tokenset* this, unsigned token)
 		}
 		else if (token > this->data[i])
 		{
-			i++;
+			;
 		}
 		else
 		{
@@ -41,6 +41,21 @@ void tokenset_add(struct tokenset* this, unsigned token)
 	}
 	
 	this->data[this->n++] = token;
+	
+	#if 0
+	#ifdef DEBUGGING
+	{
+		unsigned n;
+		for (i = 0, n = this->n; i < n; i++)
+		{
+			dpv(this->data[i]);
+		}
+		
+/*		CHECK_NTH(4);*/
+		getchar();
+	}
+	#endif
+	#endif
 	
 	EXIT;
 }

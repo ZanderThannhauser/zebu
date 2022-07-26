@@ -6,7 +6,7 @@
 #include "struct.h"
 #include "new.h"
 
-struct mapping* new_mapping(struct stateset* set, struct regex* state)
+struct mapping* new_mapping(struct regexset* set, struct regex* state)
 {
 	ENTER;
 	struct mapping* this = smalloc(sizeof(*this));

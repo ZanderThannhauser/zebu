@@ -6,6 +6,10 @@
 #include <avl/safe_insert.h>
 #include <avl/search.h>
 
+#include <lex/regex/state/struct.h>
+
+#include <misc/phase_counter.h>
+
 #include "../struct.h"
 
 #include "to_node/struct.h"
@@ -35,12 +39,31 @@ unsigned lex_dfa_to_id(
 	{
 		retval = this->next_id++;
 		
-		// create a singleton tokenset
-		TODO;
+		void helper(struct regex* state)
+		{
+			unsigned i, n;
+			ENTER;
+			
+			if (state->phase != phase_counter)
+			{
+				state->phase = phase_counter;
+				
+				assert(!state->lambda_transitions.n);
+				
+				if (state->is_accepting)
+					state->is_accepting = retval;
+				
+				for (i = 0, n = state->transitions.n; i < n; i++)
+					helper(state->transitions.data[i]->to);
+				
+				if (state->default_transition_to)
+					helper(state->default_transition_to);
+			}
+			
+			EXIT;
+		}
 		
-		// traverse through new machine, adding new token id to accepting
-		// states
-		TODO;
+		phase_counter++, helper(token);
 		
 		struct dfa_to_id_node*   to = new_dfa_to_id_node(retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);

@@ -6,8 +6,8 @@
 /*#include <yacc/gegex/state/struct.h>*/
 #include <yacc/gegex/state/new.h>
 
-#include "production/root.h"
-#include "production/gbundle.h"
+#include "grammar/root.h"
+#include "grammar/gbundle.h"
 
 #include "scope/declare/grammar.h"
 

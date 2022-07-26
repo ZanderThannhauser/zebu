@@ -1,9 +1,0 @@
-
-
-%start foo
-
-bar: "a"* "c";
-
-foo: "a"* (bar | "a"* "b");
-
-

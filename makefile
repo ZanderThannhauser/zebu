@@ -49,6 +49,7 @@ ARGS += --debug=yacc
 ARGS += --debug=lex
 
 ARGS += -i ./examples/classic.zb -o ./examples/classic # zebu appends suffix
+#ARGS += -i ./examples/math.zb -o ./examples/math # zebu appends suffix
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

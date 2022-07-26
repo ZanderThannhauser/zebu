@@ -15,6 +15,8 @@ struct regex* lex_id_to_dfa(
 {
 	ENTER;
 	
+	dpv(token_id);
+	
 	struct avl_node_t* node = avl_search(this->dfa_from_id, &token_id);
 	
 	dpv(node);

@@ -6,31 +6,31 @@ struct yacc_state
 {
 	struct {
 		struct ytransition {
-			unsigned token;
+			const struct tokenset* value; // lex will free
 			struct yacc_state* to;
 		}** data;
 		size_t n, cap;
 	} transitions;
 	
 	struct {
+		struct rytransition {
+			const struct tokenset* value; // lex will free
+			const char* reduce_as; // arena will free
+		}** data;
+		size_t n, cap;
+	} reduction_transitions;
+	
+	struct {
 		struct gytransition {
-			char* grammar; // will arena-free
+			const char* grammar; // arena will free
 			struct yacc_state* to;
 		}** data;
 		size_t n, cap;
 	} grammar_transitions;
 	
-	struct {
-		struct rytransition {
-			unsigned token;
-			char* reduce_as; // will arena-free
-		}** data;
-		size_t n, cap;
-	} reduction_transitions;
-	
 	struct lex_state* tokenizer_start;
 	
-	// unsigned phase;
+	unsigned phase;
 };
 
 #endif

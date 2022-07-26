@@ -9,11 +9,10 @@
 /*#include <memory/smalloc.h>*/
 /*#include <memory/srealloc.h>*/
 
-/*#include "state/struct.h"*/
+/*#include "state/struct.h"*/	
 /*#include "state/new.h"*/
 
-#include "stateset/new.h"
-#include "stateset/insert.h"
+#include <set/of_regexes/new.h>
 
 #include "mapping/compare.h"
 #include "mapping/free.h"
@@ -32,13 +31,11 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	
 	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free_mapping);
 	
-	struct stateset* start = new_stateset();
+	struct regexset* start_set = new_regexset();
 	
-	stateset_insert(start, in);
+	regex_add_lamda_states(start_set, in);
 	
-	add_lamda_states(start);
-	
-	struct regex* new_start = nfa_to_dfa_helper(start, mappings, arena);
+	struct regex* new_start = nfa_to_dfa_helper(start_set, mappings, arena);
 	
 	#ifdef DEBUGGING
 	regex_dotout(new_start);

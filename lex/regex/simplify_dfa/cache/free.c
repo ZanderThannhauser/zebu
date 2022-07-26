@@ -3,9 +3,9 @@
 
 #include "free.h"
 
-void free_cache(void* a)
+void free_regex_cache(void* a)
 {
-	struct cache *A = a;
+	struct regex_cache *A = a;
 	free(A);
 }
 

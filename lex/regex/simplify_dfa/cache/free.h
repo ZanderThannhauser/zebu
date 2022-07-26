@@ -1,1 +1,1 @@
-void free_cache(void* a);
+void free_regex_cache(void* a);

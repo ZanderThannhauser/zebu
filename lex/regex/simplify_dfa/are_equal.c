@@ -23,9 +23,9 @@ bool regex_are_equal(
 	dpv(a);
 	dpv(b);
 	
-	struct avl_node_t* node = avl_search(cache, &(struct cache){a, b});
+	struct avl_node_t* node = avl_search(cache, &(struct regex_cache){a, b});
 	
-	struct cache* ele;
+	struct regex_cache* ele;
 	
 	if (node)
 	{
@@ -37,7 +37,7 @@ bool regex_are_equal(
 	}
 	else
 	{
-		safe_avl_insert(cache, ele = new_cache(a, b));
+		safe_avl_insert(cache, ele = new_regex_cache(a, b));
 		
 		if (a == b)
 		{

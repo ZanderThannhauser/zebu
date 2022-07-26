@@ -24,7 +24,7 @@ struct regex* new_regex(struct memory_arena* arena)
 	
 	this->phase = 0;
 	
-	this->is_accepting = NULL;
+	this->is_accepting = 0;
 	
 	this->is_freeing = false;
 	

@@ -32,6 +32,7 @@
 	
 	#include <memory/smalloc.h>
 	#include <memory/srealloc.h>
+	#include <memory/scalloc.h>
 	#include <memory/smemdup.h>
 	
 	#include <macros/strequals.h>
@@ -41,8 +42,13 @@
 	struct heap;
 	struct ptrset;
 	struct strset;
+	struct lex_state_ll;
+	struct tokensetset;
 	struct tokenset;
 	struct scope;
+	struct gegexset;
+	struct regexset;
+	struct lex_state;
 	struct lex;
 	struct tokenizer;
 	struct regex;

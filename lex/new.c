@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <avl/alloc_tree.h>
+#include <avl/new.h>
 
 #include <memory/smalloc.h>
 
@@ -22,13 +22,14 @@ struct lex* new_lex(bool verbose)
 	
 	struct lex* this = smalloc(sizeof(*this));
 	
-	this->dfa_to_id = avl_alloc_tree(
-		compare_dfa_to_id_nodes, free_dfa_to_id_node);
+	this->dfa_to_id =
+		new_avl_tree(compare_dfa_to_id_nodes, free_dfa_to_id_node);
+		
 	this->dfa_from_id =
-		avl_alloc_tree(compare_dfa_from_id_nodes, free_dfa_from_id_node);
+		new_avl_tree(compare_dfa_from_id_nodes, free_dfa_from_id_node);
 	
-	this->tokenset_to_tokenizer =
-		avl_alloc_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
+	this->tokenizer.cache =
+		new_avl_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
 	this->next_id = 1; // because token 0 is for EOF
 	
