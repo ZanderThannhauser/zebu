@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include <avl/search.h>
@@ -43,7 +45,6 @@ struct regex* nfa_to_dfa_helper(
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena)
 {
-	int error = 0;
 	struct avl_node_t* search_result;
 	ENTER;
 	
@@ -64,7 +65,7 @@ struct regex* nfa_to_dfa_helper(
 		
 		// set this as accepting if any states in list are accepting:
 		{
-			struct avl_node_t* node;
+			// struct avl_node_t* node;
 			
 			bool is_accepting = false;
 			
@@ -95,7 +96,7 @@ struct regex* nfa_to_dfa_helper(
 		
 		// create iterators for each state:
 		{
-			struct avl_node_t* node;
+			// struct avl_node_t* node;
 			
 			regexset_foreach(states, ({
 				void runme(struct regex* ele) {

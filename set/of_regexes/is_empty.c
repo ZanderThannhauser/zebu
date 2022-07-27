@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 #include <debug.h>
 
 #include "struct.h"

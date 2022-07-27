@@ -1,4 +1,9 @@
 
+#include <assert.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <memory/smalloc.h>
+
 #include <debug.h>
 
 #include "struct.h"
@@ -29,12 +34,18 @@ void gegexset_update(struct gegexset* this, struct gegexset* them)
 			data[n++] = ae, a.i++;
 		else if (ae > be)
 		{
-			TODO;
+			changed = true;
+			data[n++] = be, b.i++;
 		}
 		else
 		{
 			TODO;
 		}
+	}
+	
+	while (a.i < a.n)
+	{
+		data[n++] = this->data[a.i++];
 	}
 	
 	if (b.i < b.n)

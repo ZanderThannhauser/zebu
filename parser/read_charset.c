@@ -1,4 +1,10 @@
 
+#include <assert.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include <enums/error.h>
+
 #include <debug.h>
 
 #include <memory/sstrndup.h>

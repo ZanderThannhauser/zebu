@@ -16,9 +16,10 @@
 #include <set/of_tokens/foreach.h>
 #include <set/of_tokens/add.h>
 
+#include <set/of_tokensets/add.h>
+
 #ifdef DEBUGGING
 #include <set/of_tokensets/struct.h>
-#include <set/of_tokensets/add.h>
 #include <set/of_tokens/to_string.h>
 #endif
 

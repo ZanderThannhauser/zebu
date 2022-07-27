@@ -10,7 +10,7 @@
 
 void usage(int code)
 {
-	printf("usage: %s [-vh] [-j=jobs] <input-file.calc>\n", argv0);
+	printf("usage: %s <args>\n", argv0);
 	exit(code);
 }
 

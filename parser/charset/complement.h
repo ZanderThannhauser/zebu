@@ -1,4 +1,5 @@
 
+struct scope;
 struct tokenizer;
 struct avl_tree_t;
 

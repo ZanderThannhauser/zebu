@@ -1,4 +1,12 @@
 
+#include <unistd.h>
+
+#include <assert.h>
+
+#include <fcntl.h>
+
+#include <strings.h>
+
 #include <debug.h>
 
 #include <misc/sopenat.h>
@@ -29,7 +37,6 @@ void recursive_parse(
 	char* path,
 	struct lex* lex)
 {
-	int error = 0;
 	ENTER;
 	
 	int relative_dirfd = -1;

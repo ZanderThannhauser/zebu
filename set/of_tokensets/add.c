@@ -1,4 +1,7 @@
 
+#include <memory/srealloc.h>
+
+#include <stddef.h>
 #include <debug.h>
 
 #ifdef DEBUGGING

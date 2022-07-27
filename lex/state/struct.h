@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 struct lex_state
 {
 	struct {

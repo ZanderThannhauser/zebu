@@ -1,6 +1,7 @@
 
 struct scope;
 struct memory_arena;
+struct lex;
 
 #include "gbundle.h"
 

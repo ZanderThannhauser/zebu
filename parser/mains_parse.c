@@ -1,4 +1,10 @@
 
+#include <stdlib.h>
+
+#include <assert.h>
+
+#include <fcntl.h>
+
 #include <avl/avl.h>
 #include <avl/new.h>
 

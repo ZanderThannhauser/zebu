@@ -1,4 +1,9 @@
 
+#include <stdlib.h>
+
+#include <memory/smalloc.h>
+
+#include <macros/strequals.h>
 
 #include <debug.h>
 
@@ -94,7 +99,9 @@ void run_tasks(
 		
 		task_process(task, shared);
 		
+		#ifdef DEBUGGING
 		task_dotout(task, shared);
+		#endif
 		
 		free_task(task);
 	}

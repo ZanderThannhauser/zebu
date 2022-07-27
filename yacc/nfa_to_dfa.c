@@ -1,4 +1,11 @@
 
+#include <string.h>
+
+#include <assert.h>
+
+#include <memory/smalloc.h>
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <yacc/gegex/state/struct.h>
@@ -15,6 +22,7 @@
 
 #include <lex/build_tokenizer/build_tokenizer.h>
 
+#include <set/of_gegexes/struct.h>
 #include <set/of_gegexes/new.h>
 #include <set/of_gegexes/clear.h>
 #include <set/of_gegexes/free.h>
@@ -32,7 +40,6 @@
 #include <set/of_tokens/free.h>
 
 #ifdef DEBUGGING
-#include <set/of_gegexes/struct.h>
 #include <set/of_tokensets/struct.h>
 #endif
 
@@ -95,7 +102,13 @@ static int compare_cache_nodes(const void* a, const void* b)
 
 static void free_cache_node(void* a)
 {
-	TODO;
+	struct cache_node* const this = a;
+	ENTER;
+	
+	free_gegexset(this->source_states);
+	free(this);
+	
+	EXIT;
 }
 
 struct shift_node
@@ -529,7 +542,7 @@ static struct yacc_state* helper(
 	return state;
 }
 
-struct gegex* yacc_nfa_to_dfa(
+struct yacc_state* yacc_nfa_to_dfa(
 	struct lex* lex,
 	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad)
@@ -556,9 +569,11 @@ struct gegex* yacc_nfa_to_dfa(
 	#endif
 	
 	// cleanup and return
-	TODO;
+	avl_free_tree(cache);
+	free_gegexset(states);
 	
 	EXIT;
+	return new_start;
 }
 
 

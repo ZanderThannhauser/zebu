@@ -1,4 +1,6 @@
 
+struct scope;
+
 /*#include "bundle.h"*/
 
 struct regex_state;

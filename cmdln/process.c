@@ -22,11 +22,12 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	ENTER;
 	
 	const char* input_path = NULL;
-	const char* output_path = NULL;
+	const char* output_prefix = NULL;
 	
 /*	bool build_depends = false;*/
 	bool debug_lex = false;
 	bool debug_yacc = false;
+	bool just_output_tables = false;
 	bool verbose = false;
 	
 	int opt, option_index;
@@ -49,7 +50,7 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 				break;
 			
 			case 'o':
-				output_path = optarg;
+				output_prefix = optarg;
 				break;
 			
 /*			case 'M':*/
@@ -80,7 +81,7 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 		}
 	}
 	
-	if (!input_path || !output_path)
+	if (!input_path || !output_prefix)
 	{
 		fprintf(stderr, "%s: missing arguments!\n", argv0);
 		usage(e_bad_cmdline_args);
@@ -89,15 +90,21 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	struct cmdln* flags = smalloc(sizeof(*flags));
 	
 	flags->input_path = input_path;
+	flags->output_prefix = output_prefix;
 	
 	flags->debug.lex = debug_lex;
 	flags->debug.yacc = debug_yacc;
 	
+	flags->just_output_tables = just_output_tables;
+	
 	flags->verbose = verbose;
 	
 	dpvs(flags->input_path);
+	dpvs(flags->output_prefix);
+	
 	dpvb(flags->debug.lex);
 	dpvb(flags->debug.yacc);
+	dpvb(flags->just_output_tables);
 	dpvb(flags->verbose);
 		
 	EXIT;

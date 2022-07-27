@@ -1,4 +1,7 @@
 
+struct gegex;
+struct memory_arena;
+
 void gegex_add_reduction_transition(
 	struct gegex* from,
 	struct memory_arena* arena,

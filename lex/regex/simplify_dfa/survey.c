@@ -1,4 +1,7 @@
 
+
+#include <assert.h>
+
 #include <debug.h>
 
 #include <misc/phase_counter.h>

@@ -1,4 +1,5 @@
 
+struct regex;
 struct regexset;
 
 void regex_add_lamda_states(

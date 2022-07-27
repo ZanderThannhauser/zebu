@@ -1,4 +1,10 @@
 
+#include <stdlib.h>
+
+#include <assert.h>
+
+#include <strings.h>
+
 #include <avl/search.h>
 
 #include <debug.h>

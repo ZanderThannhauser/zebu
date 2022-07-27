@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <debug.h>
 
 #include <avl/search.h>
@@ -14,6 +15,8 @@
 
 #include "struct.h"
 #include "dotout.h"
+
+#ifdef DEBUGGING
 
 static void helper(FILE* out, struct gegex* state)
 {
@@ -141,4 +144,4 @@ void explore_firsts_task_dotout(struct task* super, struct shared* shared)
 
 
 
-
+#endif

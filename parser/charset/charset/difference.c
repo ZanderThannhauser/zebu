@@ -1,4 +1,8 @@
 
+#include <stdlib.h>
+
+#include <memory/smalloc.h>
+
 #include <debug.h>
 
 #include <memory/srealloc.h>

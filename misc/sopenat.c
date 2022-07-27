@@ -1,6 +1,15 @@
 
 #include <debug.h>
 
+#include <stdio.h>
+#include <fcntl.h>
+
+#include <defines/argv0.h>
+
+#include <stdlib.h>
+
+#include <enums/error.h>
+
 #include "sopenat.h"
 
 int sopenat(int dirfd, const char* path, int flags)

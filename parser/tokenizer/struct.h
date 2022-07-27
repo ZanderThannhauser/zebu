@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include "../token.h"
 
 struct tokenizer

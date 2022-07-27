@@ -1,4 +1,8 @@
 
+#include <stdio.h>
+
+#include <linux/limits.h>
+
 #include <debug.h>
 
 #include <avl/search.h>
@@ -20,6 +24,8 @@
 
 #include "struct.h"
 #include "dotout.h"
+
+#ifdef DEBUGGING
 
 static void helper(FILE* out, struct gegex* state)
 {
@@ -170,3 +176,4 @@ void add_reductions_task_dotout(struct task* super, struct shared* shared)
 
 
 
+#endif

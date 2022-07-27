@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <avl/avl.h>
 #include <avl/new.h>
 #include <avl/search.h>

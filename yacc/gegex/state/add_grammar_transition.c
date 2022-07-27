@@ -1,4 +1,6 @@
 
+#include <string.h>
+
 #include <debug.h>
 
 /*#include <memory/arena/strdup.h>*/

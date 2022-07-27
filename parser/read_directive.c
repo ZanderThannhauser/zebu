@@ -1,4 +1,10 @@
 
+#include <assert.h>
+
+#include <stdlib.h>
+
+#include <enums/error.h>
+
 #include <debug.h>
 
 #include <macros/memequals.h>

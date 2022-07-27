@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include "kind.h"
 
 struct task_inheritance;

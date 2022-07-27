@@ -1,4 +1,14 @@
 
+#include <enums/error.h>
+
+#include <stdlib.h>
+
+#include <defines/argv0.h>
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+
 #include <debug.h>
 
 #include "struct.h"

@@ -25,6 +25,8 @@
 
 #include <yacc/yacc.h>
 
+#include <out/out.h>
+
 int main(int argc, char* argv[])
 {
 	ENTER;
@@ -41,17 +43,11 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	yacc(lex, scope->grammar, scratchpad);
+	struct yacc_state* parser = yacc(lex, scope->grammar, scratchpad);
 	
-/*	TODO;*/
-	
-	#if 0
-	out(LRP, flags->output_path);
-	
-	free(LRP);
+	out(parser, flags->output_prefix, flags->just_output_tables);
 	
 	free_lex(lex);
-	#endif
 	
 	free_scope(scope);
 	

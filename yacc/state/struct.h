@@ -2,6 +2,8 @@
 #ifndef STRUCT_YACC_STATE
 #define STRUCT_YACC_STATE
 
+#include <stddef.h>
+
 struct yacc_state
 {
 	struct {

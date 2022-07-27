@@ -142,7 +142,7 @@ static struct regex* helper(
 		
 		while (A->default_transition_to && b.i < b.n)
 		{
-			const struct transition* const B_trans = B->transitions.data[b.i++];
+			// const struct transition* const B_trans = B->transitions.data[b.i++];
 			TODO;
 		}
 		

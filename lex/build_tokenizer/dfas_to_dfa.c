@@ -1,6 +1,12 @@
 
 #include <debug.h>
 
+#include <assert.h>
+#include <stdlib.h>
+
+#include <memory/smalloc.h>
+#include <memory/scalloc.h>
+
 #include <avl/search.h>
 #include <avl/new.h>
 #include <avl/safe_insert.h>

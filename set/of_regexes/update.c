@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include "struct.h"
@@ -9,11 +11,11 @@ bool regexset_update(struct regexset* this, struct regexset* them)
 	bool changed = false;
 	ENTER;
 	
+	TODO;
+	#if 0
 	unsigned i = 0, n = this->n;
 	unsigned j = 0, m = them->n;
 	
-	TODO;
-	#if 0
 	while (i < n && j < m)
 	{
 		const char* a = this->data[i], *b = them->data[j];

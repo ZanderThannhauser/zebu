@@ -1,4 +1,11 @@
 
+#include <assert.h>
+#include <stdbool.h>
+
+#include <stdlib.h>
+
+#include <enums/error.h>
+
 #include <debug.h>
 
 #include <memory/sstrdup.h>
@@ -31,9 +38,6 @@ void read_grammar(
 	char* name = sstrdup(tokenizer->tokenchars.chars);
 	
 	dpvs(name);
-	
-	// create "start" grammar state:
-	struct gegex* start = new_gegex(scratchpad);
 	
 	// read a colon:
 	read_token(tokenizer, colon_machine);

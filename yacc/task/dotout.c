@@ -1,10 +1,13 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include "struct.h"
 #include "inheritance.h"
 #include "dotout.h"
 
+#ifdef DEBUGGING
 void task_dotout(struct task* this, struct shared* shared)
 {
 	ENTER;
@@ -16,3 +19,4 @@ void task_dotout(struct task* this, struct shared* shared)
 	EXIT;
 }
 
+#endif

@@ -1,4 +1,7 @@
 
+#include <memory/srealloc.h>
+#include <string.h>
+
 #include <debug.h>
 
 #include "struct.h"

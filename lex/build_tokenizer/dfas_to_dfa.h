@@ -1,4 +1,5 @@
 
+struct memory_arena;
 struct tokensetset;
 
 struct lex_state* dfas_to_dfa(

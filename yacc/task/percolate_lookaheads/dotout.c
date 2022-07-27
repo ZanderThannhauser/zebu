@@ -1,4 +1,6 @@
 
+#include <linux/limits.h>
+
 #include <debug.h>
 
 #include <avl/foreach.h>
@@ -17,6 +19,8 @@
 
 #include "struct.h"
 #include "dotout.h"
+
+#ifdef DEBUGGING
 
 void percolate_lookaheads_task_dotout(struct task* super, struct shared* shared)
 {
@@ -106,4 +110,4 @@ void percolate_lookaheads_task_dotout(struct task* super, struct shared* shared)
 
 
 
-
+#endif

@@ -4,6 +4,7 @@ struct options;
 struct avl_tree_t;
 struct pragma_once;
 struct memory_arena;
+struct scope;
 
 void recursive_parse(
 	struct options* options,

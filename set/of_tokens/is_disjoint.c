@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include "struct.h"
@@ -11,6 +13,8 @@ bool tokenset_is_disjoint(
 	bool is_disjoint = true;
 	ENTER;
 	
+	TODO;
+	#if 0
 	unsigned i = 0, n = a->n;
 	unsigned j = 0, m = b->n;
 	
@@ -24,6 +28,7 @@ bool tokenset_is_disjoint(
 		
 		TODO;
 	}
+	#endif
 	
 	EXIT;
 	return is_disjoint;

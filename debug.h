@@ -44,12 +44,19 @@
 	struct strset;
 	struct lex_state_ll;
 	struct tokensetset;
+	struct dyntable;
+	struct dynvector;
+	struct ystate_to_id;
 	struct tokenset;
 	struct scope;
 	struct gegexset;
 	struct regexset;
 	struct lex_state;
 	struct lex;
+	struct tokenset_to_id;
+	struct grammar_to_id;
+	struct out_shared;
+	struct lstate_to_id;
 	struct tokenizer;
 	struct regex;
 	struct memory_arena;
@@ -260,6 +267,7 @@
 	#define dpvo(x) ;
 	#define dpvs(x) ;
 	#define dputs(x) ;
+	#define dpvx(x) ;
 	#define dpvsn(_, __) ;
 	#define ddprintf(...) ;
 	

@@ -8,7 +8,9 @@ struct task_inheritance
 	
 	void (*process)(struct task*, struct shared*);
 	
+	#ifdef DEBUGGING
 	void (*dotout)(struct task*, struct shared*);
+	#endif
 	
 	void (*free)(struct task*);
 };

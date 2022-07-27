@@ -1,4 +1,7 @@
 
+#include <memory/smalloc.h>
+#include <memory/smemdup.h>
+
 #include <debug.h>
 
 #include "struct.h"

@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <avl/free_nodes.h>
 
 #include <debug.h>

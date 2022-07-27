@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+
 #include <avl/new.h>
 
 #include <debug.h>

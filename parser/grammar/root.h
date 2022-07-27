@@ -1,7 +1,7 @@
 
 struct tokenizer;
 struct scope;
-
+struct lex;
 struct memory_arena;
 
 #include "gbundle.h"

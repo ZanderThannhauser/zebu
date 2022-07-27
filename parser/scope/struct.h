@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include <avl/tree_t.h>
 
 struct scope

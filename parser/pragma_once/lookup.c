@@ -1,4 +1,14 @@
 
+#include <stdlib.h>
+
+#include <enums/error.h>
+
+#include <stdio.h>
+
+#include <defines/argv0.h>
+
+#include <sys/stat.h>
+
 #include <avl/search.h>
 #include <avl/safe_insert.h>
 

@@ -1,9 +1,12 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include "struct.h"
 #include "contains.h"
 
+#if 0
 static int cmp(const void* a, const void* b)
 {
 	const void *const *A = a, *const*B = b;
@@ -14,6 +17,7 @@ static int cmp(const void* a, const void* b)
 		return -1;
 	return 0;
 }
+#endif
 
 bool tokensetset_contains(
 	struct tokensetset* this,

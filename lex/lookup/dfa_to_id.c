@@ -6,6 +6,8 @@
 #include <avl/safe_insert.h>
 #include <avl/search.h>
 
+#include <assert.h>
+
 #include <lex/regex/state/struct.h>
 
 #include <misc/phase_counter.h>

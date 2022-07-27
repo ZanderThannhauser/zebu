@@ -2,6 +2,8 @@
 #ifndef STRUCT_GEGEX_H
 #define STRUCT_GEGEX_H
 
+#include <stddef.h>
+
 struct gegex
 {
 	struct {

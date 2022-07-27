@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <avl/avl.h>
 #include <avl/search.h>
 #include <avl/safe_insert.h>

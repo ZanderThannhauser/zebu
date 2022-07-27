@@ -1,5 +1,14 @@
 
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <enums/error.h>
+
+#include <defines/argv0.h>
 
 #include "sstrndup.h"
 
