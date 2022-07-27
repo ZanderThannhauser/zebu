@@ -30,7 +30,6 @@ void explore_firsts_task_process(struct task* super, struct shared* shared)
 	{
 		struct tokenset* first = lookup_tokenset(shared->firsts.sets, this->name);
 		
-		
 		#ifdef DEBUGGING
 		tokenset_print(first);
 		#endif

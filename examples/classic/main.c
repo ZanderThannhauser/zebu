@@ -215,7 +215,7 @@ int main()
 	
 	check("abcc:x.", NULL);
 	
-	check("AABBCC", NULL);
+	check("ABBABCCBCAAC", NULL);
 	
 	return 0;
 }
