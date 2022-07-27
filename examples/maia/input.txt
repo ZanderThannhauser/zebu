@@ -1,0 +1,2 @@
+aBC:x:0:1:gecos:directory:shell
+aBC:x:0:1:c:d:e

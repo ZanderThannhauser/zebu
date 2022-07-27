@@ -7,7 +7,7 @@
 #include "struct.h"
 #include "process.h"
 
-void task_process(struct task* this, struct shared* shared)
+void task_process(struct task* this, struct yacc_shared* shared)
 {
 	ENTER;
 	

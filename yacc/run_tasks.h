@@ -1,7 +1,6 @@
 
-struct avl_tree_t;
 struct memory_arena;
 
 void run_tasks(
-	struct avl_tree_t* grammars,
+	struct yacc_shared* shared,
 	struct memory_arena* scratchpad);

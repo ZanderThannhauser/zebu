@@ -9,12 +9,12 @@
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/add_lambda_transition.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 
 #include "struct.h"
 #include "process.h"
 
-void lambda_subgrammars_task_process(struct task* super, struct shared* shared)
+void lambda_subgrammars_task_process(struct task* super, struct yacc_shared* shared)
 {
 	struct lambda_subgrammars_task* const this = (void*) super;
 	ENTER;

@@ -13,11 +13,7 @@ void regex_add_transition(
 	unsigned value,
 	struct regex* to)
 {
-	ENTER;
-	
 	struct transition* transition = arena_malloc(arena, sizeof(*transition));
-	
-	dpv(transition);
 	
 	transition->value = value;
 	transition->to = to;
@@ -41,8 +37,6 @@ void regex_add_transition(
 	}
 	
 	data[i + 1] = transition;
-	
-	EXIT;
 }
 
 

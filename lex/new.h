@@ -1,2 +1,2 @@
 
-struct lex* new_lex(bool verbose);
+struct lex* new_lex();

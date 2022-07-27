@@ -33,6 +33,7 @@ const enum tokenizer_state production_inside_subdefinitions_machine[number_of_to
 		[ts_start]['a' ... 'z'] = ts_reading_identifier,
 			[ts_reading_identifier][ANY] = ts_identifier,
 			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
+			[ts_reading_identifier]['_'] = ts_reading_identifier,
 		
 		// string literal:
 		[ts_start]['\"'] = ts_reading_string_literal,

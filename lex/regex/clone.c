@@ -14,6 +14,7 @@
 #include "state/struct.h"
 #include "state/new.h"
 #include "state/add_transition.h"
+#include "state/add_lambda_transition.h"
 #include "state/set_default_transition.h"
 
 #include "dotout.h"
@@ -85,8 +86,13 @@ static struct regex* clone_helper(
 		// for each lambda transition:
 		for (i = 0, n = old->lambda_transitions.n; i < n; i++)
 		{
-			
-			TODO;
+			regex_add_lambda_transition(
+				/* from: */ new,
+				/* arena */ arena,
+				/* to */ clone_helper(
+					/* mappings: */ mappings,
+					/* arena: */ arena,
+					/* in: */ old->lambda_transitions.data[i]));
 		}
 		
 		// for default transition:
@@ -123,6 +129,25 @@ struct regex* regex_clone(
 	
 	EXIT;
 	return retval;
+}
+
+
+struct clone_nfa_bundle regex_clone_nfa(
+	struct memory_arena* arena,
+	struct regex* start,
+	struct regex* end)
+{
+	ENTER;
+	
+	struct avl_tree_t* mappings = new_avl_tree(compare, free);
+	
+	struct regex* new_start = clone_helper(mappings, arena, start);
+	struct regex* new_end = clone_helper(mappings, arena, end);
+	
+	avl_free_tree(mappings);
+	
+	EXIT;
+	return (struct clone_nfa_bundle) {new_start, new_end};
 }
 
 

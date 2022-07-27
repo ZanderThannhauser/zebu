@@ -11,7 +11,7 @@
 
 #include <heap/push.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 /*#include "../../add_dep.h"*/
 #include "../../get_deps.h"
 #include "../../lookup_tokenset.h"
@@ -20,7 +20,7 @@
 #include "new.h"
 #include "process.h"
 
-void percolate_firsts_task_process(struct task* super, struct shared* shared)
+void percolate_firsts_task_process(struct task* super, struct yacc_shared* shared)
 {
 	struct percolate_firsts_task* const this = (void*) super;
 	ENTER;

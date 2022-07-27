@@ -1,5 +1,5 @@
 
-struct shared
+struct yacc_shared
 {
 	struct heap* todo;
 	
@@ -12,5 +12,5 @@ struct shared
 	
 	// FILE* dotout_mk;
 	
-	struct avl_tree_t* grammars;
+	struct avl_tree_t* grammar;
 };

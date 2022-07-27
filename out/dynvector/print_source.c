@@ -8,6 +8,7 @@
 
 void dynvector_print_source(
 	struct dynvector* this,
+	const char* prefix,
 	FILE* source,
 	FILE* header)
 {
@@ -15,9 +16,11 @@ void dynvector_print_source(
 	
 	dpvs(this->name);
 	
-	fprintf(header, "extern const unsigned %s[%u];\n", this->name, this->length + 1);
+	fprintf(header, "extern const unsigned %s_%s[%u];\n",
+		prefix, this->name, this->length + 1);
 	
-	fprintf(source, "const unsigned %s[%u] = {\n", this->name, this->length + 1);
+	fprintf(source, "const unsigned %s_%s[%u] = {\n",
+		prefix, this->name, this->length + 1);
 	
 	for (struct avl_node_t* node = this->list->head; node; node = node->next)
 	{

@@ -18,7 +18,7 @@
 
 /*#include <tokenset/to_string.h>*/
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 /*#include "../../get_deps.h"*/
 /*#include "../../lookup_tokenset.h"*/
 
@@ -121,7 +121,7 @@ static void helper(FILE* out, struct gegex* state)
 	EXIT;
 }
 
-void add_reductions_task_dotout(struct task* super, struct shared* shared)
+void add_reductions_task_dotout(struct task* super, struct yacc_shared* shared)
 {
 	struct add_reductions_task* const this = (void*) super;
 	ENTER;
@@ -142,7 +142,7 @@ void add_reductions_task_dotout(struct task* super, struct shared* shared)
 	
 	phase_counter++;
 	
-	struct avl_node_t* node = avl_search(shared->grammars, &this->name);
+	struct avl_node_t* node = avl_search(shared->grammar, &this->name);
 	
 	struct named_grammar* ng = node->item;
 	

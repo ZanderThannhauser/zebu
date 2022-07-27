@@ -21,19 +21,28 @@ struct charset* read_union_charset(
 {
 	ENTER;
 	
-	struct charset* retval;
-	struct charset* left = read_symdiff_charset(tokenizer, scope);
-	struct charset* right = NULL;
+	struct charset* retval = read_symdiff_charset(tokenizer, scope);
 	
-	if (false
+	while (false
 		|| tokenizer->token == t_vertical_bar
+		|| tokenizer->token == t_tilda
+		|| tokenizer->token == t_oparen
+		|| tokenizer->token == t_character_literal
 		|| tokenizer->token == t_comma)
 	{
-		read_token(tokenizer, charset_inside_union_machine);
+		struct charset* old = retval;
+		struct charset* right = NULL;
+		
+		if (false
+			|| tokenizer->token == t_vertical_bar
+			|| tokenizer->token == t_comma)
+		{
+			read_token(tokenizer, charset_inside_union_machine);
+		}
 		
 		right = read_symdiff_charset(tokenizer, scope);
 		
-		if (left->is_complement)
+		if (old->is_complement)
 		{
 			if (right->is_complement)
 			{
@@ -52,16 +61,12 @@ struct charset* read_union_charset(
 			}
 			else
 			{
-				retval = charset_union(left, right, false);
+				retval = charset_union(old, right, false);
 			}
 		}
+		
+		free_charset(old);
 	}
-	else
-	{
-		retval = inc_charset(left);
-	}
-	
-	free_charset(left), free_charset(right);
 	
 	EXIT;
 	return retval;

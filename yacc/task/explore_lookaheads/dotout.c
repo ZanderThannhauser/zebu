@@ -11,7 +11,7 @@
 #include <misc/phase_counter.h>
 #include <misc/frame_counter.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 
 #include "struct.h"
 #include "dotout.h"
@@ -92,7 +92,7 @@ static void helper(FILE* out, struct gegex* state)
 	EXIT;
 }
 
-void explore_lookaheads_task_dotout(struct task* super, struct shared* shared)
+void explore_lookaheads_task_dotout(struct task* super, struct yacc_shared* shared)
 {
 	struct explore_lookaheads_task* const this = (void*) super;
 	ENTER;
@@ -116,7 +116,7 @@ void explore_lookaheads_task_dotout(struct task* super, struct shared* shared)
 	
 	phase_counter++;
 	
-	struct avl_node_t* node = avl_search(shared->grammars, &this->name);
+	struct avl_node_t* node = avl_search(shared->grammar, &this->name);
 	
 	struct named_grammar* ng = node->item;
 	

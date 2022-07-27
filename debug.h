@@ -37,7 +37,6 @@
 	
 	#include <macros/strequals.h>
 	
-	struct shared;
 	struct task;
 	struct heap;
 	struct ptrset;
@@ -58,6 +57,7 @@
 	struct out_shared;
 	struct lstate_to_id;
 	struct tokenizer;
+	struct yacc_shared;
 	struct regex;
 	struct memory_arena;
 	struct avl_node_t;

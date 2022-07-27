@@ -26,11 +26,23 @@ struct charset* read_highest_charset(
 	switch (tokenizer->token)
 	{
 		case t_character_literal:
-			retval = new_charset(
-				/* src: */ tokenizer->tokenchars.chars + 1,
-				/* len: */ 1,
-				/* is_complement: */ false);
+		{
+			char* first = tokenizer->tokenchars.chars + 1;
+			
+			if (*first == '\\')
+			{
+				switch (*++first)
+				{
+					case 'n': retval = new_charset("\n", 1, false); break;
+					default: TODO; break;
+				}
+			}
+			else
+			{
+				retval = new_charset(first, 1, false);
+			}
 			break;
+		}
 		
 		case t_identifier:
 			retval = scope_lookup_charset(scope, tokenizer->tokenchars.chars);

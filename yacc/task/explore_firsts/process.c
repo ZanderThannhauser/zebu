@@ -11,7 +11,7 @@
 
 #include <heap/push.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 #include "../../add_dep.h"
 #include "../../lookup_tokenset.h"
 
@@ -19,7 +19,7 @@
 #include "new.h"
 #include "process.h"
 
-void explore_firsts_task_process(struct task* super, struct shared* shared)
+void explore_firsts_task_process(struct task* super, struct yacc_shared* shared)
 {
 	struct explore_firsts_task* const this = (void*) super;
 	ENTER;

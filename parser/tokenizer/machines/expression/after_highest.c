@@ -19,11 +19,16 @@ const enum tokenizer_state expression_after_highest_machine[number_of_tokenizer_
 		// open paren:
 		[ts_start]['('] = ts_after_oparen,
 			[ts_after_oparen][ANY] = ts_oparen,
-	
+		
+		// open sqaure:
+		[ts_start]['['] = ts_after_osquare,
+			[ts_after_osquare][ANY] = ts_osquare,
+		
 		// fragment name:
 		[ts_start]['a' ... 'z'] = ts_reading_fragment,
 			[ts_reading_fragment][ANY] = ts_fragment,
 			[ts_reading_fragment]['a' ... 'z'] = ts_reading_fragment,
+			[ts_reading_fragment]['_'] = ts_reading_fragment,
 		
 		// string literal:
 		[ts_start]['\"'] = ts_reading_string_literal,
@@ -52,6 +57,10 @@ const enum tokenizer_state expression_after_highest_machine[number_of_tokenizer_
 		// asterisk:
 		[ts_start]['*'] = ts_after_asterisk,
 			[ts_after_asterisk][ANY] = ts_asterisk,
+		
+		// ocurly:
+		[ts_start]['{'] = ts_after_ocurly,
+			[ts_after_ocurly][ANY] = ts_ocurly,
 	
 	// and operator:
 	[ts_start]['&'] = ts_after_ampersand,

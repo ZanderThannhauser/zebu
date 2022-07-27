@@ -30,6 +30,7 @@ const enum tokenizer_state charset_inside_union_machine[number_of_tokenizer_stat
 		[ts_start]['a' ... 'z'] = ts_reading_identifier,
 			[ts_reading_identifier][ANY] = ts_identifier,
 			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
+			[ts_reading_identifier]['_'] = ts_reading_identifier,
 		
 		// open paren:
 		[ts_start]['('] = ts_after_oparen,

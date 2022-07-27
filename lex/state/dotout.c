@@ -45,11 +45,23 @@ static void helper(FILE* out, struct lex_state* state)
 				/* out: */ out,
 				/* state:  */ transition->to);
 			
+			char value[10];
+			
+			if (isalnum(transition->value) || index(":_-", transition->value))
+				sprintf(value, "'%c'", transition->value);
+			else switch (transition->value) {
+				case '\\': sprintf(value, "'\\\\\\\\'"); break;
+				case '\n': sprintf(value, "'\\\\n'"); break;
+				default: sprintf(value, "\\\\x%02hhX", transition->value); break;
+			}
+			
+			dpvs(value);
+			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"%c\"" "\n"
+					"\t" "label = \"%s\"" "\n"
 				"]" "\n"
-			"", state, transition->to, transition->value);
+			"", state, transition->to, value);
 		}
 		
 		// default transition?:

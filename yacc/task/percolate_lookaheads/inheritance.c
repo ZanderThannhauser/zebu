@@ -1,4 +1,6 @@
 
+#include <debug.h>
+
 #include "process.h"
 #include "dotout.h"
 #include "compare.h"

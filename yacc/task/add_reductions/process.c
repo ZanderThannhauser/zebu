@@ -7,13 +7,13 @@
 
 #include <set/of_tokens/foreach.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 #include "../../lookup_tokenset.h"
 
 #include "struct.h"
 #include "process.h"
 
-void add_reductions_task_process(struct task* super, struct shared* shared)
+void add_reductions_task_process(struct task* super, struct yacc_shared* shared)
 {
 	struct add_reductions_task* const this = (void*) super;
 	ENTER;

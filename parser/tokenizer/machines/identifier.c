@@ -19,6 +19,7 @@ enum tokenizer_state identifier_machine[number_of_tokenizer_states][256] = {
 	[ts_start]['a' ... 'z'] = ts_reading_identifier,
 		[ts_reading_identifier][ANY] = ts_identifier,
 		[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
+		[ts_reading_identifier]['_'] = ts_reading_identifier,
 	
 };
 

@@ -1,4 +1,4 @@
-const unsigned shifts[49][27] = {
+const unsigned zebu_shifts[49][27] = {
 	[1][2] = 29,
 	[1][3] = 27,
 	[1][4] = 33,
@@ -119,7 +119,7 @@ const unsigned shifts[49][27] = {
 	[48][25] = 46,
 	[48][26] = 48,
 };
-const unsigned reduces[50][24] = {
+const unsigned zebu_reduces[50][24] = {
 	[2][1] = 13,
 	[3][1] = 13,
 	[6][1] = 13,
@@ -159,7 +159,7 @@ const unsigned reduces[50][24] = {
 	[48][1] = 13,
 	[49][1] = 27,
 };
-const unsigned lexer[98][123] = {
+const unsigned zebu_lexer[98][123] = {
 	[1][65] = 2,
 	[1][66] = 3,
 	[1][67] = 4,
@@ -264,7 +264,43 @@ const unsigned lexer[98][123] = {
 	[95][66] = 96,
 	[97][65] = 98,
 };
-const unsigned starts[50] = {
+const unsigned zebu_firsts[28][27] = {
+	[13][2] = 1,
+	[13][3] = 1,
+	[13][4] = 1,
+	[13][5] = 1,
+	[13][6] = 1,
+	[13][7] = 1,
+	[13][8] = 1,
+	[13][9] = 1,
+	[13][10] = 1,
+	[13][21] = 1,
+	[13][22] = 1,
+	[13][23] = 1,
+	[13][24] = 1,
+	[13][25] = 1,
+	[13][26] = 1,
+	[20][19] = 1,
+	[21][10] = 1,
+	[22][3] = 1,
+	[22][9] = 1,
+	[24][3] = 1,
+	[24][23] = 1,
+	[25][2] = 1,
+	[26][4] = 1,
+	[27][2] = 1,
+	[27][3] = 1,
+	[27][4] = 1,
+	[27][5] = 1,
+	[27][6] = 1,
+	[27][7] = 1,
+	[27][8] = 1,
+	[27][9] = 1,
+	[27][10] = 1,
+	[27][13] = 1,
+	[27][23] = 1,
+};
+const unsigned zebu_starts[50] = {
 	[1] = 1,
 	[2] = 28,
 	[3] = 31,
@@ -315,13 +351,13 @@ const unsigned starts[50] = {
 	[48] = 89,
 	[49] = 31,
 };
-const unsigned defaults[48] = {
+const unsigned zebu_defaults[48] = {
 	[39] = 40,
 	[43] = 46,
 	[45] = 46,
 	[47] = 46,
 };
-const unsigned accepts[99] = {
+const unsigned zebu_accepts[99] = {
 	[2] = 2,
 	[3] = 3,
 	[4] = 4,
@@ -381,3 +417,106 @@ const unsigned accepts[99] = {
 	[96] = 23,
 	[98] = 2,
 };
+const char* zebu_grammar_names[29] = {
+	[27] = "(start)",
+	[20] = "0.a",
+	[22] = "0.b",
+	[21] = "0.c",
+	[25] = "1.a",
+	[24] = "1.b",
+	[26] = "1.c",
+	[13] = "start",
+};
+#include <stdlib.h>
+#include <stddef.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdarg.h>
+struct zebu_state { unsigned* data, n, cap, lstate; };
+static void push(struct zebu_state* this, unsigned ystate) {
+	if (this->n + 1 >= this->cap) {
+		this->cap = this->cap << 1 ?: 1;
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+	}
+	this->data[this->n++] = ystate;
+}
+static void ddprintf(struct zebu_state* this, const char* fmt, ...) {
+	for (unsigned i = 0, n = this->n; i < n; i++) 
+		printf("%u ", this->data[i]);
+	printf("| ");
+	va_list va;
+	va_start(va, fmt);
+	vprintf(fmt, va);
+	va_end(va);
+}
+struct zebu_state* new_zebu_state() {
+	struct zebu_state* this = malloc(sizeof(*this));
+	assert(this);
+	this->data = NULL, this->n = 0, this->cap = 0;
+	this->lstate = 1;
+	push(this, 1);
+	return this;
+}
+void zebu_reset(struct zebu_state* this) {
+	this->n = 0;
+	this->lstate = 1;
+	push(this, 1);
+}
+#define N(array) (sizeof(array) / sizeof(*array))
+static void process_token(struct zebu_state* this, unsigned t) {
+	unsigned b, d, y = this->data[this->n - 1];
+	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t]))) {
+		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t])) {
+		ddprintf(this, "b == %u\n", b);
+			unsigned s = t;
+			while (!(1
+				 && y < N(zebu_shifts) && b < N(*zebu_shifts) && (d = zebu_shifts[y][b])
+				 && b < N(zebu_firsts) && s < N(*zebu_firsts) && (    zebu_firsts[b][s]))) {
+				if (this->n == 1) return;
+				s = this->data[--this->n - 1];
+				y = this->data[--this->n - 1];
+				ddprintf(this, "y == %u\n", y);
+			}
+			push(this, b), push(this, d), y = d;
+			ddprintf(this, "y == %u\n", y);
+		} else {
+			assert(!"TODO");
+			exit(1);
+		}
+	}
+	push(this, t), push(this, b), y = b;
+}
+void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
+	unsigned a, b, c, l = this->lstate;
+	while (c = *text++, length--) {
+		ddprintf(this, "c == %c\n", c);
+		while (!(a = c < N(*zebu_lexer) ? zebu_lexer[l][c] : l < N(zebu_defaults) ? zebu_defaults[l] : 0)) {
+			if (l < N(zebu_accepts) && (b = zebu_accepts[l])) {
+				process_token(this, b);
+				l = zebu_starts[this->data[this->n - 1]];
+				ddprintf(this, "l == %u\n", l);
+			} else {
+				assert(!"TODO");
+				exit(1);
+			}
+		}
+		l = a;
+		ddprintf(this, "l == %u\n", l);
+	}
+	this->lstate = l;
+}
+void zebu_parse_EOF(struct zebu_state* this) {
+	unsigned b, l = this->lstate;
+	ddprintf(this, "l == %u\n", l);
+	if (l < N(zebu_accepts) && (b = zebu_accepts[l])) {
+		process_token(this, b);
+	} else {
+		assert(!"TODO");
+		exit(1);
+	}
+	process_token(this, 1);
+}
+void free_zebu_state(struct zebu_state* this) {
+	free(this->data);
+	free(this);
+}

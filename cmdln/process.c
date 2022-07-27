@@ -22,12 +22,13 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	ENTER;
 	
 	const char* input_path = NULL;
-	const char* output_prefix = NULL;
+	const char* output_path = NULL;
 	
-/*	bool build_depends = false;*/
+	const char* output_prefix = "zebu";
+	
 	bool debug_lex = false;
 	bool debug_yacc = false;
-	bool just_output_tables = false;
+	bool paste_parser_code = true;
 	bool verbose = false;
 	
 	int opt, option_index;
@@ -40,7 +41,7 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 		{ 0,                       0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "M" "d:" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "M" "d:" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -50,6 +51,10 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 				break;
 			
 			case 'o':
+				output_path = optarg;
+				break;
+			
+			case 'p':
 				output_prefix = optarg;
 				break;
 			
@@ -90,21 +95,23 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	struct cmdln* flags = smalloc(sizeof(*flags));
 	
 	flags->input_path = input_path;
+	flags->output_path = output_path;
 	flags->output_prefix = output_prefix;
 	
 	flags->debug.lex = debug_lex;
 	flags->debug.yacc = debug_yacc;
 	
-	flags->just_output_tables = just_output_tables;
+	flags->paste_parser_code = paste_parser_code;
 	
 	flags->verbose = verbose;
 	
 	dpvs(flags->input_path);
+	dpvs(flags->output_path);
 	dpvs(flags->output_prefix);
 	
 	dpvb(flags->debug.lex);
 	dpvb(flags->debug.yacc);
-	dpvb(flags->just_output_tables);
+	dpvb(flags->paste_parser_code);
 	dpvb(flags->verbose);
 		
 	EXIT;

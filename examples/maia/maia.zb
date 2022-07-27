@@ -1,28 +1,25 @@
 
 %start passwd_file;
 
-%%
-
 passwd_file: passwd_record newline | passwd_file passwd_record newline ;
 
 passwd_record: name ":" password ":" uid ":" gid ":" gecos ":" directory ":" shell ;
 
-name: `[a-zA-Z_][-a-zA-Z0-9_]{0,31}`;
+name: `['a'-'z', 'A'-'Z', '_'] ['-', 'a'-'z', 'A'-'Z', '0'-'9', '_']{0, 31}`;
 
 password: "*" | "x" ;
 
-uid: /[0-9]+/;
+uid: `['0'-'9']+`;
 
-gid: /[0-9]+/;
+gid: `['0'-'9']+`;
 
-gecos: /[ˆ:\n]*/ ;
+gecos: `[~(':', '\n')]*`;
 
-directory: /[ˆ:\n]+/ ;
+directory: `[~(':', '\n')]+`;
 
-shell: /[ˆ:\n]*/ ;
+shell: `[~(':', '\n')]*` ;
 
-newline: "\n" ;
+newline: "\n";
 
-%%
 
 

@@ -1,24 +1,27 @@
 
 #include <debug.h>
 
+#include "shared/new.h"
+
 #include "run_tasks.h"
 #include "nfa_to_dfa.h"
-
 #include "yacc.h"
 
 struct yacc_state* yacc(
+	struct yacc_shared** out_shared,
 	struct lex* lex,
-	struct avl_tree_t* grammars,
+	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad)
 {
 	ENTER;
 	
-	run_tasks(grammars, scratchpad);
+	struct yacc_shared* shared = new_yacc_shared(grammar);
 	
-	// at this point, we have one nfa parser state machine, with reduction
-	// transitions
+	run_tasks(shared, scratchpad);
 	
-	struct yacc_state* start = yacc_nfa_to_dfa(lex, grammars, scratchpad);
+	struct yacc_state* start = yacc_nfa_to_dfa(lex, grammar, scratchpad);
+	
+	*out_shared = shared;
 	
 	EXIT;
 	return start;

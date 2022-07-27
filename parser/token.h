@@ -32,6 +32,7 @@ enum token
 	t_caret,
 	t_gravemark,
 	t_cparen,
+	t_ccurly,
 	t_csquare,
 	t_comma,
 	t_percent,
@@ -46,6 +47,7 @@ enum token
 	t_relative_path,
 	t_fragment,
 	t_charset,
+	t_numberic,
 	t_identifier,
 	
 	t_directive,

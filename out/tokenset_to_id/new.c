@@ -19,12 +19,8 @@
 static int compare_tokenset_to_id_nodes(const void* a, const void* b)
 {
 	int cmp = 0;
-	ENTER;
 	
 	const struct tokenset_to_id_node* A = a, *B = b;
-	
-	dpvb(A->is_tokenset);
-	dpvb(B->is_tokenset);
 	
 	if (A->is_tokenset > B->is_tokenset)
 		cmp = +1;
@@ -35,7 +31,6 @@ static int compare_tokenset_to_id_nodes(const void* a, const void* b)
 	else
 		cmp = strcmp(A->grammar, B->grammar);
 	
-	EXIT;
 	return cmp;
 }
 

@@ -13,7 +13,7 @@
 
 #include <set/of_tokens/to_string.h>
 
-#include "../../shared.h"
+#include "../../shared/struct.h"
 #include "../../get_deps.h"
 #include "../../lookup_tokenset.h"
 
@@ -22,7 +22,7 @@
 
 #ifdef DEBUGGING
 
-void percolate_firsts_task_dotout(struct task* super, struct shared* shared)
+void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared)
 {
 	struct percolate_firsts_task* const this = (void*) super;
 	ENTER;
@@ -44,7 +44,7 @@ void percolate_firsts_task_dotout(struct task* super, struct shared* shared)
 			"rankdir = LR" "\n"
 	"\n");
 	
-	avl_tree_foreach(shared->grammars, ({
+	avl_tree_foreach(shared->grammar, ({
 		void runme(const void* ptr)
 		{
 			const struct named_grammar* ng = ptr;

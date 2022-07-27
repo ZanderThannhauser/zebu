@@ -13,12 +13,6 @@ void dyntable_set(
 	unsigned x, unsigned y,
 	unsigned value)
 {
-	ENTER;
-	
-	dpv(x);
-	dpv(y);
-	dpv(value);
-	
 	if (x > this->width)
 	{
 		this->width = x;
@@ -37,8 +31,25 @@ void dyntable_set(
 	node->y = y;
 	node->v = value;
 	
+	ddprintf("%s[%u][%u] = %u\n", this->name, x, y, value);
+	
 	safe_avl_insert(this->tree, node);
 	
-	EXIT;
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

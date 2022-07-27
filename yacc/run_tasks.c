@@ -7,10 +7,10 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
+/*#include <avl/new.h>*/
 #include <avl/safe_insert.h>
 #include <avl/foreach.h>
-#include <avl/free_tree.h>
+/*#include <avl/free_tree.h>*/
 
 #include <set/of_tokens/new.h>
 #include <set/of_tokens/add.h>
@@ -18,12 +18,11 @@
 #include <named/grammar/struct.h>
 
 #include <named/tokenset/new.h>
-#include <named/tokenset/compare.h>
-#include <named/tokenset/free.h>
+/*#include <named/tokenset/compare.h>*/
+/*#include <named/tokenset/free.h>*/
 
-/*#include <named/strset/new.h>*/
-#include <named/strset/compare.h>
-#include <named/strset/free.h>
+/*#include <named/strset/compare.h>*/
+/*#include <named/strset/free.h>*/
 
 #include "task/explore_firsts/new.h"
 #include "task/percolate_firsts/new.h"
@@ -31,43 +30,30 @@
 #include "task/percolate_lookaheads/new.h"
 #include "task/add_reductions/new.h"
 
-#include "task/compare.h"
+/*#include "task/compare.h"*/
 #include "task/process.h"
 #include "task/dotout.h"
 #include "task/free.h"
 
-#include "heap/new.h"
+/*#include "heap/new.h"*/
 #include "heap/pop.h"
 #include "heap/is_nonempty.h"
 #include "heap/push.h"
-#include "heap/free.h"
+/*#include "heap/free.h"*/
 
-#include "shared.h"
+#include "shared/struct.h"
+
 #include "run_tasks.h"
 
 void run_tasks(
-	struct avl_tree_t* grammars,
+	struct yacc_shared* shared,
 	struct memory_arena* scratchpad)
 {
 	ENTER;
 	
-	struct shared* shared = smalloc(sizeof(*shared));
+	struct heap* const todo = shared->todo;
 	
-	struct heap* todo = new_heap(compare_tasks);
-	
-	shared->done = new_avl_tree(compare_tasks, free_task);
-	shared->grammars = grammars;
-	shared->todo = todo;
-	
-	shared->firsts.sets = new_avl_tree(compare_named_tokensets, free_named_tokenset);
-	shared->firsts.dependant_of = new_avl_tree(compare_named_strsets, free_named_strset);
-	shared->firsts.dependant_on = new_avl_tree(compare_named_strsets, free_named_strset);
-	
-	shared->lookaheads.sets = new_avl_tree(compare_named_tokensets, free_named_tokenset);
-	shared->lookaheads.dependant_of = new_avl_tree(compare_named_strsets, free_named_strset);
-	shared->lookaheads.dependant_on = new_avl_tree(compare_named_strsets, free_named_strset);
-	
-	avl_tree_foreach(grammars, ({
+	avl_tree_foreach(shared->grammar, ({
 		void run (const void* item) {
 			const struct named_grammar* ng = item;
 			
@@ -105,20 +91,6 @@ void run_tasks(
 		
 		free_task(task);
 	}
-	
-	avl_free_tree(shared->done);
-	
-	avl_free_tree(shared->firsts.sets);
-	avl_free_tree(shared->firsts.dependant_of);
-	avl_free_tree(shared->firsts.dependant_on);
-	
-	avl_free_tree(shared->lookaheads.sets);
-	avl_free_tree(shared->lookaheads.dependant_of);
-	avl_free_tree(shared->lookaheads.dependant_on);
-	
-	free_heap(todo);
-	
-	free(shared);
 	
 	EXIT;
 }

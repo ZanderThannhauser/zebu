@@ -1,2 +1,2 @@
 
-void free_dyntable(struct dyntable* this);;
+void free_dyntable(struct dyntable* this);

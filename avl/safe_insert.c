@@ -13,14 +13,10 @@
 
 void safe_avl_insert(struct avl_tree_t* tree, void* element)
 {
-	ENTER;
-	
 	if (!avl_insert(tree, element))
 	{
 		fprintf(stderr, "%s: malloc(): %m\n", argv0);
 		exit(e_out_of_memory);
 	}
-	
-	EXIT;
 }
 

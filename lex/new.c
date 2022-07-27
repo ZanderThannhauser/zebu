@@ -16,7 +16,7 @@
 #include "struct.h"
 #include "new.h"
 
-struct lex* new_lex(bool verbose)
+struct lex* new_lex()
 {
 	ENTER;
 	
@@ -32,8 +32,6 @@ struct lex* new_lex(bool verbose)
 		new_avl_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
 	this->next_id = 1; // because token 0 is for EOF
-	
-	this->verbose = verbose;
 	
 	EXIT;
 	return this;

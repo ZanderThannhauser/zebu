@@ -13,23 +13,16 @@
 
 void arena_dealloc(struct memory_arena* this, void* ptr)
 {
-	ENTER;
-	
 	if (!ptr)
 	{
-		EXIT;
 		return;
 	}
-	
-	dpv(ptr);
 	
 	struct memory_arena_header* header;
 	struct memory_arena_footer* footer;
 	
 	header = ptr - sizeof(*header);
 	footer = ((void*) header) + header->size - sizeof(*footer);
-	
-	dpv(header->size);
 	
 	assert(header->is_alloc);
 	
@@ -77,8 +70,6 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	header->is_alloc = false;
 	header->size = (void*) footer - (void*) header + sizeof(*footer);
 	
-	dpv(header->size);
-	
 	header->prev = NULL;
 	header->next = this->free_list.head;
 	
@@ -91,11 +82,6 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	
 	this->free_list.head = header;
 	
-/*	#ifdef DEBUGGING*/
-/*	arena_prettyprint(this);*/
-/*	#endif*/
-	
-	EXIT;
 }
 
 

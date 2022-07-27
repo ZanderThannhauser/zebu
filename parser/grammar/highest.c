@@ -228,9 +228,12 @@ struct gbundle read_highest_production(
 				scope->prefix.n + 1 + 
 				tokenizer->tokenchars.n + 1), *m = full;
 			
-			memcpy(m, scope->prefix.chars, scope->prefix.n);
-			m += scope->prefix.n;
-			*m++ = '.';
+			if (scope->prefix.n)
+			{
+				memcpy(m, scope->prefix.chars, scope->prefix.n);
+				m += scope->prefix.n;
+				*m++ = '.';
+			}
 			
 			memcpy(m, tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 			m += tokenizer->tokenchars.n;

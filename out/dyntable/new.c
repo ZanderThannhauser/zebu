@@ -13,7 +13,6 @@
 static int compare_dyntable_nodes(const void* a, const void* b)
 {
 	int cmp = 0;
-	ENTER;
 	
 	const struct dyntable_node* A = a, *B = b;
 	
@@ -26,7 +25,6 @@ static int compare_dyntable_nodes(const void* a, const void* b)
 	else if (A->y < B->y)
 		cmp = -1;
 	
-	EXIT;
 	return cmp;
 }
 

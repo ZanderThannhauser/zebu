@@ -28,6 +28,7 @@ const enum tokenizer_state expression_after_suffix_machine[number_of_tokenizer_s
 		[ts_start]['a' ... 'z'] = ts_reading_fragment,
 			[ts_reading_fragment][ANY] = ts_fragment,
 			[ts_reading_fragment]['a' ... 'z'] = ts_reading_fragment,
+			[ts_reading_fragment]['_'] = ts_reading_fragment,
 		
 		// string literal:
 		[ts_start]['\"'] = ts_reading_string_literal,

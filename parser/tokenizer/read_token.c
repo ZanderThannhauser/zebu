@@ -63,6 +63,12 @@ enum token read_token(
 			dputs("t_directive");
 			break;
 		
+		case ts_numeric:
+			append(this, 0);
+			this->token = t_numberic;
+			dputs("ts_numeric");
+			break;
+		
 		case ts_start:
 			TODO;
 			break;
@@ -227,6 +233,16 @@ enum token read_token(
 		case ts_percent:
 			this->token = t_percent;
 			dputs("t_percent");
+			break;
+		
+		case ts_ocurly:
+			this->token = t_ocurly;
+			dputs("t_ocurly");
+			break;
+		
+		case ts_ccurly:
+			this->token = t_ccurly;
+			dputs("t_ccurly");
 			break;
 		
 		default:

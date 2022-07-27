@@ -5,8 +5,6 @@
 
 struct lex
 {
-	bool verbose;
-	
 	unsigned next_id;
 	
 	struct avl_tree_t* dfa_to_id; // token -> token id

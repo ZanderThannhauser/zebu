@@ -25,11 +25,6 @@ static void setup_free_block(
 	void* start,
 	size_t size)
 {
-	ENTER;
-	
-	dpv(start);
-	dpv(size);
-	
 	#ifdef DEBUGGING
 	VALGRIND_MAKE_MEM_UNDEFINED(start, size);
 	#endif
@@ -51,18 +46,12 @@ static void setup_free_block(
 		this->free_list.head = header;
 	
 	this->free_list.tail = header;
-	
-	EXIT;
 }
 
 void* arena_sbrk(
 	struct memory_arena* this,
 	size_t requested_size)
 {
-	ENTER;
-	
-	dpv(requested_size);
-	
 	if (this->mmaps.n > 0)
 	{
 		struct mentry* mentry = &this->mmaps.data[this->mmaps.n - 1];
@@ -73,9 +62,6 @@ void* arena_sbrk(
 		if (requested_size > new_size)
 			new_size = requested_size;
 		
-		dpv(old_size);
-		dpv(new_size);
-		
 		if (mremap(mentry->start, old_size, new_size, 0) != MAP_FAILED)
 		{
 			// setup free block
@@ -85,7 +71,6 @@ void* arena_sbrk(
 			
 			mentry->size = new_size;
 			
-			EXIT;
 			return mentry->start + old_size;
 		}
 	}
@@ -96,8 +81,6 @@ void* arena_sbrk(
 	
 	if (requested_size > size)
 		size = requested_size;
-	
-	dpv(size);
 	
 	void* start = NULL;
 	
@@ -121,14 +104,11 @@ void* arena_sbrk(
 		this->mmaps.data = srealloc(this->mmaps.data, sizeof(struct mentry) * this->mmaps.cap);
 	}
 	
-	dpv(this->mmaps.data);
-	
 	this->mmaps.data[this->mmaps.n++] = (struct mentry) {
 		.start = start,
 		.size = size
 	};
 	
-	EXIT;
 	return start;
 }
 

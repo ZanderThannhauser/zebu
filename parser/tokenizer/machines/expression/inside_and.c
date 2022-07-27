@@ -28,6 +28,7 @@ const enum tokenizer_state expression_inside_and_machine[number_of_tokenizer_sta
 		[ts_start]['a' ... 'z'] = ts_reading_identifier,
 			[ts_reading_identifier][ANY] = ts_identifier,
 			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
+			[ts_reading_identifier]['_'] = ts_reading_identifier,
 		
 		// string literal:
 		[ts_start]['\"'] = ts_reading_string_literal,

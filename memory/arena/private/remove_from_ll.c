@@ -12,10 +12,6 @@ void remove_from_ll(
 	struct memory_arena* this,
 	struct memory_arena_header* block)
 {
-	ENTER;
-	
-	dpv(block);
-	
 	assert(!block->is_alloc);
 	
 	if (block->prev)
@@ -27,7 +23,5 @@ void remove_from_ll(
 		block->next->prev = block->prev;
 	else
 		this->free_list.tail = block->prev;
-	
-	EXIT;
 }
 

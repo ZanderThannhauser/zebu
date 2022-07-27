@@ -24,6 +24,7 @@
 #include <memory/arena/free.h>
 
 #include <yacc/yacc.h>
+#include <yacc/shared/free.h>
 
 #include <out/out.h>
 
@@ -39,13 +40,22 @@ int main(int argc, char* argv[])
 	
 	struct options* options = new_options();
 	
-	struct lex* lex = new_lex(flags->debug.lex);
+	struct lex* lex = new_lex();
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	struct yacc_state* parser = yacc(lex, scope->grammar, scratchpad);
+	struct yacc_shared *yshared = NULL;
 	
-	out(parser, flags->output_prefix, flags->just_output_tables);
+	struct yacc_state* parser = yacc(&yshared, lex, scope->grammar, scratchpad);
+	
+	out(parser,
+		yshared,
+		flags->output_path,
+		flags->output_prefix,
+		flags->paste_parser_code,
+		flags->debug.yacc);
+	
+	free_yacc_shared(yshared);
 	
 	free_lex(lex);
 	

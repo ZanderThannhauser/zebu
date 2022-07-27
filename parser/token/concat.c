@@ -24,6 +24,7 @@ struct rbundle read_concat_token_expression(
 	switch (tokenizer->token)
 	{
 		case t_oparen:
+		case t_osquare:
 		case t_identifier:
 		case t_string_literal:
 		case t_dot:

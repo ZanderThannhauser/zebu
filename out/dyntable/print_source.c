@@ -8,6 +8,7 @@
 
 void dyntable_print_source(
 	struct dyntable* this,
+	const char* prefix,
 	FILE* source,
 	FILE* header)
 {
@@ -15,11 +16,11 @@ void dyntable_print_source(
 	
 	dpvs(this->name);
 	
-	fprintf(header, "extern const unsigned %s[%u][%u];\n",
-		this->name, this->width + 1, this->height + 1);
+	fprintf(header, "extern const unsigned %s_%s[%u][%u];\n",
+		prefix, this->name, this->width + 1, this->height + 1);
 	
-	fprintf(source, "const unsigned %s[%u][%u] = {\n",
-		this->name, this->width + 1, this->height + 1);
+	fprintf(source, "const unsigned %s_%s[%u][%u] = {\n",
+		prefix, this->name, this->width + 1, this->height + 1);
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
 	{

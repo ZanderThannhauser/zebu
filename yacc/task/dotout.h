@@ -1,2 +1,2 @@
 
-void task_dotout(struct task* this, struct shared* shared);
+void task_dotout(struct task* this, struct yacc_shared* shared);
