@@ -79,11 +79,11 @@ struct gbundle read_highest_production(
 		
 		case t_character_literal:
 		{
-			dpvc(tokenizer->tokenchars.chars[1]);
+			dpvc(tokenizer->tokenchars.chars[0]);
 			
 			struct regex* start = regex_from_literal(
 				/* scratchpad: */ scratchpad,
-				/* chars:      */ tokenizer->tokenchars.chars + 1,
+				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ 1);
 			
 			unsigned token_id = lex_dfa_to_id(lex, start);
@@ -108,12 +108,10 @@ struct gbundle read_highest_production(
 		{
 			dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 			
-			dpvsn(tokenizer->tokenchars.chars + 1, tokenizer->tokenchars.n - 2);
-			
 			struct regex* start = regex_from_literal(
 				/* scratchpad: */ scratchpad,
-				/* chars:      */ tokenizer->tokenchars.chars + 1,
-				/* strlen:     */ tokenizer->tokenchars.n - 2);
+				/* chars:      */ tokenizer->tokenchars.chars,
+				/* strlen:     */ tokenizer->tokenchars.n);
 			
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			

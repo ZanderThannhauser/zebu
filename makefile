@@ -45,12 +45,14 @@ default: $(buildprefix)/zebu
 
 ARGS += -v
 
+ARGS += -j
+
 ARGS += --debug=yacc
 ARGS += --debug=lex
 
 #ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output
-# ARGS += -i ./examples/math/math.zb -o ./examples/math/output
-ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
+ARGS += -i ./examples/math/math.zb -o ./examples/math/output
+#ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

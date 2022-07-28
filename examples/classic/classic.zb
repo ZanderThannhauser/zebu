@@ -49,7 +49,7 @@ start: "abc"                                                  "?"?
 		 a : 'a' (b | c)? 'a' ;
 		 b : `b` (a | c)? `b` ;
 		 c : 'c' (a | b)? 'c' :
-		    (b a | b c | c a) +
+		    (b a | b c | a c | c a) +
 	
 	 | % a : 'A' (b | c)? 'A' ;
 		 b : 'B' (a | c)? 'B' ;

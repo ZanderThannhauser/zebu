@@ -34,14 +34,20 @@ struct rbundle read_highest_token_expression(
 	
 	switch (tokenizer->token)
 	{
+		case t_character_literal:
+		{
+			TODO;
+			break;
+		}
+		
 		case t_string_literal:
 		{
-			dpvsn(tokenizer->tokenchars.chars + 1, tokenizer->tokenchars.n - 2);
+			dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 			
 			struct regex* dfa = regex_from_literal(
 				/* scratchpad: */ scratchpad,
-				/* chars:      */ tokenizer->tokenchars.chars + 1,
-				/* strlen:     */ tokenizer->tokenchars.n - 2);
+				/* chars:      */ tokenizer->tokenchars.chars,
+				/* strlen:     */ tokenizer->tokenchars.n);
 			
 			retval = (struct rbundle) {
 				.is_nfa = false,

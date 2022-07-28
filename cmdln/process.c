@@ -36,12 +36,14 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 		{"input",  required_argument, 0, 'i'},
 		{"output",       no_argument, 0, 'o'},
 		{"debug",  required_argument, 0, 'd'},
+		{"prefix", required_argument, 0, 'p'},
+		{"just-tables", required_argument, 0, 'j'},
 		{"verbose",      no_argument, 0, 'v'},
 		{"help",         no_argument, 0, 'h'},
 		{ 0,                       0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "M" "d:" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "j" "M" "d:" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -56,6 +58,10 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 			
 			case 'p':
 				output_prefix = optarg;
+				break;
+			
+			case 'j':
+				paste_parser_code = false;
 				break;
 			
 /*			case 'M':*/

@@ -85,10 +85,56 @@ enum token read_token(
 			TODO;
 			break;
 		
+		void escapes()
+		{
+			ENTER;
+			
+			dpvsn(this->tokenchars.chars, this->tokenchars.n);
+			
+			char* s = this->tokenchars.chars;
+			char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
+			
+			while (r < n)
+			{
+				dpvc(*r);
+				
+				if (*r != '\\')
+					*w++ = *r++;
+				else switch (*++r)
+				{
+					case 'n': *w++ = '\n', r++; break;
+					
+					default:
+					{
+						dpvc(*r);
+						TODO;
+						break;
+					}
+				}
+			}
+			
+			this->tokenchars.n = w - s;
+			
+			dpvsn(this->tokenchars.chars, this->tokenchars.n);
+			
+			EXIT;
+		}
+		
 		case ts_character_literal:
+		{
 			this->token = t_character_literal;
 			dputs("t_character_literal");
+			escapes();
 			break;
+		}
+		
+		case ts_string_literal:
+		{
+			this->token = t_string_literal;
+			dputs("t_string_literal");
+			escapes();
+			break;
+		}
 		
 		case ts_charset:
 			this->token = t_charset;
@@ -98,11 +144,6 @@ enum token read_token(
 		case ts_fragment:
 			this->token = t_fragment;
 			dputs("t_fragment");
-			break;
-		
-		case ts_string_literal:
-			this->token = t_string_literal;
-			dputs("t_string_literal");
 			break;
 		
 		case ts_absolute_path:
