@@ -4280,74 +4280,59 @@ const unsigned zebu_accepts[81] = {
 	[79] = 2,
 	[80] = 2,
 };
-const char* zebu_grammar_names[22] = {
-	[19] = "(start)",
-	[14] = "directory",
-	[12] = "gecos",
-	[10] = "gid",
-	[4] = "name",
-	[20] = "newline",
-	[18] = "passwd_file",
-	[17] = "passwd_record",
-	[7] = "password",
-	[16] = "shell",
-	[9] = "uid",
-};
-#if 0
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
-#include <stdio.h>
-#include <stdarg.h>
-struct zebu_state { unsigned* data, n, cap, lstate; };
+#include <string.h>
+struct zebu_state {
+	struct { unsigned* data, n, cap; } y;
+	struct { unsigned char* data, n, cap; } l;
+	unsigned lstate, t;
+};
 static void push(struct zebu_state* this, unsigned ystate) {
-	if (this->n + 1 >= this->cap) {
-		this->cap = this->cap << 1 ?: 1;
-		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+	if (this->y.n + 1 >= this->y.cap) {
+		this->y.cap = this->y.cap << 1 ?: 1;
+		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
 	}
-	this->data[this->n++] = ystate;
+	this->y.data[this->y.n++] = ystate;
 }
-static void ddprintf(struct zebu_state* this, const char* fmt, ...) {
-	for (unsigned i = 0, n = this->n; i < n; i++) 
-		printf("%u ", this->data[i]);
-	printf("| ");
-	va_list va;
-	va_start(va, fmt);
-	vprintf(fmt, va);
-	va_end(va);
+static void append(struct zebu_state* this, const unsigned char* text, size_t length) {
+	while (this->l.n + length >= this->l.cap) {
+		this->l.cap = this->l.cap << 1 ?: 1;
+		this->l.data = realloc(this->l.data, this->l.cap);
+	}
+	memcpy(this->l.data + this->l.n, text, length);
+	this->l.n += length;
 }
 struct zebu_state* new_zebu_state() {
 	struct zebu_state* this = malloc(sizeof(*this));
 	assert(this);
-	this->data = NULL, this->n = 0, this->cap = 0;
-	this->lstate = 1;
+	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
+	this->l.data = NULL, this->l.n = 0, this->l.cap = 0;
+	this->lstate = 1, this->t = 0;
 	push(this, 1);
 	return this;
 }
 void zebu_reset(struct zebu_state* this) {
-	this->n = 0;
+	this->y.n = 0;
+	this->l.n = 0;
 	this->lstate = 1;
 	push(this, 1);
 }
 #define N(array) (sizeof(array) / sizeof(*array))
 static void process_token(struct zebu_state* this, unsigned t) {
-	ddprintf(this, "t == %u\n", t);
-	unsigned b, d, y = this->data[this->n - 1];
+	unsigned b, d, y = this->y.data[this->y.n - 1];
 	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t]))) {
 		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t])) {
-		ddprintf(this, "b == %u\n", b);
-		ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
 			unsigned s = t;
 			while (!(1
 				 && y < N(zebu_shifts) && b < N(*zebu_shifts) && (d = zebu_shifts[y][b])
 				 && b < N(zebu_firsts) && s < N(*zebu_firsts) && (    zebu_firsts[b][s]))) {
-				if (this->n == 1) return;
-				s = this->data[--this->n - 1];
-				y = this->data[--this->n - 1];
-				ddprintf(this, "y == %u\n", y);
+				if (this->y.n == 1) return;
+				s = this->y.data[--this->y.n - 1];
+				y = this->y.data[--this->y.n - 1];
 			}
 			push(this, b), push(this, d), y = d;
-			ddprintf(this, "y == %u\n", y);
 		} else {
 			assert(!"TODO");
 			exit(1);
@@ -4356,39 +4341,63 @@ static void process_token(struct zebu_state* this, unsigned t) {
 	push(this, t), push(this, b), y = b;
 }
 void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
-	unsigned a, b, c, l = this->lstate;
-	while (c = *text++, length--) {
-		ddprintf(this, "c == %c\n", c);
-		while (!(a = 0
-				?: (c < N(*zebu_lexer)    ? zebu_lexer[l][c] : 0)
-				?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0))) {
-			if (l < N(zebu_accepts) && (b = zebu_accepts[l])) {
-				process_token(this, b);
-				l = zebu_starts[this->data[this->n - 1]];
-				ddprintf(this, "l == %u\n", l);
-			} else {
-				assert(!"TODO");
-				exit(1);
-			}
+	unsigned c, l = this->lstate;
+	unsigned a, b, i, n, f, t = this->t;
+	i = this->l.n;
+	append(this, text, length);
+	for (n = this->l.n, f = 0; i < n;) {
+		c = this->l.data[i];
+		a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
+		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
+		if (a) {
+			if (b)
+				l = a, t = b, f = i++;
+			else
+				l = a, i++;
+		} else if (b) {
+			process_token(this, b);
+			l = zebu_starts[this->y.data[this->y.n - 1]], f = i + 1, t = 0;
+		} else if (t) {
+			process_token(this, t);
+			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
+		} else {
+			assert(!"TODO");
 		}
-		l = a;
-		ddprintf(this, "l == %u\n", l);
 	}
+	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
+	this->t = t;
 	this->lstate = l;
 }
 void zebu_parse_EOF(struct zebu_state* this) {
-	unsigned b, l = this->lstate;
-	ddprintf(this, "l == %u\n", l);
-	if (l < N(zebu_accepts) && (b = zebu_accepts[l])) {
-		process_token(this, b);
-	} else {
-		assert(!"TODO");
-		exit(1);
+	unsigned i, n, l = this->lstate;
+	unsigned a, b, c, f = 0, t = this->t;
+	for (i = this->l.n, n = i; ; ) {
+		assert(i <= n);
+		if (i < n) {
+			c = this->l.data[i];
+			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
+		} else a = 0;
+		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
+		if (a) {
+			if (b)
+				l = a, t = b, f = i++;
+			else
+				l = a, i++;
+		} else if (b) {
+			process_token(this, b);
+			l = zebu_starts[this->y.data[this->y.n - 1]], f = i + 1, t = 0;
+			if (f >= n) break;
+		} else if (t) {
+			process_token(this, t);
+			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
+		} else {
+			assert(!"TODO");
+		}
 	}
 	process_token(this, 1);
 }
 void free_zebu_state(struct zebu_state* this) {
-	free(this->data);
+	free(this->y.data);
+	free(this->l.data);
 	free(this);
 }
-#endif

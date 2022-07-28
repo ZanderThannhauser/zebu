@@ -6,12 +6,8 @@
 #include <stdio.h>
 
 #include "output.h"
-#include <stdlib.h>
-#include <stddef.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdarg.h>
 
+#if 0
 struct zebu_state {
 	struct { unsigned* data, n, cap; } y;
 	struct { unsigned char* data, n, cap; } l;
@@ -250,6 +246,7 @@ void free_zebu_state(struct zebu_state* this) {
 	free(this->l.data);
 	free(this);
 }
+#endif
 
 int main()
 {
