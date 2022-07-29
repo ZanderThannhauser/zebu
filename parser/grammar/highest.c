@@ -102,7 +102,7 @@ struct gbundle read_highest_production(
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
 				#ifdef DEBUGGING
-				regex_dotout(clone);
+				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
@@ -114,7 +114,7 @@ struct gbundle read_highest_production(
 				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
 				
 				#ifdef DEBUGGING
-				regex_dotout(start);
+				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 			}
 			
@@ -154,7 +154,7 @@ struct gbundle read_highest_production(
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
 				#ifdef DEBUGGING
-				regex_dotout(clone);
+				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
@@ -166,7 +166,7 @@ struct gbundle read_highest_production(
 				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
 				
 				#ifdef DEBUGGING
-				regex_dotout(start);
+				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 			}
 			
@@ -215,7 +215,7 @@ struct gbundle read_highest_production(
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
 				#ifdef DEBUGGING
-				regex_dotout(clone);
+				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
@@ -227,7 +227,7 @@ struct gbundle read_highest_production(
 				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
 				
 				#ifdef DEBUGGING
-				regex_dotout(start);
+				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 			}
 			
@@ -276,7 +276,7 @@ struct gbundle read_highest_production(
 				regex.nfa.start = clone;
 				
 				#ifdef DEBUGGING
-				regex_dotout(regex.nfa.start);
+				regex_dotout(regex.nfa.start, __PRETTY_FUNCTION__);
 				#endif
 			}
 			

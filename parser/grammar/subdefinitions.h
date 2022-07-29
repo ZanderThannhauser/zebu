@@ -1,4 +1,5 @@
 
+struct options;
 struct scope;
 struct memory_arena;
 struct lex;

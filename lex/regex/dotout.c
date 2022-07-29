@@ -182,7 +182,7 @@ void regex_dotout_set(struct regexset* set)
 	EXIT;
 }
 
-void regex_dotout(struct regex* state)
+void regex_dotout(struct regex* state, const char* name)
 {
 	ENTER;
 	
@@ -203,6 +203,8 @@ void regex_dotout(struct regex* state)
 	fprintf(out, "digraph {" "\n");
 	
 	fprintf(out, "\t" "rankdir = LR;" "\n");
+	
+	fprintf(out, "\t" "label = \"%s\";" "\n", name);
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
 	

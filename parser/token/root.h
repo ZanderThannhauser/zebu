@@ -1,4 +1,6 @@
 
+struct scope;
+
 #include "rbundle.h"
 
 struct regex_state;

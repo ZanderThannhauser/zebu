@@ -38,7 +38,7 @@ struct regex* regex_from_charset(
 		inside->is_accepting = true;
 	
 	#ifdef DEBUGGING
-	regex_dotout(start);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;

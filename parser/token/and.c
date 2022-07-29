@@ -58,7 +58,7 @@ struct rbundle read_and_token_expression(
 		}
 		else
 		{
-			TODO;
+			right_machine = right.dfa;
 		}
 		
 		dpv(left_machine);

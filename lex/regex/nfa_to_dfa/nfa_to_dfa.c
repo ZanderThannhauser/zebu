@@ -39,7 +39,7 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	struct regex* new_start = nfa_to_dfa_helper(start_set, mappings, arena);
 	
 	#ifdef DEBUGGING
-	regex_dotout(new_start);
+	regex_dotout(new_start, __PRETTY_FUNCTION__);
 	#endif
 	
 	free_regexset(start_set);

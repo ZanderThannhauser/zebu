@@ -33,7 +33,7 @@ void lex_add_EOF_token(
 	end->is_accepting = true;
 	
 	#ifdef DEBUGGING
-	regex_dotout(start);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	if (skip)
@@ -43,7 +43,7 @@ void lex_add_EOF_token(
 		regex_add_lambda_transition(clone, scratchpad, start);
 		
 		#ifdef DEBUGGING
-		regex_dotout(clone);
+		regex_dotout(clone, __PRETTY_FUNCTION__);
 		#endif
 		
 		struct regex* dfa = regex_nfa_to_dfa(clone, scratchpad);
@@ -53,7 +53,7 @@ void lex_add_EOF_token(
 		free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
 		
 		#ifdef DEBUGGING
-		regex_dotout(simp);
+		regex_dotout(simp, __PRETTY_FUNCTION__);
 		#endif
 		
 		start = simp;

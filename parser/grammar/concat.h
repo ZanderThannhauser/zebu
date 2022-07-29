@@ -1,4 +1,6 @@
 
+struct options;
+
 #include "gbundle.h"
 
 struct lex;

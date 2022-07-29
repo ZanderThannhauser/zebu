@@ -47,7 +47,7 @@ struct rbundle read_concat_token_expression(
 			};
 			
 			#ifdef DEBUGGING
-			regex_dotout(retval.nfa.start);
+			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -55,6 +55,7 @@ struct rbundle read_concat_token_expression(
 		case t_gravemark:
 		case t_cparen:
 		case t_ampersand:
+		case t_vertical_bar:
 		case t_semicolon:
 			break;
 		

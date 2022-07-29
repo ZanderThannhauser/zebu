@@ -41,7 +41,6 @@ void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared
 	
 	fprintf(out, ""
 		"digraph {"
-			"rankdir = LR" "\n"
 	"\n");
 	
 	avl_tree_foreach(shared->grammar, ({

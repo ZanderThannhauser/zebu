@@ -40,7 +40,7 @@ void regex_complement(struct regex* start)
 	helper(start);
 	
 	#ifdef DEBUGGING
-	regex_dotout(start);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;

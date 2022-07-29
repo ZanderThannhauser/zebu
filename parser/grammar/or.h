@@ -1,4 +1,5 @@
 
+struct options;
 struct lex;
 struct scope;
 struct tokenizer;

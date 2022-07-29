@@ -24,6 +24,8 @@ const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_sta
 				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
 				[ts_read_character_escape]['n'] = ts_read_character_literal2,
 				[ts_read_character_escape]['t'] = ts_read_character_literal2,
+				[ts_read_character_escape]['\''] = ts_read_character_literal2,
+				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
 			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
 			[ts_read_character_literal3][ANY] = ts_character_literal,
 		

@@ -107,6 +107,8 @@ enum token read_token(
 					
 					case 't': *w++ = '\t', r++; break;
 					
+					case '\\': *w++ = '\\', r++; break;
+					
 					case '\"': *w++ = '\"', r++; break;
 					
 					default:

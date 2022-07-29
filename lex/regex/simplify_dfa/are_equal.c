@@ -114,9 +114,11 @@ bool regex_are_equal(
 				are_equal = regex_are_equal(cache, ele_a->to, b->default_transition_to);
 			}
 			
-			while (are_equal && b_i < b_n && a->default_transition_to)
+			while (are_equal && a->default_transition_to && b_i < b_n)
 			{
-				TODO;
+				const struct transition* ele_b = b->transitions.data[b_i++];
+				
+				are_equal = regex_are_equal(cache, a->default_transition_to, ele_b->to);
 			}
 			
 			if (are_equal)
@@ -127,11 +129,11 @@ bool regex_are_equal(
 				}
 				else if (a->default_transition_to && !b->default_transition_to)
 				{
-					TODO;
+					are_equal = false;
 				}
 				else if (!a->default_transition_to && b->default_transition_to)
 				{
-					TODO;
+					are_equal = false;
 				}
 				else if (a->default_transition_to && b->default_transition_to)
 				{

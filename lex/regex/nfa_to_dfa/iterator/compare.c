@@ -12,36 +12,18 @@ int compare_iterators(const void* a, const void* b)
 {
 	const struct iterator* A = a, *B = b;
 	
-	if (A->moving < A->end)
-	{
-		if (B->moving < B->end)
-		{
-			struct regex* const state_a = A->moving[0]->to;
-			struct regex* const state_b = B->moving[0]->to;
-			
-			if (state_a > state_b)
-				return 1;
-			else if (state_a < state_b)
-				return -1;
-			else
-				return 0;
-		}
-		else
-		{
-			TODO;
-		}
-	}
+	assert (A->moving < A->end);
+	assert (B->moving < B->end);
+	
+	unsigned value_a = A->moving[0]->value;
+	unsigned value_b = B->moving[0]->value;
+	
+	if (value_a > value_b)
+		return +1;
+	else if (value_a < value_b)
+		return -1;
 	else
-	{
-		if (B->moving < B->end)
-		{
-			TODO;
-		}
-		else
-		{
-			TODO;
-		}
-	}
+		return 0;
 }
 
 

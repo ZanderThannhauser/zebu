@@ -124,7 +124,7 @@ struct regex* regex_clone(
 	avl_free_tree(mappings);
 	
 	#ifdef DEBUGGING
-	regex_dotout(retval);
+	regex_dotout(retval, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;

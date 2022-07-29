@@ -130,9 +130,9 @@ int compare_regexes(
 					dpvc(bt->value);
 					
 					if (at->value < bt->value)
-						cmp = -1;
+						cmp = -1, a_i++;
 					else if (bt->value < at->value)
-						cmp = -1;
+						cmp = +1, b_i++;
 					else
 						cmp = helper(at->to, bt->to), a_i++, b_i++;
 				}

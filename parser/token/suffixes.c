@@ -34,8 +34,23 @@ struct rbundle read_suffixes_token_expression(
 	switch (tokenizer->token)
 	{
 		case t_qmark:
-			TODO;
+		{
+			// convert into nfa:
+			if (!retval.is_nfa)
+				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+			
+			regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+			
+			read_token(
+				/* tokenizer: */ tokenizer,
+				/* machine:   */ expression_after_suffix_machine);
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			#endif
+			
 			break;
+		}
 		
 		case t_asterisk:
 		{
@@ -51,7 +66,7 @@ struct rbundle read_suffixes_token_expression(
 				/* machine:   */ expression_after_suffix_machine);
 			
 			#ifdef DEBUGGING
-			regex_dotout(retval.nfa.start);
+			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -69,7 +84,7 @@ struct rbundle read_suffixes_token_expression(
 				/* machine:   */ expression_after_suffix_machine);
 			
 			#ifdef DEBUGGING
-			regex_dotout(retval.nfa.start);
+			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -138,7 +153,7 @@ struct rbundle read_suffixes_token_expression(
 			retval.nfa.end = end;
 			
 			#ifdef DEBUGGING
-			regex_dotout(retval.nfa.start);
+			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			
 			read_token(

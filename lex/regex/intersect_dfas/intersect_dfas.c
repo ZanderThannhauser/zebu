@@ -109,20 +109,30 @@ static struct regex* helper(
 			
 			if (A_trans->value < B_trans->value)
 			{
+				dpv(A_trans->value);
+				
 				if (B->default_transition_to)
 				{
 					TODO;
 				}
+				
+				a.i++;
 			}
 			else if (A_trans->value > B_trans->value)
 			{
+				dpv(B_trans->value);
+				
 				if (A->default_transition_to)
 				{
 					TODO;
 				}
+				
+				TODO;
 			}
 			else
 			{
+				dpv(A_trans->value);
+				
 				TODO;
 			}
 		}
@@ -170,7 +180,7 @@ struct regex* regex_intersect_dfas(
 	struct regex* start = helper(A, B, mappings, arena);
 	
 	#ifdef DEBUGGING
-	regex_dotout(start);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	avl_free_tree(mappings);

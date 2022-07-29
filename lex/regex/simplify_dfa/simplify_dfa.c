@@ -38,7 +38,7 @@ struct regex* regex_simplify_dfa(
 	free_regex_ll(unique_nodes);
 	
 	#ifdef DEBUGGING
-	regex_dotout(new_start);
+	regex_dotout(new_start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;

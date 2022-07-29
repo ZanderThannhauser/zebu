@@ -1,0 +1,147 @@
+
+%start root;
+
+%skip: ' ';
+
+`D`:  ['0' - '9'];
+`L`:  ['a' - 'z', 'A' - 'Z', '_'];
+`H`:  ['a' - 'f', 'A' - 'F', '0' - '9'];
+`E`:  ['E', 'e'] ['+', '-']? D+ ;
+`FS`: ('f'|'F'|'l'|'L');
+`IS`: ('u'|'U'|'l'|'L')*;
+
+`identifier`: L (L | D)*;
+
+`constant`
+	: '0' ['x', 'X'] H+ IS? // hexadecimal
+	| '0'            D+ IS? // octal
+	|                D+ IS? // decimal
+	;
+
+`string_literal`:
+	'\"' ( "\\" . | [~('\"', '\\')] )* '\"'
+;
+
+primary_expression
+	: `identifier`
+	| `constant`
+	| `string_literal`
+	| "(" expression ")"
+	;
+
+postfix_expression
+	: primary_expression
+	| postfix_expression "[" expression "]"
+	| postfix_expression "(" ")"
+	| postfix_expression "(" argument_expression_list ")"
+	| postfix_expression '.'  `identifier`
+	| postfix_expression "->" `identifier`
+	| postfix_expression "++"
+	| postfix_expression "--"
+	;
+
+argument_expression_list
+	: conditional_expression
+	| argument_expression_list ',' conditional_expression
+	;
+
+unary_expression
+	: postfix_expression
+	| "++" unary_expression
+	| "--" unary_expression
+	| "&" unary_expression
+	| "*" unary_expression
+	| "+" unary_expression
+	| "-" unary_expression
+	| "~" unary_expression
+	| "!" unary_expression
+//	| "sizeof" unary_expression
+	;
+
+multiplicative_expression
+	: unary_expression
+	| multiplicative_expression '*' unary_expression
+	| multiplicative_expression '/' unary_expression
+	| multiplicative_expression '%' unary_expression
+	;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	;
+
+shift_expression
+	: additive_expression
+	| shift_expression "<<" additive_expression
+	| shift_expression ">>" additive_expression
+	;
+
+relational_expression
+	: shift_expression
+	| relational_expression '<' shift_expression
+	| relational_expression '>' shift_expression
+	| relational_expression "<=" shift_expression
+	| relational_expression ">=" shift_expression
+	;
+
+equality_expression
+	: relational_expression
+	| equality_expression "==" relational_expression
+	| equality_expression "!=" relational_expression
+	;
+
+and_expression
+	: equality_expression
+	| and_expression '&' equality_expression
+	;
+
+exclusive_or_expression
+	: and_expression
+	| exclusive_or_expression '^' and_expression
+	;
+
+inclusive_or_expression
+	: exclusive_or_expression
+	| inclusive_or_expression '|' exclusive_or_expression
+	;
+
+logical_and_expression
+	: inclusive_or_expression
+	| logical_and_expression "&&" inclusive_or_expression
+	;
+
+logical_or_expression
+	: logical_and_expression
+	| logical_or_expression "||" logical_and_expression
+	;
+
+conditional_expression
+	: logical_or_expression
+	| logical_or_expression '?' expression ':' conditional_expression
+	;
+
+expression
+	: conditional_expression
+	| expression ',' conditional_expression
+	;
+
+root: expression;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
