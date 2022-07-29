@@ -92,6 +92,7 @@ enum token read_token(
 			dpvsn(this->tokenchars.chars, this->tokenchars.n);
 			
 			char* s = this->tokenchars.chars;
+			
 			char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
 			
 			while (r < n)
@@ -103,6 +104,8 @@ enum token read_token(
 				else switch (*++r)
 				{
 					case 'n': *w++ = '\n', r++; break;
+					
+					case '\"': *w++ = '\"', r++; break;
 					
 					default:
 					{

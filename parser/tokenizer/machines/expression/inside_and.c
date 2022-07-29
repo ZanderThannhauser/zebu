@@ -36,6 +36,16 @@ const enum tokenizer_state expression_inside_and_machine[number_of_tokenizer_sta
 			[ts_reading_string_literal]['\"'] = ts_read_string_literal,
 				[ts_read_string_literal][ANY] = ts_string_literal,
 		
+		// character literal:
+		[ts_start]['\''] = ts_read_character_literal1,
+			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
+			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
+				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
+				[ts_read_character_escape]['n'] = ts_read_character_literal2,
+				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
+			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
+			[ts_read_character_literal3][ANY] = ts_character_literal,
+		
 		// dot:
 		[ts_start]['.'] = ts_after_dot,
 			[ts_after_dot][ANY] = ts_dot,

@@ -1,0 +1,13 @@
+
+%start value;
+
+`string`: '\"' ['a'-'z']+ '\"';
+
+value
+	: "true"
+	| "false"
+	| `['0' - '9']+`
+	| `string`
+	| "[" value ("," value)* "]"
+	| "{" `string` ":" value ("," `string` ":" value)* "}";
+

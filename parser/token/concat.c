@@ -27,6 +27,7 @@ struct rbundle read_concat_token_expression(
 		case t_osquare:
 		case t_identifier:
 		case t_string_literal:
+		case t_character_literal:
 		case t_dot:
 		{
 			struct rbundle next = read_concat_token_expression(tokenizer, scratchpad, scope);

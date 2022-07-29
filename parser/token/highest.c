@@ -36,7 +36,21 @@ struct rbundle read_highest_token_expression(
 	{
 		case t_character_literal:
 		{
-			TODO;
+			dpvc(tokenizer->tokenchars.chars[0]);
+			
+			struct regex* dfa = regex_from_literal(
+				/* scratchpad: */ scratchpad,
+				/* chars:      */ tokenizer->tokenchars.chars,
+				/* strlen:     */ 1);
+			
+			retval = (struct rbundle) {
+				.is_nfa = false,
+				.dfa = dfa,
+			};
+			
+			#ifdef DEBUGGING
+			regex_dotout(retval.dfa);
+			#endif
 			break;
 		}
 		
