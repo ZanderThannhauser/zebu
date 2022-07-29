@@ -154,6 +154,7 @@ static void helper(FILE* out, struct yacc_state* state)
 			fprintf(out, ""
 				"\"%p-%p\" -> \"%p-%p\" [" "\n"
 					"\t" "label = \"%s\"" "\n"
+					"\t" "color = \"black:white:black\"" "\n"
 				"]" "\n"
 			"", state, state->tokenizer_start, t->to, t->to->tokenizer_start, t->grammar);
 			
