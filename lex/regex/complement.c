@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "state/struct.h"
 
@@ -10,9 +10,9 @@
 
 static void helper(struct regex* regex)
 {
-	if (regex->phase != phase_counter)
+	if (regex->phase != lex_phase_counter)
 	{
-		regex->phase = phase_counter;
+		regex->phase = lex_phase_counter;
 		regex->is_accepting = !regex->is_accepting;
 		
 		size_t i, n;
@@ -35,7 +35,7 @@ void regex_complement(struct regex* start)
 {
 	ENTER;
 	
-	phase_counter++;
+	lex_phase_counter++;
 	
 	helper(start);
 	

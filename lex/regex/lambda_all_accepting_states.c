@@ -2,7 +2,7 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "state/struct.h"
 #include "state/add_lambda_transition.h"
@@ -17,11 +17,11 @@ static void helper(
 {
 	ENTER;
 	
-	if (regex->phase != phase_counter)
+	if (regex->phase != lex_phase_counter)
 	{
 		size_t i, n;
 		
-		regex->phase = phase_counter;
+		regex->phase = lex_phase_counter;
 		
 		// normal transitions:
 		for (i = 0, n = regex->transitions.n; i < n; i++)
@@ -78,9 +78,9 @@ void regex_lambda_all_accepting_states(
 {
 	ENTER;
 	
-	phase_counter++;
+	lex_phase_counter++;
 	
-	dpv(phase_counter);
+	dpv(lex_phase_counter);
 	
 	helper(regex, arena, dest, new_accepting);
 	

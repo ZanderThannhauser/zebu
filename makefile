@@ -47,7 +47,7 @@ ARGS += -v
 
 #ARGS += -j
 
-ARGS += --debug=yacc
+#ARGS += --debug=yacc
 #ARGS += --debug=lex
 
 #ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output

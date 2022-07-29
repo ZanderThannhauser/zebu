@@ -1,12 +1,14 @@
 
 %start value;
 
-`string`: '\"' ['a'-'z']+ '\"';
+// `string`: '\"' ['a'-'z']+ '\"';
+`string`: '\"' ['a'-'c']+ '\"';
 
 value
 	: "true"
 	| "false"
-	| `['0' - '9']+`
+//	| `['0' - '9']+`
+	| `['0' - '3']+`
 	| `string`
 	| "[" value ("," value)* "]"
 	| "{" `string` ":" value ("," `string` ":" value)* "}";

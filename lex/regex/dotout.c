@@ -3,7 +3,8 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
+
 #include <misc/frame_counter.h>
 
 #include <set/of_regexes/foreach.h>
@@ -15,11 +16,11 @@
 
 static void helper(FILE* out, struct regex* state)
 {
-	if (state->phase != phase_counter)
+	if (state->phase != lex_phase_counter)
 	{
 		size_t i, n;
 		
-		state->phase = phase_counter;
+		state->phase = lex_phase_counter;
 		
 		if (state->is_accepting)
 		{
@@ -126,7 +127,7 @@ void regex_dotout_set(struct regexset* set)
 	
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
-	phase_counter++;
+	lex_phase_counter++;
 	
 	regexset_foreach(set, ({
 		void runme(struct regex* state) {
@@ -169,7 +170,7 @@ void regex_dotout(struct regex* state)
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
 	
-	phase_counter++;
+	lex_phase_counter++;
 	
 	helper(out, state);
 	

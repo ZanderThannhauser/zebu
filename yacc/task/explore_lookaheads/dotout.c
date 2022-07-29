@@ -8,7 +8,8 @@
 
 #include <yacc/gegex/state/struct.h>
 
-#include <misc/phase_counter.h>
+#include <yacc/phase_counter.h>
+
 #include <misc/frame_counter.h>
 
 #include "../../shared/struct.h"
@@ -22,11 +23,11 @@ static void helper(FILE* out, struct gegex* state)
 {
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	if (state->phase != yacc_phase_counter)
 	{
 		size_t i, n;
 		
-		state->phase = phase_counter;
+		state->phase = yacc_phase_counter;
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
@@ -114,7 +115,7 @@ void explore_lookaheads_task_dotout(struct task* super, struct yacc_shared* shar
 	if (this->invocation)
 		fprintf(out, "label = \"%s\";" "\n", this->invocation);
 	
-	phase_counter++;
+	yacc_phase_counter++;
 	
 	struct avl_node_t* node = avl_search(shared->grammar, &this->name);
 	

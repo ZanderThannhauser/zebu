@@ -3,7 +3,8 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+#include <yacc/phase_counter.h>
+
 #include <misc/frame_counter.h>
 
 #include "state/struct.h"
@@ -13,11 +14,11 @@ static void helper(FILE* out, struct gegex* state)
 {
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	if (state->phase != yacc_phase_counter)
 	{
 		size_t i, n;
 		
-		state->phase = phase_counter;
+		state->phase = yacc_phase_counter;
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
@@ -103,8 +104,9 @@ void gegex_dotout(struct gegex* start, struct gegex* end)
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", start);
-
-	phase_counter++;
+	
+	yacc_phase_counter++;
+	
 	helper(out, start);
 	
 	fprintf(out, ""

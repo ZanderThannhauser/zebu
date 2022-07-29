@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <yacc/state/dotout.h>
+
 #include "shared/new.h"
 
 #include "run_tasks.h"
@@ -20,6 +22,10 @@ struct yacc_state* yacc(
 	run_tasks(shared, scratchpad);
 	
 	struct yacc_state* start = yacc_nfa_to_dfa(lex, grammar, scratchpad);
+	
+	#ifdef DEBUGGING
+	yacc_state_dotout(start);
+	#endif
 	
 	*out_shared = shared;
 	

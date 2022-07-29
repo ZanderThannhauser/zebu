@@ -10,7 +10,7 @@
 
 #include <lex/regex/state/struct.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "../struct.h"
 
@@ -46,9 +46,9 @@ unsigned lex_dfa_to_id(
 			unsigned i, n;
 			ENTER;
 			
-			if (state->phase != phase_counter)
+			if (state->phase != lex_phase_counter)
 			{
-				state->phase = phase_counter;
+				state->phase = lex_phase_counter;
 				
 				assert(!state->lambda_transitions.n);
 				
@@ -65,7 +65,7 @@ unsigned lex_dfa_to_id(
 			EXIT;
 		}
 		
-		phase_counter++, helper(token);
+		lex_phase_counter++, helper(token);
 		
 		struct dfa_to_id_node*   to = new_dfa_to_id_node(retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);

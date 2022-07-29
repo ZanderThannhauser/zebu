@@ -8,7 +8,7 @@
 /*#include <memory/arena/strdup.h>*/
 /*#include <memory/arena/dealloc.h>*/
 
-#include <misc/phase_counter.h>
+#include <yacc/phase_counter.h>
 
 #include <named/grammar/struct.h>
 
@@ -26,9 +26,9 @@ static void resolve(
 	size_t i, n;
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	if (state->phase != yacc_phase_counter)
 	{
-		state->phase = phase_counter;
+		state->phase = yacc_phase_counter;
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)
@@ -67,7 +67,7 @@ void resolve_grammar_names(struct scope* scope)
 {
 	ENTER;
 	
-	phase_counter++;
+	yacc_phase_counter++;
 	
 	for (struct avl_node_t* i = scope->grammar->head; i; i = i->next)
 	{

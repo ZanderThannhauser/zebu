@@ -4,7 +4,7 @@
 
 #include <debug.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "../state/struct.h"
 
@@ -20,11 +20,11 @@ void simplify_dfa_survey(
 	
 	dpv(node);
 	
-	if (node->phase != phase_counter)
+	if (node->phase != lex_phase_counter)
 	{
 		size_t i, n;
 		
-		node->phase = phase_counter;
+		node->phase = lex_phase_counter;
 		
 		assert(!node->lambda_transitions.n);
 		

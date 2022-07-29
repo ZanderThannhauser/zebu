@@ -5,6 +5,8 @@ extern const unsigned zebu_firsts[28][27];
 extern const unsigned zebu_starts[52];
 extern const unsigned zebu_defaults[48];
 extern const unsigned zebu_accepts[96];
+extern const char* zebu_grammar_names[29];
+#include <stddef.h>
 struct zebu_state;
 struct zebu_state* new_zebu_state();
 void zebu_reset(struct zebu_state* this);

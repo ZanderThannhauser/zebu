@@ -28,7 +28,8 @@
 #include <yacc/get_deps.h>
 #include <yacc/lookup_tokenset.h>
 
-#include <misc/phase_counter.h>
+#include <yacc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "ystate_to_id/new.h"
 #include "ystate_to_id/free.h"
@@ -88,7 +89,8 @@ void out(
 	shared->defaults = new_dynvector("defaults");
 	shared->accepts = new_dynvector("accepts");
 	
-	phase_counter++;
+	yacc_phase_counter++;
+	lex_phase_counter++;
 	
 	fill_yacc_tables(shared, start);
 	

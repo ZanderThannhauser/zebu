@@ -12,7 +12,8 @@
 #include <yacc/gegex/state/struct.h>
 
 #include <misc/frame_counter.h>
-#include <misc/phase_counter.h>
+
+#include <yacc/phase_counter.h>
 
 /*#include <strset/foreach.h>*/
 
@@ -31,11 +32,11 @@ static void helper(FILE* out, struct gegex* state)
 {
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	if (state->phase != yacc_phase_counter)
 	{
 		size_t i, n;
 		
-		state->phase = phase_counter;
+		state->phase = yacc_phase_counter;
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
@@ -140,7 +141,7 @@ void add_reductions_task_dotout(struct task* super, struct yacc_shared* shared)
 	
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
-	phase_counter++;
+	yacc_phase_counter++;
 	
 	struct avl_node_t* node = avl_search(shared->grammar, &this->name);
 	

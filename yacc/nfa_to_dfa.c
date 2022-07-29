@@ -10,7 +10,6 @@
 
 #include <yacc/gegex/state/struct.h>
 
-#include <yacc/state/dotout.h>
 #include <yacc/state/add_transition.h>
 #include <yacc/state/add_reduce_transition.h>
 #include <yacc/state/add_grammar_transition.h>
@@ -563,10 +562,6 @@ struct yacc_state* yacc_nfa_to_dfa(
 	add_lambda_states(states, start->start);
 	
 	struct yacc_state* new_start = helper(lex, cache, scratchpad, states);
-	
-	#ifdef DEBUGGING
-	yacc_state_dotout(new_start);
-	#endif
 	
 	// cleanup and return
 	avl_free_tree(cache);

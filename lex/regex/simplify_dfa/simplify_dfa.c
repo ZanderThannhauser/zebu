@@ -7,7 +7,7 @@
 
 #include <memory/smalloc.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "../dotout.h"
 
@@ -28,7 +28,7 @@ struct regex* regex_simplify_dfa(
 	
 	struct regex_ll* unique_nodes = new_regex_ll();
 	
-	phase_counter++;
+	lex_phase_counter++;
 	
 	simplify_dfa_survey(unique_nodes, original_start);
 	

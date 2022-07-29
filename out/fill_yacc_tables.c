@@ -3,7 +3,7 @@
 
 #include <yacc/state/struct.h>
 
-#include <misc/phase_counter.h>
+#include <yacc/phase_counter.h>
 
 #include "dyntable/set.h"
 
@@ -27,9 +27,9 @@ void fill_yacc_tables(
 {
 	ENTER;
 	
-	if (ystate->phase != phase_counter)
+	if (ystate->phase != yacc_phase_counter)
 	{
-		ystate->phase = phase_counter;
+		ystate->phase = yacc_phase_counter;
 		
 		unsigned yid = ystate_to_id(shared->ytoi, ystate);
 		

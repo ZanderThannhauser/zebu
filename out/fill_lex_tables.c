@@ -3,7 +3,7 @@
 
 #include <lex/state/struct.h>
 
-#include <misc/phase_counter.h>
+#include <lex/phase_counter.h>
 
 #include "dyntable/set.h"
 #include "dynvector/set.h"
@@ -22,9 +22,9 @@ void fill_lex_tables(
 {
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	if (state->phase != lex_phase_counter)
 	{
-		state->phase = phase_counter;
+		state->phase = lex_phase_counter;
 		
 		unsigned lid = lstate_to_id(shared->ltoi, state);
 		
