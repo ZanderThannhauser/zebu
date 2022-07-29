@@ -21,6 +21,8 @@ struct regex
 	
 	struct regex* default_transition_to;
 	
+	struct regex* EOF_transition_to;
+	
 	unsigned phase;
 	
 	unsigned is_accepting;

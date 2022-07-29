@@ -35,16 +35,18 @@ void simplify_dfa_survey(
 		}
 		
 		if (node->default_transition_to)
-		{
-			ddprintf("has default\n");
 			simplify_dfa_survey(unique_nodes, node->default_transition_to);
-		}
+		
+		// EOF transitions?
+		if (node->EOF_transition_to)
+			simplify_dfa_survey(unique_nodes, node->EOF_transition_to);
 		
 		regex_ll_add(unique_nodes, node);
 	}
 	
 	EXIT;
 }
+
 
 
 

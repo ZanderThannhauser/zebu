@@ -1,15 +1,17 @@
 
 %start value;
 
-// `string`: '\"' ['a'-'z']+ '\"';
-`string`: '\"' ['a'-'c']+ '\"';
+%skip: ' ';
+
+`string`: '\"' ['a' - 'z']+ '\"';
 
 value
 	: "true"
 	| "false"
-//	| `['0' - '9']+`
-	| `['0' - '3']+`
+	| `['0' - '9']+`
 	| `string`
 	| "[" value ("," value)* "]"
 	| "{" `string` ":" value ("," `string` ":" value)* "}";
+
+
 

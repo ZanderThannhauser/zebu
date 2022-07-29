@@ -2,6 +2,8 @@
 
 %start root;
 
+%skip: ' ';
+
 lit: `['0'-'9']+` | '(' root ')';
 
 mul: lit (('*' | '/') mul)?;

@@ -36,6 +36,8 @@
 
 %start start;
 
+%skip: [' ', 'g']+;
+
 [wy]: 'w' - 'y';
 
 start: "abc"                                                  "?"?
@@ -57,6 +59,7 @@ start: "abc"                                                  "?"?
 		       (a | b | c)    +
 ;
 
+%skip: ['h']+;
 
 
 

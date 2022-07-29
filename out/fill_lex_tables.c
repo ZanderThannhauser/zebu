@@ -50,6 +50,15 @@ void fill_lex_tables(
 			dynvector_set(shared->defaults, lid, slid);
 		}
 		
+		if (state->EOF_transition_to)
+		{
+			unsigned slid = lstate_to_id(shared->ltoi, state->EOF_transition_to);
+			
+			fill_lex_tables(shared, state->EOF_transition_to);
+			
+			dynvector_set(shared->EOFs, lid, slid);
+		}
+		
 		if (state->accepting)
 		{
 			unsigned tid = tokenset_to_id(shared->ttoi, state->accepting);

@@ -14,6 +14,7 @@
 #include "../state/new.h"
 #include "../state/add_transition.h"
 #include "../state/set_default_transition.h"
+#include "../state/set_EOF_transition.h"
 
 #include "regex_ll/find.h"
 
@@ -109,6 +110,22 @@ static struct regex* clone_helper(
 					/* arena */ arena,
 					/* value: */ ele->value,
 					/* to: */ to);
+		}
+		
+		// EOF transitions?
+		if (old->EOF_transition_to)
+		{
+			struct regex* cloneme = regex_ll_find(unique_nodes, old->EOF_transition_to);
+			
+			dpv(cloneme);
+			
+			regex_set_EOF_transition(
+				/* from: */ new,
+				/* to */ clone_helper(
+					/* mappings: */ mappings,
+					/* arena: */ arena,
+					/* unique_nodes: */ unique_nodes,
+					/* in: */ cloneme));
 		}
 		
 		EXIT;

@@ -19,6 +19,8 @@ struct lex_state* new_lex_state(
 	
 	this->default_transition_to = NULL;
 	
+	this->EOF_transition_to = NULL;
+	
 	this->phase = 0;
 	
 	this->accepting = NULL;

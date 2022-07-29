@@ -69,17 +69,7 @@ struct tokensetset* lex_build_tokenzer(
 		
 		tokenset_foreach(token_ids, ({
 			void runme(unsigned token) {
-				if (token)
-				{
-					regexset_add(starts, lex_id_to_dfa(this, token));
-				}
-				else
-				{
-					// EOF token:
-					struct tokenset* ts = new_tokenset();
-					tokenset_add(ts, 0);
-					tokensetset_add(retval, ts);
-				}
+				regexset_add(starts, lex_id_to_dfa(this, token));
 			}
 			runme;
 		}));

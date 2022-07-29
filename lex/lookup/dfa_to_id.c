@@ -60,6 +60,9 @@ unsigned lex_dfa_to_id(
 				
 				if (state->default_transition_to)
 					helper(state->default_transition_to);
+					
+				if (state->EOF_transition_to)
+					helper(state->EOF_transition_to);
 			}
 			
 			EXIT;

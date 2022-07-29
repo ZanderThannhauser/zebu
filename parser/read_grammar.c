@@ -10,7 +10,6 @@
 
 #include <memory/sstrdup.h>
 
-/*#include <yacc/gegex/state/struct.h>*/
 #include <yacc/gegex/state/new.h>
 
 #include "grammar/root.h"
@@ -28,6 +27,7 @@
 void read_grammar(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -47,10 +47,11 @@ void read_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
-		/* tokenizer: */ tokenizer,
+		/* tokenizer:  */ tokenizer,
 		/* scratchpad: */ scratchpad,
-		/* scope: */ scope,
-		/* lex: */ lex);
+		/* options:    */ options,
+		/* scope:      */ scope,
+		/* lex:        */ lex);
 	
 	// add grammar rule to scope
 	scope_declare_grammar(scope, name, bundle.start, bundle.end);

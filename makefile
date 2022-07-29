@@ -47,13 +47,13 @@ ARGS += -v
 
 #ARGS += -j
 
-#ARGS += --debug=yacc
+ARGS += --debug=yacc
 #ARGS += --debug=lex
 
 #ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output
 #ARGS += -i ./examples/math/math.zb -o ./examples/math/output
-#ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
-ARGS += -i ./examples/json/json.zb -o ./examples/json/output
+ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
+#ARGS += -i ./examples/json/json.zb -o ./examples/json/output
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

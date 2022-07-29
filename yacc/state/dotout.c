@@ -5,7 +5,7 @@
 
 #include <yacc/phase_counter.h>
 
-#include <set/of_tokens/struct.h>
+/*#include <set/of_tokens/struct.h>*/
 #include <set/of_tokens/compare.h>
 
 #include <lex/phase_counter.h>
@@ -69,19 +69,17 @@ static void helper(FILE* out, struct yacc_state* state)
 					// default transition?:
 					if (ls->default_transition_to)
 					{
-						TODO;
+						subhelper(ls->default_transition_to);
+					}
+					
+					if (ls->EOF_transition_to)
+					{
+						subhelper(ls->EOF_transition_to);
 					}
 				}
 			}
 			
-			if (t->value->n == 1 && t->value->data[0] == 0)
-			{
-				TODO;
-			}
-			else
-			{
-				lex_phase_counter++, subhelper(state->tokenizer_start);
-			}
+			lex_phase_counter++, subhelper(state->tokenizer_start);
 		}
 		
 		// reduction transitions:
@@ -126,22 +124,15 @@ static void helper(FILE* out, struct yacc_state* state)
 					{
 						TODO;
 					}
+					
+					if (ls->EOF_transition_to)
+					{
+						subhelper(ls->EOF_transition_to);
+					}
 				}
 			}
 			
-			if (t->value->n == 1 && t->value->data[0] == 0)
-			{
-				fprintf(out, ""
-					"\"%p-%p\" -> \"%p-%p\" [" "\n"
-						"\t" "label = \"<EOF>\"" "\n"
-						"\t" "style = \"dashed\"" "\n"
-					"]" "\n"
-				"", state, state->tokenizer_start, state, t->reduce_as);
-			}
-			else
-			{
-				lex_phase_counter++, subhelper(state->tokenizer_start);
-			}
+			lex_phase_counter++, subhelper(state->tokenizer_start);
 		}
 		
 		// grammar transitions:

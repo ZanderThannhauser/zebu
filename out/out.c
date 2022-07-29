@@ -87,6 +87,7 @@ void out(
 	
 	shared->starts = new_dynvector("starts");
 	shared->defaults = new_dynvector("defaults");
+	shared->EOFs = new_dynvector("EOFs");
 	shared->accepts = new_dynvector("accepts");
 	
 	yacc_phase_counter++;
@@ -155,6 +156,7 @@ void out(
 	
 	dynvector_print_source(shared->starts, output_prefix, source, header);
 	dynvector_print_source(shared->defaults, output_prefix, source, header);
+	dynvector_print_source(shared->EOFs, output_prefix, source, header);
 	dynvector_print_source(shared->accepts, output_prefix, source, header);
 	
 	if (yacc_debugging)
@@ -183,6 +185,7 @@ void out(
 	
 	free_dynvector(shared->starts);
 	free_dynvector(shared->defaults);
+	free_dynvector(shared->EOFs);
 	free_dynvector(shared->accepts);
 	
 	free(shared);

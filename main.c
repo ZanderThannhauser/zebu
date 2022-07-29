@@ -10,6 +10,7 @@
 #include <cmdln/free.h>
 
 #include <lex/new.h>
+#include <lex/add_EOF_token.h>
 #include <lex/free.h>
 
 #include <parser/mains_parse.h>
@@ -44,6 +45,8 @@ int main(int argc, char* argv[])
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
+	lex_add_EOF_token(lex, scratchpad, options->skip);
+	
 	struct yacc_shared *yshared = NULL;
 	
 	struct yacc_state* parser = yacc(&yshared, lex, scope->grammar, scratchpad);
@@ -61,9 +64,9 @@ int main(int argc, char* argv[])
 	
 	free_scope(scope);
 	
-	free_memory_arena(scratchpad);
-	
 	free_options(options);
+	
+	free_memory_arena(scratchpad);
 	
 	free_cmdln(flags);
 	

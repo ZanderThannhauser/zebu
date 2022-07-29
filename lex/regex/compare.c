@@ -161,6 +161,21 @@ int compare_regexes(
 					else if (bt)
 						cmp = -1;
 				}
+				
+				// possibly compare EOF states
+				if (!cmp)
+				{
+					const struct regex* const at = a->EOF_transition_to;
+					const struct regex* const bt = b->EOF_transition_to;
+					
+					if (at)
+						if (bt)
+							cmp = helper(at, bt);
+						else
+							cmp = +1;
+					else if (bt)
+						cmp = -1;
+				}
 			}
 		}
 		

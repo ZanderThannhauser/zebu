@@ -47,7 +47,8 @@
 
 void run_tasks(
 	struct yacc_shared* shared,
-	struct memory_arena* scratchpad)
+	struct memory_arena* scratchpad,
+	unsigned EOF_token_id)
 {
 	ENTER;
 	
@@ -64,7 +65,10 @@ void run_tasks(
 			struct tokenset* lookaheads = new_tokenset();
 			
 			if (strequals(ng->name, "(start)"))
-				tokenset_add(lookaheads, /* EOF token: */ 0);
+			{
+				assert(EOF_token_id);
+				tokenset_add(lookaheads, EOF_token_id);
+			}
 			
 			safe_avl_insert(shared->firsts.sets, new_named_tokenset(ng->name, firsts));
 			safe_avl_insert(shared->lookaheads.sets, new_named_tokenset(ng->name, lookaheads));
@@ -94,4 +98,17 @@ void run_tasks(
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

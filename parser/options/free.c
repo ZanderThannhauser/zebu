@@ -1,10 +1,17 @@
 
 #include <debug.h>
 
+#include "struct.h"
 #include "free.h"
 
 void free_options(struct options* this)
 {
-/*	TODO;*/
+	ENTER;
+	
+	free(this->start);
+	
+	free(this);
+	
+	EXIT;
 }
 

@@ -139,6 +139,23 @@ bool regex_are_equal(
 						a->default_transition_to, b->default_transition_to);
 				}
 			}
+			
+			if (are_equal)
+			{
+				if (a->EOF_transition_to && !b->EOF_transition_to)
+				{
+					TODO;
+				}
+				else if (!a->EOF_transition_to && b->EOF_transition_to)
+				{
+					TODO;
+				}
+				else if (a->EOF_transition_to && b->EOF_transition_to)
+				{
+					are_equal = regex_are_equal(cache,
+						a->EOF_transition_to, b->EOF_transition_to);
+				}
+			}
 		}
 		
 		ele->are_equal = are_equal;

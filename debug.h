@@ -39,6 +39,7 @@
 	
 	struct task;
 	struct heap;
+	struct options;
 	struct ptrset;
 	struct strset;
 	struct lex_state_ll;

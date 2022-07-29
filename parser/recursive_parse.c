@@ -11,6 +11,8 @@
 
 #include <misc/sopenat.h>
 
+#include "options/struct.h"
+
 #include "tokenizer/struct.h"
 #include "tokenizer/new.h"
 #include "tokenizer/read_char.h"
@@ -103,10 +105,11 @@ void recursive_parse(
 				
 				case t_identifier:
 					read_grammar(
-						/* tokenizer:  */ tokenizer,
-						/* scratchpad: */ scratchpad,
-						/* scope       */ scope,
-						/* lex: */ lex);
+						/* tokenizer:   */ tokenizer,
+						/* scratchpad:  */ scratchpad,
+						/* options:     */ options,
+						/* scope        */ scope,
+						/* lex:         */ lex);
 					break;
 				
 				default:

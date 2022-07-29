@@ -9,13 +9,19 @@
 
 #include <lex/regex/from_literal.h>
 #include <lex/regex/from_charset.h>
+#include <lex/regex/clone.h>
+#include <lex/regex/dotout.h>
+#include <lex/regex/state/add_lambda_transition.h>
 #include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
+#include <lex/regex/dfa_to_nfa.h>
 #include <lex/regex/simplify_dfa/simplify_dfa.h>
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 /*#include "../token/root.h"*/
 
 #include "../charset/root.h"
+
+#include "../options/struct.h"
 
 #include "../scope/struct.h"
 /*#include "../scope/push.h"*/
@@ -49,6 +55,7 @@
 struct gbundle read_highest_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -63,7 +70,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_root_machine);
 			
-			retval = read_root_production(tokenizer, scratchpad, scope, lex);
+			retval = read_root_production(tokenizer, scratchpad, options, scope, lex);
 			
 			if (tokenizer->token != t_cparen)
 			{
@@ -85,6 +92,31 @@ struct gbundle read_highest_production(
 				/* scratchpad: */ scratchpad,
 				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ 1);
+			
+			if (options->skip)
+			{
+				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
+				
+				struct regex* clone = regex_clone(scratchpad, options->skip);
+				
+				regex_add_lambda_transition(clone, scratchpad, start);
+				
+				#ifdef DEBUGGING
+				regex_dotout(clone);
+				#endif
+				
+				nfa.nfa.end->is_accepting = true;
+				
+				struct regex* dfa = regex_nfa_to_dfa(clone, scratchpad);
+				
+				start = regex_simplify_dfa(dfa, scratchpad);
+				
+				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
+				
+				#ifdef DEBUGGING
+				regex_dotout(start);
+				#endif
+			}
 			
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
@@ -113,6 +145,31 @@ struct gbundle read_highest_production(
 				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ tokenizer->tokenchars.n);
 			
+			if (options->skip)
+			{
+				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
+				
+				struct regex* clone = regex_clone(scratchpad, options->skip);
+				
+				regex_add_lambda_transition(clone, scratchpad, start);
+				
+				#ifdef DEBUGGING
+				regex_dotout(clone);
+				#endif
+				
+				nfa.nfa.end->is_accepting = true;
+				
+				struct regex* dfa = regex_nfa_to_dfa(clone, scratchpad);
+				
+				start = regex_simplify_dfa(dfa, scratchpad);
+				
+				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
+				
+				#ifdef DEBUGGING
+				regex_dotout(start);
+				#endif
+			}
+			
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
 			dpv(token_id);
@@ -124,6 +181,7 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
+			
 			#ifdef DEBUGGING
 			gegex_dotout(retval.start, retval.end);
 			#endif
@@ -147,6 +205,31 @@ struct gbundle read_highest_production(
 			}
 			
 			struct regex* start = regex_from_charset(charset, scratchpad);
+			
+			if (options->skip)
+			{
+				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
+				
+				struct regex* clone = regex_clone(scratchpad, options->skip);
+				
+				regex_add_lambda_transition(clone, scratchpad, start);
+				
+				#ifdef DEBUGGING
+				regex_dotout(clone);
+				#endif
+				
+				nfa.nfa.end->is_accepting = true;
+				
+				struct regex* dfa = regex_nfa_to_dfa(clone, scratchpad);
+				
+				start = regex_simplify_dfa(dfa, scratchpad);
+				
+				free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
+				
+				#ifdef DEBUGGING
+				regex_dotout(start);
+				#endif
+			}
 			
 			unsigned token_id = lex_dfa_to_id(lex, start);
 			
@@ -180,6 +263,22 @@ struct gbundle read_highest_production(
 			}
 			
 			struct regex* start;
+			
+			if (options->skip)
+			{
+				if (!regex.is_nfa)
+					regex = regex_dfa_to_nfa(regex.dfa, scratchpad);
+				
+				struct regex* clone = regex_clone(scratchpad, options->skip);
+				
+				regex_add_lambda_transition(clone, scratchpad, regex.nfa.start);
+				
+				regex.nfa.start = clone;
+				
+				#ifdef DEBUGGING
+				regex_dotout(regex.nfa.start);
+				#endif
+			}
 			
 			if (regex.is_nfa)
 			{

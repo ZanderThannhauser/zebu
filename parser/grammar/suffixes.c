@@ -16,12 +16,13 @@
 struct gbundle read_suffixes_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle retval = read_highest_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle retval = read_highest_production(tokenizer, scratchpad, options, scope, lex);
 	
 	dpv(retval.start);
 	dpv(retval.end);

@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <lex/struct.h>
+
 #include <yacc/state/dotout.h>
 
 #include "shared/new.h"
@@ -19,7 +21,7 @@ struct yacc_state* yacc(
 	
 	struct yacc_shared* shared = new_yacc_shared(grammar);
 	
-	run_tasks(shared, scratchpad);
+	run_tasks(shared, scratchpad, lex->EOF_token_id);
 	
 	struct yacc_state* start = yacc_nfa_to_dfa(lex, grammar, scratchpad);
 	

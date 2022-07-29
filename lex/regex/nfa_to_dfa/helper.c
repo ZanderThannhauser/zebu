@@ -19,6 +19,8 @@
 #include <set/of_regexes/new.h>
 #include <set/of_regexes/add.h>
 #include <set/of_regexes/foreach.h>
+#include <set/of_regexes/is_nonempty.h>
+#include <set/of_regexes/free.h>
 
 #include "iterator/struct.h"
 #include "iterator/new.h"
@@ -29,6 +31,7 @@
 #include "../state/new.h"
 #include "../state/add_transition.h"
 #include "../state/set_default_transition.h"
+#include "../state/set_EOF_transition.h"
 
 #include "add_lamda_states.h"
 #include "helper.h"
@@ -159,13 +162,8 @@ struct regex* nfa_to_dfa_helper(
 			
 			// for each iterator with defaults:
 			for (size_t i = 0, n = defaults.n; i < n; i++)
-			{
 				if (defaults.data[i]->last_used != round)
-				{
-					// state-set.add(iter.default);
-					TODO;
-				}
-			}
+					regexset_add(subregexset, defaults.data[i]->default_to);
 			
 			// substate = myself(state-set);
 			struct regex* substate = nfa_to_dfa_helper(
@@ -175,6 +173,8 @@ struct regex* nfa_to_dfa_helper(
 			
 			// node.transitions[min] = substate;
 			regex_add_transition(state, arena, min_value, substate);
+			
+			free_regexset(subregexset);
 			
 			round++;
 		}
@@ -193,8 +193,35 @@ struct regex* nfa_to_dfa_helper(
 				/* mappings: */ mappings,
 				/* arena: */ arena);
 			
-			// node.transitions[min] = substate;
 			regex_set_default_transition(state, substate);
+			
+			free_regexset(subregexset);
+		}
+		
+		// EOF transitions?
+		{
+			struct regexset* subregexset = new_regexset();
+			
+			regexset_foreach(states, ({
+				void runme(struct regex* ele) {
+					if (ele->EOF_transition_to) {
+						regexset_add(subregexset, ele->EOF_transition_to);
+					}
+				}
+				runme;
+			}));
+			
+			if (regexset_is_nonempty(subregexset))
+			{
+				struct regex* substate = nfa_to_dfa_helper(
+					/* states: */ subregexset,
+					/* mappings: */ mappings,
+					/* arena: */ arena);
+				
+				regex_set_EOF_transition(state, substate);
+			}
+			
+			free_regexset(subregexset);
 		}
 		
 		// free default iterator list and it's elements

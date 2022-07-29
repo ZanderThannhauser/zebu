@@ -19,6 +19,7 @@
 #include <lex/state/dotout.h>
 #include <lex/state/struct.h>
 #include <lex/state/set_default_transition.h>
+#include <lex/state/set_EOF_transition.h>
 
 #include <set/of_regexes/struct.h>
 #include <set/of_regexes/new.h>
@@ -228,6 +229,30 @@ static struct lex_state* helper(
 				
 				// create new transition:
 				lex_state_set_default_transition(state, substate);
+			}
+			
+			free_regexset(rs);
+		}
+		
+		// handle EOF transitions:
+		{
+			struct regexset* rs = new_regexset();
+			
+			regexset_foreach(states, ({
+				void runme(struct regex* ele) {
+					if (ele->EOF_transition_to)
+						regexset_add(rs, ele->EOF_transition_to);
+				}
+				runme;
+			}));
+			
+			if (rs->n)
+			{
+				// call myself:
+				struct lex_state* substate = helper(accepting, scratchpad, cache, rs);
+				
+				// create new transition:
+				lex_state_set_EOF_transition(state, substate);
 			}
 			
 			free_regexset(rs);

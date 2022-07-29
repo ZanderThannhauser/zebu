@@ -13,6 +13,8 @@ struct lex_state
 	
 	struct lex_state* default_transition_to;
 	
+	struct lex_state* EOF_transition_to;
+	
 	unsigned phase;
 	
 	struct tokenset* accepting; // freed by tokensetset

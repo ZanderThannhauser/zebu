@@ -13,4 +13,6 @@ struct lex
 	struct {
 		struct avl_tree_t* cache; // # set(token ids) -> machine id
 	} tokenizer;
+	
+	unsigned EOF_token_id;
 };

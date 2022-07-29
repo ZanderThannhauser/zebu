@@ -12,6 +12,8 @@ struct options* new_options()
 	
 	this->start = NULL;
 	
+	this->skip = NULL;
+	
 	return this;
 }
 

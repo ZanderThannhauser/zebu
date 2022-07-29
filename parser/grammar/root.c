@@ -7,12 +7,13 @@
 struct gbundle read_root_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle inner = read_or_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle inner = read_or_production(tokenizer, scratchpad, options, scope, lex);
 	
 	EXIT;
 	return inner;

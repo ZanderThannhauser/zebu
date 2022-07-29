@@ -299,25 +299,27 @@ static void check(const char* line, ...)
 
 int main()
 {
-	check("ABCCBA", NULL);
+/*	check("ABCCBA", NULL);*/
+/*	*/
+/*	check("ABC", "CBA", NULL);*/
+/*	*/
+/*	check("abc", NULL);*/
+/*	*/
+/*	check("abc::x!", NULL);*/
+/*	*/
+/*	check("a", "b", "c", ":", ":", "x", "!", NULL);*/
+/*	*/
+/*	check("bbaa", NULL);*/
+/*	*/
+/*	check("BaaB", "aBBa", NULL);*/
+/*	*/
+/*	check("abcc:x.", NULL);*/
+/*	*/
+/*	check("ABBABCCBCAAC", NULL);*/
+/*	*/
+/*	check("abaabacc", NULL);*/
 	
-	check("ABC", "CBA", NULL);
-	
-	check("abc", NULL);
-	
-	check("abc::x!", NULL);
-	
-	check("a", "b", "c", ":", ":", "x", "!", NULL);
-	
-	check("bbaa", NULL);
-	
-	check("BaaB", "aBBa", NULL);
-	
-	check("abcc:x.", NULL);
-	
-	check("ABBABCCBCAAC", NULL);
-	
-	check("abaabacc", NULL);
+	check(" a bga agb a c chh", NULL);
 	
 	return 0;
 }

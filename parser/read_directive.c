@@ -13,12 +13,20 @@
 
 #include "options/struct.h"
 
+#include <lex/regex/state/free.h>
+#include <lex/regex/dfa_to_nfa.h>
+#include <lex/regex/state/add_lambda_transition.h>
+
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
 #include "tokenizer/machines/identifier.h"
 #include "tokenizer/machines/semicolon.h"
+#include "tokenizer/machines/colon.h"
+#include "tokenizer/machines/expression/root.h"
 #include "tokenizer/machines/root.h"
+
+#include "token/root.h"
 
 #include "recursive_parse.h"
 #include "read_directive.h"
@@ -35,6 +43,8 @@ void read_directive(
 {
 	ENTER;
 	
+	dpvs(tokenizer->tokenchars.chars);
+	
 	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
 	{
 		read_token(tokenizer, identifier_machine);
@@ -50,6 +60,25 @@ void read_directive(
 		dpvs(options->start);
 		
 		read_token(tokenizer, semicolon_machine);
+	}
+	else if (memequals(tokenizer->tokenchars.chars, "%""skip", 6))
+	{
+		free_regex(options->skip, scratchpad);
+		
+		read_token(tokenizer, colon_machine);
+		
+		read_token(tokenizer, expression_root_machine);
+		
+		struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
+		
+		if (!bun.is_nfa)
+		{
+			bun = regex_dfa_to_nfa(bun.dfa, scratchpad);
+		}
+		
+		regex_add_lambda_transition(bun.nfa.end, scratchpad, bun.nfa.start);
+		
+		options->skip = bun.nfa.start;
 	}
 	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
 	{

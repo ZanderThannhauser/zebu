@@ -13,6 +13,7 @@
 /*#include "state/new.h"*/
 
 #include <set/of_regexes/new.h>
+#include <set/of_regexes/free.h>
 
 #include "mapping/compare.h"
 #include "mapping/free.h"
@@ -40,6 +41,8 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	#ifdef DEBUGGING
 	regex_dotout(new_start);
 	#endif
+	
+	free_regexset(start_set);
 	
 	avl_free_tree(mappings);
 	

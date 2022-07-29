@@ -6,6 +6,7 @@
 #include <lex/phase_counter.h>
 
 #include <misc/frame_counter.h>
+#include <misc/escape.h>
 
 #include <set/of_regexes/foreach.h>
 
@@ -46,27 +47,48 @@ static void helper(FILE* out, struct regex* state)
 		{
 			struct transition* transition = state->transitions.data[i];
 			
-			helper(
-				/* out: */ out,
-				/* state:  */ transition->to);
+			helper(out, transition->to);
 			
-			char value[10];
+			unsigned value = transition->value;
 			
-			if (isalnum(transition->value) || index(":-_", transition->value))
-				sprintf(value, "'%c'", transition->value);
-			else switch (transition->value) {
-				case '\\': sprintf(value, "'\\\\\\\\'"); break;
-				case '\n': sprintf(value, "'\\\\n'"); break;
-				default: sprintf(value, "'\\\\x%02hhX'", transition->value); break;
+			dpvc(value);
+			
+			if (true
+				&& i + 1 < n
+				&& value + 1 == state->transitions.data[i + 1]->value
+				&& transition->to == state->transitions.data[i + 1]->to)
+			{
+				do i++; while (true
+					&& i + 1 < n
+					&& state->transitions.data[i]->value + 1 == state->transitions.data[i + 1]->value
+					&& transition->to == state->transitions.data[i + 1]->to);
+				
+				unsigned value2 = state->transitions.data[i]->value;
+				
+				dpvc(value2);
+				
+				char low[10], high[10];
+				escape(low, value);
+				escape(high, value2);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"%s - %s\"" "\n"
+					"]" "\n"
+				"", state, transition->to, low, high);
 			}
-			
-			dpvs(value);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"%s\"" "\n"
-				"]" "\n"
-			"", state, transition->to, value);
+			else
+			{
+				char str[10];
+				escape(str, value);
+				dpvs(str);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"%s\"" "\n"
+					"]" "\n"
+				"", state, transition->to, str);
+			}
 		}
 		
 		// lambda transitions:
@@ -98,7 +120,21 @@ static void helper(FILE* out, struct regex* state)
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"\"" "\n"
+					"\t" "label = \"<default>\"" "\n"
+				"]" "\n"
+			"", state, to);
+		}
+		
+		// EOF transition?
+		if (state->EOF_transition_to)
+		{
+			struct regex* to = state->EOF_transition_to;
+			
+			helper(out, to);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"<EOF>\"" "\n"
 				"]" "\n"
 			"", state, to);
 		}

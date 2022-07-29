@@ -13,6 +13,7 @@
 struct gbundle read_concat_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -20,7 +21,7 @@ struct gbundle read_concat_production(
 	
 	struct gbundle retval;
 	
-	struct gbundle left = read_subdefinitions_production(tokenizer, scratchpad, scope, lex);
+	struct gbundle left = read_subdefinitions_production(tokenizer, scratchpad, options, scope, lex);
 	
 	switch (tokenizer->token)
 	{
@@ -31,7 +32,7 @@ struct gbundle read_concat_production(
 		case t_gravemark:
 		case t_osquare:
 		{
-			struct gbundle right = read_concat_production(tokenizer, scratchpad, scope, lex);
+			struct gbundle right = read_concat_production(tokenizer, scratchpad, options, scope, lex);
 			
 			gegex_add_lambda_transition(left.end, scratchpad, right.start);
 			

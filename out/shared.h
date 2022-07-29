@@ -20,8 +20,11 @@ struct out_shared
 	// (parser state) -> (tokenizer start state)
 	struct dynvector* starts;
 	
-	// (tokenizer state) -> default transition to tokenizer state
+	// (tokenizer state) -> default transition
 	struct dynvector* defaults;
+	
+	// (tokenizer state) -> EOF transition
+	struct dynvector* EOFs;
 	
 	// (tokenizer state) -> token
 	struct dynvector* accepts;

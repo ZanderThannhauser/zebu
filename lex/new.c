@@ -31,7 +31,9 @@ struct lex* new_lex()
 	this->tokenizer.cache =
 		new_avl_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
-	this->next_id = 1; // because token 0 is for EOF
+	this->next_id = 1; // because token 0 is for error
+	
+	this->EOF_token_id = 0;
 	
 	EXIT;
 	return this;

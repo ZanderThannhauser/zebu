@@ -27,20 +27,11 @@ struct charset* read_highest_charset(
 	{
 		case t_character_literal:
 		{
-			char* first = tokenizer->tokenchars.chars + 1;
+			char* first = tokenizer->tokenchars.chars;
 			
-			if (*first == '\\')
-			{
-				switch (*++first)
-				{
-					case 'n': retval = new_charset("\n", 1, false); break;
-					default: TODO; break;
-				}
-			}
-			else
-			{
-				retval = new_charset(first, 1, false);
-			}
+			dpvc(*first);
+			
+			retval = new_charset(first, 1, false);
 			break;
 		}
 		

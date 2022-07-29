@@ -505,7 +505,7 @@ static struct yacc_state* helper(
 				else
 				{
 					// huh?
-					abort();
+					TODO;
 				}
 			}
 			runme;

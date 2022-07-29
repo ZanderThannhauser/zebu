@@ -23,6 +23,7 @@
 struct gbundle read_subdefinitions_production(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
+	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -48,7 +49,7 @@ struct gbundle read_subdefinitions_production(
 					break;
 				
 				case t_identifier:
-					read_grammar(tokenizer, scratchpad, scope, lex);
+					read_grammar(tokenizer, scratchpad, options, scope, lex);
 					break;
 				
 				default:
@@ -63,13 +64,13 @@ struct gbundle read_subdefinitions_production(
 		// read production rule:
 		read_token(tokenizer, production_inside_subdefinitions_machine);
 		
-		retval = read_suffixes_production(tokenizer, scratchpad, scope, lex);
+		retval = read_suffixes_production(tokenizer, scratchpad, options, scope, lex);
 		
 		scope_pop(scope);
 	}
 	else
 	{
-		retval = read_suffixes_production(tokenizer, scratchpad, scope, lex);
+		retval = read_suffixes_production(tokenizer, scratchpad, options, scope, lex);
 	}
 	
 	EXIT;
