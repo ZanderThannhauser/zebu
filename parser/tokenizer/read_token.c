@@ -159,8 +159,8 @@ enum token read_token(
 			break;
 		
 		case ts_relative_path:
-			TODO;
-/*			this->token = t_relative_path;*/
+			this->token = t_relative_path;
+			dputs("t_relative_path");
 			break;
 		
 		case ts_identifier:

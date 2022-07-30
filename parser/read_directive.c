@@ -86,7 +86,22 @@ void read_directive(
 		{
 			case t_relative_path:
 			{
-				TODO;
+				char* path = (char*) tokenizer->tokenchars.chars + 1;
+				
+				path[tokenizer->tokenchars.n - 2] = '\0';
+				
+				dpvs(path);
+				
+				recursive_parse(
+					/* options: */ options,
+					/* scope: */ scope,
+					/* pragma_once: */ pragma_once,
+					/* token_scratchpad: */ scratchpad,
+					/* absolute_dirfd: */ absolute_dirfd,
+					/* relative_dirfd: */ relative_dirfd,
+					/* path */ path,
+					/* lex: */ lex);
+				
 				break;
 			}
 			
