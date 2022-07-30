@@ -44,7 +44,7 @@ struct rbundle read_prefixes_token_expression(
 			machine = inner.dfa;
 		}
 		
-		regex_complement(machine);
+		regex_complement(machine, scratchpad);
 		
 		EXIT;
 		return (struct rbundle) {

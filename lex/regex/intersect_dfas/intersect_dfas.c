@@ -113,7 +113,8 @@ static struct regex* helper(
 				
 				if (B->default_transition_to)
 				{
-					TODO;
+					struct regex* substate = helper(A_trans->to, B->default_transition_to, mappings, arena);
+					regex_add_transition(state, arena, A_trans->value, substate);
 				}
 				
 				a.i++;
@@ -133,7 +134,11 @@ static struct regex* helper(
 			{
 				dpv(A_trans->value);
 				
-				TODO;
+				struct regex* substate = helper(A_trans->to, B_trans->to, mappings, arena);
+				
+				regex_add_transition(state, arena, A_trans->value, substate);
+				
+				a.i++, b.i++;
 			}
 		}
 		

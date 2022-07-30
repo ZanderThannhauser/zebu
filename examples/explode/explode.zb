@@ -1,0 +1,27 @@
+
+// vim: ts=4
+
+%start start;
+
+start
+	: `"aa"+`      "1"
+	| `"aaa"+`     "2"
+	| `"aaaaa"+`   "3"
+	| `"aaaaaaa"+` "4"
+	;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

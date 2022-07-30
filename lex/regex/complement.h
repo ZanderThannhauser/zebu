@@ -1,4 +1,6 @@
 
 struct regex;
 
-void regex_complement(struct regex* regex);
+struct memory_arena;
+
+void regex_complement(struct regex* start, struct memory_arena* scratchpad);

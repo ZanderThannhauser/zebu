@@ -23,7 +23,7 @@
 ;
 
 primary_expression
-	: `identifier`
+	: `identifier & !"sizeof"`
 	| `constant`
 	| `string_literal`
 	| "(" expression ")"
@@ -34,7 +34,7 @@ postfix_expression
 	| postfix_expression "[" expression "]"
 	| postfix_expression "(" ")"
 	| postfix_expression "(" argument_expression_list ")"
-	| postfix_expression '.'  `identifier`
+	| postfix_expression "."  `identifier`
 	| postfix_expression "->" `identifier`
 	| postfix_expression "++"
 	| postfix_expression "--"
@@ -55,7 +55,7 @@ unary_expression
 	| "-" unary_expression
 	| "~" unary_expression
 	| "!" unary_expression
-//	| "sizeof" unary_expression
+	| "sizeof" unary_expression
 	;
 
 multiplicative_expression

@@ -54,7 +54,9 @@ ARGS += --debug=yacc
 #ARGS += -i ./examples/math/math.zb -o ./examples/math/output
 #ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
 #ARGS += -i ./examples/json/json.zb -o ./examples/json/output
-ARGS += -i ./examples/C/C.zb -o ./examples/C/output
+#ARGS += -i ./examples/C-expressions/C.zb -o ./examples/C-expressions/output
+ARGS += -i ./examples/explode/explode.zb -o ./examples/explode/output
+ARGS += -i ./examples/gegex/gegex.zb -o ./examples/gegex/output
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

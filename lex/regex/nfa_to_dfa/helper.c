@@ -115,7 +115,7 @@ struct regex* nfa_to_dfa_helper(
 					
 					if (iter->default_to)
 					{
-						if (defaults.n + 1 > defaults.cap)
+						if (defaults.n + 1 >= defaults.cap)
 						{
 							defaults.cap = defaults.cap << 1 ?: 1;
 							defaults.data = srealloc(defaults.data,
