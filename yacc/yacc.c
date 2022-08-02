@@ -7,6 +7,7 @@
 
 #include "shared/new.h"
 
+#include "atomize_grammar_rules.h"
 #include "run_tasks.h"
 #include "nfa_to_dfa.h"
 #include "yacc.h"
@@ -18,6 +19,11 @@ struct yacc_state* yacc(
 	struct memory_arena* scratchpad)
 {
 	ENTER;
+	
+	struct avl_tree_t* new_grammar = atomize_grammar_rules(grammar, scratchpad);
+	
+	// switch lower code to new_grammar
+	TODO;
 	
 	struct yacc_shared* shared = new_yacc_shared(grammar);
 	

@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <memory/arena/malloc.h>
@@ -63,3 +64,4 @@ void gegex_add_reduction_transition(
 
 
 
+#endif

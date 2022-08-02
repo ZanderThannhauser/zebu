@@ -18,6 +18,7 @@ struct yacc_state
 		struct rytransition {
 			const struct tokenset* value; // lex will free
 			const char* reduce_as; // arena will free
+			unsigned pop_count;
 		}** data;
 		size_t n, cap;
 	} reduction_transitions;

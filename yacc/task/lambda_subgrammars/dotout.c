@@ -72,6 +72,8 @@ static void helper(FILE* out, struct gegex* state)
 			"", state, gtransition->to, gtransition->grammar);
 		}
 		
+		TODO;
+		#if 0
 		// reduction transitions:
 		for (i = 0, n = state->reduction_transitions.n; i < n; i++)
 		{
@@ -91,6 +93,7 @@ static void helper(FILE* out, struct gegex* state)
 				"]" "\n"
 			"", state, rtransition->reduce_as, rtransition->token);
 		}
+		#endif
 		
 		// lambda transitions:
 		for (i = 0, n = state->lambda_transitions.n; i < n; i++)

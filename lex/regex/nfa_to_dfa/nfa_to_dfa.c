@@ -30,13 +30,13 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 {
 	ENTER;
 	
-	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free_mapping);
+	struct avl_tree_t* mappings = new_avl_tree(compare_regex_mappings, free_regex_mapping);
 	
 	struct regexset* start_set = new_regexset();
 	
 	regex_add_lamda_states(start_set, in);
 	
-	struct regex* new_start = nfa_to_dfa_helper(start_set, mappings, arena);
+	struct regex* new_start = regex_nfa_to_dfa_helper(start_set, mappings, arena);
 	
 	#ifdef DEBUGGING
 	regex_dotout(new_start, __PRETTY_FUNCTION__);

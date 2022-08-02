@@ -1,1 +1,1 @@
-void free_mapping(void* a);
+void free_regex_mapping(void* a);

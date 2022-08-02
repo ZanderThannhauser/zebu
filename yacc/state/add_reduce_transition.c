@@ -13,7 +13,8 @@ void yacc_state_add_reduce_transition(
 	struct yacc_state* from,
 	struct memory_arena* arena,
 	const struct tokenset* value,
-	const char* reduce_as)
+	const char* reduce_as,
+	unsigned pop_count)
 {
 	ENTER;
 	
@@ -23,6 +24,7 @@ void yacc_state_add_reduce_transition(
 	
 	transition->value = value;
 	transition->reduce_as = reduce_as;
+	transition->pop_count = pop_count;
 	
 	if (from->reduction_transitions.n + 1 >= from->reduction_transitions.cap)
 	{

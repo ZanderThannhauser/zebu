@@ -332,6 +332,8 @@ static struct yacc_state* helper(
 	struct yacc_state* state;
 	ENTER;
 	
+	TODO;
+	#if 0
 	// lookup source_states in cache:
 	struct avl_node_t* node = avl_search(cache, &source_states);
 	
@@ -536,6 +538,7 @@ static struct yacc_state* helper(
 		avl_free_tree(subgrammars);
 		free_gegexset(substates);
 	}
+	#endif
 	
 	EXIT;
 	return state;

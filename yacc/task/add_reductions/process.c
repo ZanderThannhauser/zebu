@@ -20,6 +20,8 @@ void add_reductions_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
+	TODO;
+	#if 0
 	struct tokenset* lookaheads = lookup_tokenset(shared->lookaheads.sets, this->name);
 	
 	char* dup = arena_strdup(this->scratchpad, this->name);
@@ -33,6 +35,7 @@ void add_reductions_task_process(struct task* super, struct yacc_shared* shared)
 		}
 		runme;
 	}));
+	#endif
 	
 	EXIT;
 }

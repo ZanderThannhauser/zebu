@@ -8,9 +8,9 @@
 #include "struct.h"
 #include "free.h"
 
-void free_mapping(void* a)
+void free_regex_mapping(void* a)
 {
-	struct mapping* this = a;
+	struct regex_mapping* this = a;
 	ENTER;
 	
 	free_regexset(this->original_states);

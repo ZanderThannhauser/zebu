@@ -10,7 +10,10 @@
 
 #include <memory/sstrdup.h>
 
+#include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
+#include <yacc/gegex/dotout.h>
+#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
 
 #include "grammar/root.h"
 #include "grammar/gbundle.h"
@@ -52,6 +55,17 @@ void read_grammar(
 		/* options:    */ options,
 		/* scope:      */ scope,
 		/* lex:        */ lex);
+	
+	bundle.end->reduction_point = true;
+	
+	// nfa to dfa
+	struct gegex* dfa_start = gegex_nfa_to_dfa(bundle.start, scratchpad);
+	
+	#ifdef DEBUGGING
+	gegex_dotout(dfa_start, /* optional_end: */ NULL);
+	#endif
+	
+	CHECK;
 	
 	// add grammar rule to scope
 	scope_declare_grammar(scope, name, bundle.start, bundle.end);

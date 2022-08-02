@@ -43,7 +43,7 @@
 #include "mapping/struct.h"
 #include "mapping/new.h"
 
-struct regex* nfa_to_dfa_helper(
+struct regex* regex_nfa_to_dfa_helper(
 	struct regexset* states,
 	struct avl_tree_t* mappings,
 	struct memory_arena* arena)
@@ -53,7 +53,7 @@ struct regex* nfa_to_dfa_helper(
 	
 	if ((search_result = avl_search(mappings, &states)))
 	{
-		struct mapping* cached = search_result->item;
+		struct regex_mapping* cached = search_result->item;
 		
 		EXIT;
 		return cached->combined_state;
@@ -62,7 +62,7 @@ struct regex* nfa_to_dfa_helper(
 	{
 		struct regex* state = new_regex(arena);
 		
-		struct mapping* mapping = new_mapping(states, state);
+		struct regex_mapping* mapping = new_regex_mapping(states, state);
 		
 		safe_avl_insert(mappings, mapping);
 		
@@ -166,7 +166,7 @@ struct regex* nfa_to_dfa_helper(
 					regexset_add(subregexset, defaults.data[i]->default_to);
 			
 			// substate = myself(state-set);
-			struct regex* substate = nfa_to_dfa_helper(
+			struct regex* substate = regex_nfa_to_dfa_helper(
 				/* states: */ subregexset,
 				/* mappings: */ mappings,
 				/* arena: */ arena);
@@ -188,7 +188,7 @@ struct regex* nfa_to_dfa_helper(
 				regex_add_lamda_states(subregexset, defaults.data[i]->default_to);
 			
 			// node.default = call myself
-			struct regex* substate = nfa_to_dfa_helper(
+			struct regex* substate = regex_nfa_to_dfa_helper(
 				/* states: */ subregexset,
 				/* mappings: */ mappings,
 				/* arena: */ arena);
@@ -213,7 +213,7 @@ struct regex* nfa_to_dfa_helper(
 			
 			if (regexset_is_nonempty(subregexset))
 			{
-				struct regex* substate = nfa_to_dfa_helper(
+				struct regex* substate = regex_nfa_to_dfa_helper(
 					/* states: */ subregexset,
 					/* mappings: */ mappings,
 					/* arena: */ arena);

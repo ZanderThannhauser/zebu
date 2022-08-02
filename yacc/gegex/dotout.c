@@ -22,10 +22,10 @@ static void helper(FILE* out, struct gegex* state)
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
-				"\t" "shape = circle;" "\n"
+				"\t" "shape = %s;" "\n"
 				"\t" "label = \"\";" "\n"
 			"]" "\n"
-		"", state);
+		"", state, state->reduction_point ? "circle" : "doublecircle");
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)
@@ -43,7 +43,7 @@ static void helper(FILE* out, struct gegex* state)
 			"", state, transition->to, transition->token);
 		}
 		
-		// normal transitions:
+		// grammar transitions:
 		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
 			struct gtransition* gtransition = state->grammar_transitions.data[i];
@@ -81,7 +81,7 @@ static void helper(FILE* out, struct gegex* state)
 	EXIT;
 }
 
-void gegex_dotout(struct gegex* start, struct gegex* end)
+void gegex_dotout(struct gegex* start, struct gegex* optional_end)
 {
 	ENTER;
 	
@@ -109,12 +109,15 @@ void gegex_dotout(struct gegex* start, struct gegex* end)
 	
 	helper(out, start);
 	
-	fprintf(out, ""
-		"\"%p\" [" "\n"
-			"\t" "shape = doublecircle;" "\n"
-		"]" "\n"
-	"", end);
-		
+	if (optional_end)
+	{
+		fprintf(out, ""
+			"\"%p\" [" "\n"
+				"\t" "shape = doublecircle;" "\n"
+			"]" "\n"
+		"", optional_end);
+	}
+	
 	fprintf(out, "}" "\n");
 	
 	if (out)

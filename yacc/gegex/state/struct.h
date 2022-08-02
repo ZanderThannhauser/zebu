@@ -15,14 +15,6 @@ struct gegex
 	} transitions;
 	
 	struct {
-		struct rtransition {
-			unsigned token;
-			char* reduce_as; // arena-owned
-		}** data;
-		size_t n, cap;
-	} reduction_transitions;
-	
-	struct {
 		struct gtransition {
 			char* grammar; // arena-owned
 			struct gegex* start;
@@ -35,6 +27,8 @@ struct gegex
 		struct gegex** data;
 		size_t n, cap;
 	} lambda_transitions;
+	
+	bool reduction_point;
 	
 	unsigned phase;
 };

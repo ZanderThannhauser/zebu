@@ -8,11 +8,11 @@
 #include "struct.h"
 #include "new.h"
 
-struct mapping* new_mapping(struct regexset* set, struct regex* state)
+struct regex_mapping* new_regex_mapping(struct regexset* set, struct regex* state)
 {
 	ENTER;
 	
-	struct mapping* this = smalloc(sizeof(*this));
+	struct regex_mapping* this = smalloc(sizeof(*this));
 	
 	this->original_states = regexset_clone(set);
 	this->combined_state = state;
