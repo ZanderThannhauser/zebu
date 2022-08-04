@@ -1,5 +1,12 @@
 
+#include <assert.h>
+
 #include <debug.h>
+
+#include <memory/sstrdup.h>
+#include <memory/sasprintf.h>
+
+#include <macros/strequals.h>
 
 /*#include <avl/search.h>*/
 #include <avl/safe_insert.h>

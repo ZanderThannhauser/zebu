@@ -1,12 +1,12 @@
-extern const unsigned zebu_shifts[108][47];
-extern const unsigned zebu_reduces[110][33];
-extern const unsigned zebu_popcounts[110][33];
-extern const unsigned zebu_lexer[108][123];
-extern const unsigned zebu_starts[110];
+extern const unsigned zebu_shifts[93][40];
+extern const unsigned zebu_reduces[95][29];
+extern const unsigned zebu_popcounts[95][29];
+extern const unsigned zebu_lexer[111][123];
+extern const unsigned zebu_starts[95];
 extern const unsigned zebu_defaults[56];
-extern const unsigned zebu_EOFs[108];
-extern const unsigned zebu_accepts[109];
-extern const char* zebu_grammar_names[49];
+extern const unsigned zebu_EOFs[105];
+extern const unsigned zebu_accepts[112];
+extern const unsigned start_grammar_id;
 #include <stddef.h>
 struct zebu_state;
 struct zebu_state* new_zebu_state();

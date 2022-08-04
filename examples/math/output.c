@@ -1,41 +1,45 @@
-const unsigned zebu_shifts[14][14] = {
+const unsigned zebu_shifts[18][16] = {
 	[1][2] = 3,
 	[1][3] = 2,
 	[1][10] = 5,
 	[1][11] = 4,
-	[1][12] = 15,
-	[1][13] = 9,
+	[1][12] = 19,
+	[1][14] = 11,
 	[3][2] = 3,
 	[3][3] = 2,
 	[3][10] = 5,
 	[3][11] = 4,
-	[3][12] = 13,
-	[3][13] = 9,
+	[3][12] = 17,
+	[3][14] = 11,
 	[5][5] = 6,
-	[5][8] = 8,
+	[5][8] = 9,
 	[6][2] = 3,
 	[6][3] = 2,
 	[6][10] = 5,
 	[6][13] = 7,
-	[8][2] = 3,
-	[8][3] = 2,
-	[8][10] = 5,
-	[8][13] = 7,
-	[9][6] = 10,
-	[9][7] = 12,
-	[10][2] = 3,
-	[10][3] = 2,
-	[10][10] = 5,
-	[10][11] = 11,
-	[10][13] = 9,
+	[6][14] = 8,
+	[9][2] = 3,
+	[9][3] = 2,
+	[9][10] = 5,
+	[9][13] = 10,
+	[9][14] = 8,
+	[11][6] = 12,
+	[11][7] = 15,
 	[12][2] = 3,
 	[12][3] = 2,
 	[12][10] = 5,
-	[12][11] = 11,
-	[12][13] = 9,
-	[13][4] = 14,
+	[12][11] = 14,
+	[12][14] = 11,
+	[12][15] = 13,
+	[15][2] = 3,
+	[15][3] = 2,
+	[15][10] = 5,
+	[15][11] = 14,
+	[15][14] = 11,
+	[15][15] = 16,
+	[17][4] = 18,
 };
-const unsigned zebu_reduces[16][10] = {
+const unsigned zebu_reduces[20][10] = {
 	[2][4] = 10,
 	[2][5] = 10,
 	[2][6] = 10,
@@ -44,25 +48,78 @@ const unsigned zebu_reduces[16][10] = {
 	[2][9] = 10,
 	[4][4] = 12,
 	[4][9] = 12,
-	[5][4] = 13,
-	[5][6] = 13,
-	[5][7] = 13,
-	[5][9] = 13,
-	[7][4] = 13,
-	[7][6] = 13,
-	[7][7] = 13,
-	[7][9] = 13,
-	[9][4] = 11,
-	[9][9] = 11,
+	[5][4] = 14,
+	[5][6] = 14,
+	[5][7] = 14,
+	[5][9] = 14,
+	[7][4] = 14,
+	[7][6] = 14,
+	[7][7] = 14,
+	[7][9] = 14,
+	[8][4] = 13,
+	[8][6] = 13,
+	[8][7] = 13,
+	[8][9] = 13,
+	[10][4] = 14,
+	[10][6] = 14,
+	[10][7] = 14,
+	[10][9] = 14,
 	[11][4] = 11,
 	[11][9] = 11,
-	[14][4] = 10,
-	[14][5] = 10,
-	[14][6] = 10,
-	[14][7] = 10,
-	[14][8] = 10,
-	[14][9] = 10,
-	[15][9] = 14,
+	[13][4] = 11,
+	[13][9] = 11,
+	[14][4] = 15,
+	[14][9] = 15,
+	[16][4] = 11,
+	[16][9] = 11,
+	[18][4] = 10,
+	[18][5] = 10,
+	[18][6] = 10,
+	[18][7] = 10,
+	[18][8] = 10,
+	[18][9] = 10,
+	[19][9] = 16,
+};
+const unsigned zebu_popcounts[20][10] = {
+	[2][4] = 1,
+	[2][5] = 1,
+	[2][6] = 1,
+	[2][7] = 1,
+	[2][8] = 1,
+	[2][9] = 1,
+	[4][4] = 1,
+	[4][9] = 1,
+	[5][4] = 1,
+	[5][6] = 1,
+	[5][7] = 1,
+	[5][9] = 1,
+	[7][4] = 3,
+	[7][6] = 3,
+	[7][7] = 3,
+	[7][9] = 3,
+	[8][4] = 1,
+	[8][6] = 1,
+	[8][7] = 1,
+	[8][9] = 1,
+	[10][4] = 3,
+	[10][6] = 3,
+	[10][7] = 3,
+	[10][9] = 3,
+	[11][4] = 1,
+	[11][9] = 1,
+	[13][4] = 3,
+	[13][9] = 3,
+	[14][4] = 1,
+	[14][9] = 1,
+	[16][4] = 3,
+	[16][9] = 3,
+	[18][4] = 3,
+	[18][5] = 3,
+	[18][6] = 3,
+	[18][7] = 3,
+	[18][8] = 3,
+	[18][9] = 3,
+	[19][9] = 1,
 };
 const unsigned zebu_lexer[22][58] = {
 	[1][32] = 1,
@@ -103,23 +160,7 @@ const unsigned zebu_lexer[22][58] = {
 	[19][41] = 20,
 	[21][32] = 21,
 };
-const unsigned zebu_firsts[15][14] = {
-	[10][2] = 1,
-	[10][3] = 1,
-	[11][2] = 1,
-	[11][3] = 1,
-	[11][13] = 1,
-	[12][2] = 1,
-	[12][3] = 1,
-	[12][11] = 1,
-	[13][2] = 1,
-	[13][3] = 1,
-	[13][10] = 1,
-	[14][2] = 1,
-	[14][3] = 1,
-	[14][12] = 1,
-};
-const unsigned zebu_starts[16] = {
+const unsigned zebu_starts[20] = {
 	[1] = 1,
 	[2] = 4,
 	[3] = 1,
@@ -127,14 +168,18 @@ const unsigned zebu_starts[16] = {
 	[5] = 4,
 	[6] = 1,
 	[7] = 14,
-	[8] = 1,
-	[9] = 14,
-	[10] = 1,
-	[11] = 11,
+	[8] = 14,
+	[9] = 1,
+	[10] = 14,
+	[11] = 14,
 	[12] = 1,
-	[13] = 19,
-	[14] = 4,
-	[15] = 21,
+	[13] = 11,
+	[14] = 11,
+	[15] = 1,
+	[16] = 11,
+	[17] = 19,
+	[18] = 4,
+	[19] = 21,
 };
 const unsigned zebu_defaults[1] = {
 };
@@ -162,11 +207,14 @@ const unsigned zebu_accepts[23] = {
 	[20] = 4,
 	[22] = 9,
 };
-const char* zebu_grammar_names[16] = {
-	[14] = "(start)",
+const unsigned start_grammar_id = 16;
+const char* zebu_grammar_names[18] = {
+	[16] = "(start)",
+	[13] = "(trie #1)",
+	[15] = "(trie #2)",
 	[11] = "add",
 	[10] = "lit",
-	[13] = "mul",
+	[14] = "mul",
 	[12] = "root",
 };
 #include <stdlib.h>
@@ -242,7 +290,7 @@ void zebu_reset(struct zebu_state* this) {
 static void process_token(struct zebu_state* this, unsigned t) {
 	ddprintf(this, "t == %u\n", t);
 	
-	unsigned b, d, y = this->y.data[this->y.n - 1];
+	unsigned b, d, p, y = this->y.data[this->y.n - 1];
 	
 	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
 	{
@@ -250,21 +298,26 @@ static void process_token(struct zebu_state* this, unsigned t) {
 		{
 			ddprintf(this, "b == %u\n", b);
 			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
+			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
 			
-			unsigned s = t;
-			
-			while (!(1
-				 && y < N(zebu_shifts) && b < N(*zebu_shifts) && (d = zebu_shifts[y][b])
-				 && b < N(zebu_firsts) && s < N(*zebu_firsts) && (    zebu_firsts[b][s])))
+			if (b == start_grammar_id)
 			{
-				if (this->y.n == 1) return;
-				s = this->y.data[--this->y.n - 1];
-				y = this->y.data[--this->y.n - 1];
-				ddprintf(this, "y == %u\n", y);
+				this->y.n = 0;
+				ddprintf(this, "done\n");
+				return;
 			}
 			
-			push(this, b), push(this, d), y = d;
+			this->y.n -= p;
+			
+			y = this->y.data[this->y.n - 1];
 			ddprintf(this, "y == %u\n", y);
+			
+			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
+			
+			d = zebu_shifts[y][b];
+			
+			push(this, d), y = d;
+			ddprintf(this, "y == %u\n", y); 
 		}
 		else
 		{
@@ -273,7 +326,7 @@ static void process_token(struct zebu_state* this, unsigned t) {
 		}
 	}
 	
-	push(this, t), push(this, b), y = b;
+	push(this, b), y = b;
 }
 
 void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
@@ -300,12 +353,22 @@ void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t lengt
 					case ':':
 					case '.':
 					case '+':
+					case '%':
 					case '[':
 					case '{':
 					case '-':
 					case '}':
 					case '*':
+					case '|':
 					case ',':
+					case '@':
+					case '<':
+					case '>':
+					case '&':
+					case '~':
+					case '^':
+					case '/':
+					case '?':
 					case ' ':
 					case ']':
 					case '(': case ')':
@@ -314,6 +377,10 @@ void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t lengt
 					case '\n':
 						*e++ = '\\';
 						*e++ = 'n';
+					case '\\':
+						*e++ = '\\';
+						*e++ = '\\';
+						break;
 					case '\"':
 						*e++ = '\\';
 						*e++ = '"';
@@ -346,7 +413,7 @@ void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t lengt
 		else if (b)
 		{
 			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i + 1, t = 0;
+			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
 			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
 		}
 		else if (t)
@@ -393,10 +460,20 @@ void zebu_parse_EOF(struct zebu_state* this) {
 						case '.':
 						case '{':
 						case '}':
+						case '%':
 						case '!':
+						case '~':
 						case '[':
 						case '*':
+						case '>':
+						case '^':
+						case '?':
+						case '/':
+						case '|':
+						case '<':
+						case '@':
 						case '-':
+						case '&':
 						case ']':
 						case ',':
 						case ' ':
@@ -408,6 +485,10 @@ void zebu_parse_EOF(struct zebu_state* this) {
 						case '\"':
 							*e++ = '\\';
 							*e++ = '"';
+						break;
+					case '\\':
+						*e++ = '\\';
+						*e++ = '\\';
 						break;
 						default:
 							printf("s = %c\n", s);
@@ -444,9 +525,9 @@ void zebu_parse_EOF(struct zebu_state* this) {
 		else if (b)
 		{
 			process_token(this, b);
+			if (!this->y.n) break;
 			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
 			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-			if (f > n) break;
 		}
 		else if (t)
 		{

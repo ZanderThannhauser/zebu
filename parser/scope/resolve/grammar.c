@@ -9,11 +9,11 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "../struct.h"
 
-#include <named/grammar/struct.h>
+/*#include <named/grammar/struct.h>*/
 
 #include "grammar.h"
 
@@ -41,9 +41,6 @@ char* scope_resolve_grammar(
 		TODO;
 		exit(1);
 	}
-	
-	struct named_grammar* ngrammar = node->item;
-	struct gegex* start = ngrammar->grammar;
 	
 	EXIT;
 	return full_name;

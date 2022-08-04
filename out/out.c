@@ -120,6 +120,12 @@ void out(
 	dynvector_print_source(shared->EOFs, output_prefix, source, header);
 	dynvector_print_source(shared->accepts, output_prefix, source, header);
 	
+	{
+		unsigned sid = grammar_to_id(shared->ttoi, "(start)");
+		fprintf(source, "const unsigned start_grammar_id = %u;\n", sid);
+		fprintf(header, "extern const unsigned start_grammar_id;\n");
+	}
+	
 	if (yacc_debugging)
 		tokenset_to_id_print_source(shared->ttoi, output_prefix, source, header);
 	

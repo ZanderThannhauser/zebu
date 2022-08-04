@@ -1,5 +1,6 @@
 
 struct gegex_mappings;
+struct memory_arena;
 
 struct gegex* gegex_nfa_to_dfa_helper(
 	struct gegexset* stateset,

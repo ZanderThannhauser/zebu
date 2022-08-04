@@ -1,4 +1,7 @@
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdarg.h>
 #include <debug.h>
 
 #include "sasprintf.h"

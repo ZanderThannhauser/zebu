@@ -16,6 +16,15 @@ const unsigned zebu_reduces[7][6] = {
 	[6][4] = 6,
 	[6][5] = 6,
 };
+const unsigned zebu_popcounts[7][6] = {
+	[2][3] = 1,
+	[2][4] = 1,
+	[2][5] = 1,
+	[3][5] = 1,
+	[6][3] = 4,
+	[6][4] = 4,
+	[6][5] = 4,
+};
 const unsigned zebu_lexer[11][47] = {
 	[1][33] = 2,
 	[3][44] = 4,
@@ -23,12 +32,6 @@ const unsigned zebu_lexer[11][47] = {
 	[7][44] = 8,
 	[10][44] = 11,
 	[10][46] = 12,
-};
-const unsigned zebu_firsts[8][7] = {
-	[6][2] = 1,
-	[6][6] = 1,
-	[7][2] = 1,
-	[7][6] = 1,
 };
 const unsigned zebu_starts[7] = {
 	[1] = 1,
@@ -54,6 +57,7 @@ const unsigned zebu_accepts[13] = {
 	[11] = 3,
 	[12] = 4,
 };
+const unsigned start_grammar_id = 7;
 const char* zebu_grammar_names[9] = {
 	[7] = "(start)",
 	[6] = "hard",
@@ -131,7 +135,7 @@ void zebu_reset(struct zebu_state* this) {
 static void process_token(struct zebu_state* this, unsigned t) {
 	ddprintf(this, "t == %u\n", t);
 	
-	unsigned b, d, y = this->y.data[this->y.n - 1];
+	unsigned b, d, p, y = this->y.data[this->y.n - 1];
 	
 	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
 	{
@@ -139,21 +143,26 @@ static void process_token(struct zebu_state* this, unsigned t) {
 		{
 			ddprintf(this, "b == %u\n", b);
 			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
+			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
 			
-			unsigned s = t;
-			
-			while (!(1
-				 && y < N(zebu_shifts) && b < N(*zebu_shifts) && (d = zebu_shifts[y][b])
-				 && b < N(zebu_firsts) && s < N(*zebu_firsts) && (    zebu_firsts[b][s])))
+			if (b == start_grammar_id)
 			{
-				if (this->y.n == 1) return;
-				s = this->y.data[--this->y.n - 1];
-				y = this->y.data[--this->y.n - 1];
-				ddprintf(this, "y == %u\n", y);
+				this->y.n = 0;
+				ddprintf(this, "done\n");
+				return;
 			}
 			
-			push(this, b), push(this, d), y = d;
+			this->y.n -= p;
+			
+			y = this->y.data[this->y.n - 1];
 			ddprintf(this, "y == %u\n", y);
+			
+			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
+			
+			d = zebu_shifts[y][b];
+			
+			push(this, d), y = d;
+			ddprintf(this, "y == %u\n", y); 
 		}
 		else
 		{
@@ -162,7 +171,7 @@ static void process_token(struct zebu_state* this, unsigned t) {
 		}
 	}
 	
-	push(this, t), push(this, b), y = b;
+	push(this, b), y = b;
 }
 
 void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
@@ -361,9 +370,9 @@ void zebu_parse_EOF(struct zebu_state* this) {
 		else if (b)
 		{
 			process_token(this, b);
+			if (!this->y.n) break;
 			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
 			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-			if (f > n) break;
 		}
 		else if (t)
 		{

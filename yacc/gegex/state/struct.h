@@ -3,6 +3,7 @@
 #define STRUCT_GEGEX_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct gegex
 {

@@ -1,6 +1,14 @@
 
 #include <debug.h>
 
+#include <string.h>
+
+#include <stdlib.h>
+
+#include <macros/strequals.h>
+
+#include <memory/smalloc.h>
+
 #include <avl/search.h>
 #include <avl/safe_insert.h>
 
@@ -88,7 +96,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 							token = ele_token;
 							assigned = true;
 						} else if (token == ele_token) {
-							TODO;
+							gegex_add_lamda_states(subset, to);
 						}
 					}
 				}
