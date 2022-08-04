@@ -32,7 +32,7 @@ struct regex* regex_simplify_dfa(
 	
 	simplify_dfa_survey(unique_nodes, original_start);
 	
-	struct regex* new_start = simplify_dfa_clone(
+	struct regex* new_start = regex_simplify_dfa_clone(
 		unique_nodes, original_start, arena);
 	
 	free_regex_ll(unique_nodes);

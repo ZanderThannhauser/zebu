@@ -16,25 +16,10 @@ int compare_explore_lookaheads_tasks(const struct task* a, const struct task* b)
 	assert(a->kind == tk_explore_lookaheads);
 	assert(b->kind == tk_explore_lookaheads);
 	
-	cmp = strcmp(A->name, B->name);
-	
-	if (!cmp)
-	{
-		if (!!A->invocation > !!B->invocation)
-			cmp = +1;
-		else if (!!A->invocation < !!B->invocation)
-			cmp = -1;
-		else if (A->invocation && B->invocation)
-			cmp = strcmp(A->invocation, B->invocation);
-	}
-	
-	if (!cmp)
-	{
-		if (A->node > B->node)
-			cmp = +1;
-		else if (A->node < B->node)
-			cmp = -1;
-	}
+	if (A->node > B->node)
+		cmp = +1;
+	else if (A->node < B->node)
+		cmp = -1;
 	
 	EXIT;
 	return cmp;

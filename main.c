@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
 	struct yacc_state* parser = yacc(&yshared, lex, scope->grammar, scratchpad);
 	
 	out(parser,
-		yshared,
 		flags->output_path,
 		flags->output_prefix,
 		flags->paste_parser_code,

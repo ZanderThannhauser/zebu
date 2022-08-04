@@ -185,11 +185,13 @@ struct reduce_node
 {
 	unsigned token; // must be the first
 	const char* grammar;
+	unsigned popcount;
 };
 
 static struct reduce_node* new_reduce_node(
 	unsigned token,
-	const char* grammar)
+	const char* grammar,
+	unsigned popcount)
 {
 	ENTER;
 	
@@ -197,9 +199,11 @@ static struct reduce_node* new_reduce_node(
 	
 	this->token = token;
 	this->grammar = grammar;
+	this->popcount = popcount;
 	
 	dpv(this->token);
 	dpvs(this->grammar);
+	dpv(this->popcount);
 	
 	EXIT;
 	return this;
@@ -208,7 +212,8 @@ static struct reduce_node* new_reduce_node(
 static void add_reduce(
 	struct avl_tree_t* tree,
 	unsigned token,
-	const char* grammar)
+	const char* grammar,
+	unsigned popcount)
 {
 	ENTER;
 	
@@ -218,11 +223,12 @@ static void add_reduce(
 	
 	if (node)
 	{
+		dpvs(grammar);
 		TODO;
 	}
 	else
 	{
-		struct reduce_node* new = new_reduce_node(token, grammar);
+		struct reduce_node* new = new_reduce_node(token, grammar, popcount);
 		
 		safe_avl_insert(tree, new);
 	}
@@ -332,8 +338,6 @@ static struct yacc_state* helper(
 	struct yacc_state* state;
 	ENTER;
 	
-	TODO;
-	#if 0
 	// lookup source_states in cache:
 	struct avl_node_t* node = avl_search(cache, &source_states);
 	
@@ -386,7 +390,7 @@ static struct yacc_state* helper(
 					
 					unsigned token = ele->token;
 					
-					add_reduce(reduce_tokens, token, ele->reduce_as);
+					add_reduce(reduce_tokens, token, ele->reduce_as, ele->popcount);
 					
 					tokenset_add(all_tokens, token);
 				}
@@ -470,6 +474,7 @@ static struct yacc_state* helper(
 				else if (avl_search(reduce_tokens, &first))
 				{
 					const char* grammar = NULL;
+					unsigned popcount;
 					
 					tokenset_foreach(ele, ({
 						void runme(unsigned token) {
@@ -489,8 +494,11 @@ static struct yacc_state* helper(
 							dpvs(reduce->grammar);
 							
 							if (!grammar)
+							{
 								grammar = reduce->grammar;
-							else if (strcmp(grammar, reduce->grammar))
+								popcount = reduce->popcount;
+							}
+							else if (strcmp(grammar, reduce->grammar) || popcount != reduce->popcount)
 							{
 								TODO;
 							}
@@ -501,8 +509,10 @@ static struct yacc_state* helper(
 					dpvs(grammar);
 					assert(grammar);
 					
+					dpv(popcount);
+					
 					// add transition
-					yacc_state_add_reduce_transition(state, scratchpad, ele, grammar);
+					yacc_state_add_reduce_transition(state, scratchpad, ele, grammar, popcount);
 				}
 				else
 				{
@@ -538,7 +548,6 @@ static struct yacc_state* helper(
 		avl_free_tree(subgrammars);
 		free_gegexset(substates);
 	}
-	#endif
 	
 	EXIT;
 	return state;
@@ -562,7 +571,7 @@ struct yacc_state* yacc_nfa_to_dfa(
 	
 	struct gegexset* states = new_gegexset();
 	
-	add_lambda_states(states, start->start);
+	add_lambda_states(states, start->grammar);
 	
 	struct yacc_state* new_start = helper(lex, cache, scratchpad, states);
 	

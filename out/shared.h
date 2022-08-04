@@ -11,11 +11,11 @@ struct out_shared
 	// (parser state, token) -> grammar
 	struct dyntable* reduces;
 	
+	// (parser state, token) -> grammar
+	struct dyntable* popcounts;
+	
 	// (tokenizer state, input char) -> new tokenizer state
 	struct dyntable* lexer;
-	
-	// (grammar, token/grammar) -> is the given token in the grammar's "firsts" set?
-	struct dyntable* firsts;
 	
 	// (parser state) -> (tokenizer start state)
 	struct dynvector* starts;

@@ -7,7 +7,7 @@ struct add_reductions_task
 	
 	const char* name;
 	
-	struct gegex* end;
+	struct gegex* node;
 	
 	struct memory_arena* scratchpad;
 };

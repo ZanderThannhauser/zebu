@@ -34,6 +34,8 @@
 	#include <memory/srealloc.h>
 	#include <memory/scalloc.h>
 	#include <memory/smemdup.h>
+	#include <memory/sasprintf.h>
+	#include <memory/sstrdup.h>
 	
 	#include <macros/strequals.h>
 	

@@ -5,7 +5,7 @@ struct lambda_subgrammars_task
 {
 	struct task super;
 	
-	const char* name;
+	struct gegex* start;
 	
 	struct gegex* node;
 	

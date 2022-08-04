@@ -40,7 +40,8 @@ void regexset_add(struct regexset* this, struct regex* ptr)
 		}
 		else
 		{
-			TODO;
+			EXIT;
+			return;
 		}
 	}
 	
@@ -48,4 +49,13 @@ void regexset_add(struct regexset* this, struct regex* ptr)
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
 

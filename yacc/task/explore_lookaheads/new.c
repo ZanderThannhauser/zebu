@@ -8,10 +8,10 @@
 #include "new.h"
 
 struct explore_lookaheads_task* new_explore_lookaheads_task(
+	struct gegex* start,
 	const char* name,
 	struct gegex* node,
 	const char* invocation,
-	struct gegex* end,
 	struct memory_arena* scratchpad)
 {
 	ENTER;
@@ -23,10 +23,10 @@ struct explore_lookaheads_task* new_explore_lookaheads_task(
 		&explore_lookaheads_task_inheritance,
 		sizeof(*this));
 	
+	this->start = start;
 	this->name = name;
 	this->node = node;
 	this->invocation = invocation;
-	this->end = end;
 	this->scratchpad = scratchpad;
 	
 	EXIT;

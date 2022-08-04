@@ -8,16 +8,14 @@
 
 struct named_grammar* new_named_grammar(
 	char* name,
-	struct gegex* start,
-	struct gegex* end)
+	struct gegex* grammar)
 {
 	ENTER;
 	
 	struct named_grammar* this = smalloc(sizeof(*this));
 	
 	this->name = name;
-	this->start = start;
-	this->end = end;
+	this->grammar = grammar;
 	
 	dpvs(this->name);
 	

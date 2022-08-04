@@ -50,7 +50,7 @@ ARGS += -v
 ARGS += --debug=yacc
 #ARGS += --debug=lex
 
-#ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output
+ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output
 #ARGS += -i ./examples/math/math.zb -o ./examples/math/output
 #ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
 #ARGS += -i ./examples/json/json.zb -o ./examples/json/output
@@ -58,7 +58,7 @@ ARGS += --debug=yacc
 #ARGS += -i ./examples/explode/explode.zb -o ./examples/explode/output
 #ARGS += -i ./examples/gegex/gegex.zb -o ./examples/gegex/output
 #ARGS += -i ./examples/includes/main.zb -o ./examples/includes/output
-ARGS += -i ./examples/hard/hard.zb -o ./examples/hard/output
+#ARGS += -i ./examples/hard/hard.zb -o ./examples/hard/output
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

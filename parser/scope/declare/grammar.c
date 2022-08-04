@@ -18,8 +18,7 @@
 void scope_declare_grammar(
 	struct scope* this,
 	char* name,
-	struct gegex* start,
-	struct gegex* end)
+	struct gegex* grammar)
 {
 	ENTER;
 	
@@ -33,7 +32,7 @@ void scope_declare_grammar(
 	
 	dpvs(full_name);
 	
-	safe_avl_insert(this->grammar, new_named_grammar(full_name, start, end));
+	safe_avl_insert(this->grammar, new_named_grammar(full_name, grammar));
 	
 	safe_avl_insert(this->layer->grammar, new_named_name(name, full_name));
 	

@@ -133,7 +133,7 @@ static struct regex* clone_helper(
 	}
 }
 
-struct regex* simplify_dfa_clone(
+struct regex* regex_simplify_dfa_clone(
 	struct regex_ll* unique_nodes,
 	struct regex* original_start,
 	struct memory_arena* arena)

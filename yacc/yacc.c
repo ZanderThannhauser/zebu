@@ -5,9 +5,9 @@
 
 #include <yacc/state/dotout.h>
 
+#include "shared/struct.h"
 #include "shared/new.h"
 
-#include "atomize_grammar_rules.h"
 #include "run_tasks.h"
 #include "nfa_to_dfa.h"
 #include "yacc.h"
@@ -20,16 +20,11 @@ struct yacc_state* yacc(
 {
 	ENTER;
 	
-	struct avl_tree_t* new_grammar = atomize_grammar_rules(grammar, scratchpad);
+	struct yacc_shared* shared = new_yacc_shared(grammar, lex->EOF_token_id);
 	
-	// switch lower code to new_grammar
-	TODO;
+	run_tasks(shared, scratchpad);
 	
-	struct yacc_shared* shared = new_yacc_shared(grammar);
-	
-	run_tasks(shared, scratchpad, lex->EOF_token_id);
-	
-	struct yacc_state* start = yacc_nfa_to_dfa(lex, grammar, scratchpad);
+	struct yacc_state* start = yacc_nfa_to_dfa(lex, shared->new_grammar, scratchpad);
 	
 	#ifdef DEBUGGING
 	yacc_state_dotout(start);

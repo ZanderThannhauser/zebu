@@ -43,7 +43,7 @@ void percolate_lookaheads_task_dotout(struct task* super, struct yacc_shared* sh
 		"digraph {"
 	"\n");
 	
-	avl_tree_foreach(shared->grammar, ({
+	avl_tree_foreach(shared->new_grammar, ({
 		void runme(const void* ptr)
 		{
 			const struct named_grammar* ng = ptr;

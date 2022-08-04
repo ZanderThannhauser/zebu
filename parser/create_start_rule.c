@@ -7,6 +7,7 @@
 
 #include <yacc/gegex/dotout.h>
 #include <yacc/gegex/state/new.h>
+#include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/add_grammar_transition.h>
 
 #include "create_start_rule.h"
@@ -25,6 +26,8 @@ void create_start_rule(
 	struct gegex* end = new_gegex(scratchpad);
 	// end state should reduce on EOF
 	
+	end->is_reduction_point = true;
+	
 	char* dup = arena_strdup(scratchpad, users_start_rule);
 	
 	dpvs(dup);
@@ -32,10 +35,10 @@ void create_start_rule(
 	gegex_add_grammar_transition(start, scratchpad, dup, end);
 	
 	#ifdef DEBUGGING
-	gegex_dotout(start, end);
+	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
 	
-	scope_declare_grammar(scope, "(start)", start, end);
+	scope_declare_grammar(scope, "(start)", start);
 	
 	EXIT;
 }

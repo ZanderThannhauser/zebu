@@ -1,5 +1,4 @@
 
-#if 0
 #include <debug.h>
 
 #include <memory/arena/malloc.h>
@@ -12,7 +11,8 @@ void gegex_add_reduction_transition(
 	struct gegex* from,
 	struct memory_arena* arena,
 	unsigned token,
-	char* reduce_as)
+	char* reduce_as,
+	unsigned popcount)
 {
 	ENTER;
 	
@@ -20,6 +20,7 @@ void gegex_add_reduction_transition(
 	
 	rtransition->token = token;
 	rtransition->reduce_as = reduce_as;
+	rtransition->popcount = popcount;
 	
 	if (from->reduction_transitions.n + 1 > from->reduction_transitions.cap)
 	{
@@ -64,4 +65,3 @@ void gegex_add_reduction_transition(
 
 
 
-#endif

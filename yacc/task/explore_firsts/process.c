@@ -26,39 +26,22 @@ void explore_firsts_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
-	if (!avl_search(shared->done, this))
+	struct tokenset* first = lookup_tokenset(shared->firsts.sets, this->name);
+	
+	unsigned i, n;
+	for (i = 0, n = this->node->transitions.n; i < n; i++)
 	{
-		struct tokenset* first = lookup_tokenset(shared->firsts.sets, this->name);
+		tokenset_add(first, this->node->transitions.data[i]->token);
+	}
+	
+	for (i = 0, n = this->node->grammar_transitions.n; i < n; i++)
+	{
+		const struct gtransition* const g = this->node->grammar_transitions.data[i];
 		
-		#ifdef DEBUGGING
-		tokenset_print(first);
-		#endif
+		dpvs(g->grammar);
 		
-		unsigned i, n;
-		for (i = 0, n = this->node->transitions.n; i < n; i++)
-		{
-			tokenset_add(first, this->node->transitions.data[i]->token);
-		}
-		
-		for (i = 0, n = this->node->grammar_transitions.n; i < n; i++)
-		{
-			const struct gtransition* const g = this->node->grammar_transitions.data[i];
-			
-			dpvs(g->grammar);
-			
-			add_dep(shared->firsts.dependant_on, this->name, g->grammar);
-			add_dep(shared->firsts.dependant_of, g->grammar, this->name);
-		}
-		
-		for (i = 0, n = this->node->lambda_transitions.n; i < n; i++)
-		{
-			struct gegex* to = this->node->lambda_transitions.data[i];
-			
-			heap_push(shared->todo, new_explore_firsts_task(this->name, to));
-		}
-		
-		super->refcount++;
-		safe_avl_insert(shared->done, this);
+		add_dep(shared->firsts.dependant_on, this->name, g->grammar);
+		add_dep(shared->firsts.dependant_of, g->grammar, this->name);
 	}
 	
 	EXIT;

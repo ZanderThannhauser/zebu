@@ -33,7 +33,7 @@ struct gbundle read_or_production(
 		gegex_add_lambda_transition(sub.end, scratchpad, retval.end);
 		
 		#ifdef DEBUGGING
-		gegex_dotout(retval.start, retval.end);
+		gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 		#endif
 	}
 	

@@ -20,11 +20,21 @@ struct gegex* new_gegex(struct memory_arena* arena)
 	this->grammar_transitions.cap = 0;
 	this->grammar_transitions.n = 0;
 	
+	this->reduction_transitions.data = NULL;
+	this->reduction_transitions.cap = 0;
+	this->reduction_transitions.n = 0;
+	
 	this->lambda_transitions.data = NULL;
 	this->lambda_transitions.cap = 0;
 	this->lambda_transitions.n = 0;
 	
-	this->reduction_point = false;
+	this->is_reduction_point = false;
+	
+	this->is_freeing = false;
+	
+	this->popcount = 0;
+	
+	this->refcount = 0;
 	
 	this->phase = 0;
 	

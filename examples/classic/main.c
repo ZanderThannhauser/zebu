@@ -301,7 +301,7 @@ int main()
 {
 /*	check("ABCCBA", NULL);*/
 /*	*/
-/*	check("ABC", "CBA", NULL);*/
+	check("ABC", "CBA", NULL);
 /*	*/
 /*	check("abc", NULL);*/
 /*	*/
@@ -319,7 +319,7 @@ int main()
 /*	*/
 /*	check("abaabacc", NULL);*/
 	
-	check(" a bga agb a c chh", NULL);
+/*	check(" a bga agb a c chh", NULL);*/
 	
 	return 0;
 }

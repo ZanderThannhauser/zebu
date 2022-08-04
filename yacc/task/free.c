@@ -14,7 +14,7 @@ void free_task(void* ptr)
 	struct task* this = ptr;
 	ENTER;
 	
-	if (this && !--this->refcount)
+	if (this)
 	{
 		assert(this->inheritance->free);
 		

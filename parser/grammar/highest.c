@@ -131,7 +131,7 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -183,7 +183,7 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -243,7 +243,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -309,7 +309,7 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}
@@ -347,7 +347,7 @@ struct gbundle read_highest_production(
 				/* machine:   */ production_after_highest_machine);
 			
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}

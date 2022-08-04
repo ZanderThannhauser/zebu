@@ -23,6 +23,7 @@ void gegex_add_grammar_transition(
 	dpv(gtransition);
 	
 	gtransition->grammar = grammar_name;
+	// gtransition->start = NULL;
 	gtransition->to = to;
 	
 	if (from->grammar_transitions.n + 1 > from->grammar_transitions.cap)

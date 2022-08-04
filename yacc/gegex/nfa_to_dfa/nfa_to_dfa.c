@@ -10,6 +10,8 @@
 #include "mapping/compare.h"
 #include "mapping/free.h"
 
+#include "../dotout.h"
+
 #include "add_lambda_states.h"
 #include "helper.h"
 #include "nfa_to_dfa.h"
@@ -31,6 +33,10 @@ struct gegex* gegex_nfa_to_dfa(
 	free_gegexset(start_set);
 	
 	avl_free_tree(mappings);
+	
+	#ifdef DEBUGGING
+	gegex_dotout(new_start, /* optional_end: */ NULL, __PRETTY_FUNCTION__);
+	#endif
 	
 	EXIT;
 	return new_start;

@@ -59,7 +59,6 @@
 
 void out(
 	struct yacc_state* start,
-	struct yacc_shared* yshared,
 	const char* output_path,
 	const char* output_prefix,
 	bool paste_parser_code,
@@ -82,8 +81,8 @@ void out(
 	
 	shared->shifts = new_dyntable("shifts");
 	shared->reduces = new_dyntable("reduces");
+	shared->popcounts = new_dyntable("popcounts");
 	shared->lexer = new_dyntable("lexer");
-	shared->firsts = new_dyntable("firsts");
 	
 	shared->starts = new_dynvector("starts");
 	shared->defaults = new_dynvector("defaults");
@@ -94,44 +93,6 @@ void out(
 	lex_phase_counter++;
 	
 	fill_yacc_tables(shared, start);
-	
-	avl_tree_foreach(yshared->grammar, ({
-		void run (const void* item) {
-			const struct named_grammar* ng = item;
-			
-			dpvs(ng->name);
-			
-			unsigned gid = grammar_to_id(shared->ttoi, ng->name);
-			
-			dpv(gid);
-			
-			struct tokenset* ft = lookup_tokenset(yshared->firsts.sets, ng->name);
-				
-			struct strset* fg = get_deps(yshared->firsts.dependant_on, ng->name);
-			
-			tokenset_to_id_foreach(shared->ttoi, ({
-				void per_tokenset(const struct tokenset* ts, unsigned id) {
-					if (!tokenset_is_disjoint(ts, ft))
-						dyntable_set(shared->firsts, gid, id, true);
-				}
-				per_tokenset;
-			}));
-			
-			strset_foreach(fg, ({
-				void per_grammar(const char* grammar) {
-					dpvs(grammar);
-					
-					unsigned sgid = grammar_to_id(shared->ttoi, grammar);
-					
-					dpv(sgid);
-					
-					dyntable_set(shared->firsts, gid, sgid, true);
-				}
-				per_grammar;
-			}));
-		}
-		run;
-	}));
 	
 	strcat(strcpy(path, output_path), ".c");
 	
@@ -151,8 +112,8 @@ void out(
 	
 	dyntable_print_source(shared->shifts, output_prefix, source, header);
 	dyntable_print_source(shared->reduces, output_prefix, source, header);
+	dyntable_print_source(shared->popcounts, output_prefix, source, header);
 	dyntable_print_source(shared->lexer, output_prefix, source, header);
-	dyntable_print_source(shared->firsts, output_prefix, source, header);
 	
 	dynvector_print_source(shared->starts, output_prefix, source, header);
 	dynvector_print_source(shared->defaults, output_prefix, source, header);
@@ -181,7 +142,6 @@ void out(
 	free_dyntable(shared->shifts);
 	free_dyntable(shared->reduces);
 	free_dyntable(shared->lexer);
-	free_dyntable(shared->firsts);
 	
 	free_dynvector(shared->starts);
 	free_dynvector(shared->defaults);

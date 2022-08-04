@@ -17,27 +17,24 @@
 
 #include "grammar.h"
 
-struct gegex* scope_resolve_grammar(
+char* scope_resolve_grammar(
 	struct scope* this,
-	char** full_name_in_out)
+	char* full_name)
 {
 	ENTER;
-	
-	char* full_name = *full_name_in_out;
 	
 	char* dot;
 	
 	dpvs(full_name);
 	
-	struct avl_node_t* node = avl_search(this->grammar, &full_name);
+	struct avl_node_t* node;
 	
-	while (!node && (dot = rindex(full_name, '.')))
+	while (!(node = avl_search(this->grammar, &full_name)) && (dot = rindex(full_name, '.')))
 	{
+		// memmove fullname
 		TODO;
 		node = avl_search(this->grammar, &full_name);
 	}
-	
-	*full_name_in_out = full_name;
 	
 	if (!node)
 	{
@@ -46,10 +43,10 @@ struct gegex* scope_resolve_grammar(
 	}
 	
 	struct named_grammar* ngrammar = node->item;
-	struct gegex* start = ngrammar->start;
+	struct gegex* start = ngrammar->grammar;
 	
 	EXIT;
-	return start;
+	return full_name;
 }
 
 

@@ -106,10 +106,10 @@ static void helper(FILE* out, struct yacc_state* state)
 					{
 						fprintf(out, ""
 							"\"%p-%p\" -> \"%p-%p\" [" "\n"
-								"\t" "label = \"\"" "\n"
+								"\t" "label = \"popcount: %u\"" "\n"
 								"\t" "style = \"dashed\"" "\n"
 							"]" "\n"
-						"", state, ls, state, t->reduce_as);
+						"", state, ls, state, t->reduce_as, t->popcount);
 					}
 					
 					// normal transitions:

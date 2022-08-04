@@ -44,11 +44,9 @@ static void resolve(
 			
 			dpvs(ele->grammar);
 			
-			ele->start = scope_resolve_grammar(scope, &ele->grammar);
+			ele->grammar = scope_resolve_grammar(scope, ele->grammar);
 			
 			dpvs(ele->grammar);
-			
-			dpv(ele->start);
 			
 			resolve(ele->to, scope);
 		}
@@ -75,7 +73,7 @@ void resolve_grammar_names(struct scope* scope)
 		
 		dpvs(ele->name);
 		
-		resolve(ele->start, scope);
+		resolve(ele->grammar, scope);
 	}
 	
 	EXIT;

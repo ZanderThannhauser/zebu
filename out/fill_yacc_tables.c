@@ -68,6 +68,8 @@ void fill_yacc_tables(
 			unsigned gid = grammar_to_id(shared->ttoi, ele->reduce_as);
 			
 			dyntable_set(shared->reduces, yid, tid, gid);
+			
+			dyntable_set(shared->popcounts, yid, tid, ele->popcount);
 		}
 		
 		// grammar transitions:

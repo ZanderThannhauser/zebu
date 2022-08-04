@@ -12,8 +12,9 @@
 
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
-#include <yacc/gegex/dotout.h>
 #include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
+#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
+#include <yacc/gegex/state/free.h>
 
 #include "grammar/root.h"
 #include "grammar/gbundle.h"
@@ -56,19 +57,21 @@ void read_grammar(
 		/* scope:      */ scope,
 		/* lex:        */ lex);
 	
-	bundle.end->reduction_point = true;
+	bundle.end->is_reduction_point = true;
+	
+	struct gegex* nfa_start = bundle.start;
 	
 	// nfa to dfa
-	struct gegex* dfa_start = gegex_nfa_to_dfa(bundle.start, scratchpad);
+	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, scratchpad);
 	
-	#ifdef DEBUGGING
-	gegex_dotout(dfa_start, /* optional_end: */ NULL);
-	#endif
-	
-	CHECK;
+	// simplify
+	struct gegex* simp_start = gegex_simplify_dfa(dfa_start, scratchpad);
 	
 	// add grammar rule to scope
-	scope_declare_grammar(scope, name, bundle.start, bundle.end);
+	scope_declare_grammar(scope, name, simp_start);
+	
+	free_gegex(nfa_start, scratchpad);
+	free_gegex(dfa_start, scratchpad);
 	
 	if (true
 		&& tokenizer->token != t_semicolon

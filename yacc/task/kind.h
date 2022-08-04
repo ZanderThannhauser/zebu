@@ -4,6 +4,12 @@
 
 enum task_kind
 {
+	tk_refcount,
+	
+	tk_setup_trie,
+	
+	tk_build_trie,
+	
 	tk_explore_firsts,
 	
 	tk_percolate_firsts,

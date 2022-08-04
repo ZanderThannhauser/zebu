@@ -99,7 +99,7 @@ static void helper(FILE* out, struct lex_state* state)
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"\"" "\n"
+					"\t" "label = \"<default>\"" "\n"
 				"]" "\n"
 			"", state, to);
 		}

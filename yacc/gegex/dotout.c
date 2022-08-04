@@ -25,7 +25,7 @@ static void helper(FILE* out, struct gegex* state)
 				"\t" "shape = %s;" "\n"
 				"\t" "label = \"\";" "\n"
 			"]" "\n"
-		"", state, state->reduction_point ? "circle" : "doublecircle");
+		"", state, state->is_reduction_point ? "doublecircle" : "circle");
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)
@@ -81,7 +81,7 @@ static void helper(FILE* out, struct gegex* state)
 	EXIT;
 }
 
-void gegex_dotout(struct gegex* start, struct gegex* optional_end)
+void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* name)
 {
 	ENTER;
 	
@@ -102,6 +102,8 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end)
 	fprintf(out, "digraph {" "\n");
 	
 	fprintf(out, "\t" "rankdir = LR;" "\n");
+	
+	fprintf(out, "\t" "label = \"%s\";" "\n", name);
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", start);
 	

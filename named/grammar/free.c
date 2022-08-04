@@ -3,10 +3,17 @@
 
 #include <debug.h>
 
+#include "struct.h"
 #include "free.h"
 
-void free_named_grammar(void* this)
+void free_named_grammar(void* ptr)
 {
-	TODO;
+	struct named_grammar* const this = ptr;
+	ENTER;
+	
+	free(this->name);
+	free(this);
+	
+	EXIT;
 }
 

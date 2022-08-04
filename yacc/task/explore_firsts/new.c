@@ -8,6 +8,7 @@
 #include "new.h"
 
 struct explore_firsts_task* new_explore_firsts_task(
+	struct gegex* start,
 	const char* name,
 	struct gegex* node)
 {
@@ -20,6 +21,7 @@ struct explore_firsts_task* new_explore_firsts_task(
 		&explore_firsts_task_inheritance,
 		sizeof(*this));
 	
+	this->start = start;
 	this->name = name;
 	this->node = node;
 	

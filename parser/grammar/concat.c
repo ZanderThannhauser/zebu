@@ -39,7 +39,7 @@ struct gbundle read_concat_production(
 			retval = (struct gbundle) {left.start, right.end};
 			
 			#ifdef DEBUGGING
-			gegex_dotout(retval.start, retval.end);
+			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
 		}

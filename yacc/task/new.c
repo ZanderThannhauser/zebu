@@ -17,7 +17,6 @@ struct task* new_task(
 	
 	this->kind = kind;
 	this->inheritance = inheritance;
-	this->refcount = 1;
 	
 	EXIT;
 	return this;

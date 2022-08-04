@@ -17,20 +17,32 @@ struct gegex
 	struct {
 		struct gtransition {
 			char* grammar; // arena-owned
-			struct gegex* start;
+			// struct gegex* start;
 			struct gegex* to;
 		}** data;
 		size_t n, cap;
 	} grammar_transitions;
 	
 	struct {
+		struct rtransition {
+			unsigned token;
+			char* reduce_as; // arena-owned
+			unsigned popcount;
+		}** data;
+		size_t n, cap;
+	} reduction_transitions;
+
+	struct {
 		struct gegex** data;
 		size_t n, cap;
 	} lambda_transitions;
 	
-	bool reduction_point;
+	bool is_freeing;
 	
-	unsigned phase;
+	bool is_reduction_point;
+	
+	unsigned popcount;
+	unsigned phase, refcount;
 };
 
 #endif

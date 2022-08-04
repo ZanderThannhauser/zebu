@@ -40,13 +40,14 @@ static void helper(FILE* out, struct gegex* state)
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
-				"\t" "shape = circle;" "\n"
+				"\t" "shape = %s;" "\n"
 				"\t" "style = filled;" "\n"
 				"\t" "color = black;" "\n"
 				"\t" "fillcolor = white;" "\n"
-				"\t" "label = \"\";" "\n"
+				"\t" "label = \"(%u)\";" "\n"
 			"]" "\n"
-		"", state);
+		"", state, state->is_reduction_point ? "doublecircle" : "circle", state->popcount);
+		
 		
 		// normal transitions:
 		for (i = 0, n = state->transitions.n; i < n; i++)
@@ -80,8 +81,6 @@ static void helper(FILE* out, struct gegex* state)
 			"", state, gtransition->to, gtransition->grammar);
 		}
 		
-		TODO;
-		#if 0
 		// reduction transitions:
 		for (i = 0, n = state->reduction_transitions.n; i < n; i++)
 		{
@@ -97,28 +96,9 @@ static void helper(FILE* out, struct gegex* state)
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
 					"\t" "style = dashed" "\n"
-					"\t" "label = \"#%u token\"" "\n"
+					"\t" "label = \"#%u token (%u)\"" "\n"
 				"]" "\n"
-			"", state, rtransition->reduce_as, rtransition->token);
-		}
-		#endif
-		
-		// lambda transitions:
-		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
-		{
-			dpv(i);
-			
-			struct gegex* to = state->lambda_transitions.data[i];
-			
-			helper(
-				/* out: */ out,
-				/* state:  */ to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"λ\"" "\n"
-				"]" "\n"
-			"", state, to);
+			"", state, rtransition->reduce_as, rtransition->token, rtransition->popcount);
 		}
 	}
 	
@@ -146,15 +126,13 @@ void add_reductions_task_dotout(struct task* super, struct yacc_shared* shared)
 	
 	yacc_phase_counter++;
 	
-	struct avl_node_t* node = avl_search(shared->grammar, &this->name);
+	struct avl_node_t* node = avl_search(shared->new_grammar, &this->name);
 	
 	struct named_grammar* ng = node->item;
 	
-	helper(out, ng->start);
+	helper(out, ng->grammar);
 	
-	fprintf(out, "\"%p\" [ shape = square ];" "\n", ng->start);
-	
-	fprintf(out, "\"%p\" [ shape = doublecircle ];" "\n", ng->end);
+	fprintf(out, "\"%p\" [ shape = square ];" "\n", ng->grammar);
 	
 	fprintf(out, "}" "\n");
 	
