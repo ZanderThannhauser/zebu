@@ -10,7 +10,8 @@
 
 void usage(int code)
 {
-	printf("usage: %s <args>\n", argv0);
+	printf("usage: %s -i <path/to/input.zb> -o <path/to/output/base>\n", argv0);
+	
 	exit(code);
 }
 

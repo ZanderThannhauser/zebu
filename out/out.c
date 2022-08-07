@@ -52,21 +52,35 @@
 #include "dynvector/print_source.h"
 #include "dynvector/free.h"
 
+#include "escaped/just_tables_source.h"
+#include "escaped/just_tables_header.h"
+#include "escaped/buffer_driven_source.h"
+#include "escaped/buffer_driven_header.h"
+#include "escaped/readline_source.h"
+#include "escaped/readline_header.h"
+#include "escaped/readline_debug_source.h"
+#include "escaped/readline_debug_header.h"
+
 #include "shared.h"
-#include "parser_code.h"
 #include "fill_yacc_tables.h"
 #include "out.h"
+
+static struct {
+	const char **source, **header;
+} lookup[number_of_parser_templates] = {
+	[pt_just_tables] = {&just_tables_source, &just_tables_header},
+	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},
+	[pt_readline] = {&readline_source, &readline_header},
+	[pt_readline_debug] = {&readline_debug_source, &readline_debug_header},
+};
 
 void out(
 	struct yacc_state* start,
 	const char* output_path,
 	const char* output_prefix,
-	bool paste_parser_code,
-	bool yacc_debugging)
+	enum parser_template parser_template)
 {
 	ENTER;
-	
-	dpvb(paste_parser_code);
 	
 	char path[PATH_MAX];
 	
@@ -126,13 +140,17 @@ void out(
 		fprintf(header, "extern const unsigned start_grammar_id;\n");
 	}
 	
-	if (yacc_debugging)
-		tokenset_to_id_print_source(shared->ttoi, output_prefix, source, header);
+	tokenset_to_id_print_source(shared->ttoi, output_prefix, source, header);
 	
-	if (paste_parser_code)
+	if (parser_template != pt_nothing)
 	{
-		char* specialized_source = strfandr(yacc_debugging ? parser_debug : parser_code, "<PREFIX>", output_prefix);
-		char* specialized_header = strfandr(parser_header, "<PREFIX>", output_prefix);
+		assert(lookup[parser_template].source);
+		
+		const char* template_source = *lookup[parser_template].source;
+		const char* template_header = *lookup[parser_template].header;
+		
+		char* specialized_source = strfandr(template_source, "<PREFIX>", output_prefix);
+		char* specialized_header = strfandr(template_header, "<PREFIX>", output_prefix);
 		
 		fputs(specialized_source, source);
 		fputs(specialized_header, header);

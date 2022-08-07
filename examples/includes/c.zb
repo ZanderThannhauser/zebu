@@ -1,6 +1,0 @@
-
-%include "b.zb"
-
-c: "c"? d;
-
-

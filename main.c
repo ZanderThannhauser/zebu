@@ -54,8 +54,7 @@ int main(int argc, char* argv[])
 	out(parser,
 		flags->output_path,
 		flags->output_prefix,
-		flags->paste_parser_code,
-		flags->debug.yacc);
+		flags->parser_template);
 	
 	free_yacc_shared(yshared);
 	

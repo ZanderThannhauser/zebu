@@ -1,9 +1,0 @@
-
-%start a;
-
-a: b ":" c;
-
-%include "b.zb"
-
-%include "c.zb"
-

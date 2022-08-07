@@ -26,24 +26,22 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	
 	const char* output_prefix = "zebu";
 	
-	bool debug_lex = false;
-	bool debug_yacc = false;
-	bool paste_parser_code = true;
+	enum parser_template parser_template = pt_just_tables;
+	
 	bool verbose = false;
 	
 	int opt, option_index;
 	const struct option long_options[] = {
 		{"input",  required_argument, 0, 'i'},
 		{"output",       no_argument, 0, 'o'},
-		{"debug",  required_argument, 0, 'd'},
 		{"prefix", required_argument, 0, 'p'},
-		{"just-tables", required_argument, 0, 'j'},
+		{"yacc",   required_argument, 0, 'y'},
 		{"verbose",      no_argument, 0, 'v'},
 		{"help",         no_argument, 0, 'h'},
 		{ 0,                       0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "j" "M" "d:" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "y" "M" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -60,19 +58,21 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 				output_prefix = optarg;
 				break;
 			
-			case 'j':
-				paste_parser_code = false;
-				break;
-			
 /*			case 'M':*/
 /*				build_depends = true;*/
 /*				break;*/
 			
-			case 'd':
-				if (strequals(optarg, "lex")) {
-					debug_lex = true;
-				} else if (strequals(optarg, "yacc")) {
-					debug_yacc = true;
+			case 'y':
+				if (strequals(optarg, "really-just-tables")) {
+					parser_template = pt_nothing;
+				} else if (strequals(optarg, "just-tables")) {
+					parser_template = pt_just_tables;
+				} else if (strequals(optarg, "buffer-driven")) {
+					parser_template = pt_buffer_driven;
+				} else if (strequals(optarg, "readline")) {
+					parser_template = pt_readline;
+				} else if (strequals(optarg, "readline-debug")) {
+					parser_template = pt_readline_debug;
 				} else {
 					usage(e_bad_cmdline_args);
 				}
@@ -104,10 +104,7 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	flags->output_path = output_path;
 	flags->output_prefix = output_prefix;
 	
-	flags->debug.lex = debug_lex;
-	flags->debug.yacc = debug_yacc;
-	
-	flags->paste_parser_code = paste_parser_code;
+	flags->parser_template = parser_template;
 	
 	flags->verbose = verbose;
 	
@@ -115,11 +112,9 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	dpvs(flags->output_path);
 	dpvs(flags->output_prefix);
 	
-	dpvb(flags->debug.lex);
-	dpvb(flags->debug.yacc);
-	dpvb(flags->paste_parser_code);
+	dpv(flags->parser_template);
 	dpvb(flags->verbose);
-		
+	
 	EXIT;
 	return flags;
 }

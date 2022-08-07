@@ -45,20 +45,24 @@ default: $(buildprefix)/zebu
 
 ARGS += -v
 
-#ARGS += -j
+#ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/classic/output
 
-ARGS += --debug=yacc
-#ARGS += --debug=lex
+#ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
 
-#ARGS += -i ./examples/classic/classic.zb -o ./examples/classic/output
-#ARGS += -i ./examples/math/math.zb -o ./examples/math/output
-#ARGS += -i ./examples/maia/maia.zb -o ./examples/maia/output
-#ARGS += -i ./examples/json/json.zb -o ./examples/json/output
-ARGS += -i ./examples/C-expressions/C.zb -o ./examples/C-expressions/output
-#ARGS += -i ./examples/explode/explode.zb -o ./examples/explode/output
-#ARGS += -i ./examples/gegex/gegex.zb -o ./examples/gegex/output
-#ARGS += -i ./examples/includes/main.zb -o ./examples/includes/output
-#ARGS += -i ./examples/hard/hard.zb -o ./examples/hard/output
+ARGS += --yacc=fileio-parsetree -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
+
+#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/output
+
+#ARGS += --yacc=readline-debug -i ./-examples/C-expressions/C.zb -o ./-examples/C-expressions/output
+
+#ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/output
+
+#ARGS += --yacc=readline-debug -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
+
+#ARGS += --yacc=readline-debug -i ./-examples/includes/main.zb -o ./-examples/includes/output
+
+#ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
@@ -82,10 +86,16 @@ tracerun: $(buildprefix)/zebu
 
 gen/srclist.mk: | gen/%/
 	@ echo "searching for source files..."
-	@ find -name '*.c' -! -path './examples/*' | sort -Vr | sed 's/^/srcs += /' > $@
+	@ find -name '*.c' -! -path '*/-*' | sort -Vr | sed 's/^/srcs += /' > $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include gen/srclist.mk
+
+srcs += ./out/escaped/just_tables_source.c ./out/escaped/just_tables_header.c
+srcs += ./out/escaped/buffer_driven_source.c ./out/escaped/buffer_driven_header.c
+srcs += ./out/escaped/readline_source.c ./out/escaped/readline_header.c
+srcs += ./out/escaped/readline_debug_source.c ./out/escaped/readline_debug_header.c
+
 endif
 
 objs := $(patsubst %.c,$(buildprefix)/%.o,$(srcs))
@@ -101,6 +111,21 @@ $(buildprefix)/%.o $(buildprefix)/%.d: %.c | $(buildprefix)/%/
 $(buildprefix)/zebu: $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(buildprefix)/escape: ./-escape.c | $(buildprefix)/
+	@ echo "compiling $<"
+	@ $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) ./$< $(LOADLIBES) $(LDLIBS) -o $@
+
+.PRECIOUS: ./out/escaped/%_source.c
+.PRECIOUS: ./out/escaped/%_header.c
+
+./out/escaped/%_source.c: $(buildprefix)/escape ./out/-templates/%.c
+	@ echo "escaping $*"
+	@ $^ -v $*_source -o $@
+
+./out/escaped/%_header.c: $(buildprefix)/escape ./out/-templates/%.h
+	@ echo "escaping $*"
+	@ $^ -v $*_header -o $@
 
 dot/%.png: dot/%.dot
 	dot -Tpng < $< > $@
