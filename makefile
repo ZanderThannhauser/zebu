@@ -45,14 +45,14 @@ default: $(buildprefix)/zebu
 
 ARGS += -v
 
-#ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/classic/output
+ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/classic/output
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
 
-ARGS += --yacc=fileio-parsetree -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
+#ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 
-#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/output
+#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
 
 #ARGS += --yacc=readline-debug -i ./-examples/C-expressions/C.zb -o ./-examples/C-expressions/output
 
@@ -95,6 +95,7 @@ srcs += ./out/escaped/just_tables_source.c ./out/escaped/just_tables_header.c
 srcs += ./out/escaped/buffer_driven_source.c ./out/escaped/buffer_driven_header.c
 srcs += ./out/escaped/readline_source.c ./out/escaped/readline_header.c
 srcs += ./out/escaped/readline_debug_source.c ./out/escaped/readline_debug_header.c
+srcs += ./out/escaped/fileio_graphviz_source.c ./out/escaped/fileio_graphviz_header.c
 
 endif
 

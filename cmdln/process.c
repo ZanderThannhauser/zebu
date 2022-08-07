@@ -73,6 +73,8 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 					parser_template = pt_readline;
 				} else if (strequals(optarg, "readline-debug")) {
 					parser_template = pt_readline_debug;
+				} else if (strequals(optarg, "fileio-graphviz")) {
+					parser_template = pt_fileio_graphviz;
 				} else {
 					usage(e_bad_cmdline_args);
 				}

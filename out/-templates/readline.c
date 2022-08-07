@@ -49,13 +49,9 @@ static void process_token(struct <PREFIX>_state* this, unsigned t)
 	{
 		if (y < N(<PREFIX>_reduces) && t < N(*<PREFIX>_reduces) && (b = <PREFIX>_reduces[y][t]))
 		{
-			if (b == start_grammar_id)
-			{
-				this->y.n = 0;
-				return;
-			}
-			
 			this->y.n -= <PREFIX>_popcounts[y][t];
+			
+			if (!this->y.n) return;
 			
 			y = this->y.data[this->y.n - 1];
 			

@@ -1,4 +1,4 @@
-const unsigned zebu_shifts[19][14] = {
+const unsigned zebu_shifts[18][16] = {
 	[1][2] = 5,
 	[1][3] = 4,
 	[1][4] = 6,
@@ -13,7 +13,9 @@ const unsigned zebu_shifts[19][14] = {
 	[6][6] = 2,
 	[6][7] = 7,
 	[6][12] = 16,
+	[6][15] = 15,
 	[7][2] = 8,
+	[7][14] = 14,
 	[8][13] = 9,
 	[9][2] = 5,
 	[9][3] = 4,
@@ -23,18 +25,9 @@ const unsigned zebu_shifts[19][14] = {
 	[9][7] = 7,
 	[9][12] = 10,
 	[10][8] = 11,
-	[10][10] = 15,
-	[11][2] = 12,
-	[12][13] = 13,
-	[13][2] = 5,
-	[13][3] = 4,
-	[13][4] = 6,
-	[13][5] = 3,
-	[13][6] = 2,
-	[13][7] = 7,
-	[13][12] = 14,
-	[14][8] = 11,
-	[14][10] = 15,
+	[10][10] = 13,
+	[11][2] = 8,
+	[11][14] = 12,
 	[16][8] = 17,
 	[16][9] = 19,
 	[17][2] = 5,
@@ -43,9 +36,8 @@ const unsigned zebu_shifts[19][14] = {
 	[17][5] = 3,
 	[17][6] = 2,
 	[17][7] = 7,
-	[17][12] = 18,
-	[18][8] = 17,
-	[18][9] = 19,
+	[17][12] = 16,
+	[17][15] = 18,
 };
 const unsigned zebu_reduces[21][12] = {
 	[2][8] = 12,
@@ -64,15 +56,74 @@ const unsigned zebu_reduces[21][12] = {
 	[5][9] = 12,
 	[5][10] = 12,
 	[5][11] = 12,
+	[12][8] = 14,
+	[12][9] = 14,
+	[12][10] = 14,
+	[12][11] = 14,
+	[13][8] = 14,
+	[13][9] = 14,
+	[13][10] = 14,
+	[13][11] = 14,
+	[14][8] = 12,
+	[14][9] = 12,
+	[14][10] = 12,
+	[14][11] = 12,
 	[15][8] = 12,
 	[15][9] = 12,
 	[15][10] = 12,
 	[15][11] = 12,
-	[19][8] = 12,
-	[19][9] = 12,
-	[19][10] = 12,
-	[19][11] = 12,
-	[20][11] = 14,
+	[18][8] = 15,
+	[18][9] = 15,
+	[18][10] = 15,
+	[18][11] = 15,
+	[19][8] = 15,
+	[19][9] = 15,
+	[19][10] = 15,
+	[19][11] = 15,
+	[20][11] = 16,
+};
+const unsigned zebu_popcounts[21][12] = {
+	[2][8] = 1,
+	[2][9] = 1,
+	[2][10] = 1,
+	[2][11] = 1,
+	[3][8] = 1,
+	[3][9] = 1,
+	[3][10] = 1,
+	[3][11] = 1,
+	[4][8] = 1,
+	[4][9] = 1,
+	[4][10] = 1,
+	[4][11] = 1,
+	[5][8] = 1,
+	[5][9] = 1,
+	[5][10] = 1,
+	[5][11] = 1,
+	[12][8] = 5,
+	[12][9] = 5,
+	[12][10] = 5,
+	[12][11] = 5,
+	[13][8] = 4,
+	[13][9] = 4,
+	[13][10] = 4,
+	[13][11] = 4,
+	[14][8] = 2,
+	[14][9] = 2,
+	[14][10] = 2,
+	[14][11] = 2,
+	[15][8] = 2,
+	[15][9] = 2,
+	[15][10] = 2,
+	[15][11] = 2,
+	[18][8] = 3,
+	[18][9] = 3,
+	[18][10] = 3,
+	[18][11] = 3,
+	[19][8] = 2,
+	[19][9] = 2,
+	[19][10] = 2,
+	[19][11] = 2,
+	[20][11] = 1,
 };
 const unsigned zebu_lexer[35][126] = {
 	[1][32] = 1,
@@ -230,21 +281,6 @@ const unsigned zebu_lexer[35][126] = {
 	[31][93] = 33,
 	[34][32] = 34,
 };
-const unsigned zebu_firsts[15][13] = {
-	[12][2] = 1,
-	[12][3] = 1,
-	[12][4] = 1,
-	[12][5] = 1,
-	[12][6] = 1,
-	[12][7] = 1,
-	[14][2] = 1,
-	[14][3] = 1,
-	[14][4] = 1,
-	[14][5] = 1,
-	[14][6] = 1,
-	[14][7] = 1,
-	[14][12] = 1,
-};
 const unsigned zebu_starts[21] = {
 	[1] = 1,
 	[2] = 17,
@@ -257,13 +293,13 @@ const unsigned zebu_starts[21] = {
 	[9] = 1,
 	[10] = 28,
 	[11] = 22,
-	[12] = 26,
-	[13] = 1,
-	[14] = 28,
+	[12] = 17,
+	[13] = 17,
+	[14] = 17,
 	[15] = 17,
 	[16] = 31,
 	[17] = 1,
-	[18] = 31,
+	[18] = 17,
 	[19] = 17,
 	[20] = 34,
 };
@@ -292,31 +328,72 @@ const unsigned zebu_accepts[36] = {
 	[33] = 9,
 	[35] = 11,
 };
+const unsigned start_grammar_id = 16;
+const char* zebu_grammar_names[18] = {
+	[16] = "(start)",
+	[14] = "(trie #1)",
+	[15] = "(trie #2)",
+	[12] = "value",
+};
+
+#include <assert.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
-struct zebu_state {
+#include <stdarg.h>
+
+struct zebu_state
+{
 	struct { unsigned* data, n, cap; } y;
 	struct { unsigned char* data, n, cap; } l;
 	unsigned lstate, t;
 };
-static void push(struct zebu_state* this, unsigned ystate) {
-	if (this->y.n + 1 >= this->y.cap) {
+
+static void ddprintf(struct zebu_state* this, const char* fmt, ...)
+{
+	for (unsigned i = 0, n = this->y.n; i < n; i++)
+		printf("%u ", this->y.data[i]);
+	
+	printf("| ");
+	
+	va_list va;
+	va_start(va, fmt);
+	vprintf(fmt, va);
+	va_end(va);
+}
+
+static void push(struct zebu_state* this, unsigned ystate)
+{
+	if (this->y.n + 1 >= this->y.cap)
+	{
 		this->y.cap = this->y.cap << 1 ?: 1;
 		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
 	}
+	
 	this->y.data[this->y.n++] = ystate;
 }
-static void append(struct zebu_state* this, const unsigned char* text, size_t length) {
-	while (this->l.n + length >= this->l.cap) {
+
+static void append(struct zebu_state* this, const unsigned char* text, size_t length)
+{
+	while (this->l.n + length >= this->l.cap)
+	{
 		this->l.cap = this->l.cap << 1 ?: 1;
 		this->l.data = realloc(this->l.data, this->l.cap);
 	}
 	memcpy(this->l.data + this->l.n, text, length);
 	this->l.n += length;
 }
-struct zebu_state* new_zebu_state() {
+
+static struct zebu_state* new_zebu_state()
+{
 	struct zebu_state* this = malloc(sizeof(*this));
 	assert(this);
 	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
@@ -325,92 +402,257 @@ struct zebu_state* new_zebu_state() {
 	push(this, 1);
 	return this;
 }
-void zebu_reset(struct zebu_state* this) {
+
+static void zebu_reset(struct zebu_state* this)
+{
 	this->y.n = 0;
 	this->l.n = 0;
 	this->lstate = 1;
 	push(this, 1);
+	ddprintf(this, "y = %u, l == %u\n", 1, 1);
 }
+
 #define N(array) (sizeof(array) / sizeof(*array))
-static void process_token(struct zebu_state* this, unsigned t) {
-	unsigned b, d, y = this->y.data[this->y.n - 1];
-	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t]))) {
-		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t])) {
-			unsigned s = t;
-			while (!(1
-				 && y < N(zebu_shifts) && b < N(*zebu_shifts) && (d = zebu_shifts[y][b])
-				 && b < N(zebu_firsts) && s < N(*zebu_firsts) && (    zebu_firsts[b][s]))) {
-				if (this->y.n == 1) return;
-				s = this->y.data[--this->y.n - 1];
-				y = this->y.data[--this->y.n - 1];
+
+static void process_token(struct zebu_state* this, unsigned t)
+{
+	unsigned b, d, p, y = this->y.data[this->y.n - 1];
+	
+	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
+	{
+		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t]))
+		{
+			ddprintf(this, "b == %u\n", b);
+			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
+			
+			if (b == start_grammar_id)
+			{
+				this->y.n = 0;
+				return;
 			}
-			push(this, b), push(this, d), y = d;
-		} else {
+			
+			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
+			
+			this->y.n -= p;
+			
+			y = this->y.data[this->y.n - 1];
+			ddprintf(this, "y = %u\n", y);
+			
+			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
+			
+			d = zebu_shifts[y][b];
+			ddprintf(this, "d = %u\n", d);
+			
+			push(this, d), y = d;
+		}
+		else
+		{
 			assert(!"TODO");
 			exit(1);
 		}
 	}
-	push(this, t), push(this, b), y = b;
+	
+	push(this, b), y = b;
 }
-void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
+
+static void escape(char *out, unsigned char in)
+{
+	switch (in)
+	{
+		case ' ':
+		case '~':
+		case '!':
+		case '@':
+		case '#':
+		case '$':
+		case '%':
+		case '^':
+		case '&':
+		case '*':
+		case '(':
+		case ')':
+		case '-':
+		case '+':
+		case '=':
+		case '|':
+		case '{': case '}':
+		case '[': case ']':
+		case ':': case ';':
+		case ',': case '.':
+		case '0' ... '9':
+		case 'a' ... 'z':
+		case 'A' ... 'Z':
+			*out++ = in;
+			*out = 0;
+			break;
+		
+		default:
+			sprintf(out, "\\x%02X", in);
+			break;
+	}
+}
+
+static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length)
+{
 	unsigned c, l = this->lstate;
 	unsigned a, b, i, n, f, t = this->t;
+	
+	char escaped[10];
+	
 	i = this->l.n;
+	
 	append(this, text, length);
-	for (n = this->l.n, f = 0; i < n;) {
+	
+	for (n = this->l.n, f = 0; i < n;)
+	{
 		c = this->l.data[i];
+		
+		escape(escaped, c);
+		
+		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
+		
 		a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
 		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		if (a) {
+		
+		if (a)
+		{
 			if (b)
+			{
 				l = a, t = b, f = i++;
+				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
+			}
 			else
+			{
 				l = a, i++;
-		} else if (b) {
+				ddprintf(this, "l == %u\n", l);
+			}
+		}
+		else if (b)
+		{
 			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i + 1, t = 0;
-		} else if (t) {
+			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
+			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
+		}
+		else if (t)
+		{
 			process_token(this, t);
 			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-		} else {
+			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
+		}
+		else
+		{
 			assert(!"TODO");
 		}
 	}
+	
 	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
+	
 	this->t = t;
+	
 	this->lstate = l;
 }
-void zebu_parse_EOF(struct zebu_state* this) {
+
+static void zebu_parse_EOF(struct zebu_state* this)
+{
 	unsigned i = this->l.n, n = i, l = this->lstate;
 	unsigned a, b, c, f = 0, t = this->t;
-	while (1) {
+	
+	char escaped[10];
+	
+	while (1)
+	{
 		assert(i <= n + 1);
-		if (i < n) {
+		
+		if (i < n)
+		{
 			c = this->l.data[i];
+			
+			escape(escaped, c);
+			
+			ddprintf(this, "c = %s (0x%X)\n", escaped, c);
+		
 			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		} else {
+		}
+		else
+		{
+			ddprintf(this, "c == <EOF>\n");
 			a = l < N(zebu_EOFs) ? zebu_EOFs[l] : 0;
 		}
+		
 		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		if (a) {
+		
+		if (a)
+		{
 			if (b)
+			{
 				l = a, t = b, f = i++;
+				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
+			}
 			else
+			{
 				l = a, i++;
-		} else if (b) {
+				ddprintf(this, "l == %u\n", l);
+			}
+		}
+		else if (b)
+		{
 			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i + 1, t = 0;
-			if (f >= n) break;
-		} else if (t) {
+			
+			if (!this->y.n) break;
+			
+			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
+			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
+		}
+		else if (t)
+		{
 			process_token(this, t);
 			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-		} else {
+			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
+		}
+		else
+		{
 			assert(!"TODO");
 		}
 	}
 }
-void free_zebu_state(struct zebu_state* this) {
+
+static void free_zebu_state(struct zebu_state* this)
+{
 	free(this->y.data);
 	free(this->l.data);
 	free(this);
 }
+
+int main()
+{
+	struct zebu_state* new = new_zebu_state();
+	
+	for (char* line; (line = readline(">>> "));)
+	{
+		zebu_reset(new);
+		
+		zebu_parse(new, (unsigned char*) line, strlen(line));
+		
+		zebu_parse_EOF(new);
+		
+		puts("accepted!");
+		
+		add_history(line);
+		
+		free(line);
+	}
+	
+	free_zebu_state(new);
+	
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+

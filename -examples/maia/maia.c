@@ -4294,7 +4294,7 @@ const unsigned zebu_accepts[82] = {
 const unsigned start_grammar_id = 20;
 const char* zebu_grammar_names[24] = {
 	[20] = "(start)",
-	[22] = "(trie #0)",
+	[22] = "(trie #1)",
 	[14] = "directory",
 	[12] = "gecos",
 	[10] = "gid",
@@ -4306,333 +4306,415 @@ const char* zebu_grammar_names[24] = {
 	[16] = "shell",
 	[9] = "uid",
 };
+
+#define _GNU_SOURCE
+
+#include <string.h>
+#include <unistd.h>
 #include <stdlib.h>
-#include <stddef.h>
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include <errno.h>
 
-struct zebu_state
-{
-	struct { unsigned* data, n, cap; } y;
-	struct { unsigned char* data, n, cap; } l;
-	unsigned lstate, t;
-};
-
-static void push(struct zebu_state* this, unsigned ystate)
-{
-	if (this->y.n + 1 >= this->y.cap)
-	{
-		this->y.cap = this->y.cap << 1 ?: 1;
-		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
-	}
-	
-	this->y.data[this->y.n++] = ystate;
-}
-
-static void append(struct zebu_state* this, const unsigned char* text, size_t length)
-{
-	while (this->l.n + length >= this->l.cap)
-	{
-		this->l.cap = this->l.cap << 1 ?: 1;
-		this->l.data = realloc(this->l.data, this->l.cap);
-	}
-	memcpy(this->l.data + this->l.n, text, length);
-	this->l.n += length;
-}
-
-static void ddprintf(struct zebu_state* this, const char* fmt, ...)
-{
-	for (unsigned i = 0, n = this->y.n; i < n; i++)
-	{
-		printf("%u ", this->y.data[i]);
-	}
-	
-	printf("| ");
-	
-	va_list va;
-	va_start(va, fmt);
-	vprintf(fmt, va);
-	va_end(va);
-}
-
-struct zebu_state* new_zebu_state() {
-	struct zebu_state* this = malloc(sizeof(*this));
-	assert(this);
-	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
-	this->l.data = NULL, this->l.n = 0, this->l.cap = 0;
-	this->lstate = 1, this->t = 0;
-	push(this, 1);
-	return this;
-}
-
-void zebu_reset(struct zebu_state* this) {
-	this->y.n = 0;
-	this->l.n = 0;
-	this->lstate = 1;
-	push(this, 1);
-}
+#define argv0 (program_invocation_name)
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
-static void process_token(struct zebu_state* this, unsigned t) {
-	ddprintf(this, "t == %u\n", t);
-	
-	unsigned b, d, p, y = this->y.data[this->y.n - 1];
-	
-	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
+void* smalloc(size_t size)
+{
+	void* ptr = malloc(size);
+	if (!ptr)
 	{
-		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t]))
+		fprintf(stderr, "%s: malloc(%lu): %m\n", argv0, size);
+		exit(1);
+	}
+	return ptr;
+}
+
+void* srealloc(void* ptr, size_t size)
+{
+	assert(!"TODO");
+}
+
+void* smemdup(const void* src, size_t size)
+{
+	void* new = smalloc(size);
+	memcpy(new, src, size);
+	return new;
+}
+
+FILE* sfopen(const char* path, const char* mode)
+{
+	FILE* stream = fopen(path, mode);
+	
+	if (!stream)
+	{
+		fprintf(stderr, "%s: fopen(\"%s\", \"%s\"): %m\n", argv0, path, mode);
+		exit(1);
+	}
+	
+	return stream;
+}
+
+struct cmdln
+{
+	const char* input;
+	const char* output;
+};
+
+void usage(int code)
+{
+	fprintf(stderr, "usage: "
+		"%s <path/to/input/file> -o <path/to/output/file.dot>\n", argv0);
+	exit(code);
+}
+
+struct cmdln* process_cmdln(int argc, char* const* argv)
+{
+	int opt;
+	
+	const char* input = NULL;
+	const char* output = NULL;
+	
+	while ((opt = getopt(argc, argv, "ho:")) != -1)
+	{
+		switch (opt)
 		{
-			ddprintf(this, "b == %u\n", b);
-			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
-			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
+			case 'h':
+				usage(0);
+				break;
 			
-			if (b == start_grammar_id)
-			{
-				this->y.n = 0;
-				ddprintf(this, "done\n");
-				return;
-			}
+			case 'o':
+				output = optarg;
+				break;
 			
-			this->y.n -= p;
-			
-			y = this->y.data[this->y.n - 1];
-			ddprintf(this, "y == %u\n", y);
-			
-			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
-			
-			d = zebu_shifts[y][b];
-			
-			push(this, d), y = d;
-			ddprintf(this, "y == %u\n", y); 
-		}
-		else
-		{
-			assert(!"TODO");
-			exit(1);
+			default:
+				usage(1);
 		}
 	}
 	
-	push(this, b), y = b;
+	input = argv[optind++];
+	
+	if (!input || !output)
+		usage(1);
+	
+	struct cmdln* retval = smalloc(sizeof(*retval));
+	retval->input = input;
+	retval->output = output;
+	return retval;
 }
 
-void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length) {
-	unsigned c, l = this->lstate;
-	unsigned a, b, i, n, f, t = this->t;
+struct value
+{
+	unsigned shifton;
+	enum {
+		vk_token,
+		vk_grammar,
+		vk_EOF,
+	} kind;
+	union {
+		struct {
+			unsigned char* data;
+			unsigned n;
+		} t;
+		struct {
+			const char* name;
+			struct value** values;
+			unsigned n;
+		} g;
+	};
+};
+
+struct value* new_token(unsigned shifton, unsigned char* data, unsigned n)
+{
+	struct value* value = smalloc(sizeof(*value));
 	
-	i = this->l.n;
+	value->shifton = shifton;
 	
-	append(this, text, length);
+	value->kind = vk_token;
 	
-	for (n = this->l.n, f = 0; i < n;)
+	value->t.data = smemdup(data, sizeof(*data) * n);
+	value->t.n = n;
+	
+	return value;
+}
+
+struct value* new_EOF_token(unsigned shifton)
+{
+	struct value* value = smalloc(sizeof(*value));
+	
+	value->shifton = shifton;
+	
+	value->kind = vk_EOF;
+	
+	return value;
+}
+
+struct lexer { unsigned char* data, n, cap; };
+
+struct value* read_token(struct lexer* lexer, FILE* stream, unsigned state)
+{
+	void append(unsigned char c)
 	{
-		c = this->l.data[i];
-		
+		while (lexer->n + 1 >= lexer->cap)
 		{
-			unsigned j, s;
-			unsigned char escaped[(n - i) * 4 + 1], *e = escaped;
-			for (j = i; j < n; j++)
-				switch (s = this->l.data[j]) {
-					case 'a' ... 'z':
-					case 'A' ... 'Z':
-					case '0' ... '9':
-					case '!':
-					case ':':
-					case '.':
-					case '+':
-					case '%':
-					case '[':
-					case '{':
-					case '-':
-					case '}':
-					case '*':
-					case '|':
-					case ',':
-					case '@':
-					case '<':
-					case '>':
-					case '&':
-					case '~':
-					case '^':
-					case '/':
-					case '?':
-					case ' ':
-					case ']':
-					case '(': case ')':
-					*e++ = s;
-					break;
-					case '\n':
-						*e++ = '\\';
-						*e++ = 'n';
-					case '\\':
-						*e++ = '\\';
-						*e++ = '\\';
-						break;
-					case '\"':
-						*e++ = '\\';
-						*e++ = '"';
-					break;
-					default:
-						printf("s = %c\n", s);
-						assert(!"TODO");
-						break;
-				}
-			*e = 0;
-			ddprintf(this, "c == %u \"%s\"\n", c, escaped);
+			lexer->cap = lexer->cap << 1 ?: 1;
+			lexer->data = realloc(lexer->data, lexer->cap);
 		}
 		
-		a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
-			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
-			}
-			else
-			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
-			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
+		lexer->data[lexer->n++] = c;
 	}
 	
-	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
+	unsigned i = 0;
 	
-	this->t = t;
-	
-	this->lstate = l;
-}
-
-void zebu_parse_EOF(struct zebu_state* this) {
-	unsigned i = this->l.n, n = i, l = this->lstate;
-	unsigned a, b, c, f = 0, t = this->t;
+	unsigned token = 0, fallback;
 	
 	while (1)
 	{
-		assert(i <= n + 1);
+		unsigned next, accept, c;
 		
-		if (i < n)
+		if (i < lexer->n)
 		{
-			c = this->l.data[i];
+			c = lexer->data[i];
 			
-			{
-				unsigned j, s;
-				unsigned char escaped[(n - i) * 4 + 1], *e = escaped;
-				for (j = i; j < n; j++)
-					switch (s = this->l.data[j]) {
-						case 'a' ... 'z':
-						case 'A' ... 'Z':
-						case '0' ... '9':
-						case '+':
-						case ':':
-						case '.':
-						case '{':
-						case '}':
-						case '%':
-						case '!':
-						case '~':
-						case '[':
-						case '*':
-						case '>':
-						case '^':
-						case '?':
-						case '/':
-						case '|':
-						case '<':
-						case '@':
-						case '-':
-						case '&':
-						case ']':
-						case ',':
-						case ' ':
-							*e++ = s;
-							break;
-						case '\n':
-							*e++ = '\\';
-							*e++ = 'n';
-						case '\"':
-							*e++ = '\\';
-							*e++ = '"';
-						break;
-					case '\\':
-						*e++ = '\\';
-						*e++ = '\\';
-						break;
-						default:
-							printf("s = %c\n", s);
-							assert(!"TODO");
-							break;
-					}
-				*e = 0;
-				ddprintf(this, "c == %u (%s)\n", c, escaped);
-			}
+			next = 0
+				?: (c < N(*zebu_lexer) ? zebu_lexer[state][c] : 0)
+				?: (state < N( zebu_defaults) ? zebu_defaults[state] : 0);
+		}
+		else if ((c = getc(stream)) != EOF)
+		{
+			append(c);
 			
-			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
+			next = 0
+				?: (c < N(*zebu_lexer) ? zebu_lexer[state][c] : 0)
+				?: (state < N( zebu_defaults) ? zebu_defaults[state] : 0);
 		}
 		else
 		{
-			ddprintf(this, "c == <EOF>\n");
-			a = l < N(zebu_EOFs) ? zebu_EOFs[l] : 0;
+			c = EOF;
+			next = state < N(zebu_EOFs) ? zebu_EOFs[state] : 0;
 		}
 		
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
+		accept = (state < N(zebu_accepts) ? zebu_accepts[state] : 0);
 		
-		if (a)
+		if (next)
 		{
-			if (b)
+			if (accept)
 			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
+				state = next, token = accept, fallback = i++;
 			}
 			else
 			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
+				state = next, i++;
 			}
 		}
-		else if (b)
+		else if (accept)
 		{
-			process_token(this, b);
-			if (!this->y.n) break;
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
+			if (!lexer->n)
+			{
+				lexer->n = 0;
+				return new_EOF_token(accept);
+			}
+			else
+			{
+				struct value* retval = new_token(accept, lexer->data, lexer->n - 1);
+				lexer->n = 0;
+				if (c != EOF) lexer->data[lexer->n++] = c;
+				return retval;
+			}
 		}
-		else if (t)
+		else if (token)
 		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
+			struct value* retval = new_token(token, lexer->data, fallback);
+			memmove(lexer->data, lexer->data + fallback, lexer->n - fallback);
+			lexer->n -= fallback;
+			return retval;
 		}
 		else
 		{
-			assert(!"TODO");
+			assert(!"168");
 		}
 	}
 }
 
-void free_zebu_state(struct zebu_state* this) {
-	free(this->y.data);
-	free(this->l.data);
-	free(this);
+struct value* new_grammar(
+	unsigned shifton,
+	const char* name,
+	struct value** values,
+	unsigned n_values)
+{
+	struct value* v = smalloc(sizeof(*v));
+	
+	v->shifton = shifton;
+	
+	v->kind = vk_grammar;
+	
+	v->g.name = name;
+	v->g.values = smemdup(values, sizeof(*values) * n_values);
+	v->g.n = n_values;
+	
+	return v;
 }
+
+struct value* parse(FILE* stream)
+{
+	struct { unsigned* data, n, cap; } stack = {};
+	struct { struct value** data; unsigned n, cap; } values = {};
+	struct lexer lexer = {};
+	
+	void push(unsigned y)
+	{
+		if (stack.n + 1 >= stack.cap)
+		{
+			stack.cap = stack.cap << 1 ?: 1;
+			stack.data = realloc(stack.data, sizeof(*stack.data) * stack.cap);
+		}
+		stack.data[stack.n++] = y;
+	}
+	
+	void push_value(struct value* v)
+	{
+		if (values.n + 1 >= values.cap)
+		{
+			values.cap = values.cap << 1 ?: 1;
+			values.data = realloc(values.data, sizeof(*values.data) * values.cap);
+		}
+		values.data[values.n++] = v;
+	}
+	
+	push(1);
+	
+	struct value* g = NULL, *t = read_token(&lexer, stream, 1);
+	
+	while (1)
+	{
+		unsigned y = stack.data[stack.n - 1], s, r;
+		
+		unsigned w = g ? g->shifton : t ? t->shifton : 0;
+		if (y < N(zebu_shifts) && w < N(*zebu_shifts) && (s = zebu_shifts[y][w]))
+		{
+			push_value(g ?: t);
+			push(s);
+			if (g) g = NULL;
+			else t = read_token(&lexer, stream, zebu_starts[s]);
+		}
+		else if (y < N(zebu_reduces) && w < N(*zebu_reduces) && (r = zebu_reduces[y][w]))
+		{
+			assert(!g);
+			if (r == start_grammar_id)
+			{
+				free(t);
+				
+				g = new_grammar(r, zebu_grammar_names[r], values.data, values.n);
+				
+				free(stack.data);
+				free(lexer.data);
+				free(values.data);
+				
+				return g;
+			}
+			else
+			{
+				unsigned p = zebu_popcounts[y][w];
+				g = new_grammar(r, zebu_grammar_names[r], values.data + values.n - p, p);
+				stack.n -= p, values.n -= p;
+			}
+		}
+		else
+		{
+			assert(!"266");
+		}
+	}
+}
+
+void dotout(struct value* value, FILE* stream)
+{
+	switch (value->kind)
+	{
+		case vk_token:
+		{
+			fprintf(stream, "\"%p\" [ label = \"", value);
+			
+			for (unsigned i = 0, u, n = value->t.n; i < n; i++)
+				switch ((u = value->t.data[i]))
+				{
+					case '\n': fprintf(stream, "&#%u;&#%u;&#%u;", '\\', '\\', 'n'); break;
+					case '\t': fprintf(stream, "&#%u;&#%u;&#%u;", '\\', '\\', 't'); break;
+					default: fprintf(stream, "&#%u;", u); break;
+				}
+			
+			fprintf(stream, "\" ];\n");
+			
+			free(value->t.data);
+			break;
+		}
+		
+		case vk_grammar:
+		{
+			fprintf(stream, "\"%p\" [ label = \"%s\" ];", value, value->g.name);
+			
+			for (unsigned i = 0, n = value->g.n; i < n; i++)
+			{
+				struct value* e = value->g.values[i];
+				dotout(e, stream);
+				fprintf(stream, "\"%p\" -> \"%p\"\n", value, e);
+			}
+			
+			free(value->g.values);
+			break;
+		}
+		
+		case vk_EOF:
+			fprintf(stream, "\"%p\" [ label = \"<EOF>\" ];", value);
+			break;
+	}
+	
+	free(value);
+}
+
+int main(int argc, char* const* argv)
+{
+	struct cmdln* cmdln = process_cmdln(argc, argv);
+	
+	FILE* input = sfopen(cmdln->input, "r");
+	
+	struct value* ptree = parse(input);
+	
+	fclose(input);
+	
+	FILE* output = sfopen(cmdln->output, "w");
+	
+	fprintf(output, "digraph {\n");
+	
+	fprintf(output, "rankdir = LR;\n");
+	
+	fprintf(output, "node [shape = box];\n");
+	
+	dotout(ptree, output);
+	
+	fprintf(output, "}\n");
+	
+	fclose(output);
+	
+	free(cmdln);
+	
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
