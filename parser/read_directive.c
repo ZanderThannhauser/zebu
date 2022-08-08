@@ -47,6 +47,8 @@ void read_directive(
 	
 	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
 	{
+		read_token(tokenizer, colon_machine);
+		
 		read_token(tokenizer, identifier_machine);
 		
 		if (options->start)

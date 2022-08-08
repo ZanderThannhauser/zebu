@@ -45,7 +45,7 @@ default: $(buildprefix)/zebu
 
 ARGS += -v
 
-ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/classic/output
+#ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/classic/output
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -63,6 +63,8 @@ ARGS += --yacc=buffer-driven -i ./-examples/classic/classic.zb -o ./-examples/cl
 #ARGS += --yacc=readline-debug -i ./-examples/includes/main.zb -o ./-examples/includes/output
 
 #ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
+
+ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

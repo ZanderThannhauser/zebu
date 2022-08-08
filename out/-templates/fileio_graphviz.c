@@ -248,6 +248,27 @@ struct value* new_grammar(
 	return v;
 }
 
+void free_value(struct value* v)
+{
+	switch (v->kind)
+	{
+		case vk_token:
+			free(v->t.data);
+			break;
+		
+		case vk_grammar:
+			for (unsigned i = 0, n = v->g.n; i < n; i++)
+				free_value(v->g.values[i]);
+			free(v->g.values);
+			break;
+		
+		case vk_EOF:
+			break;
+	}
+	
+	free(v);
+}
+
 struct value* parse(FILE* stream)
 {
 	struct { unsigned* data, n, cap; } stack = {};
@@ -295,7 +316,7 @@ struct value* parse(FILE* stream)
 			assert(!g);
 			if (r == start_grammar_id)
 			{
-				free(t);
+				free_value(t);
 				
 				g = new_grammar(r, zebu_grammar_names[r], values.data, values.n);
 				
@@ -336,8 +357,6 @@ void dotout(struct value* value, FILE* stream)
 				}
 			
 			fprintf(stream, "\" ];\n");
-			
-			free(value->t.data);
 			break;
 		}
 		
@@ -351,8 +370,6 @@ void dotout(struct value* value, FILE* stream)
 				dotout(e, stream);
 				fprintf(stream, "\"%p\" -> \"%p\"\n", value, e);
 			}
-			
-			free(value->g.values);
 			break;
 		}
 		
@@ -360,8 +377,6 @@ void dotout(struct value* value, FILE* stream)
 			fprintf(stream, "\"%p\" [ label = \"<EOF>\" ];", value);
 			break;
 	}
-	
-	free(value);
 }
 
 int main(int argc, char* const* argv)
@@ -387,6 +402,8 @@ int main(int argc, char* const* argv)
 	fprintf(output, "}\n");
 	
 	fclose(output);
+	
+	free_value(ptree);
 	
 	free(cmdln);
 	
