@@ -3,15 +3,18 @@
 
 #include <stdlib.h>
 
+#include <macros/strequals.h>
+
 #include <enums/error.h>
 
 #include <debug.h>
 
-#include <macros/memequals.h>
-
 #include <memory/sstrdup.h>
+#include <memory/smemdup.h>
+#include <memory/smalloc.h>
 
 #include "options/struct.h"
+#include "options/dlink.h"
 
 #include <lex/regex/state/free.h>
 #include <lex/regex/dfa_to_nfa.h>
@@ -20,10 +23,12 @@
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
-#include "tokenizer/machines/identifier.h"
-#include "tokenizer/machines/semicolon.h"
-#include "tokenizer/machines/colon.h"
-#include "tokenizer/machines/expression/root.h"
+#include "tokenizer/machines/misc/identifier.h"
+#include "tokenizer/machines/misc/semicolon.h"
+#include "tokenizer/machines/misc/colon.h"
+#include "tokenizer/machines/misc/identifier_or_string.h"
+#include "tokenizer/machines/misc/comparision.h"
+#include "tokenizer/machines/regex/root.h"
 #include "tokenizer/machines/root.h"
 
 #include "token/root.h"
@@ -45,7 +50,7 @@ void read_directive(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	if (memequals(tokenizer->tokenchars.chars, "%""start", 7))
+	if (strequals(tokenizer->tokenchars.chars, "%""start"))
 	{
 		read_token(tokenizer, colon_machine);
 		
@@ -63,13 +68,13 @@ void read_directive(
 		
 		read_token(tokenizer, semicolon_machine);
 	}
-	else if (memequals(tokenizer->tokenchars.chars, "%""skip", 6))
+	else if (strequals(tokenizer->tokenchars.chars, "%""skip"))
 	{
 		free_regex(options->skip, scratchpad);
 		
 		read_token(tokenizer, colon_machine);
 		
-		read_token(tokenizer, expression_root_machine);
+		read_token(tokenizer, regex_root_machine);
 		
 		struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
 		
@@ -82,7 +87,86 @@ void read_directive(
 		
 		options->skip = bun.nfa.start;
 	}
-	else if (memequals(tokenizer->tokenchars.chars, "%""include", 9))
+	else if (strequals(tokenizer->tokenchars.chars, "%""disambiguate"))
+	{
+		read_token(tokenizer, colon_machine);
+		
+		struct dop read_dop()
+		{
+			read_token(tokenizer, identifier_or_string_machine);
+			
+			if (tokenizer->token == t_identifier)
+			{
+				dpvs(tokenizer->tokenchars.chars);
+				
+				if (strequals(tokenizer->tokenchars.chars, "literal"))
+				{
+					return (struct dop) {.kind = dk_literal};
+				}
+				else if (strequals(tokenizer->tokenchars.chars, "regex"))
+				{
+					return (struct dop) {.kind = dk_regex};
+				}
+				else
+				{
+					TODO;
+				}
+			}
+			else if (tokenizer->token == t_string_literal)
+			{
+				dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+				
+				unsigned char* dup = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+				
+				return (struct dop) {
+					.kind = dk_string,
+					.s.chars = dup,
+					.s.len = tokenizer->tokenchars.n};
+			}
+			else
+			{
+				TODO;
+				exit(1);
+			}
+		}
+		
+		struct dop left = read_dop();
+		
+		read_token(tokenizer, comparision_machine);
+		
+		int cmp;
+		
+		switch (tokenizer->token)
+		{
+			case t_lthan: cmp = -1; break;
+			case t_gthan: cmp = +1; break;
+			case t_equal_to: cmp = 0; break;
+			default: TODO break;
+		}
+		
+		struct dop right = read_dop();
+		
+		struct dlink* dlink = smalloc(sizeof(*dlink));
+		
+		dlink->left = left;
+		dlink->cmp = cmp;
+		dlink->right = right;
+		dlink->next = NULL;
+		
+		if (options->disambiguatations.head)
+		{
+			options->disambiguatations.tail->next = dlink;
+			options->disambiguatations.tail = dlink;
+		}
+		else
+		{
+			options->disambiguatations.head = dlink;
+			options->disambiguatations.tail = dlink;
+		}
+		
+		read_token(tokenizer, semicolon_machine);
+	}
+	else if (strequals(tokenizer->tokenchars.chars, "%""include"))
 	{
 		switch (read_token(tokenizer, include_machine))
 		{

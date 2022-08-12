@@ -4,10 +4,7 @@
 
 enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 	
-	// skip whitespace:
-	[ts_start][' ' ] = ts_start,
-	[ts_start]['\t'] = ts_start,
-	[ts_start]['\n'] = ts_start,
+	#include "fragments/skip_whitespace.h"
 	
 	// skip comments:
 	[ts_start]['/'] = ts_after_slash,

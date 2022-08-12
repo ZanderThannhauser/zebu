@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "../new.h"
@@ -27,3 +28,4 @@ struct lambda_subgrammars_task* new_lambda_subgrammars_task(
 	return this;
 }
 
+#endif

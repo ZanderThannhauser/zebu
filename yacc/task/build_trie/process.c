@@ -21,8 +21,6 @@
 #include "../../gegex_to_trie/struct.h"
 #include "../../shared/struct.h"
 
-#include "../add_reductions/new.h"
-
 /*#include "../../add_dep.h"*/
 /*#include "../../lookup_tokenset.h"*/
 
@@ -48,14 +46,11 @@ static struct gegex* process_to(
 	{
 		building_to->is_reduction_point = true;
 		building_to->popcount = this->popcount + 1;
-		
-		heap_push(shared->todo, new_add_reductions_task(this->name, building_to, this->scratchpad));
 	}
 	
 	if (mirrorme_to->refcount == 1)
 	{
 		heap_push(shared->todo, new_build_trie_task(
-			scratchpad,
 			this->name,
 			this->start,
 			mirrorme_to,
@@ -73,17 +68,12 @@ static struct gegex* process_to(
 		
 		struct gegex* reduction = new_gegex(scratchpad);
 		
-		{
-			reduction->is_reduction_point = true;
-			reduction->popcount = this->popcount + 2;
-			
-			heap_push(shared->todo, new_add_reductions_task(this->name, reduction, this->scratchpad));
-		}
+		reduction->is_reduction_point = true;
+		reduction->popcount = this->popcount + 2;
 		
 		char* dup = arena_strdup(scratchpad, gtot->trie);
 		
 		gegex_add_grammar_transition(building_to, scratchpad, dup, reduction);
-		
 	}
 	
 	EXIT;
@@ -97,7 +87,7 @@ void build_trie_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
-	struct memory_arena* const scratchpad = this->scratchpad;
+	struct memory_arena* const scratchpad = shared->scratchpad;
 	struct gegex* const mirrorme = this->mirrorme;
 	struct gegex* const building = this->building;
 	

@@ -8,8 +8,8 @@
 #include "../tokenizer/read_token.h"
 
 #include "../tokenizer/machines/charset/root.h"
-#include "../tokenizer/machines/expression/root.h"
-#include "../tokenizer/machines/expression/after_highest.h"
+#include "../tokenizer/machines/regex/root.h"
+#include "../tokenizer/machines/regex/after_highest.h"
 
 #include "../scope/lookup/token.h"
 
@@ -44,6 +44,7 @@ struct rbundle read_highest_token_expression(
 				/* strlen:     */ 1);
 			
 			retval = (struct rbundle) {
+				.is_literal = true,
 				.is_nfa = false,
 				.dfa = dfa,
 			};
@@ -64,6 +65,7 @@ struct rbundle read_highest_token_expression(
 				/* strlen:     */ tokenizer->tokenchars.n);
 			
 			retval = (struct rbundle) {
+				.is_literal = true,
 				.is_nfa = false,
 				.dfa = dfa,
 			};
@@ -124,7 +126,7 @@ struct rbundle read_highest_token_expression(
 		{
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_root_machine);
+				/* machine:   */ regex_root_machine);
 			
 			retval = read_root_token_expression(tokenizer, scratchpad, scope);
 			
@@ -156,7 +158,7 @@ struct rbundle read_highest_token_expression(
 	
 	read_token(
 		/* tokenizer: */ tokenizer,
-		/* machine:   */ expression_after_highest_machine);
+		/* machine:   */ regex_after_highest_machine);
 	
 	EXIT;
 	return retval;

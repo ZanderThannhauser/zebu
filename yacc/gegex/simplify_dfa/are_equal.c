@@ -21,17 +21,11 @@ bool gegex_are_equal(
 	bool are_equal = true;
 	ENTER;
 	
-	dpv(a);
-	dpv(b);
-	
 	if (a > b)
 	{
 		typeof(a) t = a;
 		a = b, b = t;
 	}
-	
-	dpv(a);
-	dpv(b);
 	
 	struct avl_node_t* node = avl_search(cache, &(struct gegex_cache){a, b});
 	

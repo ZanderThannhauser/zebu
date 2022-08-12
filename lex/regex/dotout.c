@@ -3,7 +3,7 @@
 
 #include <debug.h>
 
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include <misc/frame_counter.h>
 #include <misc/escape.h>
@@ -29,8 +29,9 @@ static void helper(FILE* out, struct regex* state)
 				"\"%p\" [" "\n"
 					"\t" "shape = doublecircle;" "\n"
 					"\t" "label = \"%u\";" "\n"
+					"\t" "peripheries = %u;" "\n"
 				"]" "\n"
-			"", state, state->is_accepting);
+			"", state, state->is_accepting, 2 + state->priority);
 		}
 		else
 		{

@@ -12,19 +12,6 @@ int compare_tokensets(
 	const struct tokenset* b)
 {
 	int cmp = 0;
-	ENTER;
-	
-	#ifdef DEBUGGING
-	{
-		char* a_str = tokenset_to_string(a);
-		char* b_str = tokenset_to_string(b);
-		
-		dpvs(a_str);
-		dpvs(b_str);
-		
-		free(a_str), free(b_str);
-	}
-	#endif
 	
 	for (unsigned i = 0, n = min(a->n, b->n); !cmp && i < n; i++)
 	{
@@ -44,9 +31,6 @@ int compare_tokensets(
 			cmp = -1;
 	}
 	
-	dpv(cmp);
-	
-	EXIT;
 	return cmp;
 }
 

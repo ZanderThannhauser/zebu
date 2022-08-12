@@ -11,14 +11,12 @@ int compare_refcount_tasks(const struct task* a, const struct task* b)
 {
 	int cmp = 0;
 	const struct refcount_task* A = (void*) a, *B = (void*) b;
-	ENTER;
 	
 	if (A->node > B->node)
 		cmp = +1;
 	else if (A->node < B->node)
 		cmp = -1;
 	
-	EXIT;
 	return cmp;
 }
 

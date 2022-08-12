@@ -57,6 +57,7 @@ struct rbundle read_concat_token_expression(
 		case t_ampersand:
 		case t_vertical_bar:
 		case t_semicolon:
+		case t_colon:
 			break;
 		
 		default:

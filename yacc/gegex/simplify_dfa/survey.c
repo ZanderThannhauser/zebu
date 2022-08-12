@@ -8,7 +8,7 @@
 #include <set/of_gegexes/all.h>
 #include <set/of_gegexes/add.h>
 
-#include <yacc/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include <macros/all.h>
 #include <macros/lambda.h>

@@ -14,10 +14,10 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/numeric.h"
-#include "../tokenizer/machines/comma.h"
-#include "../tokenizer/machines/ccurly.h"
-#include "../tokenizer/machines/expression/after_suffix.h"
+#include "../tokenizer/machines/misc/numeric.h"
+#include "../tokenizer/machines/misc/comma.h"
+#include "../tokenizer/machines/misc/ccurly.h"
+#include "../tokenizer/machines/regex/after_suffix.h"
 
 #include "prefixes.h"
 #include "suffixes.h"
@@ -43,7 +43,7 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_after_suffix_machine);
+				/* machine:   */ regex_after_suffix_machine);
 			
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
@@ -63,7 +63,7 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_after_suffix_machine);
+				/* machine:   */ regex_after_suffix_machine);
 			
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
@@ -81,7 +81,7 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_after_suffix_machine);
+				/* machine:   */ regex_after_suffix_machine);
 			
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
@@ -158,7 +158,7 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_after_suffix_machine);
+				/* machine:   */ regex_after_suffix_machine);
 			
 			free_regex(original.nfa.start, scratchpad);
 			

@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdio.h>
 
 #include <debug.h>
@@ -164,4 +165,5 @@ void lambda_subgrammars_task_dotout(struct task* super, struct yacc_shared* shar
 
 
 
+#endif
 #endif

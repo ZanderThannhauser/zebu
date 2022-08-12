@@ -23,6 +23,8 @@ struct rbundle
 			struct regex* dfa;
 		};
 	};
+	
+	bool is_literal;
 };
 
 #endif

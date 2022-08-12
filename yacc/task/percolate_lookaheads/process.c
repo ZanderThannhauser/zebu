@@ -6,14 +6,19 @@
 /*#include <tokenset/add.h>*/
 #include <set/of_tokens/update.h>
 
-#include <set/of_strs/foreach.h>
+#include <set/of_gegexes/foreach.h>
 
 #include <heap/push.h>
 
 #include "../../shared/struct.h"
 /*#include "../../add_dep.h"*/
-#include "../../get_deps.h"
-#include "../../lookup_tokenset.h"
+/*#include "../../get_deps.h"*/
+/*#include "../../lookup_tokenset.h"*/
+
+#include "../../stateinfo/get.h"
+
+#include "../../lookahead_deps/get_deps_on.h"
+#include "../../lookahead_deps/get_deps_of.h"
 
 #include "struct.h"
 #include "new.h"
@@ -24,47 +29,40 @@ void percolate_lookaheads_task_process(struct task* super, struct yacc_shared* s
 	struct percolate_lookaheads_task* const this = (void*) super;
 	ENTER;
 	
-	dpvs(this->name);
-	
-	// percolate_lookaheads_task(grammar):
-		// tuple = ("percolate-lookahead", node);
-		// if tuple in done: return set();
-		// before = lookaheads[grammar];
-		// after = before.copy();
-		// for dep in lookaheads.dependant_on[grammar]:
-			// after.update(lookaheads[dep]);
-		// todo = set();
-		// if before != after:
-			// for dep in lookaheads.dependant_of[grammar]:
-				// todo.add(percolate_lookahead_task(dep));
-		// return todo;
-	
-	struct tokenset* lookaheads = lookup_tokenset(shared->lookaheads.sets, this->name);
+	struct tokenset* lookaheads = yacc_stateinfo_get(this->stateinfo, this->state);
 	
 	bool changed = false;
 	
-	struct strset* deps = get_deps(shared->lookaheads.dependant_on, this->name);
+	struct gegexset* deps = lookahead_get_deps_on(this->ldeps, this->state);
 	
-	strset_foreach(deps, ({
-		void runme(const char* dep) {
-			struct tokenset* dep_lookaheads = lookup_tokenset(shared->lookaheads.sets, dep);
-			
-			if (tokenset_update(lookaheads, dep_lookaheads))
-				changed = true;
-		}
-		runme;
-	}));
-	
-	if (changed)
+	if (deps)
 	{
-		struct strset* of = get_deps(shared->lookaheads.dependant_of, this->name);
-		
-		strset_foreach(of, ({
-			void runme(const char* dep) {
-				heap_push(shared->todo, new_percolate_lookaheads_task(dep));
+		gegexset_foreach(deps, ({
+			void runme(struct gegex* substate) {
+				struct tokenset* dep_lookaheads = yacc_stateinfo_get(this->stateinfo, substate);
+				
+				if (tokenset_update(lookaheads, dep_lookaheads))
+					changed = true;
 			}
 			runme;
 		}));
+	}
+	
+	dpvb(changed);
+	
+	if (changed)
+	{
+		struct gegexset* of = lookahead_get_deps_of(this->ldeps, this->state);
+		
+		if (of)
+		{
+			gegexset_foreach(of, ({
+				void runme(struct gegex* substate) {
+					heap_push(shared->todo, new_percolate_lookaheads_task(this->stateinfo, substate, this->ldeps));
+				}
+				runme;
+			}));
+		}
 	}
 	
 	EXIT;

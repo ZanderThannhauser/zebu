@@ -53,7 +53,6 @@ enum token read_token(
 			break;
 		
 		case ts_EOF:
-/*			TODO;*/
 			this->token = t_EOF;
 			break;
 		
@@ -180,11 +179,11 @@ enum token read_token(
 			break;
 		
 		case ts_lthan:
-			TODO;
+			this->token = t_lthan;
 			break;
 		
 		case ts_gthan:
-			TODO;
+			this->token = t_gthan;
 			break;
 		
 		case ts_comma:
@@ -242,14 +241,6 @@ enum token read_token(
 			dputs("t_csquare");
 			break;
 		
-		case ts_lthan_eq:
-			TODO;
-			break;
-		
-		case ts_gthan_eq:
-			TODO;
-			break;
-		
 		case ts_equal_to:
 			TODO;
 			break;
@@ -257,10 +248,6 @@ enum token read_token(
 		case ts_vertical_bar:
 			this->token = t_vertical_bar;
 			dputs("t_vertical_bar");
-			break;
-		
-		case ts_not_equal_to:
-			TODO;
 			break;
 		
 		case ts_semicolon:

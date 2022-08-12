@@ -1,36 +1,99 @@
 
 #include <debug.h>
 
+#include <avl/foreach.h>
+
+#include <heap/push.h>
+
 #include <lex/struct.h>
 
-#include <yacc/state/dotout.h>
+/*#include <yacc/state/dotout.h>*/
+
+#include <named/grammar/struct.h>
+
+/*#include <set/of_tokens/new.h>*/
+/*#include <set/of_tokens/add.h>*/
+
+#include <heap/len.h>
+#include <heap/pop.h>
+
+#include <macros/len.h>
+
+#include "task/refcount/new.h"
+#include "task/setup_trie/new.h"
+#include "task/setup_start/new.h"
+/*#include "task/expand_tree/new.h"*/
+#include "task/process.h"
+#include "task/dotout.h"
+#include "task/free.h"
+
+#include "state/dotout.h"
+
+/*#include "lookahead_deps/new.h"*/
+
+/*#include "tree/new.h"*/
 
 #include "shared/struct.h"
 #include "shared/new.h"
+#include "shared/free.h"
 
-#include "run_tasks.h"
-#include "nfa_to_dfa.h"
+/*#include "run_tasks.h"*/
+/*#include "nfa_to_dfa.h"*/
 #include "yacc.h"
 
 struct yacc_state* yacc(
-	struct yacc_shared** out_shared,
 	struct lex* lex,
 	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad)
 {
 	ENTER;
 	
-	struct yacc_shared* shared = new_yacc_shared(grammar, lex->EOF_token_id);
+	struct yacc_shared* shared = new_yacc_shared(lex, grammar, scratchpad, lex->EOF_token_id);
 	
-	run_tasks(shared, scratchpad);
+	struct heap* const todo = shared->todo;
 	
-	struct yacc_state* start = yacc_nfa_to_dfa(lex, shared->new_grammar, scratchpad);
+	avl_tree_foreach(shared->grammar, ({
+		void runme(const void* item) {
+			const struct named_grammar* ng = item;
+			
+			dpvs(ng->name);
+			
+			heap_push(todo, new_refcount_task(ng->grammar, ng->grammar));
+			
+			heap_push(todo, new_setup_trie_task(ng->grammar, ng->name));
+			
+			// build_trie_task()
+			
+			// new_explore_firsts_task()
+			// new_percolate_firsts_task()
+		}
+		runme;
+	}));
+	
+	heap_push(todo, new_setup_start_task());
+	
+	while (len(todo))
+	{
+		struct task* task = heap_pop(todo);
+		
+		task_process(task, shared);
+		
+		#ifdef DEBUGGING
+		task_dotout(task, shared);
+		#endif
+		
+		free_task(task);
+	}
+	
+	struct yacc_state* start = shared->yacc_start;
+	
+	assert(start);
 	
 	#ifdef DEBUGGING
 	yacc_state_dotout(start);
 	#endif
 	
-	*out_shared = shared;
+	free_yacc_shared(shared);
 	
 	EXIT;
 	return start;

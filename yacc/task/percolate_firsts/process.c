@@ -12,9 +12,9 @@
 #include <heap/push.h>
 
 #include "../../shared/struct.h"
-/*#include "../../add_dep.h"*/
-#include "../../get_deps.h"
-#include "../../lookup_tokenset.h"
+/*#include "../../shared/add_firsts_dep.h"*/
+#include "../../shared/get_firsts_deps.h"
+#include "../../shared/lookup_firsts.h"
 
 #include "struct.h"
 #include "new.h"
@@ -27,25 +27,27 @@ void percolate_firsts_task_process(struct task* super, struct yacc_shared* share
 	
 	dpvs(this->name);
 	
-	struct tokenset* firsts = lookup_tokenset(shared->firsts.sets, this->name);
+	struct tokenset* firsts = shared_lookup_firsts(shared, this->name);
 	
 	bool changed = false;
 	
-	struct strset* deps = get_deps(shared->firsts.dependant_on, this->name);
+	struct strset* deps = get_firsts_deps(shared->firsts.dependant_on, this->name);
 	
 	strset_foreach(deps, ({
 		void runme(const char* dep) {
-			struct tokenset* dep_firsts = lookup_tokenset(shared->firsts.sets, dep);
+			struct tokenset* dep_firsts = shared_lookup_firsts(shared, dep);
 			
 			if (tokenset_update(firsts, dep_firsts))
+			{
 				changed = true;
+			}
 		}
 		runme;
 	}));
 	
 	if (changed)
 	{
-		struct strset* of = get_deps(shared->firsts.dependant_of, this->name);
+		struct strset* of = get_firsts_deps(shared->firsts.dependant_of, this->name);
 		
 		strset_foreach(of, ({
 			void runme(const char* dep) {

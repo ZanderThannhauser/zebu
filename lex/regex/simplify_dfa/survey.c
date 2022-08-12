@@ -4,7 +4,7 @@
 
 #include <debug.h>
 
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "../state/struct.h"
 

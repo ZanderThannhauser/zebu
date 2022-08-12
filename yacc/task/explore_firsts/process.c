@@ -1,19 +1,19 @@
 
 #include <debug.h>
 
-#include <avl/search.h>
-#include <avl/safe_insert.h>
+/*#include <avl/search.h>*/
+/*#include <avl/safe_insert.h>*/
 
 #include <yacc/gegex/state/struct.h>
 
 #include <set/of_tokens/add.h>
-#include <set/of_tokens/print.h>
+/*#include <set/of_tokens/print.h>*/
 
-#include <heap/push.h>
+/*#include <heap/push.h>*/
 
 #include "../../shared/struct.h"
-#include "../../add_dep.h"
-#include "../../lookup_tokenset.h"
+#include "../../shared/add_firsts_dep.h"
+#include "../../shared/lookup_firsts.h"
 
 #include "struct.h"
 #include "new.h"
@@ -26,7 +26,7 @@ void explore_firsts_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
-	struct tokenset* first = lookup_tokenset(shared->firsts.sets, this->name);
+	struct tokenset* first = shared_lookup_firsts(shared, this->name);
 	
 	unsigned i, n;
 	for (i = 0, n = this->node->transitions.n; i < n; i++)
@@ -40,8 +40,8 @@ void explore_firsts_task_process(struct task* super, struct yacc_shared* shared)
 		
 		dpvs(g->grammar);
 		
-		add_dep(shared->firsts.dependant_on, this->name, g->grammar);
-		add_dep(shared->firsts.dependant_of, g->grammar, this->name);
+		add_firsts_dep(shared->firsts.dependant_on, this->name, g->grammar);
+		add_firsts_dep(shared->firsts.dependant_of, g->grammar, this->name);
 	}
 	
 	EXIT;

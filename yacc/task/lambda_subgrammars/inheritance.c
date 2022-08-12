@@ -1,4 +1,5 @@
 
+#if 0
 #include "process.h"
 #include "dotout.h"
 #include "compare.h"
@@ -14,3 +15,4 @@ struct task_inheritance lambda_subgrammars_task_inheritance = {
 	.free = free_lambda_subgrammars_task,
 };
 
+#endif

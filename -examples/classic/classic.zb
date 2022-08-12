@@ -17,8 +17,12 @@
 //    -?FA string literal, parenthesis: "literal", [char-set $1], (?FA $1)
 // DFA-DFA prefixes: !<$1>
 // NFA-NFA suffixes: <$1>?, <$1>+, <$1>*, <$1>{a, b}
+// NFA-NFA suffixes: <$1>?<, <$1>+<, <$1>*<, <$1>{a, b}< # lose against reductions
+// NFA-NFA suffixes: <$1>?>, <$1>+>, <$1>*>, <$1>{a, b}> # win against reductions
 // NFA-NFA concatenation: <$1>   <$2>   ...
 // DFA-DFA boolean-and  : <$1> & <$2> & ...
+// NFA-NFA boolean-or   : <$1> |> <$2> |> ... # on shift/reduce error: left wins
+// NFA-NFA boolean-or   : <$1> |< <$2> |< ... # on shift/reduce error: right wins
 // NFA-NFA boolean-or   : <$1> | <$2> | ...
 
 // LRP charater/string literal, regex, parenthesis: "token", `DFA $1`, (LRP $1)
@@ -34,11 +38,32 @@
 // state. When the state returns a token enum value, it's done, feed it
 // to parser state machine.
 
-%start start;
+%start: start;
+
+// %disambiguate: error;
+%disambiguate: literal > regex;
+// %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
 
 %skip: [' ', 'g']+;
 
 [wy]: 'w' - 'y';
+
+//  1: "abc"
+//  2: "?"
+//  3: `abc & (..)*`
+//  4: ":"
+//  5: `![~wy]*`
+//  6: "."
+//  7: `abc & (...)*`
+//  8: [~(~wy & ~('x' - 'z')) & ~'w']
+//  9: "!"
+// 10: 'a'
+// 11: ['b' | 'B']
+// 12: 'c'
+// 13: 'A'
+// 14: 'B'
+// 15: 'C'
+// 16: <EOF>
 
 start: "abc"                                                  "?"?
 	

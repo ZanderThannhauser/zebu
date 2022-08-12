@@ -8,7 +8,6 @@
 #include "new.h"
 
 struct setup_trie_task* new_setup_trie_task(
-	struct memory_arena* scratchpad,
 	struct gegex* node,
 	const char* name)
 {
@@ -19,7 +18,6 @@ struct setup_trie_task* new_setup_trie_task(
 		&setup_trie_task_inheritance,
 		sizeof(*this));
 	
-	this->scratchpad = scratchpad;
 	this->node = node;
 	this->name = name;
 	

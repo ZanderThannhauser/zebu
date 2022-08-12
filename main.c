@@ -11,6 +11,7 @@
 
 #include <lex/new.h>
 #include <lex/add_EOF_token.h>
+#include <lex/process_disambiguatations.h>
 #include <lex/free.h>
 
 #include <parser/mains_parse.h>
@@ -25,7 +26,6 @@
 #include <memory/arena/free.h>
 
 #include <yacc/yacc.h>
-#include <yacc/shared/free.h>
 
 #include <out/out.h>
 
@@ -41,22 +41,23 @@ int main(int argc, char* argv[])
 	
 	struct options* options = new_options();
 	
-	struct lex* lex = new_lex();
+	struct lex* lex = new_lex(scratchpad);
 	
 	mains_parse(options, scope, scratchpad, lex, flags->input_path);
 	
-	lex_add_EOF_token(lex, scratchpad, options->skip);
+	lex_add_EOF_token(lex, options->skip);
 	
-	struct yacc_shared *yshared = NULL;
+	if (options->disambiguatations.head)
+	{
+		lex_process_disambiguatations(lex, options->disambiguatations.head);
+	}
 	
-	struct yacc_state* parser = yacc(&yshared, lex, scope->grammar, scratchpad);
+	struct yacc_state* parser = yacc(lex, scope->grammar, scratchpad);
 	
 	out(parser,
 		flags->output_path,
 		flags->output_prefix,
 		flags->parser_template);
-	
-	free_yacc_shared(yshared);
 	
 	free_lex(lex);
 	

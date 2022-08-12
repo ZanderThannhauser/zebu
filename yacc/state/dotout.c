@@ -3,12 +3,10 @@
 
 #include <misc/frame_counter.h>
 
-#include <yacc/phase_counter.h>
-
 /*#include <set/of_tokens/struct.h>*/
 #include <set/of_tokens/compare.h>
 
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 /*#include <set/of_tokens/to_string.h>*/
 
@@ -122,7 +120,7 @@ static void helper(FILE* out, struct yacc_state* state)
 					// default transition?:
 					if (ls->default_transition_to)
 					{
-						TODO;
+						subhelper(ls->default_transition_to);
 					}
 					
 					if (ls->EOF_transition_to)

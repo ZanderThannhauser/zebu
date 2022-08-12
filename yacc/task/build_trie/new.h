@@ -1,6 +1,5 @@
 
 struct build_trie_task* new_build_trie_task(
-	struct memory_arena* scratchpad,
 	const char* name,
 	struct gegex* start,
 	struct gegex* mirrorme,

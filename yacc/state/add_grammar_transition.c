@@ -9,17 +9,14 @@
 #include "struct.h"
 #include "add_grammar_transition.h"
 
-void yacc_state_add_grammar_transition(
+struct gytransition* yacc_state_add_grammar_transition(
 	struct yacc_state* from,
 	struct memory_arena* arena,
 	const char* grammar,
 	struct yacc_state* to)
 {
-	ENTER;
 	
 	struct gytransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
-	
-	dpv(gtransition);
 	
 	gtransition->grammar = grammar;
 	gtransition->to = to;
@@ -46,7 +43,7 @@ void yacc_state_add_grammar_transition(
 	
 	gdata[i + 1] = gtransition;
 	
-	EXIT;
+	return gtransition;
 }
 
 

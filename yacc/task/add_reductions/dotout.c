@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdio.h>
 
 #include <linux/limits.h>
@@ -158,4 +159,5 @@ void add_reductions_task_dotout(struct task* super, struct yacc_shared* shared)
 
 
 
+#endif
 #endif

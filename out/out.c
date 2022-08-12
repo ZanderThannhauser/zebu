@@ -25,11 +25,10 @@
 #include <named/grammar/struct.h>
 
 #include <yacc/shared/struct.h>
-#include <yacc/get_deps.h>
-#include <yacc/lookup_tokenset.h>
+/*#include <yacc/get_deps.h>*/
+/*#include <yacc/lookup_tokenset.h>*/
 
-#include <yacc/phase_counter.h>
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "ystate_to_id/new.h"
 #include "ystate_to_id/free.h"

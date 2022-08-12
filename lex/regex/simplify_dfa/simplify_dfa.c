@@ -7,7 +7,7 @@
 
 #include <memory/smalloc.h>
 
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "../dotout.h"
 

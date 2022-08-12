@@ -8,7 +8,7 @@
 
 #include <yacc/gegex/state/struct.h>
 
-#include <yacc/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include <misc/frame_counter.h>
 

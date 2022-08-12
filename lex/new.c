@@ -5,6 +5,8 @@
 
 #include <memory/smalloc.h>
 
+#include <set/of_tokens/new.h>
+
 #include "lookup/to_node/compare.h"
 #include "lookup/to_node/free.h"
 #include "lookup/from_node/compare.h"
@@ -16,7 +18,7 @@
 #include "struct.h"
 #include "new.h"
 
-struct lex* new_lex()
+struct lex* new_lex(struct memory_arena* scratchpad)
 {
 	ENTER;
 	
@@ -31,9 +33,15 @@ struct lex* new_lex()
 	this->tokenizer.cache =
 		new_avl_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
+	this->disambiguations.literal_ids = new_tokenset();
+	
+	this->disambiguations.regex_ids = new_tokenset();
+	
 	this->next_id = 1; // because token 0 is for error
 	
 	this->EOF_token_id = 0;
+	
+	this->scratchpad = scratchpad;
 	
 	EXIT;
 	return this;

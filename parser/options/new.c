@@ -14,6 +14,9 @@ struct options* new_options()
 	
 	this->skip = NULL;
 	
+	this->disambiguatations.head = NULL;
+	this->disambiguatations.tail = NULL;
+	
 	return this;
 }
 

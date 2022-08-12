@@ -17,9 +17,25 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 {
 	ENTER;
 	
-	struct avl_node_t* node = avl_search(this->layer->tokens, &name);
+	dpvs(name);
 	
-	if (!node)
+	struct avl_node_t* node = NULL;
+	
+	struct scope_layer* layer = this->layer;
+	
+	while (layer && !node)
+	{
+		dpv(layer);
+		
+		node = avl_search(layer->tokens, &name);
+		
+		if (!node)
+			layer = layer->prev;
+	}
+	
+	dpv(layer);
+	
+	if (!layer)
 	{
 		TODO;
 		exit(1);

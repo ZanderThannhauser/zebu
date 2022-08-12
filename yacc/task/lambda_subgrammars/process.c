@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -60,3 +61,4 @@ void lambda_subgrammars_task_process(struct task* super, struct yacc_shared* sha
 
 
 
+#endif

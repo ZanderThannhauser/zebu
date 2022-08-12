@@ -40,11 +40,12 @@
 struct tokensetset* lex_build_tokenzer(
 	struct lex_state** outgoing,
 	struct lex* this,
-	struct memory_arena* scratchpad,
 	struct tokenset* token_ids)
 {
 	struct tokensetset* retval;
 	ENTER;
+	
+	struct memory_arena* const scratchpad = this->scratchpad;
 	
 	// check cache
 	struct avl_node_t* cache_node = avl_search(this->tokenizer.cache, &token_ids);

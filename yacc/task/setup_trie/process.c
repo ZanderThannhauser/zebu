@@ -14,8 +14,8 @@
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
 
-#include <set/of_tokens/new.h>
-#include <set/of_tokens/add.h>
+/*#include <set/of_tokens/new.h>*/
+/*#include <set/of_tokens/add.h>*/
 /*#include <set/of_tokens/print.h>*/
 
 #include <named/grammar/new.h>
@@ -33,8 +33,8 @@
 
 #include "../explore_firsts/new.h"
 #include "../percolate_firsts/new.h"
-#include "../explore_lookaheads/new.h"
-#include "../percolate_lookaheads/new.h"
+/*#include "../explore_lookaheads/new.h"*/
+/*#include "../percolate_lookaheads/new.h"*/
 #include "../add_reductions/new.h"
 
 #include "struct.h"
@@ -58,38 +58,17 @@ void setup_trie_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(name);
 	
-	struct gegex* trie = new_gegex(this->scratchpad);
+	struct gegex* trie = new_gegex(shared->scratchpad);
 	
 	safe_avl_insert(shared->gegex_to_trie, new_gegex_to_trie(this->node, name));
 	
 	safe_avl_insert(shared->new_grammar, new_named_grammar(name, trie));
 	
-	heap_push(shared->todo, new_build_trie_task(this->scratchpad, name, trie, this->node, trie, 0));
+	heap_push(shared->todo, new_build_trie_task(name, trie, this->node, trie, 0));
 	
-	{
-		struct tokenset* firsts = new_tokenset();
-		struct tokenset* lookaheads = new_tokenset();
-		
-		if (strequals(name, "(start)"))
-		{
-			assert(shared->EOF_token_id);
-			tokenset_add(lookaheads, shared->EOF_token_id);
-		}
-		
-		safe_avl_insert(shared->firsts.sets, new_named_tokenset(name, firsts));
-		safe_avl_insert(shared->lookaheads.sets, new_named_tokenset(name, lookaheads));
-		
-		heap_push(shared->todo, new_explore_firsts_task(trie, name, trie));
-		heap_push(shared->todo, new_percolate_firsts_task(name));
-		
-		heap_push(shared->todo, new_explore_lookaheads_task(trie, name, trie, NULL, this->scratchpad));
-		
-		heap_push(shared->todo, new_percolate_lookaheads_task(name));
-		
-		// heap_push(todo, new_add_reductions_task(ng->name, scratchpad)); //
-		
-		// heap.push(new lambda_subgrammars()) //
-	}
+	heap_push(shared->todo, new_explore_firsts_task(trie, name, trie));
+	
+	heap_push(shared->todo, new_percolate_firsts_task(name));
 	
 	this->built_name = name;
 	

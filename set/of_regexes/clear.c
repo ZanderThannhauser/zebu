@@ -6,8 +6,6 @@
 
 void regexset_clear(struct regexset* this)
 {
-	ENTER;
 	this->n = 0;
-	EXIT;
 }
 

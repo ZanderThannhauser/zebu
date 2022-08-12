@@ -10,12 +10,8 @@
 int compare_tasks(const void* a, const void* b)
 {
 	int cmp = 0;
-	ENTER;
 	
 	const struct task* A = a, *B = b;
-	
-	dpv(A->kind);
-	dpv(B->kind);
 	
 	if (A->kind < B->kind)
 		cmp = -1;
@@ -27,9 +23,6 @@ int compare_tasks(const void* a, const void* b)
 		cmp = (A->inheritance->compare)(A, B);
 	}
 	
-	dpv(cmp);
-	
-	EXIT;
 	return cmp;
 }
 

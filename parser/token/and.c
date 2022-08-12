@@ -5,7 +5,7 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/expression/inside_and.h"
+#include "../tokenizer/machines/regex/inside_and.h"
 
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
@@ -21,26 +21,25 @@ struct rbundle read_and_token_expression(
 	struct memory_arena* scratchpad,
 	struct scope* scope)
 {
-	struct rbundle retval;
 	ENTER;
 	
-	struct rbundle left = read_concat_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_concat_token_expression(tokenizer, scratchpad, scope);
 	
-	if (tokenizer->token == t_ampersand)
+	while (tokenizer->token == t_ampersand)
 	{
-		read_token(tokenizer, expression_inside_and_machine);
+		read_token(tokenizer, regex_inside_and_machine);
 		
-		struct rbundle right = read_and_token_expression(tokenizer, scratchpad, scope);
+		struct rbundle right = read_concat_token_expression(tokenizer, scratchpad, scope);
 		
 		struct regex* left_machine;
 		
-		if (left.is_nfa)
+		if (retval.is_nfa)
 		{
 			TODO;
 		}
 		else
 		{
-			left_machine = left.dfa;
+			left_machine = retval.dfa;
 		}
 		
 		struct regex* right_machine;
@@ -74,10 +73,6 @@ struct rbundle read_and_token_expression(
 			.is_nfa = false,
 			.dfa = outgoing,
 		};
-	}
-	else
-	{
-		retval = left;
 	}
 	
 	EXIT;

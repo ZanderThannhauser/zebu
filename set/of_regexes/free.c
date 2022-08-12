@@ -8,11 +8,7 @@
 
 void free_regexset(struct regexset* this)
 {
-	ENTER;
-	
 	free(this->data);
 	free(this);
-	
-	EXIT;
 }
 

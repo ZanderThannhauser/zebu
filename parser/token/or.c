@@ -9,7 +9,7 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/expression/inside_or.h"
+#include "../tokenizer/machines/regex/inside_or.h"
 
 #include "and.h"
 #include "or.h"
@@ -30,7 +30,7 @@ struct rbundle read_or_token_expression(
 		
 		do
 		{
-			read_token(tokenizer, expression_inside_or_machine);
+			read_token(tokenizer, regex_inside_or_machine);
 			
 			struct rbundle sub = read_and_token_expression(tokenizer, scratchpad, scope);
 			

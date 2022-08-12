@@ -3,9 +3,13 @@ struct yacc_shared
 {
 	struct heap* todo;
 	
+	struct lex* lex;
+	
+	struct memory_arena* scratchpad;
+	
 	struct avl_tree_t* grammar; // named_gegex
 	
-	struct avl_tree_t* new_grammar; // named_yacc_state
+	struct avl_tree_t* new_grammar; // named_lex_state
 	
 	struct avl_tree_t* gegex_to_trie; // gegex -> name (char*)
 	
@@ -14,5 +18,9 @@ struct yacc_shared
 	struct {
 		struct avl_tree_t *sets; // named_tokensets
 		struct avl_tree_t *dependant_of, *dependant_on; // named_strsets
-	} firsts, lookaheads;
+	} firsts;
+	
+	struct avl_tree_t* stateinfo_to_state; // yacc_tree* -> yacc_state*
+	
+	struct yacc_state* yacc_start;
 };

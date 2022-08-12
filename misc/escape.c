@@ -7,10 +7,6 @@
 
 void escape(char* out, unsigned char value)
 {
-	ENTER;
-	
-	dpv(value);
-	
 	switch (value)
 	{
 		case 'a' ... 'z':
@@ -63,8 +59,21 @@ void escape(char* out, unsigned char value)
 			sprintf(out, "'\\\\x%02hhX'", value);
 			break;
 	}
-	
-	EXIT;
 }
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

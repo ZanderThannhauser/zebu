@@ -1,2 +1,2 @@
 set -ev
-gcc -g -Wall -Werror output.c main.c -o /tmp/classic && valgrind /tmp/classic
+gcc -g -Wall -Werror ./classic.c -o /tmp/classic -lreadline && valgrind /tmp/classic

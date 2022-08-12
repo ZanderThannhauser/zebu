@@ -8,7 +8,6 @@
 #include "new.h"
 
 struct refcount_task* new_refcount_task(
-	struct memory_arena* scratchpad,
 	struct gegex* start, struct gegex* node)
 {
 	ENTER;
@@ -17,8 +16,6 @@ struct refcount_task* new_refcount_task(
 		tk_refcount,
 		&refcount_task_inheritance,
 		sizeof(*this));
-	
-	this->scratchpad = scratchpad;
 	
 	this->start = start;
 	this->node = node;

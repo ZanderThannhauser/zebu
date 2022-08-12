@@ -22,9 +22,7 @@ void free_yacc_shared(struct yacc_shared* this)
 	avl_free_tree(this->firsts.dependant_of);
 	avl_free_tree(this->firsts.dependant_on);
 	
-	avl_free_tree(this->lookaheads.sets);
-	avl_free_tree(this->lookaheads.dependant_of);
-	avl_free_tree(this->lookaheads.dependant_on);
+	avl_free_tree(this->stateinfo_to_state);
 	
 	free(this);
 	

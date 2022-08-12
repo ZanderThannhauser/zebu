@@ -9,17 +9,13 @@
 #include "struct.h"
 #include "add_transition.h"
 
-void yacc_state_add_transition(
+struct ytransition* yacc_state_add_transition(
 	struct yacc_state* from,
 	struct memory_arena* arena,
 	const struct tokenset* value,
 	struct yacc_state* to)
 {
-	ENTER;
-	
 	struct ytransition* transition = arena_malloc(arena, sizeof(*transition));
-	
-	dpv(transition);
 	
 	transition->value = value;
 	transition->to = to;
@@ -46,7 +42,7 @@ void yacc_state_add_transition(
 	
 	data[i + 1] = transition;
 	
-	EXIT;
+	return transition;
 }
 
 

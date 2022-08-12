@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -56,3 +57,4 @@ void add_reductions_task_process(struct task* super, struct yacc_shared* shared)
 
 
 
+#endif

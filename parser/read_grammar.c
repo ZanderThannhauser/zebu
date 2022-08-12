@@ -23,7 +23,7 @@
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/colon.h"
+#include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/production/root.h"
 
 #include "read_grammar.h"

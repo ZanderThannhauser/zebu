@@ -8,10 +8,8 @@ void regexset_foreach(
 	const struct regexset* this,
 	void (*runme)(struct regex* state))
 {
-	ENTER;
 	unsigned i, n;
 	for (i = 0, n = this->n; i < n; i++)
 		runme(this->data[i]);
-	EXIT;
 }
 

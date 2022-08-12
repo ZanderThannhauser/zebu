@@ -8,7 +8,6 @@
 #include "new.h"
 
 struct build_trie_task* new_build_trie_task(
-	struct memory_arena* scratchpad,
 	const char* name,
 	struct gegex* start,
 	struct gegex* mirrorme,
@@ -21,8 +20,6 @@ struct build_trie_task* new_build_trie_task(
 		tk_build_trie,
 		&build_trie_task_inheritance,
 		sizeof(*this));
-	
-	this->scratchpad = scratchpad;
 	
 	this->name = name;
 	this->start = start;

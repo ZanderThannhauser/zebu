@@ -33,6 +33,7 @@
 #include <set/of_tokens/struct.h>
 #include <set/of_tokens/new.h>
 #include <set/of_tokens/add.h>
+#include <set/of_tokens/clear.h>
 #include <set/of_tokens/free.h>
 
 #include <set/of_tokensets/add.h>
@@ -51,14 +52,11 @@ static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
 	const struct regexset* const original_states,
 	struct lex_state* result)
 {
-	ENTER;
-	
 	struct dfas_to_dfa_node* node = smalloc(sizeof(*node));
 	
 	node->states = regexset_clone(original_states);
 	node->result = result;
 	
-	EXIT;
 	return node;
 }
 
@@ -67,25 +65,19 @@ static int compare_dfas_to_dfa_nodes(
 {
 	int cmp = 0;
 	const struct dfas_to_dfa_node* A = a, *B = b;
-	ENTER;
 	
 	cmp = compare_regexsets(A->states, B->states);
 	
-	dpv(cmp);
-	
-	EXIT;
 	return cmp;
 }
 
 static void free_dfas_to_dfa_node(void* ptr)
 {
 	struct dfas_to_dfa_node* this = ptr;
-	ENTER;
 	
 	free_regexset(this->states);
 	free(this);
 	
-	EXIT;
 }
 
 static struct lex_state* helper(
@@ -114,11 +106,24 @@ static struct lex_state* helper(
 		// accepting?
 		{
 			struct tokenset* ts = new_tokenset();
+			unsigned prority;
 			
 			regexset_foreach(states, ({
 				void runme(struct regex* ele) {
 					if (ele->is_accepting)
-						tokenset_add(ts, ele->is_accepting);
+					{
+						if (!ts->n || prority < ele->priority)
+						{
+							prority = ele->priority;
+							tokenset_clear(ts);
+							tokenset_add(ts, ele->is_accepting);
+						}
+						else if (prority == ele->priority)
+						{
+							tokenset_add(ts, ele->is_accepting);
+						}
+					}
+					
 				}
 				runme;
 			}));

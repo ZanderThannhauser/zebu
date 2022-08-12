@@ -11,7 +11,6 @@ int compare_regexsets(
 	const struct regexset* b)
 {
 	int cmp = 0;
-	ENTER;
 	
 	for (unsigned i = 0, n = min(a->n, b->n); !cmp && i < n; i++)
 	{
@@ -28,18 +27,12 @@ int compare_regexsets(
 	{
 		unsigned a_n = a->n, b_n = b->n;
 		
-		dpv(a_n);
-		dpv(b_n);
-		
 		if (a_n > b_n)
 			cmp = +1;
 		else if (a_n < b_n)
 			cmp = -1;
 	}
 	
-	dpv(cmp);
-	
-	EXIT;
 	return cmp;
 }
 

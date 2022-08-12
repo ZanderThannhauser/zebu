@@ -16,11 +16,7 @@ void yacc_state_add_reduce_transition(
 	const char* reduce_as,
 	unsigned popcount)
 {
-	ENTER;
-	
 	struct rytransition* transition = arena_malloc(arena, sizeof(*transition));
-	
-	dpv(transition);
 	
 	transition->value = value;
 	transition->reduce_as = reduce_as;
@@ -47,8 +43,6 @@ void yacc_state_add_reduce_transition(
 	}
 	
 	data[i + 1] = transition;
-	
-	EXIT;
 }
 
 

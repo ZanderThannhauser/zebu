@@ -14,8 +14,8 @@
 #include <set/of_tokens/to_string.h>
 
 #include "../../shared/struct.h"
-#include "../../get_deps.h"
-#include "../../lookup_tokenset.h"
+#include "../../shared/get_firsts_deps.h"
+#include "../../shared/lookup_firsts.h"
 
 #include "struct.h"
 #include "dotout.h"
@@ -40,8 +40,9 @@ void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared
 	assert(out);
 	
 	fprintf(out, ""
-		"digraph {"
-	"\n");
+		"digraph {" "\n"
+		// "\t" "rankdir = BT" "\n"
+	"");
 	
 	avl_tree_foreach(shared->new_grammar, ({
 		void runme(const void* ptr)
@@ -50,25 +51,25 @@ void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared
 			
 			dpvs(ng->name);
 			
-			struct tokenset* firsts = lookup_tokenset(shared->firsts.sets, ng->name);
+			struct tokenset* firsts = shared_lookup_firsts(shared, ng->name);
 			
 			char* str = tokenset_to_string(firsts);
 			
 			fprintf(out, ""
-				"\"%s\" [ "
+				"\"%s\" [ " "\n"
 					"shape = record" "\n"
 					"style = filled" "\n"
 					"color = black" "\n"
 					"fillcolor = white" "\n"
 					"label = \"{%s | %s}\"" "\n"
-				"];" "\n",
-			ng->name, ng->name, str);
+				"];" "\n"
+			"", ng->name, ng->name, str);
 			
-			strset_foreach(get_deps(shared->firsts.dependant_on, ng->name), ({
+			strset_foreach(get_firsts_deps(shared->firsts.dependant_on, ng->name), ({
 				void runme(const char* dep) {
 					fprintf(out, ""
-						"\"%s\" -> \"%s\"\n"
-					"\n", ng->name, dep);
+						"\"%s\" -> \"%s\"" "\n"
+					"", dep, ng->name);
 				}
 				runme;
 			}));
@@ -79,14 +80,14 @@ void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared
 	}));
 	
 	fprintf(out, ""
-		"\"%s\" ["
-			"fillcolor = grey;"
-		"]"
-	"\n", this->name);
+		"\"%s\" [" "\n"
+			"fillcolor = grey;" "\n"
+		"]" "\n"
+	"", this->name);
 	
 	fprintf(out, ""
-		"}"
-	"\n");
+		"}" "\n"
+	"");
 	
 	fclose(out);
 	

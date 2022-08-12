@@ -1,12 +1,13 @@
-extern const unsigned zebu_shifts[117][77];
-extern const unsigned zebu_reduces[118][49];
-extern const unsigned zebu_popcounts[118][49];
-extern const unsigned zebu_lexer[317][127];
-extern const unsigned zebu_starts[118];
-extern const unsigned zebu_defaults[111];
-extern const unsigned zebu_EOFs[317];
-extern const unsigned zebu_accepts[318];
+extern const unsigned zebu_shifts[530][76];
+extern const unsigned zebu_reduces[531][75];
+extern const unsigned zebu_popcounts[531][75];
+extern const unsigned zebu_lexer[1016][127];
+extern const unsigned zebu_starts[531];
+extern const unsigned zebu_defaults[145];
+extern const unsigned zebu_EOFs[1013];
+extern const unsigned zebu_accepts[1018];
 extern const unsigned start_grammar_id;
-extern const char* zebu_grammar_names[79];
+extern const char* zebu_grammar_names[78];
 
 int main();
+

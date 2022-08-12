@@ -18,7 +18,6 @@ struct gegex
 	struct {
 		struct gtransition {
 			char* grammar; // arena-owned
-			// struct gegex* start;
 			struct gegex* to;
 		}** data;
 		size_t n, cap;

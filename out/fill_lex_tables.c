@@ -3,7 +3,7 @@
 
 #include <lex/state/struct.h>
 
-#include <lex/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "dyntable/set.h"
 #include "dynvector/set.h"

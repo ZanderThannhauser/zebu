@@ -11,10 +11,6 @@
 void regex_add_lamda_states(
 	struct regexset* set, struct regex* ele)
 {
-	ENTER;
-	
-	dpv(ele);
-	
 	if (!regexset_contains(set, ele))
 	{
 		regexset_add(set, ele);
@@ -26,8 +22,6 @@ void regex_add_lamda_states(
 				ele->lambda_transitions.data[i]);
 		}
 	}
-	
-	EXIT;
 }
 
 

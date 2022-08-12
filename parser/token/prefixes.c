@@ -5,7 +5,7 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/expression/root.h"
+#include "../tokenizer/machines/regex/inside_emark.h"
 
 #include <lex/regex/complement.h>
 
@@ -21,7 +21,7 @@ struct rbundle read_prefixes_token_expression(
 	
 	if (tokenizer->token == t_emark)
 	{
-		read_token(tokenizer, expression_root_machine);
+		read_token(tokenizer, regex_inside_emark_machine);
 		
 		struct rbundle inner = read_highest_token_expression(tokenizer, scratchpad, scope);
 		
@@ -58,7 +58,6 @@ struct rbundle read_prefixes_token_expression(
 		EXIT;
 		return retval;
 	}
-	
 }
 
 

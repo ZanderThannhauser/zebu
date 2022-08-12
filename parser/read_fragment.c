@@ -21,8 +21,8 @@
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/colon.h"
-#include "tokenizer/machines/expression/root.h"
+#include "tokenizer/machines/misc/colon.h"
+#include "tokenizer/machines/regex/root.h"
 
 #include "token/root.h"
 #include "token/rbundle.h"
@@ -46,7 +46,7 @@ void read_fragment(
 	
 	read_token(tokenizer, colon_machine);
 	
-	read_token(tokenizer, expression_root_machine);
+	read_token(tokenizer, regex_root_machine);
 	
 	struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
 	

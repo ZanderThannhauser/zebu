@@ -1,9 +1,8 @@
 
 #include <stdlib.h>
-
 #include <assert.h>
-
 #include <strings.h>
+#include <string.h>
 
 #include <avl/search.h>
 
@@ -23,7 +22,7 @@ char* scope_resolve_grammar(
 {
 	ENTER;
 	
-	char* dot;
+	char *dot, *dot2;
 	
 	dpvs(full_name);
 	
@@ -31,8 +30,21 @@ char* scope_resolve_grammar(
 	
 	while (!(node = avl_search(this->grammar, &full_name)) && (dot = rindex(full_name, '.')))
 	{
-		// memmove fullname
-		TODO;
+		dpvs(dot);
+		
+		*dot++ = 0, dot2 = rindex(full_name, '.');
+		
+		if (dot2)
+		{
+			TODO;
+		}
+		else
+		{
+			memmove(full_name, dot, strlen(dot) + 1);
+		}
+		
+		dpvs(full_name);
+		
 		node = avl_search(this->grammar, &full_name);
 	}
 	

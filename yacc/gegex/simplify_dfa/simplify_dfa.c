@@ -8,7 +8,7 @@
 #include <set/of_gegexes/free.h>
 #include <set/of_gegexes/len.h>
 
-#include <yacc/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "cache/compare.h"
 #include "cache/free.h"

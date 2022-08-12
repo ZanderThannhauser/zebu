@@ -14,7 +14,7 @@
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/root.h"
-#include "tokenizer/machines/colon.h"
+#include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/charset/root.h"
 
 #include "scope/declare/charset.h"

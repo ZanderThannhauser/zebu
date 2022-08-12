@@ -10,7 +10,6 @@
 bool tokenset_update(struct tokenset* this, struct tokenset* them)
 {
 	bool changed = false;
-	ENTER;
 	
 	unsigned i = 0, n = this->n;
 	unsigned j = 0, m = them->n;
@@ -22,9 +21,6 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	while (i < n && j < m)
 	{
 		unsigned a = this->data[i], b = them->data[j];
-		
-		dpv(a);
-		dpv(b);
 		
 		if (a < b)
 			new_data[new_n++] = a, i++;
@@ -42,8 +38,6 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 		do new_data[new_n++] = them->data[j++]; while (j < m);
 	}
 	
-	dpvb(changed);
-	
 	if (changed)
 	{
 		free(this->data);
@@ -57,7 +51,6 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 		free(new_data);
 	}
 	
-	EXIT;
 	return changed;
 }
 

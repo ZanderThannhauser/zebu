@@ -15,4 +15,11 @@ struct lex
 	} tokenizer;
 	
 	unsigned EOF_token_id;
+	
+	struct {
+		struct tokenset* literal_ids;
+		struct tokenset* regex_ids;
+	} disambiguations;
+	
+	struct memory_arena* scratchpad;
 };

@@ -10,7 +10,5 @@ struct setup_trie_task
 	const char* name;
 	
 	char* built_name;
-	
-	struct memory_arena* scratchpad;
 };
 

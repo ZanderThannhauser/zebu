@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <debug.h>
 
-#include <lex/lookup/dfa_to_id.h>
+#include <lex/lookup/add_token.h>
 
 #include <memory/arena/malloc.h>
 
@@ -46,7 +46,7 @@
 /*#include "../tokenizer/machines/subroot.h"*/
 #include "../tokenizer/machines/production/root.h"
 #include "../tokenizer/machines/production/after_highest.h"
-#include "../tokenizer/machines/expression/root.h"
+#include "../tokenizer/machines/regex/root.h"
 #include "../tokenizer/machines/charset/root.h"
 
 #include "root.h"
@@ -118,7 +118,7 @@ struct gbundle read_highest_production(
 				#endif
 			}
 			
-			unsigned token_id = lex_dfa_to_id(lex, start);
+			unsigned token_id = lex_add_token(lex, start, /* is_literal: */ true);
 			
 			dpv(token_id);
 			
@@ -170,7 +170,7 @@ struct gbundle read_highest_production(
 				#endif
 			}
 			
-			unsigned token_id = lex_dfa_to_id(lex, start);
+			unsigned token_id = lex_add_token(lex, start, /* is_literal: */ true);
 			
 			dpv(token_id);
 			
@@ -231,7 +231,7 @@ struct gbundle read_highest_production(
 				#endif
 			}
 			
-			unsigned token_id = lex_dfa_to_id(lex, start);
+			unsigned token_id = lex_add_token(lex, start, false);
 			
 			dpv(token_id);
 			
@@ -252,7 +252,7 @@ struct gbundle read_highest_production(
 		{
 			read_token(
 				/* tokenizer: */ tokenizer,
-				/* machine:   */ expression_root_machine);
+				/* machine:   */ regex_root_machine);
 			
 			struct rbundle regex = read_root_token_expression(tokenizer, scratchpad, scope);
 			
@@ -296,7 +296,7 @@ struct gbundle read_highest_production(
 				start = regex.dfa;
 			}
 			
-			unsigned token_id = lex_dfa_to_id(lex, start);
+			unsigned token_id = lex_add_token(lex, start, regex.is_literal);
 			
 			dpv(token_id);
 			

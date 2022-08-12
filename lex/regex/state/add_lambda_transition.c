@@ -11,8 +11,6 @@ void regex_add_lambda_transition(
 	struct memory_arena* arena,
 	struct regex* to)
 {
-	ENTER;
-	
 	if (from->lambda_transitions.n + 1 >= from->lambda_transitions.cap)
 	{
 		from->lambda_transitions.cap = from->lambda_transitions.cap * 2 ?: 1;
@@ -23,8 +21,6 @@ void regex_add_lambda_transition(
 	}
 	
 	from->lambda_transitions.data[from->lambda_transitions.n++] = to;
-	
-	EXIT;
 }
 
 

@@ -7,20 +7,22 @@ enum task_kind
 	tk_refcount,
 	
 	tk_setup_trie,
-	
 	tk_build_trie,
 	
 	tk_explore_firsts,
-	
 	tk_percolate_firsts,
 	
-	tk_explore_lookaheads,
+	tk_setup_start,
+	
+	tk_expand_tree,
 	
 	tk_percolate_lookaheads,
 	
-	tk_add_reductions,
+	tk_free_lookahead_deps,
 	
-	tk_lambda_subgrammars,
+	tk_add_transition,
+	
+	tk_build_ystate,
 };
 
 #endif

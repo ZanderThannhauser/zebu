@@ -12,8 +12,10 @@ void free_tokensetset(struct tokensetset* this)
 {
 	ENTER;
 	
-	TODO;
+	// TODO; // should the elements be freed?
+	
 	free(this->data);
+	
 	free(this);
 	
 	EXIT;

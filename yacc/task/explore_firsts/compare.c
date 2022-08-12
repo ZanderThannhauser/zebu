@@ -11,7 +11,6 @@ int compare_explore_firsts_tasks(const struct task* a, const struct task* b)
 {
 	int cmp = 0;
 	const struct explore_firsts_task* A = (void*) a, *B = (void*) b;
-	ENTER;
 	
 	assert(a->kind == tk_explore_firsts);
 	assert(b->kind == tk_explore_firsts);
@@ -26,7 +25,6 @@ int compare_explore_firsts_tasks(const struct task* a, const struct task* b)
 			cmp = -1;
 	}
 	
-	EXIT;
 	return cmp;
 }
 

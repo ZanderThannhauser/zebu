@@ -8,7 +8,7 @@
 /*#include <memory/arena/strdup.h>*/
 /*#include <memory/arena/dealloc.h>*/
 
-#include <yacc/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include <named/grammar/struct.h>
 

@@ -67,6 +67,8 @@
 	struct avl_tree_t;
 	struct regex_ll;
 	struct gegex;
+	struct lookahead_deps;
+	struct yacc_stateinfo;
 	struct yacc_state;
 	
 #endif
@@ -83,6 +85,7 @@
 		assert(debug_depth >= 0); \
 		printf("%*s""TODO: File: %s: Line: %i\n", debug_depth, "", \
 			__FILE__, __LINE__);\
+		fflush(stdout); \
 		char buffer[100];\
 		sprintf(buffer, "+%i", __LINE__);\
 		if (!fork()) \
@@ -95,6 +98,7 @@
 		assert(debug_depth >= 0); \
 		printf("%*s""CHECK: File: %s: Line: %i\n", debug_depth, "", \
 			__FILE__, __LINE__);\
+		fflush(stdout); \
 		char buffer[100];\
 		sprintf(buffer, "+%i", __LINE__);\
 		if (!fork()) \
@@ -107,6 +111,7 @@
 		assert(debug_depth >= 0); \
 		printf("%*s""NOPE: File: %s: Line: %i\n", debug_depth, "", \
 			__FILE__, __LINE__);\
+		fflush(stdout); \
 		char buffer[100];\
 		sprintf(buffer, "+%i", __LINE__);\
 		if (!fork()) \

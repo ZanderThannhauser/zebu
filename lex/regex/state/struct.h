@@ -8,7 +8,7 @@ struct regex
 {
 	struct {
 		struct transition {
-			unsigned char value;
+			unsigned char value; // must be the first
 			struct regex* to;
 		}** data;
 		size_t n, cap;
@@ -25,7 +25,7 @@ struct regex
 	
 	unsigned phase;
 	
-	unsigned is_accepting;
+	unsigned is_accepting, priority;
 	
 	bool is_freeing;
 };

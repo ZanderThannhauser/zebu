@@ -12,17 +12,18 @@
 
 #include <lex/regex/dotout.h>
 
-#include "lookup/dfa_to_id.h"
+#include "lookup/add_token.h"
 
 #include "struct.h"
 #include "add_EOF_token.h"
 
 void lex_add_EOF_token(
 	struct lex* this,
-	struct memory_arena* scratchpad,
 	struct regex* skip)
 {
 	ENTER;
+	
+	struct memory_arena* const scratchpad = this->scratchpad;
 	
 	struct regex* start = new_regex(scratchpad);
 	
@@ -59,7 +60,7 @@ void lex_add_EOF_token(
 		start = simp;
 	}
 	
-	unsigned tid = lex_dfa_to_id(this, start);
+	unsigned tid = lex_add_token(this, start, /* is_literal: */ true);
 	
 	this->EOF_token_id = tid;
 	

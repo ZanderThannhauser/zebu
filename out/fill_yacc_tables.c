@@ -3,7 +3,7 @@
 
 #include <yacc/state/struct.h>
 
-#include <yacc/phase_counter.h>
+#include <misc/phase_counters.h>
 
 #include "dyntable/set.h"
 

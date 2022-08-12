@@ -12,8 +12,6 @@ void free_regex(
 	struct regex* this,
 	struct memory_arena* arena)
 {
-	ENTER;
-	
 	if (this && !this->is_freeing)
 	{
 		this->is_freeing = true;
@@ -42,8 +40,6 @@ void free_regex(
 		
 		arena_dealloc(arena, this);
 	}
-	
-	EXIT;
 }
 
 

@@ -8,11 +8,7 @@ void tokenset_foreach(
 	struct tokenset* this,
 	void (*runme)(unsigned token))
 {
-	ENTER;
 	for (unsigned i = 0, n = this->n; i < n; i++)
-	{
 		runme(this->data[i]);
-	}
-	EXIT;
 }
 

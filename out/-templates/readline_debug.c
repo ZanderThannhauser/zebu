@@ -174,7 +174,7 @@ static void <PREFIX>_parse(struct <PREFIX>_state* this, const unsigned char* tex
 		
 		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
 		
-		a = (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
+		a = (l < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
 		b = (l < N(<PREFIX>_accepts) ? <PREFIX>_accepts[l] : 0);
 		
 		if (a)

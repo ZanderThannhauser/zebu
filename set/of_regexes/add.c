@@ -10,15 +10,9 @@
 
 void regexset_add(struct regexset* this, struct regex* ptr)
 {
-	ENTER;
-	
-	dpv(ptr);
-	
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
-		
-		dpv(this->cap);
 		
 		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
 	}
@@ -40,14 +34,11 @@ void regexset_add(struct regexset* this, struct regex* ptr)
 		}
 		else
 		{
-			EXIT;
 			return;
 		}
 	}
 	
 	this->data[this->n++] = ptr;
-	
-	EXIT;
 }
 
 
