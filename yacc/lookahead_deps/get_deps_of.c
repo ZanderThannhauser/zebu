@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include <debug.h>
 
 #include <avl/search.h>

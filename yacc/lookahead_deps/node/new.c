@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <set/of_gegexes/new.h>
 #include <set/of_gegexes/add.h>
 

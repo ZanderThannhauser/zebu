@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <avl/new.h>
 
 #include "node/compare.h"

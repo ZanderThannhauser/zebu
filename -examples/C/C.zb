@@ -1,6 +1,5 @@
 
-// %start: translation_unit;
-%start: expression;
+%start: translation_unit;
 
 %disambiguate: literal > regex;
 
@@ -54,7 +53,7 @@ unary_expression
 	| "--" unary_expression
 	| unary_operator cast_expression
 	| "sizeof" unary_expression
-	// | "sizeof" '(' type_name ')'
+	| "sizeof" '(' type_name ')'
 	;
 
 unary_operator
@@ -68,7 +67,7 @@ unary_operator
 
 cast_expression
 	: unary_expression
-	// | '(' type_name ')' cast_expression
+	| '(' type_name ')' cast_expression
 	;
 
 multiplicative_expression
@@ -158,270 +157,269 @@ expression
 	| expression ',' assignment_expression
 	;
 
-// constant_expression
-// 	: conditional_expression
-// 	;
+constant_expression
+	: conditional_expression
+	;
 
-// declaration
-// 	: declaration_specifiers ';'
-// 	| declaration_specifiers init_declarator_list ';'
-// 	;
+declaration
+	: declaration_specifiers ';'
+	| declaration_specifiers init_declarator_list ';'
+	;
 
-// declaration_specifiers
-// 	: storage_class_specifier
-// 	| storage_class_specifier declaration_specifiers
-// 	| type_specifier
-// 	| type_specifier declaration_specifiers
-// 	| type_qualifier
-// 	| type_qualifier declaration_specifiers
-// 	;
-// 
-// init_declarator_list
-// 	: init_declarator
-// 	| init_declarator_list ',' init_declarator
-// 	;
-// 
-// init_declarator
-// 	: declarator
-// 	| declarator '=' initializer
-// 	;
+declaration_specifiers
+	: storage_class_specifier
+	| storage_class_specifier declaration_specifiers
+	| type_specifier
+	| type_specifier declaration_specifiers
+	| type_qualifier
+	| type_qualifier declaration_specifiers
+	;
 
-// storage_class_specifier
-// 	: "typedef"
-// 	| "extern"
-// 	| "static"
-// 	| "auto"
-// 	| "register"
-// 	;
+init_declarator_list
+	: init_declarator
+	| init_declarator_list ',' init_declarator
+	;
 
-// type_specifier
-// 	: "void"
-// 	| "char"
-// 	| "short"
-// 	| "int"
-// 	| "long"
-// 	| "float"
-// 	| "double"
-// 	| "signed"
-// 	| "unsigned"
-// 	| struct_or_union_specifier
-// 	// | enum_specifier
-// 	| "type" `identifier`
-// 	;
+init_declarator
+	: declarator
+	| declarator '=' initializer
+	;
 
-// struct_or_union_specifier
-// 	: struct_or_union `identifier` '{' struct_declaration_list '}'
-// 	| struct_or_union '{' struct_declaration_list '}'
-// 	| struct_or_union `identifier`
-// 	;
+storage_class_specifier
+	: "typedef"
+	| "extern"
+	| "static"
+	| "auto"
+	| "register"
+	;
 
-// struct_or_union
-// 	: "struct"
-// 	| "union"
-// 	;
+type_specifier
+	: "void"
+	| "char"
+	| "short"
+	| "int"
+	| "long"
+	| "float"
+	| "double"
+	| "signed"
+	| "unsigned"
+	| struct_or_union_specifier
+	| enum_specifier
+	| "type" `identifier`
+	;
 
-// struct_declaration_list
-// 	: struct_declaration
-// 	| struct_declaration_list struct_declaration
-// 	;
+struct_or_union_specifier
+	: struct_or_union `identifier` '{' struct_declaration_list '}'
+	| struct_or_union '{' struct_declaration_list '}'
+	| struct_or_union `identifier`
+	;
 
-// struct_declaration
-// 	: specifier_qualifier_list struct_declarator_list ';'
-// 	;
+struct_or_union
+	: "struct"
+	| "union"
+	;
 
-// specifier_qualifier_list
-// 	: type_specifier specifier_qualifier_list
-// 	| type_specifier
-// 	| type_qualifier specifier_qualifier_list
-// 	| type_qualifier
-// 	;
+struct_declaration_list
+	: struct_declaration
+	| struct_declaration_list struct_declaration
+	;
 
-// struct_declarator_list
-// 	: struct_declarator
-// 	| struct_declarator_list ',' struct_declarator
-// 	;
+struct_declaration
+	: specifier_qualifier_list struct_declarator_list ';'
+	;
 
-// struct_declarator
-// 	: declarator
-// 	| ':' constant_expression
-// 	| declarator ':' constant_expression
-// 	;
-// 
-// enum_specifier
-// 	: "enum" '{' enumerator_list '}'
-// 	| "enum" `identifier` '{' enumerator_list '}'
-// 	| "enum" `identifier`
-// 	;
-// 
-// enumerator_list
-// 	: enumerator
-// 	| enumerator_list ',' enumerator
-// 	;
-// 
-// enumerator
-// 	: `identifier`
-// 	| `identifier` '=' constant_expression
-// 	;
-// 
-// type_qualifier
-// 	: "const"
-// 	| "volatile"
-// 	;
-// 
-// declarator
-// 	: pointer direct_declarator
-// 	| direct_declarator
-// 	;
-// 
-// direct_declarator
-// 	: `identifier`
-// 	| '(' declarator ')'
-// 	| direct_declarator '[' constant_expression ']'
-// 	| direct_declarator '[' ']'
-// 	| direct_declarator '(' parameter_type_list ')'
-// 	| direct_declarator '(' identifier_list ')'
-// 	| direct_declarator '(' ')'
-// 	;
-// 
-// pointer
-// 	: '*'
-// 	| '*' type_qualifier_list
-// 	| '*' pointer
-// 	| '*' type_qualifier_list pointer
-// 	;
-// 
-// type_qualifier_list
-// 	: type_qualifier
-// 	| type_qualifier_list type_qualifier
-// 	;
-// 
-// parameter_type_list
-// 	: parameter_list
-// 	| parameter_list ',' "..."
-// 	;
-// 
-// parameter_list
-// 	: parameter_declaration
-// 	| parameter_list ',' parameter_declaration
-// 	;
-// 
-// parameter_declaration
-// 	: declaration_specifiers declarator
-// 	| declaration_specifiers abstract_declarator
-// 	| declaration_specifiers
-// 	;
-// 
-// identifier_list
-// 	: `identifier`
-// 	| identifier_list ',' `identifier`;
-// 
-// type_name
-// 	: specifier_qualifier_list
-// 	| specifier_qualifier_list abstract_declarator
-// 	;
-// 
-// abstract_declarator
-// 	: pointer
-// 	| direct_abstract_declarator
-// 	| pointer direct_abstract_declarator
-// 	;
-// 
-// direct_abstract_declarator
-// 	: '(' abstract_declarator ')'
-// 	| '[' ']'
-// 	| '[' constant_expression ']'
-// 	| direct_abstract_declarator '[' ']'
-// 	| direct_abstract_declarator '[' constant_expression ']'
-// 	| '(' ')'
-// 	| '(' parameter_type_list ')'
-// 	| direct_abstract_declarator '(' ')'
-// 	| direct_abstract_declarator '(' parameter_type_list ')'
-// 	;
-// 
-// initializer
-// 	: assignment_expression
-// 	| '{' initializer_list '}'
-// 	| '{' initializer_list ',' '}'
-// 	;
-// 
-// initializer_list
-// 	: initializer
-// 	| initializer_list ',' initializer
-// 	;
-// 
-// statement
-// 	: labeled_statement
-// 	| compound_statement
-// 	| expression_statement
-// 	| selection_statement
-// 	| iteration_statement
-// 	| jump_statement
-// 	;
-// 
-// labeled_statement
-// 	: `identifier` ':' statement
-// 	| "case" constant_expression ':' statement
-// 	| "default" ':' statement
-// 	;
-// 
-// compound_statement
-// 	: '{' '}'
-// 	| '{' statement_list '}'
-// 	| '{' declaration_list '}'
-// 	| '{' declaration_list statement_list '}'
-// 	;
-// 
-// declaration_list
-// 	: declaration
-// 	| declaration_list declaration
-// 	;
-// 
-// statement_list
-// 	: statement
-// 	| statement_list statement
-// 	;
-// 
-// expression_statement
-// 	: ';'
-// 	| expression ';'
-// 	;
-// 
-// selection_statement
-// 	: "if" '(' expression ')' statement
-// 	| "if" '(' expression ')' statement "else" statement
-// 	// |< "if" '(' expression ')' statement "else" statement
-// 	| "switch" '(' expression ')' statement
-// 	;
-// 
-// iteration_statement
-// 	: "while" '(' expression ')' statement
-// 	| "do" statement "while" '(' expression ')' ';'
-// 	| "for" '(' expression_statement expression_statement ')' statement
-// 	| "for" '(' expression_statement expression_statement expression ')' statement
-// 	;
-// 
-// jump_statement
-// 	: "goto" `identifier` ';'
-// 	| "continue" ';'
-// 	| "break" ';'
-// 	| "return" ';'
-// 	| "return" expression ';'
-// 	;
-// 
-// translation_unit
-// 	: external_declaration
-// 	| translation_unit external_declaration
-// 	;
-// 
-// external_declaration
-// 	: function_definition
-// 	| declaration
-// 	;
-// 
-// function_definition
-// 	: declaration_specifiers declarator declaration_list compound_statement
-// 	| declaration_specifiers declarator compound_statement
-// 	| declarator declaration_list compound_statement
-// 	| declarator compound_statement
-// 	;
+specifier_qualifier_list
+	: type_specifier specifier_qualifier_list
+	| type_specifier
+	| type_qualifier specifier_qualifier_list
+	| type_qualifier
+	;
+
+struct_declarator_list
+	: struct_declarator
+	| struct_declarator_list ',' struct_declarator
+	;
+
+struct_declarator
+	: declarator
+	| ':' constant_expression
+	| declarator ':' constant_expression
+	;
+
+enum_specifier
+	: "enum" '{' enumerator_list '}'
+	| "enum" `identifier` '{' enumerator_list '}'
+	| "enum" `identifier`
+	;
+
+enumerator_list
+	: enumerator
+	| enumerator_list ',' enumerator
+	;
+
+enumerator
+	: `identifier`
+	| `identifier` '=' constant_expression
+	;
+
+type_qualifier
+	: "const"
+	| "volatile"
+	;
+
+declarator
+	: pointer direct_declarator
+	| direct_declarator
+	;
+
+direct_declarator
+	: `identifier`
+	| '(' declarator ')'
+	| direct_declarator '[' constant_expression ']'
+	| direct_declarator '[' ']'
+	| direct_declarator '(' parameter_type_list ')'
+	| direct_declarator '(' identifier_list ')'
+	| direct_declarator '(' ')'
+	;
+
+pointer
+	: '*'
+	| '*' type_qualifier_list
+	| '*' pointer
+	| '*' type_qualifier_list pointer
+	;
+
+type_qualifier_list
+	: type_qualifier
+	| type_qualifier_list type_qualifier
+	;
+
+parameter_type_list
+	: parameter_list
+	| parameter_list ',' "..."
+	;
+
+parameter_list
+	: parameter_declaration
+	| parameter_list ',' parameter_declaration
+	;
+
+parameter_declaration
+	: declaration_specifiers declarator
+	| declaration_specifiers abstract_declarator
+	| declaration_specifiers
+	;
+
+identifier_list
+	: `identifier`
+	| identifier_list ',' `identifier`;
+
+type_name
+	: specifier_qualifier_list
+	| specifier_qualifier_list abstract_declarator
+	;
+
+abstract_declarator
+	: pointer
+	| direct_abstract_declarator
+	| pointer direct_abstract_declarator
+	;
+
+direct_abstract_declarator
+	: '(' abstract_declarator ')'
+	| '[' ']'
+	| '[' constant_expression ']'
+	| direct_abstract_declarator '[' ']'
+	| direct_abstract_declarator '[' constant_expression ']'
+	| '(' ')'
+	| '(' parameter_type_list ')'
+	| direct_abstract_declarator '(' ')'
+	| direct_abstract_declarator '(' parameter_type_list ')'
+	;
+
+initializer
+	: assignment_expression
+	| '{' initializer_list '}'
+	| '{' initializer_list ',' '}'
+	;
+
+initializer_list
+	: initializer
+	| initializer_list ',' initializer
+	;
+
+statement
+	: labeled_statement
+	| compound_statement
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+	;
+
+labeled_statement
+	: `identifier` ':' statement
+	| "case" constant_expression ':' statement
+	| "default" ':' statement
+	;
+
+compound_statement
+	: '{' '}'
+	| '{' statement_list '}'
+	| '{' declaration_list '}'
+	| '{' declaration_list statement_list '}'
+	;
+
+declaration_list
+	: declaration
+	| declaration_list declaration
+	;
+
+statement_list
+	: statement
+	| statement_list statement
+	;
+
+expression_statement
+	: ';'
+	| expression ';'
+	;
+
+selection_statement
+	: "if" '(' expression ')' statement
+	// | "if" '(' expression ')' statement "else" statement
+	| "switch" '(' expression ')' statement
+	;
+
+iteration_statement
+	: "while" '(' expression ')' statement
+	| "do" statement "while" '(' expression ')' ';'
+	| "for" '(' expression_statement expression_statement ')' statement
+	| "for" '(' expression_statement expression_statement expression ')' statement
+	;
+
+jump_statement
+	: "goto" `identifier` ';'
+	| "continue" ';'
+	| "break" ';'
+	| "return" ';'
+	| "return" expression ';'
+	;
+
+translation_unit
+	: external_declaration
+	| translation_unit external_declaration
+	;
+
+external_declaration
+	: function_definition
+	| declaration
+	;
+
+function_definition
+	: declaration_specifiers declarator declaration_list compound_statement
+	| declaration_specifiers declarator compound_statement
+	| declarator declaration_list compound_statement
+	| declarator compound_statement
+	;
 

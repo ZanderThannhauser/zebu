@@ -1,5 +1,11 @@
 
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
 
 #include <avl/new.h>
 #include <avl/search.h>
@@ -405,7 +411,7 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 						
 						if ((rnode = avl_search(reduce_tokens, &token)))
 						{
-							struct reduce_node* rn = rnode->item;
+							// struct reduce_node* rn = rnode->item;
 							TODO;
 							exit(1);
 						}

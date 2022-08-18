@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include <avl/search.h>
@@ -38,7 +40,7 @@
 
 void setup_start_task_process(struct task* super, struct yacc_shared* shared)
 {
-	struct setup_start_task* const this = (void*) super;
+	// struct setup_start_task* const this = (void*) super;
 	ENTER;
 	
 	struct yacc_stateinfo* tree = new_yacc_stateinfo();

@@ -1,8 +1,11 @@
 
-/*#undef TESTING*/
-/*#define DEBUGGING*/
+#include <assert.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 #include <debug.h>
+
+#include <memory/smalloc.h>
 
 #include <avl/search.h>
 #include <avl/new.h>
@@ -28,8 +31,6 @@
 #include <misc/frame_counter.h>
 #include <set/of_tokens/to_string.h>
 #endif
-
-/*__thread int debug_depth;*/
 
 struct dist_node
 {

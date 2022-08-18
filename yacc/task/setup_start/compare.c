@@ -9,8 +9,8 @@
 
 int compare_setup_start_tasks(const struct task* a, const struct task* b)
 {
-	int cmp = 0;
-	const struct setup_start_task* A = (void*) a, *B = (void*) b;
+	// int cmp = 0;
+	// const struct setup_start_task* A = (void*) a, *B = (void*) b;
 	
 	TODO;
 	#if 0
