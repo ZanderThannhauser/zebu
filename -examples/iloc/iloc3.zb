@@ -1,0 +1,122 @@
+
+int: ['-', '+']? ['0'-'9']+;
+
+float: ['0'-'9']+ '.' ['0'-'9']+;
+
+string: '\"' ([~ '\\' '\"' ] | '\\' ['0' - '7']+)* '\"';
+
+register: "%" "v" "r" ['0'-'9']+;
+
+label: '.' ['a'-'z', 'A'-'Z', '_']+ ['a'-'z', 'A'-'Z', '_', '0'-'9']*;
+
+%skip: [' ', '\t', '\n'] | "#" [~'\n']* "\n";
+
+%start:
+	"." "d" "a" "t" "a" (
+		  "." "s" "t" "r" "i" "n" "g" label "," string
+		| "." "f" "l" "o" "a" "t"     label "," float
+		| "." "g" "l" "o" "b" "a" "l" label "," int "," int
+	)*
+	"." "t" "e" "x" "t" (
+		".f" "r" "a" "m" "e" ['a' - 'z']+ "," int (
+			(label ":")? // optional label
+			(
+				// Integer Arithmetic Instructions:
+				  "i" "2" "i"                 register              "=" ">" register
+				| "a" "d" "d"                 register "," register "=" ">" register
+				| "s" "u" "b"                 register "," register "=" ">" register
+				| "m" "u" "l" "t"             register "," register "=" ">" register
+				| "l" "s" "h" "i" "f" "t"     register "," register "=" ">" register
+				| "r" "s" "h" "i" "f" "t"     register "," register "=" ">" register
+				| "m" "o" "d"                 register "," register "=" ">" register
+				| "a" "n" "d"                 register "," register "=" ">" register
+				| "o" "r"                     register "," register "=" ">" register
+				| "n" "o" "t"                 register              "=" ">" register
+				| "a" "d" "d" "I"             register "," int      "=" ">" register
+				| "s" "u" "b" "I"             register "," int      "=" ">" register
+				| "m" "u" "l" "t" "I"         register "," int      "=" ">" register
+				| "l" "s" "h" "i" "f" "t" "I" register "," int      "=" ">" register
+				| "r" "s" "h" "i" "f" "t" "I" register "," int      "=" ">" register
+				
+				// Integer Memory Operations:
+				| "l" "o" "a" "d" "I"         int                   "=" ">" register
+				| "l" "o" "a" "d"             register              "=" ">" register
+				| "l" "o" "a" "d" "A" "I"     register "," int      "=" ">" register
+				| "l" "o" "a" "d" "A" "O"     register "," register "=" ">" register
+				| "s" "t" "o" "r" "e"         register              "=" ">" register
+				| "s" "t" "o" "r" "e" "A" "I" register              "=" ">" register "," int
+				| "s" "t" "o" "r" "e" "A" "O" register              "=" ">" register "," register
+				
+				// Compare Instructions:
+				| "c" "m" "p" "_" "L" "T"     register "," register "=" ">" register
+				| "c" "m" "p" "_" "L" "R"     register "," register "=" ">" register
+				| "c" "m" "p" "_" "G" "T"     register "," register "=" ">" register
+				| "c" "m" "p" "_" "G" "E"     register "," register "=" ">" register
+				| "c" "m" "p" "_" "E" "Q"     register "," register "=" ">" register
+				| "c" "m" "p" "_" "N" "E"     register "," register "=" ">" register
+				| "c" "o" "m" "p"             register "," register "=" ">" register
+				| "t" "e" "s" "t" "e" "q"     register              "=" ">" register
+				| "t" "e" "s" "t" "n" "e"     register              "=" ">" register
+				| "t" "e" "s" "t" "g" "t"     register              "=" ">" register
+				| "t" "e" "s" "t" "g" "e"     register              "=" ">" register
+				| "t" "e" "s" "t" "l" "t"     register              "=" ">" register
+				| "t" "e" "s" "t" "l" "e"     register              "=" ">" register
+				
+				// Floating-point Operations:
+				| "f" "2" "i"                     register              "=" ">" register
+				| "i" "2" "f"                     register              "=" ">" register
+				| "f" "2" "f"                     register              "=" ">" register
+				| "f" "a" "d" "d"                 register "," register "=" ">" register
+				| "f" "s" "u" "b"                 register "," register "=" ">" register
+				| "f" "m" "u" "l" "t"             register "," register "=" ">" register
+				| "f" "d" "i" "v"                 register "," register "=" ">" register
+				| "f" "c" "o" "m" "p"             register "," register "=" ">" register
+				| "f" "l" "o" "a" "d"             register              "=" ">" register
+				| "f" "l" "o" "a" "d" "A" "I"     register "," int      "=" ">" register
+				| "f" "l" "o" "a" "d" "A" "O"     register "," register "=" ">" register
+				| "f" "s" "t" "o" "r" "e"         register              "=" ">" register
+				| "f" "s" "t" "o" "r" "e" "A" "I" register              "=" ">" register "," int
+				| "f" "s" "t" "o" "r" "e" "A" "O" register              "=" ">" register "," register
+				
+				// I/O Instructions:
+				| "f" "r" "e" "a" "d"     register
+				| "i" "r" "e" "a" "d"     register
+				| "f" "w" "r" "i" "t" "e" register
+				| "i" "w" "r" "i" "t" "e" register
+				| "s" "w" "r" "i" "t" "e" register
+				
+				// Branch Instructions:
+				| "j" "u" "m" "p" "I"                           "-" ">" label
+				| "j" "u" "m" "p"                               "-" ">" register
+				| "r" "e" "t"
+				| "c" "b" "r"             register              "-" ">" label
+				| "c" "b" "r" "n" "e"     register              "-" ">" label
+				| "c" "b" "r" "_" "L" "T" register "," register "-" ">" label
+				| "c" "b" "r" "_" "L" "E" register "," register "-" ">" label
+				| "c" "b" "r" "_" "G" "T" register "," register "-" ">" label
+				| "c" "b" "r" "_" "G" "E" register "," register "-" ">" label
+				| "c" "b" "r" "_" "E" "Q" register "," register "-" ">" label
+				| "c" "b" "r" "_" "N" "E" register "," register "-" ">" label
+				
+				// Undocumented Instructions:
+				| "n" "o" "p"
+				| "c" "a" "l" "l"     label ("," register)*
+				| "i" "c" "a" "l" "l" label ("," register)* "=" ">" register
+				| "i" "r" "e" "t"                                   register
+			)
+		)*
+	)*
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
