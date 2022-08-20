@@ -5,20 +5,26 @@
 
 #include <fcntl.h>
 
-#include <avl/avl.h>
-#include <avl/new.h>
-
 #include <debug.h>
 
+/*#include <avl/avl.h>*/
+/*#include <avl/new.h>*/
+
 #include <memory/sstrdup.h>
+
+#include <misc/sopen.h>
+#include <misc/sopenat.h>
+#include <misc/break_path.h>
+
 /*#include <memory/arena/new.h>*/
 /*#include <memory/arena/free.h>*/
 
-/*#include "scope/new.h"*/
+/*#include <set/of_strs/add.h>*/
 
-#include <set/of_strs/add.h>
+/*#include "options/struct.h"*/
 
-#include "options/struct.h"
+#include "scope/new.h"
+#include "scope/free.h"
 
 #include "pragma_once/new.h"
 #include "pragma_once/free.h"
@@ -29,14 +35,22 @@
 
 void mains_parse(
 	struct options* options,
-	struct scope* scope,
+	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad,
 	struct lex* lex,
 	const char* path)
 {
 	ENTER;
 	
-	char* dup = sstrdup(path);
+	dpvs(path);
+	
+	struct br_rettype br = break_path(AT_FDCWD, path);
+	
+	dpv(br.dirfd);
+	
+	dpv(br.fd);
+	
+	struct scope* scope = new_scope(grammar);
 	
 	struct pragma_once* pragma_once = new_pragma_once();
 	
@@ -45,17 +59,25 @@ void mains_parse(
 		/* scope: */ scope,
 		/* pragma_once: */ pragma_once,
 		/* scratchpad: */ scratchpad,
-		/* absolute_dirfd: */ AT_FDCWD,
-		/* relative_dirfd: */ AT_FDCWD,
-		/* path: */ dup,
+		/* absolute_dirfd: */ br.dirfd,
+		/* relative_dirfd: */ br.dirfd,
+		/* fd: */ br.fd,
 		/* lex: */ lex
 	);
 	
+	TODO;
+	#if 0
 	free_pragma_once(pragma_once);
 	
-	free(dup);
-	
 	resolve_grammar_names(scope);
+	
+	free_scope(scope);
+	#endif
+	
+	if (br.dirfd > 0)
+		close(br.dirfd);
+	
+	close(br.fd);
 	
 	EXIT;
 }

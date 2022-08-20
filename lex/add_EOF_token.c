@@ -39,7 +39,7 @@ void lex_add_EOF_token(
 	
 	if (skip)
 	{
-		struct regex* clone = regex_clone(scratchpad, skip);
+		struct regex* clone = regex_clone(skip, scratchpad);
 		
 		regex_add_lambda_transition(clone, scratchpad, start);
 		

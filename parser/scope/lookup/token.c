@@ -1,13 +1,14 @@
 
 #include <assert.h>
 #include <stdlib.h>
-#include <avl/search.h>
 
 #include <debug.h>
 
+#include <avl/search.h>
+
 #include "../struct.h"
 
-#include <named/name/struct.h>
+/*#include <named/name/struct.h>*/
 
 #include <named/token/struct.h>
 
@@ -27,7 +28,7 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 	{
 		dpv(layer);
 		
-		node = avl_search(layer->tokens, &name);
+		node = avl_search(layer->fragments, &name);
 		
 		if (!node)
 			layer = layer->prev;
@@ -40,14 +41,6 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 		TODO;
 		exit(1);
 	}
-	
-	struct named_name* nname = node->item;
-	
-	dpvs(nname->value);
-	
-	node = avl_search(this->tokens, &nname->value);
-	
-	assert(node);
 	
 	struct named_token* ntoken = node->item;
 	

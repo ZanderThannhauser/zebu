@@ -15,9 +15,8 @@
 
 #include "../read_charset.h"
 #include "../read_fragment.h"
+#include "../read_inline_grammar.h"
 #include "../read_grammar.h"
-
-/*#include "gegex/state/add_lambda_transition.h"*/
 
 #include "suffixes.h"
 #include "subdefinitions.h"
@@ -42,12 +41,16 @@ struct gbundle read_subdefinitions_production(
 		{
 			switch (tokenizer->token)
 			{
-				case t_charset:
+				case t_bracketed_identifier:
 					read_charset(tokenizer, scope);
 					break;
 				
-				case t_fragment:
-					read_fragment(tokenizer, scratchpad, scope, options->token_skip);
+				case t_gravemarked_identifier:
+					read_fragment(tokenizer, scope, options->token_skip);
+					break;
+				
+				case t_parenthesised_identifier:
+					read_inline_grammar(tokenizer, scratchpad, options, scope, lex);
 					break;
 				
 				case t_identifier:

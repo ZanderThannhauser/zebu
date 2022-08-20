@@ -17,7 +17,8 @@
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 
-#include "scope/declare/token.h"
+#include "scope/get_arena.h"
+#include "scope/declare/fragment.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
@@ -31,17 +32,16 @@
 
 void read_fragment(
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
-	assert(tokenizer->token == t_fragment);
+	assert(tokenizer->token == t_gravemarked_identifier);
 	
-	char* name = sstrndup(
-		/* src: */ tokenizer->tokenchars.chars + 1,
-		/* len: */ tokenizer->tokenchars.n - 2);
+	dpvs(tokenizer->tokenchars.chars);
+	
+	char* name = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	
@@ -49,7 +49,9 @@ void read_fragment(
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope, token_skip);
+	struct memory_arena* const arena = scope_get_arena(scope);
+	
+	struct rbundle bun = read_root_token_expression(tokenizer, arena, scope, token_skip);
 	
 	if (bun.is_nfa)
 	{
@@ -57,19 +59,20 @@ void read_fragment(
 		
 		bun.nfa.end->is_accepting = true;
 		
-		struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
+		struct regex* dfa = regex_nfa_to_dfa(nfa, arena);
 		
-		free_regex(nfa, scratchpad);
+		free_regex(nfa, arena);
 		
-		struct regex* simp = regex_simplify_dfa(dfa, scratchpad);
+		struct regex* simp = regex_simplify_dfa(dfa, arena);
 		
-		free_regex(dfa, scratchpad);
+		free_regex(dfa, arena);
 		
-		bun.is_nfa = false;
-		bun.dfa = simp;
+		scope_declare_fragment(scope, name, simp);
 	}
-	
-	scope_declare_token(scope, name, bun.dfa);
+	else
+	{
+		scope_declare_fragment(scope, name, bun.dfa);
+	}
 	
 	if (true
 		&& tokenizer->token != t_semicolon

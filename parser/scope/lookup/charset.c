@@ -2,15 +2,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include <avl/search.h>
-
 #include <debug.h>
 
-#include "../struct.h"
-
-#include <named/name/struct.h>
+#include <avl/search.h>
 
 #include <named/charset/struct.h>
+
+#include "../struct.h"
 
 #include "charset.h"
 
@@ -18,21 +16,29 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 {
 	ENTER;
 	
-	struct avl_node_t* node = avl_search(this->layer->charsets, &name);
+	dpvs(name);
 	
-	if (!node)
+	struct avl_node_t* node = NULL;
+	
+	struct scope_layer* layer = this->layer;
+	
+	while (layer && !node)
+	{
+		dpv(layer);
+		
+		node = avl_search(layer->charsets, &name);
+		
+		if (!node)
+			layer = layer->prev;
+	}
+	
+	dpv(layer);
+	
+	if (!layer)
 	{
 		TODO;
 		exit(1);
 	}
-	
-	struct named_name* nname = node->item;
-	
-	dpvs(nname->value);
-	
-	node = avl_search(this->charsets, &nname->value);
-	
-	assert(node);
 	
 	struct named_charset* ntoken = node->item;
 	

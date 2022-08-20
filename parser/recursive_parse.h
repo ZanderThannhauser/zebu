@@ -12,6 +12,6 @@ void recursive_parse(
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
 	int absolute_dirfd,
-	int old_relative_dirfd,
-	char* path,
+	int relative_dirfd,
+	int fd,
 	struct lex* lex);

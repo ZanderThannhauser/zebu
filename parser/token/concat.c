@@ -42,7 +42,7 @@ struct rbundle read_concat_token_expression(
 			
 			if (token_skip)
 			{
-				struct regex* cloned = regex_clone(scratchpad, token_skip);
+				struct regex* cloned = regex_clone(token_skip, scratchpad);
 				
 				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
 				regex_add_lambda_transition(cloned, scratchpad, next.nfa.start);

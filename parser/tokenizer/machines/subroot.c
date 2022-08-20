@@ -6,36 +6,16 @@ enum tokenizer_state subroot_machine[number_of_tokenizer_states][256] = {
 	
 	#include "fragments/skip_whitespace.h"
 	
-	// skip comments:
-	[ts_start]['/'] = ts_after_slash,
-		[ts_after_slash]['/'] = ts_skipping_comment,
-			[ts_skipping_comment][ANY] = ts_skipping_comment,
-			[ts_skipping_comment]['\n'] = ts_start,
+	#include "fragments/skip_comments.h"
 	
-	// charset:
-	[ts_start]['['] = ts_reading_charset,
-		[ts_reading_charset][ANY] = ts_reading_charset,
-		[ts_reading_charset][']'] = ts_read_charset,
-			[ts_read_charset][ANY] = ts_charset,
+	#include "fragments/bracketed_identifier.h"
 	
-	// fragments:
-	[ts_start]['`'] = ts_reading_fragment,
-		[ts_reading_fragment][ANY] = ts_reading_fragment,
-		[ts_reading_fragment]['`'] = ts_read_fragment,
-			[ts_read_fragment][ANY] = ts_fragment,
+	#include "fragments/gravemarked_identifier.h"
 	
-	// identifier (start of grammar rule):
-	[ts_start]['a' ... 'z'] = ts_reading_identifier,
-	[ts_start]['A' ... 'Z'] = ts_reading_identifier,
-		[ts_reading_identifier][ANY] = ts_identifier,
-		[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
-		[ts_reading_identifier]['A' ... 'Z'] = ts_reading_identifier,
-		[ts_reading_identifier]['_'] = ts_reading_identifier,
+	#include "fragments/parenthesised_identifier.h"
 	
-	// end:
-		// colon:
-		[ts_start][':'] = ts_after_colon,
-			[ts_after_colon][ANY] = ts_colon,
-		
+	#include "fragments/identifier.h"
+	
+	#include "fragments/colon.h"
 };
 

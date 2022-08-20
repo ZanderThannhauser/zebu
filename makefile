@@ -54,7 +54,7 @@ default: $(buildprefix)/zebu
 
 ARGS += -v
 
-#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -76,7 +76,7 @@ ARGS += -v
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
-ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
+#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)

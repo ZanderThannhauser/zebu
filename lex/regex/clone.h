@@ -3,8 +3,8 @@ struct memory_arena;
 struct regex;
 
 struct regex* regex_clone(
-	struct memory_arena* arena,
-	struct regex* in);
+	struct regex* in,
+	struct memory_arena* arena);
 	
 struct clone_nfa_bundle {
 	struct regex* start, *end;

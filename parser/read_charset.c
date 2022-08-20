@@ -27,11 +27,9 @@ void read_charset(
 {
 	ENTER;
 	
-	assert(tokenizer->token == t_charset);
+	assert(tokenizer->token == t_bracketed_identifier);
 	
-	char* name = sstrndup(
-		/* src: */ tokenizer->tokenchars.chars + 1,
-		/* len: */ tokenizer->tokenchars.n - 2);
+	char* name = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	

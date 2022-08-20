@@ -83,7 +83,7 @@ struct rbundle read_highest_token_expression(
 			
 			struct regex* original = scope_lookup_token(scope, tokenizer->tokenchars.chars);
 			
-			struct regex* start = regex_clone(scratchpad, original);
+			struct regex* start = regex_clone(original, scratchpad);
 			
 			retval = (struct rbundle) {
 				.is_nfa = false,

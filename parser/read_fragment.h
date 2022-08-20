@@ -8,6 +8,5 @@ struct name;
 
 void read_fragment(
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip);

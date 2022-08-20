@@ -2,8 +2,8 @@
 #include <assert.h>
 #include <debug.h>
 
-#include <avl/avl.h>
 #include <avl/new.h>
+#include <avl/free_tree.h>
 
 #include <cmdln/struct.h>
 #include <cmdln/process.h>
@@ -14,13 +14,16 @@
 #include <lex/process_disambiguatations.h>
 #include <lex/free.h>
 
+#include <named/grammar/compare.h>
+#include <named/grammar/free.h>
+
 #include <parser/mains_parse.h>
 #include <parser/options/struct.h>
 #include <parser/options/new.h>
 #include <parser/options/free.h>
-#include <parser/scope/struct.h>
-#include <parser/scope/new.h>
-#include <parser/scope/free.h>
+/*#include <parser/scope/struct.h>*/
+/*#include <parser/scope/new.h>*/
+/*#include <parser/scope/free.h>*/
 
 #include <memory/arena/new.h>
 #include <memory/arena/free.h>
@@ -45,7 +48,6 @@ int main(int argc, char* argv[])
 	struct cmdln* flags = cmdln_process(argc, argv);
 	
 	#ifdef RELEASE
-	
 	if (verbose)
 	{
 		signal(SIGALRM, default_sighandler);
@@ -55,18 +57,17 @@ int main(int argc, char* argv[])
 			.it_value = {.tv_sec = 0, .tv_usec = 100 * 1000},
 		}, NULL);
 	}
-	
 	#endif
 	
 	struct memory_arena* scratchpad = new_memory_arena();
 	
-	struct scope* scope = new_scope();
+	struct avl_tree_t* grammar = new_avl_tree(compare_named_grammars, free_named_grammar);
 	
 	struct options* options = new_options();
 	
 	struct lex* lex = new_lex(scratchpad);
 	
-	mains_parse(options, scope, scratchpad, lex, flags->input_path);
+	mains_parse(options, grammar, scratchpad, lex, flags->input_path);
 	
 	lex_add_EOF_token(lex, options->skip);
 	
@@ -75,7 +76,9 @@ int main(int argc, char* argv[])
 		lex_process_disambiguatations(lex, options->disambiguatations.head);
 	}
 	
-	struct yacc_state* parser = yacc(lex, scope->grammar, scratchpad);
+	struct yacc_state* parser = yacc(lex, grammar, scratchpad);
+	
+	avl_free_tree(grammar);
 	
 	out(parser,
 		flags->output_path,
@@ -83,8 +86,6 @@ int main(int argc, char* argv[])
 		flags->parser_template);
 	
 	free_lex(lex);
-	
-	free_scope(scope);
 	
 	free_options(options);
 	

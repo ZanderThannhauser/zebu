@@ -9,6 +9,8 @@
 
 #include <debug.h>
 
+#include <misc/break_path.h>
+
 #include <memory/sstrdup.h>
 #include <memory/smemdup.h>
 #include <memory/smalloc.h>
@@ -209,54 +211,41 @@ void read_directive(
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""include"))
 	{
-		switch (read_token(tokenizer, include_machine))
+		enum token token = read_token(tokenizer, include_machine);
+		
+		unsigned dirfd;
+		
+		switch (token)
 		{
 			case t_relative_path:
-			{
-				char* path = (char*) tokenizer->tokenchars.chars + 1;
-				
-				path[tokenizer->tokenchars.n - 2] = '\0';
-				
-				dpvs(path);
-				
-				recursive_parse(
-					/* options: */ options,
-					/* scope: */ scope,
-					/* pragma_once: */ pragma_once,
-					/* token_scratchpad: */ scratchpad,
-					/* absolute_dirfd: */ absolute_dirfd,
-					/* relative_dirfd: */ relative_dirfd,
-					/* path */ path,
-					/* lex: */ lex);
-				
+				dirfd = relative_dirfd;
 				break;
-			}
 			
 			case t_absolute_path:
-			{
-				char* path = (char*) tokenizer->tokenchars.chars + 1;
-				
-				path[tokenizer->tokenchars.n - 2] = '\0';
-				
-				dpvs(path);
-				
-				recursive_parse(
-					/* options: */ options,
-					/* scope: */ scope,
-					/* pragma_once: */ pragma_once,
-					/* token_scratchpad: */ scratchpad,
-					/* absolute_dirfd: */ absolute_dirfd,
-					/* relative_dirfd: */ relative_dirfd,
-					/* path */ path,
-					/* lex: */ lex);
-				
+				dirfd = absolute_dirfd;
 				break;
-			}
 			
 			default:
 				TODO;
 				break;
 		}
+		
+		struct br_rettype br = break_path(dirfd, tokenizer->tokenchars.chars);
+		
+		recursive_parse(
+			/* options: */ options,
+			/* scope: */ scope,
+			/* pragma_once: */ pragma_once,
+			/* token_scratchpad: */ scratchpad,
+			/* absolute_dirfd: */ absolute_dirfd,
+			/* relative_dirfd: */ br.dirfd,
+			/* fd */ br.fd,
+			/* lex: */ lex);
+		
+		if (br.dirfd > 0 && br.dirfd != dirfd)
+			close(br.dirfd);
+		
+		close(br.fd);
 	}
 	else
 	{

@@ -19,23 +19,26 @@
 #include <lex/regex/state/free.h>
 /*#include "../token/root.h"*/
 
+#include <yacc/gegex/from_token.h>
+/*#include "gegex/from_empty.h"*/
+#include <yacc/gegex/from_subgrammar.h>
+#include <yacc/gegex/dotout.h>
+#include <yacc/gegex/clone.h>
+#include <yacc/gegex/dfa_to_nfa.h>
+
 #include "../charset/root.h"
 
 #include "../options/struct.h"
 
-#include "../scope/struct.h"
-/*#include "../scope/push.h"*/
+/*#include "../scope/struct.h"*/
+#include "../scope/lookup/inline_grammar.h"
+#include "../scope/build_absolute_name.h"
 /*#include "../scope/translate/grammar.h"*/
 /*#include "../scope/pop.h"*/
 
 /*#include "../read_charset.h"*/
 /*#include "../read_fragment.h"*/
 /*#include "../read_grammar.h"*/
-
-#include <yacc/gegex/from_token.h>
-/*#include "gegex/from_empty.h"*/
-#include <yacc/gegex/from_subgrammar.h>
-#include <yacc/gegex/dotout.h>
 
 #include "../token/rbundle.h"
 #include "../token/root.h"
@@ -97,7 +100,7 @@ struct gbundle read_highest_production(
 			{
 				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
 				
-				struct regex* clone = regex_clone(scratchpad, options->skip);
+				struct regex* clone = regex_clone(options->skip, scratchpad);
 				
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
@@ -149,7 +152,7 @@ struct gbundle read_highest_production(
 			{
 				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
 				
-				struct regex* clone = regex_clone(scratchpad, options->skip);
+				struct regex* clone = regex_clone(options->skip, scratchpad);
 				
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
@@ -210,7 +213,7 @@ struct gbundle read_highest_production(
 			{
 				struct rbundle nfa = regex_dfa_to_nfa(start, scratchpad);
 				
-				struct regex* clone = regex_clone(scratchpad, options->skip);
+				struct regex* clone = regex_clone(options->skip, scratchpad);
 				
 				regex_add_lambda_transition(clone, scratchpad, start);
 				
@@ -269,7 +272,7 @@ struct gbundle read_highest_production(
 				if (!regex.is_nfa)
 					regex = regex_dfa_to_nfa(regex.dfa, scratchpad);
 				
-				struct regex* clone = regex_clone(scratchpad, options->skip);
+				struct regex* clone = regex_clone(options->skip, scratchpad);
 				
 				regex_add_lambda_transition(clone, scratchpad, regex.nfa.start);
 				
@@ -318,29 +321,20 @@ struct gbundle read_highest_production(
 		{
 			dpvs(tokenizer->tokenchars.chars);
 			
-			dpvsn(scope->prefix.chars, scope->prefix.n);
+			struct gbundle inlined;
 			
-			char* full = arena_malloc(
-				scratchpad,
-				scope->prefix.n + 1 + 
-				tokenizer->tokenchars.n + 1), *m = full;
-			
-			if (scope->prefix.n)
+			if ((inlined = scope_lookup_inline_grammar(scope, tokenizer->tokenchars.chars)).start)
 			{
-				memcpy(m, scope->prefix.chars, scope->prefix.n);
-				m += scope->prefix.n;
-				*m++ = '.';
+				retval = gegex_clone_nfa(scratchpad, inlined.start, inlined.end);
 			}
-			
-			memcpy(m, tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
-			m += tokenizer->tokenchars.n;
-			*m++ = '\0';
-			
-			dpvs(full);
-			
-			retval = gegex_from_subgrammar(
-				/* grammar name: */ full,
-				/* scratchpad: */ scratchpad);
+			else
+			{
+				char* full_name = scope_build_absolute_name(scope, scratchpad, tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+				
+				retval = gegex_from_subgrammar(
+					/* grammar name: */ full_name,
+					/* scratchpad: */ scratchpad);
+			}
 			
 			read_token(
 				/* tokenizer: */ tokenizer,

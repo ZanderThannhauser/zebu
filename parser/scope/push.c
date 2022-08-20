@@ -1,14 +1,22 @@
 
 #include <stdio.h>
 
-#include <avl/new.h>
-
 #include <debug.h>
+
+#include <avl/new.h>
 
 #include <memory/smalloc.h>
 
-#include "named/name/compare.h"
-#include "named/name/free.h"
+#include <named/charset/compare.h>
+#include <named/charset/free.h>
+
+#include <named/token/compare.h>
+#include <named/token/free.h>
+
+#include <named/gbundle/compare.h>
+#include <named/gbundle/free.h>
+
+#include <memory/arena/new.h>
 
 #include "private/append_prefix.h"
 
@@ -21,9 +29,11 @@ void scope_push(struct scope* this)
 	
 	struct scope_layer* new = smalloc(sizeof(*new));
 	
-	new->charsets = new_avl_tree(compare_named_names, free_named_name);
-	new->tokens = new_avl_tree(compare_named_names, free_named_name);
-	new->grammar = new_avl_tree(compare_named_names, free_named_name);
+	new->charsets       = new_avl_tree(compare_named_charsets, free_named_charset);
+	new->fragments      = new_avl_tree(compare_named_tokens,   free_named_token);
+	new->inline_grammar = new_avl_tree(compare_named_gbundles, free_named_gbundle);
+	
+	new->arena = new_memory_arena();
 	
 	new->sublayer_counter = 0;
 	

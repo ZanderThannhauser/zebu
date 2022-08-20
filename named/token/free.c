@@ -3,10 +3,18 @@
 
 #include <debug.h>
 
+#include "struct.h"
 #include "free.h"
 
-void free_named_token(void* this)
+void free_named_token(void* ptr)
 {
-	TODO;
+	struct named_token* this = ptr;
+	ENTER;
+	
+	free(this->name);
+	
+	free(this);
+	
+	EXIT;
 }
 

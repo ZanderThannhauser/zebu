@@ -36,7 +36,9 @@
 %disambiguate: literal > regex;
 // %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
 
-%skip: [' ', 'g']+;
+%skip: [' ', 'g'];
+
+%token_skip: '-';
 
 [wy]: 'w' - 'y';
 
@@ -61,19 +63,22 @@
 // aabbcc::x!
 // ABCCBA
 
-%start: "abc"                                                      "?"?
-	 | `abc & (..)*`   ":"    `![~wy]*`                            "."
-	 | `abc & (...)*` (":")+  [(~((~wy) & (~ 'x'-'z'))) & (~'w')]  "!"
-	 | %[b]: 'b';
-		`b`: [b,          'B'];
-		 a : 'a' (b | c)? 'a' ;
-		 b : `b` (a | c)? `b` ;
-		 c : 'c' (a | b)? 'c' :
-		    (b a | b c | a c | c a) +
-	 | % a : 'A' (b | c)? 'A' ;
-		 b : 'B' (a | c)? 'B' ;
-		 c : 'C' (a | b)? 'C' :
-		       (a | b | c)   +;
+%start
+	: "abc"                                                      "?"?
+	| `abc & (..)*`   ":"     `![~wy]*`                          "."
+	| `abc & (...)*` (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')]  "!"
+	
+	| %[b]: 'b';
+	   `b`: [b,          'B'];
+	   (a): 'a' (b | c)? 'a' ;
+	    b : `b` (a | c)? `b` ;
+	    c : 'c' (a | b)? 'c' :
+	    (b a | b c | a c | c a)+
+	
+	| % a : 'A' (b | c)? 'A' ;
+	    b : 'B' (a | c)? 'B' ;
+	    c : 'C' (a | b)? 'C' :
+	          (a | b | c)+   ;
 
 %skip: ['h']+;
 

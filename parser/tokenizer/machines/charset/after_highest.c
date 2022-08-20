@@ -7,11 +7,7 @@ const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_sta
 	
 	#include "../fragments/skip_whitespace.h"
 	
-	// skip comments:
-	[ts_start]['/'] = ts_after_slash,
-		[ts_after_slash]['/'] = ts_skipping_comment,
-			[ts_skipping_comment][ANY] = ts_skipping_comment,
-			[ts_skipping_comment]['\n'] = ts_start,
+	#include "../fragments/skip_comments.h"
 	
 	// highest:
 		// character literal:

@@ -5,13 +5,13 @@
 
 #include <memory/sstrndup.h>
 
+#include <named/grammar/new.h>
+
+/*#include <named/name/new.h>*/
+
 #include "../struct.h"
 
 #include "../private/append_prefix.h"
-
-#include <named/grammar/new.h>
-
-#include <named/name/new.h>
 
 #include "grammar.h"
 
@@ -33,8 +33,6 @@ void scope_declare_grammar(
 	dpvs(full_name);
 	
 	safe_avl_insert(this->grammar, new_named_grammar(full_name, grammar));
-	
-	safe_avl_insert(this->layer->grammar, new_named_name(name, full_name));
 	
 	this->prefix.n = old_len;
 	

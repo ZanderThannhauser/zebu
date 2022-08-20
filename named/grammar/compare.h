@@ -1,1 +1,1 @@
-int compare_named_grammar(const void* a, const void* b);
+int compare_named_grammars(const void* a, const void* b);

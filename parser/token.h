@@ -39,20 +39,36 @@ enum token
 	
 	t_ellipsis,
 	
+	t_numeric_literal,
+	t_string_literal,
 	t_character_literal,
 	
-	// strings:
-	t_string_literal,
 	t_absolute_path,
 	t_relative_path,
-	t_fragment,
-	t_charset,
-	t_numberic,
-	t_identifier,
-	
+	t_gravemarked_identifier,
+	t_bracketed_identifier,
+	t_parenthesised_identifier,
 	t_directive,
+	
+	t_identifier,
 	
 	number_of_tokens,
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

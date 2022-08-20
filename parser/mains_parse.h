@@ -6,7 +6,7 @@ struct scope;
 
 void mains_parse(
 	struct options* options,
-	struct scope* scope,
+	struct avl_tree_t* grammar,
 	struct memory_arena* scratchpad,
 	struct lex* lex,
 	const char* path);

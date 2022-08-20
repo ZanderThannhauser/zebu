@@ -30,7 +30,6 @@ enum tokenizer_state
 	ts_comma,
 	ts_dot,
 	ts_ellipsis,
-	ts_numeric,
 	ts_ccurly,
 	ts_semicolon,
 	ts_gravemark,
@@ -40,17 +39,17 @@ enum tokenizer_state
 	ts_character_literal,
 	
 	// strings:
-	ts_charset,
-	ts_fragment,
+	ts_bracketed_identifier,
+	ts_gravemarked_identifier,
+	ts_parenthesised_identifier,
 	ts_string_literal,
 	ts_absolute_path,
 	ts_relative_path,
+	ts_numeric_literal,
 	ts_identifier,
 	
 	// keywords/misc:
 	ts_directive,
-	ts_if,
-	ts_else,
 	
 	ts_start,
 	
@@ -95,27 +94,21 @@ enum tokenizer_state
 	ts_read_character_literal3,
 	
 	// strings:
-	ts_reading_charset,
-	ts_reading_fragment,
-	ts_reading_numeric,
+	ts_reading_bracketed_identifier,
+	ts_reading_gravemarked_identifier,
+	ts_reading_parenthesised_identifier,
+	ts_reading_numeric_literal,
 	ts_reading_string_literal,
 	ts_reading_relpath_literal,
 	ts_reading_abspath_literal,
 	ts_reading_identifier,
 	
-	ts_read_fragment,
-	ts_read_charset,
+	ts_read_bracketed_identifier,
+	ts_read_gravemarked_identifier,
+	ts_read_parenthesised_identifier,
 	ts_read_string_literal,
 	ts_read_relpath_literal,
 	ts_read_abspath_literal,
-	
-	// keywords:
-	ts_after_i,
-	ts_after_if,
-	ts_after_e,
-	ts_after_el,
-	ts_after_els,
-	ts_after_else,
 	
 	number_of_tokenizer_states,
 };

@@ -47,7 +47,7 @@ struct yacc_shared* new_yacc_shared(
 	
 	this->todo = new_heap(compare_tasks);
 	
-	this->new_grammar = new_avl_tree(compare_named_grammar, free_named_grammar);
+	this->new_grammar = new_avl_tree(compare_named_grammars, free_named_grammar);
 	
 	this->gegex_to_trie = new_avl_tree(compare_gegex_to_tries, free_gegex_to_trie);
 	

@@ -111,8 +111,8 @@ static struct regex* clone_helper(
 }
 
 struct regex* regex_clone(
-	struct memory_arena* arena,
-	struct regex* in)
+	struct regex* in,
+	struct memory_arena* arena)
 {
 	ENTER;
 	

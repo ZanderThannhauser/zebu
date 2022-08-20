@@ -62,10 +62,10 @@ enum token read_token(
 			dputs("t_directive");
 			break;
 		
-		case ts_numeric:
+		case ts_numeric_literal:
 			append(this, 0);
-			this->token = t_numberic;
-			dputs("ts_numeric");
+			this->token = t_numeric_literal;
+			dputs("t_numeric_literal");
 			break;
 		
 		case ts_start:
@@ -144,25 +144,69 @@ enum token read_token(
 			break;
 		}
 		
-		case ts_charset:
-			this->token = t_charset;
-			dputs("t_charset");
-			break;
-		
-		case ts_fragment:
-			this->token = t_fragment;
-			dputs("t_fragment");
-			break;
-		
 		case ts_absolute_path:
+		{
+			// remove quotes:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			this->tokenchars.n -= 2;
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
 			this->token = t_absolute_path;
 			dputs("t_absolute_path");
 			break;
+		}
 		
 		case ts_relative_path:
+		{
+			TODO;
 			this->token = t_relative_path;
 			dputs("t_relative_path");
 			break;
+		}
+		
+		case ts_bracketed_identifier:
+		{
+			// remove backets:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			this->tokenchars.n -= 2;
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
+			this->token = t_bracketed_identifier;
+			dputs("t_bracketed_identifier");
+			break;
+		}
+		
+		case ts_gravemarked_identifier:
+		{
+			// remove gravemarks:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			this->tokenchars.n -= 2;
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
+			this->token = t_gravemarked_identifier;
+			dputs("t_gravemarked_identifier");
+			break;
+		}
+		
+		case ts_parenthesised_identifier:
+		{
+			// remove parenthesis:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			this->tokenchars.n -= 2;
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
+			this->token = t_parenthesised_identifier;
+			dputs("t_parenthesised_identifier");
+			break;
+		}
 		
 		case ts_identifier:
 			append(this, 0);

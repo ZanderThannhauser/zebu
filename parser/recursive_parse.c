@@ -35,32 +35,11 @@ void recursive_parse(
 	struct pragma_once* pragma_once,
 	struct memory_arena* scratchpad,
 	int absolute_dirfd,
-	int old_relative_dirfd,
-	char* path,
+	int relative_dirfd,
+	int fd,
 	struct lex* lex)
 {
 	ENTER;
-	
-	int relative_dirfd = -1;
-	
-	{
-		char* slash = rindex(path, '/');
-		
-		if (slash)
-		{
-			*slash = '\0';
-			
-			relative_dirfd = sopenat(old_relative_dirfd, path, O_PATH);
-			
-			path = slash + 1;
-		}
-		else
-		{
-			relative_dirfd = old_relative_dirfd;
-		}
-	}
-	
-	int fd = sopenat(relative_dirfd, path, O_RDONLY);
 	
 	bool first_time = pragma_once_lookup(pragma_once, fd);
 	
@@ -90,18 +69,21 @@ void recursive_parse(
 						/* lex:            */ lex);
 					break;
 				
-				case t_charset:
+				case t_bracketed_identifier:
 					read_charset(
 						/* tokenizer: */ tokenizer,
 						/* scope      */ scope);
 					break;
 				
-				case t_fragment:
+				case t_gravemarked_identifier:
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
-						/* scratchpad: */ scratchpad,
 						/* scope       */ scope,
 						/* token_skip: */ options->token_skip);
+					break;
+				
+				case t_parenthesised_identifier:
+					TODO;
 					break;
 				
 				case t_identifier:
@@ -125,11 +107,6 @@ void recursive_parse(
 		free_tokenizer(tokenizer);
 	}
 	
-	if (relative_dirfd != old_relative_dirfd)
-		close(relative_dirfd);
-	
-	if (fd > 0)
-		close(fd);
 	
 	EXIT;
 }

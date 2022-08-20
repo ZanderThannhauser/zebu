@@ -128,7 +128,7 @@ static struct regex* helper(
 					TODO;
 				}
 				
-				TODO;
+				b.i++;
 			}
 			else
 			{
