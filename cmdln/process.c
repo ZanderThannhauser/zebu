@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <getopt.h>
+#include <sys/time.h>
+
 #include <debug.h>
 
 #include <defines/argv0.h>
@@ -15,6 +17,7 @@
 
 #include "struct.h"
 #include "usage.h"
+#include "verbose.h"
 #include "process.h"
 
 struct cmdln* cmdln_process(int argc, char* argv[])
@@ -27,8 +30,6 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	const char* output_prefix = "zebu";
 	
 	enum parser_template parser_template = pt_just_tables;
-	
-	bool verbose = false;
 	
 	int opt, option_index;
 	const struct option long_options[] = {
@@ -73,6 +74,10 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 					parser_template = pt_readline;
 				} else if (strequals(optarg, "readline-debug")) {
 					parser_template = pt_readline_debug;
+				} else if (strequals(optarg, "fileio-debug")) {
+					parser_template = pt_fileio_debug;
+				} else if (strequals(optarg, "fileio-passfail")) {
+					parser_template = pt_fileio_passfail;
 				} else if (strequals(optarg, "fileio-graphviz")) {
 					parser_template = pt_fileio_graphviz;
 				} else {
@@ -108,14 +113,13 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 	
 	flags->parser_template = parser_template;
 	
-	flags->verbose = verbose;
-	
 	dpvs(flags->input_path);
 	dpvs(flags->output_path);
 	dpvs(flags->output_prefix);
 	
 	dpv(flags->parser_template);
-	dpvb(flags->verbose);
+	
+	dpvb(verbose);
 	
 	EXIT;
 	return flags;

@@ -9,7 +9,6 @@ const unsigned zebu_shifts[175][39] = {
 	[1][9] = 18,
 	[1][10] = 60,
 	[1][11] = 23,
-	[1][14] = 176,
 	[1][22] = 130,
 	[1][23] = 160,
 	[1][24] = 162,
@@ -291,7 +290,7 @@ const unsigned zebu_shifts[175][39] = {
 	[174][31] = 170,
 	[174][38] = 175,
 };
-const unsigned zebu_reduces[177][14] = {
+const unsigned zebu_reduces[176][14] = {
 	[2][13] = 14,
 	[3][13] = 14,
 	[7][13] = 14,
@@ -460,9 +459,8 @@ const unsigned zebu_reduces[177][14] = {
 	[173][13] = 14,
 	[174][13] = 14,
 	[175][13] = 14,
-	[176][13] = 39,
 };
-const unsigned zebu_popcounts[177][14] = {
+const unsigned zebu_popcounts[176][14] = {
 	[2][13] = 1,
 	[3][13] = 2,
 	[7][13] = 4,
@@ -631,7 +629,6 @@ const unsigned zebu_popcounts[177][14] = {
 	[173][13] = 2,
 	[174][13] = 1,
 	[175][13] = 2,
-	[176][13] = 1,
 };
 const unsigned zebu_lexer[94][123] = {
 	[1][32] = 1,
@@ -790,7 +787,7 @@ const unsigned zebu_lexer[94][123] = {
 	[89][103] = 89,
 	[93][104] = 93,
 };
-const unsigned zebu_starts[177] = {
+const unsigned zebu_starts[176] = {
 	[1] = 1,
 	[2] = 28,
 	[3] = 33,
@@ -966,7 +963,6 @@ const unsigned zebu_starts[177] = {
 	[173] = 33,
 	[174] = 75,
 	[175] = 33,
-	[176] = 33,
 };
 const unsigned zebu_defaults[50] = {
 	[37] = 39,
@@ -1040,28 +1036,27 @@ const unsigned zebu_accepts[95] = {
 	[92] = 11,
 	[94] = 13,
 };
-const unsigned start_grammar_id = 39;
-const char* zebu_grammar_names[41] = {
-	[39] = "(start)",
-	[27] = "(trie #1)",
-	[32] = "(trie #11)",
-	[21] = "(trie #13)",
-	[34] = "(trie #14)",
-	[35] = "(trie #15)",
-	[36] = "(trie #16)",
-	[37] = "(trie #17)",
-	[38] = "(trie #18)",
-	[26] = "(trie #3)",
-	[25] = "(trie #5)",
-	[30] = "(trie #7)",
-	[33] = "(trie #9)",
+const unsigned start_grammar_id = 14;
+const char* zebu_grammar_names[40] = {
+	[14] = "(start)",
+	[34] = "(trie #0)",
+	[35] = "(trie #1)",
+	[33] = "(trie #12)",
+	[32] = "(trie #14)",
+	[27] = "(trie #16)",
+	[26] = "(trie #17)",
+	[36] = "(trie #2)",
+	[37] = "(trie #3)",
+	[38] = "(trie #4)",
+	[25] = "(trie #6)",
+	[21] = "(trie #7)",
+	[30] = "(trie #9)",
 	[22] = "0.a",
 	[23] = "0.b",
 	[24] = "0.c",
 	[28] = "1.a",
 	[29] = "1.b",
 	[31] = "1.c",
-	[14] = "start",
 };
 
 #include <assert.h>
@@ -1197,22 +1192,31 @@ static void escape(char *out, unsigned char in)
 		case '^':
 		case '&':
 		case '*':
-		case '(':
-		case ')':
 		case '-':
 		case '+':
 		case '=':
 		case '|':
+		case '<': case '>':
+		case '(': case ')':
 		case '{': case '}':
 		case '[': case ']':
 		case ':': case ';':
 		case ',': case '.':
+		case '_':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':
 			*out++ = in;
 			*out = 0;
 			break;
+		
+		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
+		
+		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
+		
+		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
 		
 		default:
 			sprintf(out, "\\x%02X", in);

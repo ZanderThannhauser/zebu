@@ -25,6 +25,10 @@ struct regex
 	
 	unsigned phase;
 	
+	#ifdef DEBUGGING
+	unsigned dotout_phase;
+	#endif
+	
 	unsigned is_accepting, priority;
 	
 	bool is_freeing;

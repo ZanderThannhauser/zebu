@@ -32,7 +32,8 @@
 void read_fragment(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
@@ -48,7 +49,7 @@ void read_fragment(
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope, token_skip);
 	
 	if (bun.is_nfa)
 	{

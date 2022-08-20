@@ -1,4 +1,7 @@
 
-struct regex;
+#include <stdbool.h>
 
-void regexset_add(struct regexset* this, struct regex* ptr);
+struct regex;
+struct regexset;
+
+bool regexset_add(struct regexset* this, struct regex* ptr);

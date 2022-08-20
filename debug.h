@@ -70,6 +70,10 @@
 	struct lookahead_deps;
 	struct yacc_stateinfo;
 	struct yacc_state;
+	struct pair;
+	struct simplify_task;
+	struct set;
+	struct regextree;
 	
 #endif
 

@@ -29,11 +29,34 @@
 
 #include <out/out.h>
 
+#ifdef RELEASE
+#include <signal.h>
+#include <sys/time.h>
+
+#include <cmdln/verbose.h>
+
+#include <misc/default_sighandler.h>
+#endif
+
 int main(int argc, char* argv[])
 {
 	ENTER;
 	
 	struct cmdln* flags = cmdln_process(argc, argv);
+	
+	#ifdef RELEASE
+	
+	if (verbose)
+	{
+		signal(SIGALRM, default_sighandler);
+		
+		setitimer(ITIMER_REAL, &(const struct itimerval) {
+			.it_interval = {.tv_sec = 0, .tv_usec = 100 * 1000},
+			.it_value = {.tv_sec = 0, .tv_usec = 100 * 1000},
+		}, NULL);
+	}
+	
+	#endif
 	
 	struct memory_arena* scratchpad = new_memory_arena();
 	

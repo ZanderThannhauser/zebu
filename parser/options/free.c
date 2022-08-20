@@ -43,12 +43,20 @@ void free_options(struct options* this)
 {
 	ENTER;
 	
-	free(this->start);
-	
 	free_dlink(this->disambiguatations.head);
 	
 	free(this);
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
 

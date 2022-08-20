@@ -15,6 +15,7 @@ enum tokenizer_state root_machine[number_of_tokenizer_states][256] = {
 	// directives:
 	[ts_start]['%'] = ts_after_percent,
 		[ts_after_percent][    ANY    ] = ts_directive,
+		[ts_after_percent][    '_'    ] = ts_after_percent,
 		[ts_after_percent]['a' ... 'z'] = ts_after_percent,
 	
 	// charset:

@@ -63,6 +63,12 @@
 #include "escaped/readline_debug_source.h"
 #include "escaped/readline_debug_header.h"
 
+#include "escaped/fileio_debug_source.h"
+#include "escaped/fileio_debug_header.h"
+
+#include "escaped/fileio_passfail_source.h"
+#include "escaped/fileio_passfail_header.h"
+
 #include "escaped/fileio_graphviz_source.h"
 #include "escaped/fileio_graphviz_header.h"
 
@@ -77,6 +83,8 @@ static struct {
 	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},
 	[pt_readline] = {&readline_source, &readline_header},
 	[pt_readline_debug] = {&readline_debug_source, &readline_debug_header},
+	[pt_fileio_debug] = {&fileio_debug_source, &fileio_debug_header},
+	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},
 	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},
 };
 

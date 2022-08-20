@@ -1,24 +1,18 @@
 
 // vim: ts=4
 
-// %code requires {
-// 	#include <stdio.h>
-// }
-
 %include <abc.zb>
 
 // charset: char literal: 'c', (charset $1)
-// charset: set-complement: ~ <$1>
 // charset: set-range: <$1> - <$2>
 // charset: set-intersect: <$1> & <$2> ...
 // charset: set-symmetric-difference: <$1> ^ <$2> ...
 // charset: set-union: <$1> ['|',',']? <$2> ...
+// charset: set-complement: ~ <$1>
 
 //    -?FA string literal, parenthesis: "literal", [char-set $1], (?FA $1)
 // DFA-DFA prefixes: !<$1>
 // NFA-NFA suffixes: <$1>?, <$1>+, <$1>*, <$1>{a, b}
-// NFA-NFA suffixes: <$1>?<, <$1>+<, <$1>*<, <$1>{a, b}< # lose against reductions
-// NFA-NFA suffixes: <$1>?>, <$1>+>, <$1>*>, <$1>{a, b}> # win against reductions
 // NFA-NFA concatenation: <$1>   <$2>   ...
 // DFA-DFA boolean-and  : <$1> & <$2> & ...
 // NFA-NFA boolean-or   : <$1> |> <$2> |> ... # on shift/reduce error: left wins
@@ -26,7 +20,7 @@
 // NFA-NFA boolean-or   : <$1> | <$2> | ...
 
 // LRP charater/string literal, regex, parenthesis: "token", `DFA $1`, (LRP $1)
-// LRP multiplicities: <$1>?, <$1>+, <$1>*, <$1>{a, b};
+// LRP multiplicities: <$1>?, <$1>+, <$1>*, <$1>{a}, <$1>{a, b};
 // LRP subdefinitions: ('%' definition (',' definitions)* ':')? <$1>
 // LRP concatenation: <$1> <$2> ...;
 // LRP or: <$1> | <$2> ... ;
@@ -37,8 +31,6 @@
 // the current character, and the current state, it can lookup the next
 // state. When the state returns a token enum value, it's done, feed it
 // to parser state machine.
-
-%start: start;
 
 // %disambiguate: error;
 %disambiguate: literal > regex;
@@ -65,24 +57,23 @@
 // 15: 'C'
 // 16: <EOF>
 
-start: "abc"                                                  "?"?
-	
-	 | `abc & (..)*`   ":"    `![~wy]*`                       "."
-	
-	 | `abc & (...)*` (":")+  [~(~wy & ~('x' - 'z')) & ~'w']  "!"
-	
+// abc?
+// aabbcc::x!
+// ABCCBA
+
+%start: "abc"                                                      "?"?
+	 | `abc & (..)*`   ":"    `![~wy]*`                            "."
+	 | `abc & (...)*` (":")+  [(~((~wy) & (~ 'x'-'z'))) & (~'w')]  "!"
 	 | %[b]: 'b';
 		`b`: [b,          'B'];
 		 a : 'a' (b | c)? 'a' ;
 		 b : `b` (a | c)? `b` ;
 		 c : 'c' (a | b)? 'c' :
 		    (b a | b c | a c | c a) +
-	
 	 | % a : 'A' (b | c)? 'A' ;
 		 b : 'B' (a | c)? 'B' ;
 		 c : 'C' (a | b)? 'C' :
-		       (a | b | c)    +
-;
+		       (a | b | c)   +;
 
 %skip: ['h']+;
 

@@ -11,7 +11,5 @@ struct cmdln
 	const char* output_prefix;
 	
 	enum parser_template parser_template;
-	
-	bool verbose;
 };
 

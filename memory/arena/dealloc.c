@@ -48,7 +48,6 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 		!(preheader =
 			(prefooter = (void*) header - sizeof(*prefooter))->header)->is_alloc)
 	{
-		ddprintf("merge upwards\n");
 		remove_from_ll(this, preheader);
 		
 		header = preheader;
@@ -59,8 +58,6 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	if ((void*) (footer + 1) < mentry->start + mentry->size &&
 		!(postheader = (void*) footer + sizeof(*footer))->is_alloc)
 	{
-		ddprintf("merge downwards\n");
-		
 		// remove from linked list
 		remove_from_ll(this, postheader);
 		

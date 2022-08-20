@@ -17,11 +17,12 @@
 struct rbundle read_or_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_and_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_and_token_expression(tokenizer, scratchpad, scope, token_skip);
 	
 	if (tokenizer->token == t_vertical_bar)
 	{
@@ -32,7 +33,7 @@ struct rbundle read_or_token_expression(
 		{
 			read_token(tokenizer, regex_inside_or_machine);
 			
-			struct rbundle sub = read_and_token_expression(tokenizer, scratchpad, scope);
+			struct rbundle sub = read_and_token_expression(tokenizer, scratchpad, scope, token_skip);
 			
 			if (!sub.is_nfa)
 				sub = regex_dfa_to_nfa(sub.dfa, scratchpad);

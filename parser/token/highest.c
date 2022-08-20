@@ -27,7 +27,8 @@
 struct rbundle read_highest_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	struct rbundle retval;
 	ENTER;
@@ -128,7 +129,7 @@ struct rbundle read_highest_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_root_machine);
 			
-			retval = read_root_token_expression(tokenizer, scratchpad, scope);
+			retval = read_root_token_expression(tokenizer, scratchpad, scope, token_skip);
 			
 			if (tokenizer->token != t_cparen)
 			{

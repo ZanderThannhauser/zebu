@@ -8,6 +8,8 @@
 #include "../tokenizer/machines/subroot.h"
 #include "../tokenizer/machines/production/inside_subdefinitions.h"
 
+#include "../options/struct.h"
+
 #include "../scope/push.h"
 #include "../scope/pop.h"
 
@@ -45,7 +47,7 @@ struct gbundle read_subdefinitions_production(
 					break;
 				
 				case t_fragment:
-					read_fragment(tokenizer, scratchpad, scope);
+					read_fragment(tokenizer, scratchpad, scope, options->token_skip);
 					break;
 				
 				case t_identifier:

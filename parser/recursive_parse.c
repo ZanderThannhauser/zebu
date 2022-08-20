@@ -100,7 +100,8 @@ void recursive_parse(
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
 						/* scratchpad: */ scratchpad,
-						/* scope       */ scope);
+						/* scope       */ scope,
+						/* token_skip: */ options->token_skip);
 					break;
 				
 				case t_identifier:

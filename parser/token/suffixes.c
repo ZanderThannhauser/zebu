@@ -25,11 +25,12 @@
 struct rbundle read_suffixes_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_prefixes_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_prefixes_token_expression(tokenizer, scratchpad, scope, token_skip);
 	
 	switch (tokenizer->token)
 	{
@@ -58,8 +59,19 @@ struct rbundle read_suffixes_token_expression(
 			if (!retval.is_nfa)
 				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
 			
-			regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
-			regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+			if (token_skip)
+			{
+				struct regex* cloned = regex_clone(scratchpad, token_skip);
+				
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
+				regex_add_lambda_transition(cloned, scratchpad, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+			}
+			else
+			{
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+			}
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
@@ -77,7 +89,17 @@ struct rbundle read_suffixes_token_expression(
 			if (!retval.is_nfa)
 				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
 			
-			regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
+			if (token_skip)
+			{
+				struct regex* cloned = regex_clone(scratchpad, token_skip);
+				
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
+				regex_add_lambda_transition(cloned, scratchpad, retval.nfa.start);
+			}
+			else
+			{
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
+			}
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
@@ -98,6 +120,12 @@ struct rbundle read_suffixes_token_expression(
 				original = retval;
 			else
 				original = regex_dfa_to_nfa(retval.dfa, scratchpad);
+			
+			if (token_skip)
+			{
+				// oh boy...
+				TODO;
+			}
 			
 			read_token(tokenizer, numeric_machine);
 			dpvs(tokenizer->tokenchars.chars);

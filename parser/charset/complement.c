@@ -10,7 +10,7 @@
 #include "charset/inc.h"
 #include "charset/free.h"
 
-#include "highest.h"
+#include "union.h"
 #include "complement.h"
 
 struct charset* read_complement_charset(
@@ -28,7 +28,7 @@ struct charset* read_complement_charset(
 	}
 	
 	struct charset* retval;
-	struct charset* inner = read_highest_charset(tokenizer, scope);
+	struct charset* inner = read_union_charset(tokenizer, scope);
 	
 	if (take_complement)
 	{

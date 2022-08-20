@@ -124,10 +124,6 @@ void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode) {
 	return item;
 }
 
-void *avl_delete(avl_tree_t *avltree, const void *item) {
-	return avl_delete_node(avltree, avl_search(avltree, item));
-}
-
 avl_node_t *avl_fixup_node(avl_tree_t *avltree, avl_node_t *newnode) {
 	avl_node_t *oldnode = NULL, *node;
 

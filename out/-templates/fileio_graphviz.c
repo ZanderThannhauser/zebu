@@ -142,7 +142,7 @@ struct value* new_EOF_token(unsigned shifton)
 	return value;
 }
 
-struct lexer { unsigned char* data, n, cap; };
+struct lexer { unsigned char* data; unsigned n, cap; };
 
 struct value* read_token(struct lexer* lexer, FILE* stream, unsigned state)
 {

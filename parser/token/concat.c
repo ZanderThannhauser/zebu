@@ -5,6 +5,7 @@
 
 #include <lex/regex/dfa_to_nfa.h>
 #include <lex/regex/dotout.h>
+#include <lex/regex/clone.h>
 #include <lex/regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
@@ -15,11 +16,12 @@
 struct rbundle read_concat_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_suffixes_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_suffixes_token_expression(tokenizer, scratchpad, scope, token_skip);
 	
 	switch (tokenizer->token)
 	{
@@ -30,7 +32,7 @@ struct rbundle read_concat_token_expression(
 		case t_character_literal:
 		case t_dot:
 		{
-			struct rbundle next = read_concat_token_expression(tokenizer, scratchpad, scope);
+			struct rbundle next = read_concat_token_expression(tokenizer, scratchpad, scope, token_skip);
 			
 			if (!retval.is_nfa)
 				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
@@ -38,7 +40,17 @@ struct rbundle read_concat_token_expression(
 			if (!next.is_nfa)
 				next = regex_dfa_to_nfa(next.dfa, scratchpad);
 			
-			regex_add_lambda_transition(retval.nfa.end, scratchpad, next.nfa.start);
+			if (token_skip)
+			{
+				struct regex* cloned = regex_clone(scratchpad, token_skip);
+				
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
+				regex_add_lambda_transition(cloned, scratchpad, next.nfa.start);
+			}
+			else
+			{
+				regex_add_lambda_transition(retval.nfa.end, scratchpad, next.nfa.start);
+			}
 			
 			retval = (struct rbundle) {
 				.is_nfa = true,

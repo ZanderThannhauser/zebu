@@ -10,9 +10,8 @@ struct options* new_options()
 {
 	struct options* this = smalloc(sizeof(*this));
 	
-	this->start = NULL;
-	
 	this->skip = NULL;
+	this->token_skip = NULL;
 	
 	this->disambiguatations.head = NULL;
 	this->disambiguatations.tail = NULL;

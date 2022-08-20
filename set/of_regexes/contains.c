@@ -1,8 +1,6 @@
 
 #include <stdlib.h>
 
-#include <debug.h>
-
 #include "struct.h"
 #include "contains.h"
 
@@ -24,11 +22,6 @@ bool regexset_contains(
 	struct regexset* this,
 	const void* ptr)
 {
-	ENTER;
-	
-	dpv(this->n);
-	dpv(ptr);
-	
 	bool found = !!bsearch(
 		/* void* key: */ &ptr,
 		/* void* base: */ this->data,
@@ -36,9 +29,6 @@ bool regexset_contains(
 		/* size_t size: */ sizeof(*this->data),
 		/* cmp function: */ cmp);
 	
-	dpvb(found);
-	
-	EXIT;
 	return found;
 }
 

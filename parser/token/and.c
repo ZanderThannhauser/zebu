@@ -19,17 +19,18 @@
 struct rbundle read_and_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_concat_token_expression(tokenizer, scratchpad, scope);
+	struct rbundle retval = read_concat_token_expression(tokenizer, scratchpad, scope, token_skip);
 	
 	while (tokenizer->token == t_ampersand)
 	{
 		read_token(tokenizer, regex_inside_and_machine);
 		
-		struct rbundle right = read_concat_token_expression(tokenizer, scratchpad, scope);
+		struct rbundle right = read_concat_token_expression(tokenizer, scratchpad, scope, token_skip);
 		
 		struct regex* left_machine;
 		

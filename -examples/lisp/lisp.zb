@@ -1,0 +1,12 @@
+
+%start: value;
+
+%skip: [' ', '\t', '\n'];
+
+value
+	: `['0' - '9']+` // number
+	| `['a' - 'z', 'A' - 'Z']+` // identifier
+	| '`' value
+	| '(' value+ ')'
+	;
+

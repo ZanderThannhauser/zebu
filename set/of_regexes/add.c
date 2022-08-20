@@ -8,7 +8,7 @@
 #include "struct.h"
 #include "add.h"
 
-void regexset_add(struct regexset* this, struct regex* ptr)
+bool regexset_add(struct regexset* this, struct regex* ptr)
 {
 	if (this->n + 1 > this->cap)
 	{
@@ -19,7 +19,7 @@ void regexset_add(struct regexset* this, struct regex* ptr)
 	
 	unsigned i, n;
 	
-	for (i = 0, n = this->n; i < n; i++)
+	for (i = 0, n = this->n; i < n; )
 	{
 		struct regex* ele = this->data[i];
 		
@@ -30,15 +30,16 @@ void regexset_add(struct regexset* this, struct regex* ptr)
 		}
 		else if (ptr > ele)
 		{
-			;
+			i++;
 		}
 		else
 		{
-			return;
+			return false;
 		}
 	}
 	
 	this->data[this->n++] = ptr;
+	return true;
 }
 
 

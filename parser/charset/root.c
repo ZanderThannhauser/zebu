@@ -1,8 +1,7 @@
 
 #include <debug.h>
 
-#include "union.h"
-
+#include "complement.h"
 #include "root.h"
 
 struct charset* read_root_charset(
@@ -11,7 +10,7 @@ struct charset* read_root_charset(
 {
 	ENTER;
 	
-	struct charset* retval = read_union_charset(tokenizer, scope);
+	struct charset* retval = read_complement_charset(tokenizer, scope);
 	
 	EXIT;
 	return retval;

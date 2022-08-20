@@ -19,7 +19,7 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_range.h"
 
-#include "complement.h"
+#include "highest.h"
 #include "range.h"
 
 struct charset* read_range_charset(
@@ -29,14 +29,14 @@ struct charset* read_range_charset(
 	struct charset* retval;
 	ENTER;
 	
-	struct charset* left = read_complement_charset(tokenizer, scope);
+	struct charset* left = read_highest_charset(tokenizer, scope);
 	struct charset* right = NULL;
 	
 	if (tokenizer->token == t_hypen)
 	{
 		read_token(tokenizer, charset_inside_range_machine);
 		
-		right = read_complement_charset(tokenizer, scope);
+		right = read_highest_charset(tokenizer, scope);
 		
 		if (false
 			|| left->is_complement || left->len != 1

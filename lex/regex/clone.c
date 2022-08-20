@@ -17,7 +17,6 @@
 #include "state/add_lambda_transition.h"
 #include "state/set_default_transition.h"
 
-#include "dotout.h"
 #include "clone.h"
 
 struct mapping
@@ -122,10 +121,6 @@ struct regex* regex_clone(
 	struct regex* retval = clone_helper(mappings, arena, in);
 	
 	avl_free_tree(mappings);
-	
-	#ifdef DEBUGGING
-	regex_dotout(retval, __PRETTY_FUNCTION__);
-	#endif
 	
 	EXIT;
 	return retval;

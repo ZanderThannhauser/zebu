@@ -15,7 +15,8 @@
 struct rbundle read_prefixes_token_expression(
 	struct tokenizer* tokenizer,
 	struct memory_arena* scratchpad,
-	struct scope* scope)
+	struct scope* scope,
+	struct regex* token_skip)
 {
 	ENTER;
 	
@@ -23,7 +24,7 @@ struct rbundle read_prefixes_token_expression(
 	{
 		read_token(tokenizer, regex_inside_emark_machine);
 		
-		struct rbundle inner = read_highest_token_expression(tokenizer, scratchpad, scope);
+		struct rbundle inner = read_highest_token_expression(tokenizer, scratchpad, scope, token_skip);
 		
 		struct regex* machine;
 		
@@ -54,7 +55,7 @@ struct rbundle read_prefixes_token_expression(
 	}
 	else
 	{
-		struct rbundle retval = read_highest_token_expression(tokenizer, scratchpad, scope);
+		struct rbundle retval = read_highest_token_expression(tokenizer, scratchpad, scope, token_skip);
 		EXIT;
 		return retval;
 	}

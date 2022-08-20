@@ -132,22 +132,31 @@ static void escape(char *out, unsigned char in)
 		case '^':
 		case '&':
 		case '*':
-		case '(':
-		case ')':
 		case '-':
 		case '+':
 		case '=':
 		case '|':
+		case '<': case '>':
+		case '(': case ')':
 		case '{': case '}':
 		case '[': case ']':
 		case ':': case ';':
 		case ',': case '.':
+		case '_':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':
 			*out++ = in;
 			*out = 0;
 			break;
+		
+		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
+		
+		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
+		
+		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
 		
 		default:
 			sprintf(out, "\\x%02X", in);

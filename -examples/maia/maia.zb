@@ -1,5 +1,5 @@
 
-%start passwd_file;
+%start: passwd_file;
 
 passwd_file: passwd_record newline | passwd_file passwd_record newline ;
 

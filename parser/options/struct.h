@@ -3,9 +3,8 @@ struct regex;
 
 struct options
 {
-	char* start;
-	
 	struct regex *skip;
+	struct regex *token_skip;
 	
 	struct {
 		struct dlink *head, *tail;

@@ -254,7 +254,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_root_machine);
 			
-			struct rbundle regex = read_root_token_expression(tokenizer, scratchpad, scope);
+			struct rbundle regex = read_root_token_expression(tokenizer, scratchpad, scope, options->token_skip);
 			
 			if (tokenizer->token != t_gravemark)
 			{
