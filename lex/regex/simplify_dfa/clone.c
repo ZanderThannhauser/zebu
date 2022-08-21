@@ -4,14 +4,12 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include <tree/of_regexes/struct.h>
 
-#include <avl/new.h>
 #include <avl/search.h>
 #include <avl/free_tree.h>
-#include <avl/safe_insert.h>
 
 /*#include <memory/smalloc.h>*/
 
@@ -28,10 +26,14 @@
 static struct mapping {
 	struct regex* old; // must be the first
 	struct regex* new;
-}* new_mapping(struct regex* old, struct regex* new) {
+}* new_mapping(struct regex* old, struct regex* new)
+{
+	TODO;
+	#if 0
 	struct mapping* this = smalloc(sizeof(*this));
 	this->old = old, this->new = new;
 	return this;
+	#endif
 }
 
 static int compare_mappings(const void* a, const void* b)
@@ -65,6 +67,8 @@ static struct regex* clone_helper(
 	struct mapping* mapping;
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(old);
 	
 	if ((node = avl_search(mappings, &old)))
@@ -140,6 +144,7 @@ static struct regex* clone_helper(
 		EXIT;
 		return new;
 	}
+	#endif
 }
 
 struct regex* regex_simplify_dfa_clone(
@@ -151,6 +156,8 @@ struct regex* regex_simplify_dfa_clone(
 	
 	dpv(original_start);
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free);
 	
 	struct regex* cloneme = find(connections, original_start);
@@ -164,6 +171,7 @@ struct regex* regex_simplify_dfa_clone(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 

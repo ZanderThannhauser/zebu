@@ -1,6 +1,4 @@
 
-#include <memory/srealloc.h>
-
 #include <stddef.h>
 #include <debug.h>
 
@@ -20,6 +18,8 @@ struct tokenset* tokensetset_add(struct tokensetset* this, struct tokenset* ts)
 	
 	dpv(ts);
 	
+	TODO;
+	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
@@ -76,6 +76,7 @@ struct tokenset* tokensetset_add(struct tokensetset* this, struct tokenset* ts)
 	
 	EXIT;
 	return found;
+	#endif
 }
 
 

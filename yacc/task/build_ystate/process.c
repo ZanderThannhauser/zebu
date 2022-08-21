@@ -5,12 +5,8 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
-#include <avl/new.h>
 #include <avl/search.h>
 #include <avl/free_tree.h>
-#include <avl/safe_insert.h>
 
 #include <yacc/gegex/state/struct.h>
 
@@ -84,6 +80,8 @@ static struct shift_node* new_shift_node(unsigned token)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct shift_node* this = smalloc(sizeof(*this));
 	
 	this->token = token;
@@ -91,6 +89,7 @@ static struct shift_node* new_shift_node(unsigned token)
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 static void add_shift(
@@ -105,6 +104,8 @@ static void add_shift(
 	dpv(token);
 	dpvs(reduce_as);
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(tree, &token);
 	
 	if (node)
@@ -125,6 +126,7 @@ static void add_shift(
 		
 		safe_avl_insert(tree, new);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -169,6 +171,8 @@ static struct reduce_node* new_reduce_node(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct reduce_node* this = smalloc(sizeof(*this));
 	
 	this->token = token;
@@ -181,6 +185,7 @@ static struct reduce_node* new_reduce_node(
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 static void add_reduce(
@@ -193,6 +198,8 @@ static void add_reduce(
 	
 	dpv(token);
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(tree, &token);
 	
 	if (node)
@@ -207,6 +214,7 @@ static void add_reduce(
 		
 		safe_avl_insert(tree, new);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -244,6 +252,8 @@ static struct subgrammar_node* new_subgrammar_node(const char* grammar)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct subgrammar_node* this = smalloc(sizeof(*this));
 	
 	this->grammar = grammar;
@@ -253,6 +263,7 @@ static struct subgrammar_node* new_subgrammar_node(const char* grammar)
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 static void add_subgrammar(
@@ -267,6 +278,8 @@ static void add_subgrammar(
 	dpvs(grammar);
 	dpvs(reduce_as);
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(tree, &grammar);
 	
 	if (node)
@@ -287,6 +300,7 @@ static void add_subgrammar(
 		
 		safe_avl_insert(tree, new);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -316,6 +330,8 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 	struct build_ystate_task* const this = (void*) super;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct memory_arena* const scratchpad = shared->scratchpad;
 	
 	struct yacc_state* const state = this->state;
@@ -532,6 +548,8 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 	avl_free_tree(reduce_tokens);
 	
 	avl_free_tree(subgrammars);
+	
+	#endif
 	
 	EXIT;
 }

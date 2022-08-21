@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
@@ -25,6 +25,7 @@ struct regex* new_regex(struct memory_arena* arena)
 	this->EOF_transition_to = NULL;
 	
 	this->phase = 0;
+	
 	#ifdef DEBUGGING
 	this->dotout_phase = 0;
 	#endif

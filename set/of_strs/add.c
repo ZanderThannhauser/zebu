@@ -1,5 +1,4 @@
 
-#include <memory/srealloc.h>
 #include <string.h>
 
 #include <debug.h>
@@ -11,6 +10,8 @@ void strset_add(struct strset* this, const char* str)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
@@ -51,5 +52,6 @@ void strset_add(struct strset* this, const char* str)
 	this->data[this->n++] = str;
 	
 	EXIT;
+	#endif
 }
 

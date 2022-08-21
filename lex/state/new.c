@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
+/*#include <memory/arena/malloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -11,6 +11,8 @@ struct lex_state* new_lex_state(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct lex_state* this = arena_malloc(scratchpad, sizeof(*this));
 	
 	this->transitions.data = NULL;
@@ -27,5 +29,6 @@ struct lex_state* new_lex_state(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

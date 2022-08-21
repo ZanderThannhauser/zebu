@@ -1,6 +1,4 @@
 
-#include <memory/srealloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -10,6 +8,8 @@ void tokenset_add(struct tokenset* this, unsigned token)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(token);
 	
 	if (this->n + 1 > this->cap)
@@ -43,20 +43,6 @@ void tokenset_add(struct tokenset* this, unsigned token)
 	}
 	
 	this->data[this->n++] = token;
-	
-	#if 0
-	#ifdef DEBUGGING
-	{
-		unsigned n;
-		for (i = 0, n = this->n; i < n; i++)
-		{
-			dpv(this->data[i]);
-		}
-		
-/*		CHECK_NTH(4);*/
-		getchar();
-	}
-	#endif
 	#endif
 	
 	EXIT;

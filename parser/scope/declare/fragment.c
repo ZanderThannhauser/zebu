@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
 /*#include <memory/sstrndup.h>*/
 
 #include "../struct.h"
@@ -22,12 +20,15 @@ void scope_declare_fragment(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(name);
 	dpv(token);
 	
 	assert(this->layer);
 	
 	safe_avl_insert(this->layer->fragments, new_named_token(name, token));
+	#endif
 	
 	EXIT;
 }

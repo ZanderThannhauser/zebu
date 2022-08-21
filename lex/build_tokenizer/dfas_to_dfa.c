@@ -4,12 +4,10 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <memory/smalloc.h>
-#include <memory/scalloc.h>
+/*#include <memory/smalloc.h>*/
+/*#include <memory/scalloc.h>*/
 
 #include <avl/search.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 #include <avl/free_tree.h>
 
 #include <lex/regex/state/struct.h>
@@ -52,12 +50,15 @@ static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
 	const struct regexset* const original_states,
 	struct lex_state* result)
 {
+	TODO;
+	#if 0
 	struct dfas_to_dfa_node* node = smalloc(sizeof(*node));
 	
 	node->states = regexset_clone(original_states);
 	node->result = result;
 	
 	return node;
+	#endif
 }
 
 static int compare_dfas_to_dfa_nodes(
@@ -75,9 +76,11 @@ static void free_dfas_to_dfa_node(void* ptr)
 {
 	struct dfas_to_dfa_node* this = ptr;
 	
+	TODO;
+	#if 0
 	free_regexset(this->states);
 	free(this);
-	
+	#endif
 }
 
 static struct lex_state* helper(
@@ -89,6 +92,8 @@ static struct lex_state* helper(
 	struct lex_state* state;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(cache, &states);
 	
 	if (node)
@@ -266,6 +271,7 @@ static struct lex_state* helper(
 	
 	EXIT;
 	return state;
+	#endif
 }
 
 struct lex_state* dfas_to_dfa(
@@ -279,6 +285,8 @@ struct lex_state* dfas_to_dfa(
 	regex_dotout_set(starts);
 	#endif
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* cache = new_avl_tree(compare_dfas_to_dfa_nodes, free_dfas_to_dfa_node);
 	
 	struct lex_state* new = helper(accepting, scratchpad, cache, starts);
@@ -291,6 +299,7 @@ struct lex_state* dfas_to_dfa(
 	
 	EXIT;
 	return new;
+	#endif
 }
 
 

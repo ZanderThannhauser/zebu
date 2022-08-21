@@ -15,21 +15,21 @@ struct br_rettype break_path(int old_dirfd, const char* path)
 	
 	if (slash)
 	{
-		char* path_dup = sstrdup(path);
+		char path_rw[PATH_MAX];
 		
-		path_dup[slash - path] = '\0';
+		strcpy(path_rw, path);
 		
-		dpvs(path_dup);
+		path_rw[slash - path] = '\0';
 		
-		dirfd = sopenat(old_dirfd, path_dup, O_PATH);
+		dpvs(path_rw);
+		
+		dirfd = sopenat(old_dirfd, path_rw, O_PATH);
 		
 		char* filename = slash + 1;
 		
 		dpvs(filename);
 		
 		fd = sopenat(dirfd, filename, O_RDONLY);
-		
-		free(path_dup);
 	}
 	else
 	{

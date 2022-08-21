@@ -1,8 +1,6 @@
 
 #include <assert.h>
 
-#include <memory/srealloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -12,6 +10,8 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(ptr);
 	
 	if (this->n + 1 > this->cap)
@@ -45,6 +45,7 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 	}
 	
 	this->data[this->n++] = ptr;
+	#endif
 	
 	EXIT;
 }

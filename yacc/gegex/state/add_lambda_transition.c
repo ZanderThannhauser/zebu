@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/realloc.h>
+/*#include <memory/arena/realloc.h>*/
 
 #include "struct.h"
 #include "add_lambda_transition.h"
@@ -13,6 +13,8 @@ void gegex_add_lambda_transition(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(from);
 	dpv(to);
 	
@@ -32,6 +34,7 @@ void gegex_add_lambda_transition(
 	from->lambda_transitions.data[from->lambda_transitions.n++] = to;
 	
 	EXIT;
+	#endif
 }
 
 

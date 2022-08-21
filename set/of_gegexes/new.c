@@ -1,6 +1,4 @@
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -10,6 +8,8 @@ struct gegexset* new_gegexset()
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegexset* this = smalloc(sizeof(*this));
 	
 	this->data = NULL;
@@ -18,5 +18,6 @@ struct gegexset* new_gegexset()
 	
 	EXIT;
 	return this;
+	#endif
 }
 

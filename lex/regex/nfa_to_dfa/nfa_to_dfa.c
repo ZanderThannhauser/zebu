@@ -4,8 +4,6 @@
 #include <debug.h>
 
 #include <avl/free_tree.h>
-#include <avl/avl.h>
-#include <avl/new.h>
 /*#include <avl/insert.h>*/
 
 /*#include <memory/smalloc.h>*/
@@ -43,6 +41,8 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare_regex_mappings, free_regex_mapping);
 	
 	#ifdef RELEASE
@@ -91,6 +91,7 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 

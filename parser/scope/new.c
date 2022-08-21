@@ -1,9 +1,9 @@
 
 #include <debug.h>
 
-/*#include <avl/new.h>*/
+#include <arena/malloc.h>
 
-#include <memory/smalloc.h>
+/*#include <avl/new.h>*/
 
 /*#include <avl/init_tree.h>*/
 
@@ -18,17 +18,21 @@
 #include "new.h"
 #include "push.h"
 
-struct scope* new_scope(struct avl_tree_t* grammar)
+struct scope* new_scope(
+	struct memory_arena* arena,
+	struct avl_tree_t* grammar)
 {
 	ENTER;
 	
-	struct scope* this = smalloc(sizeof(*this));
+	struct scope* this = arena_malloc(arena, sizeof(*this));
 	
 	this->grammar = grammar;
 	
 	this->prefix.chars = NULL;
 	this->prefix.n = 0;
 	this->prefix.cap = 0;
+	
+	this->arena = arena;
 	
 	this->layer = NULL;
 	

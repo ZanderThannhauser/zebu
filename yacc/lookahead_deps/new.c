@@ -1,10 +1,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
-#include <avl/new.h>
-
 #include "node/compare.h"
 #include "node/free.h"
 
@@ -13,11 +9,14 @@
 
 struct lookahead_deps* new_lookahead_deps()
 {
+	TODO;
+	#if 0
 	struct lookahead_deps* this = smalloc(sizeof(*this));
 	
 	this->dependant_of = new_avl_tree(compare_lookahead_deps_nodes, free_lookahead_deps_node);
 	this->dependant_on = new_avl_tree(compare_lookahead_deps_nodes, free_lookahead_deps_node);
 	
 	return this;
+	#endif
 }
 

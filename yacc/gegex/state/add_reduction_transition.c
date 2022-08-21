@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
-#include <memory/arena/realloc.h>
+/*#include <memory/arena/malloc.h>*/
+/*#include <memory/arena/realloc.h>*/
 
 #include "struct.h"
 #include "add_reduction_transition.h"
@@ -16,6 +16,8 @@ void gegex_add_reduction_transition(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct rtransition* rtransition = arena_malloc(arena, sizeof(*rtransition));
 	
 	rtransition->token = token;
@@ -44,6 +46,7 @@ void gegex_add_reduction_transition(
 	data[i + 1] = rtransition;
 	
 	EXIT;
+	#endif
 }
 
 

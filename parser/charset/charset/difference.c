@@ -1,11 +1,7 @@
 
 #include <stdlib.h>
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
-
-#include <memory/srealloc.h>
 
 #include "struct.h"
 #include "new.h"
@@ -18,6 +14,8 @@ struct charset* charset_difference(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	size_t n = 0;
 	
 	char* chars = smalloc(sizeof(*chars) * a->len);
@@ -46,6 +44,7 @@ struct charset* charset_difference(
 	
 	EXIT;
 	return new;
+	#endif
 }
 
 

@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
 /*#include <memory/sstrndup.h>*/
 
 #include "../struct.h"
@@ -22,6 +20,8 @@ void scope_declare_charset(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(name);
 	
 	dpv(charset);
@@ -29,6 +29,7 @@ void scope_declare_charset(
 	assert(this->layer);
 	
 	safe_avl_insert(this->layer->charsets, new_named_charset(name, charset));
+	#endif
 	
 	EXIT;
 }

@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
-#include <memory/arena/realloc.h>
+#include <arena/malloc.h>
+#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_transition.h"
@@ -13,6 +13,8 @@ void regex_add_transition(
 	unsigned value,
 	struct regex* to)
 {
+	ENTER;
+	
 	struct transition* transition = arena_malloc(arena, sizeof(*transition));
 	
 	transition->value = value;
@@ -37,6 +39,8 @@ void regex_add_transition(
 	}
 	
 	data[i + 1] = transition;
+	
+	EXIT;
 }
 
 

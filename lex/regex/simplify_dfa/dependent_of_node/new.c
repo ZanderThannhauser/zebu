@@ -1,9 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
-#include <avl/new.h>
+/*#include <memory/smalloc.h>*/
 
 #include "../pair/compare.h"
 #include "../pair/free.h"
@@ -15,6 +13,8 @@ struct dependent_of_node* new_dependent_of_node(struct regex* a, struct regex* b
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct dependent_of_node* this = smalloc(sizeof(*this));
 	
 	this->pair.a = a;
@@ -24,5 +24,6 @@ struct dependent_of_node* new_dependent_of_node(struct regex* a, struct regex* b
 	
 	EXIT;
 	return this;
+	#endif
 }
 

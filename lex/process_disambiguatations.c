@@ -4,8 +4,8 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-#include <memory/srealloc.h>
+/*#include <memory/smalloc.h>*/
+/*#include <memory/srealloc.h>*/
 
 #include <set/of_tokens/struct.h>
 #include <set/of_tokens/new.h>
@@ -38,14 +38,19 @@ struct tokenset_array
 
 static struct tokenset_array* new_tokenset_array()
 {
+	TODO;
+	#if 0
 	struct tokenset_array* this = smalloc(sizeof(*this));
 	this->data = NULL;
 	this->n = 0, this->cap = 0;
 	return this;
+	#endif
 }
 
 static void tokenset_array_append(struct tokenset_array* this, struct tokenset* ele)
 {
+	TODO;
+	#if 0
 	if (this->n + 1 >= this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
@@ -53,6 +58,7 @@ static void tokenset_array_append(struct tokenset_array* this, struct tokenset* 
 	}
 	
 	this->data[this->n++] = ele;
+	#endif
 }
 
 static void free_tokenset_array(struct tokenset_array* this)
@@ -71,6 +77,8 @@ static struct tokenset_array* msort(
 	
 	dpv(n);
 	
+	TODO;
+	#if 0
 	if (n < 2)
 	{
 		assert(n == 1);
@@ -122,6 +130,7 @@ static struct tokenset_array* msort(
 		free_tokenset_array(left);
 		free_tokenset_array(right);
 	}
+	#endif
 	
 	EXIT;
 	return retval;
@@ -196,12 +205,15 @@ void lex_process_disambiguatations(
 	
 	struct tokenset_array* original = new_tokenset_array();
 	
+	TODO;
+	#if 0
 	for (unsigned i = 1, n = this->next_id; i < n; i++)
 	{
 		struct tokenset* ts = new_tokenset();
 		tokenset_add(ts, i);
 		tokenset_array_append(original, ts);
 	}
+	#endif
 	
 	struct tokenset_array* sorted = msort(original->data, original->n, compare);
 	

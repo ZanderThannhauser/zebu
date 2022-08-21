@@ -5,21 +5,23 @@
 
 struct lex
 {
-	unsigned next_id;
+	
+	struct memory_arena* arena;
 	
 	struct avl_tree_t* dfa_to_id; // token -> token id
 	struct avl_tree_t* dfa_from_id; // token id -> token
 	
+	unsigned next_id;
+	
+	unsigned EOF_token_id;
+	
 	struct {
 		struct avl_tree_t* cache; // # set(token ids) -> machine id
 	} tokenizer;
-	
-	unsigned EOF_token_id;
 	
 	struct {
 		struct tokenset* literal_ids;
 		struct tokenset* regex_ids;
 	} disambiguations;
 	
-	struct memory_arena* scratchpad;
 };

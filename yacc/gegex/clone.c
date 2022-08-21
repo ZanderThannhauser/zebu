@@ -5,11 +5,9 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 #include <avl/free_tree.h>
 
-#include <memory/arena/strdup.h>
+/*#include <memory/arena/strdup.h>*/
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -47,6 +45,8 @@ static struct gegex* clone_helper(
 	struct avl_node_t* node;
 	ENTER;
 	
+	TODO;
+	#if 0
 	if ((node = avl_search(mappings, &old)))
 	{
 		struct mapping* mapping = node->item;
@@ -116,6 +116,7 @@ static struct gegex* clone_helper(
 		EXIT;
 		return new;
 	}
+	#endif
 }
 
 struct gegex* gegex_clone(
@@ -124,6 +125,8 @@ struct gegex* gegex_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare, free);
 	
 	struct gegex* retval = clone_helper(mappings, arena, in);
@@ -132,6 +135,7 @@ struct gegex* gegex_clone(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 struct gbundle gegex_clone_nfa(
@@ -141,6 +145,8 @@ struct gbundle gegex_clone_nfa(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare, free);
 	
 	struct gegex* new_start = clone_helper(mappings, arena, start);
@@ -150,6 +156,7 @@ struct gbundle gegex_clone_nfa(
 	
 	EXIT;
 	return (struct gbundle) {new_start, new_end};
+	#endif
 }
 
 

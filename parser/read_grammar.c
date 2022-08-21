@@ -8,8 +8,6 @@
 
 #include <debug.h>
 
-#include <memory/sstrdup.h>
-
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
 #include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
@@ -37,6 +35,8 @@ void read_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_identifier);
 	
 	char* name = sstrdup(tokenizer->tokenchars.chars);
@@ -80,6 +80,7 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
+	#endif
 	
 	EXIT;
 }

@@ -1,7 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
 #include <avl/free_tree.h>
 
 #include <set/of_gegexes/new.h>
@@ -22,6 +21,8 @@ struct gegex* gegex_nfa_to_dfa(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare_gegex_mappings, free_gegex_mapping);
 	
 	struct gegexset* start_set = new_gegexset();
@@ -40,5 +41,6 @@ struct gegex* gegex_nfa_to_dfa(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 

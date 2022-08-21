@@ -1,11 +1,12 @@
 
+
 #include <string.h>
 #include <assert.h>
 #include <debug.h>
 
 #include <lex/lookup/add_token.h>
 
-#include <memory/arena/malloc.h>
+/*#include <memory/arena/malloc.h>*/
 
 #include <lex/regex/from_literal.h>
 #include <lex/regex/from_charset.h>
@@ -65,6 +66,8 @@ struct gbundle read_highest_production(
 	struct gbundle retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	switch (tokenizer->token)
 	{
 		case t_oparen:
@@ -356,6 +359,7 @@ struct gbundle read_highest_production(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 

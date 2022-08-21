@@ -1,6 +1,4 @@
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -9,6 +7,9 @@
 struct strset* new_strset()
 {
 	ENTER;
+	
+	TODO;
+	#if 0
 	struct strset* this = smalloc(sizeof(*this));
 	
 	this->data = NULL;
@@ -17,5 +18,6 @@ struct strset* new_strset()
 	
 	EXIT;
 	return this;
+	#endif
 }
 

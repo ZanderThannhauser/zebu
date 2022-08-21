@@ -2,7 +2,6 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/new.h"
@@ -18,6 +17,9 @@ void simplify_dfa_add_dep(
 	struct regex* a_of, struct regex* b_of)
 {
 	ENTER;
+	
+	TODO;
+	#if 0
 	if (a_of > b_of)
 	{
 		struct regex* swap = b_of;
@@ -47,6 +49,7 @@ void simplify_dfa_add_dep(
 		
 		safe_avl_insert(dependent_of, new);
 	}
+	#endif
 	
 	EXIT;
 }

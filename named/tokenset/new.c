@@ -1,5 +1,5 @@
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include <debug.h>
 
@@ -10,6 +10,8 @@ struct named_tokenset* new_named_tokenset(const char* name, struct tokenset* tok
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct named_tokenset* this = smalloc(sizeof(*this));
 	
 	this->name = name;
@@ -17,5 +19,6 @@ struct named_tokenset* new_named_tokenset(const char* name, struct tokenset* tok
 	
 	EXIT;
 	return this;
+	#endif
 }
 

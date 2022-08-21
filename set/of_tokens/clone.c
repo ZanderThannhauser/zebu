@@ -1,7 +1,4 @@
 
-#include <memory/smalloc.h>
-#include <memory/smemdup.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -11,6 +8,8 @@ struct tokenset* tokenset_clone(const struct tokenset* other)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct tokenset* this = smalloc(sizeof(*this));
 	
 	this->n = other->n;
@@ -20,5 +19,6 @@ struct tokenset* tokenset_clone(const struct tokenset* other)
 	
 	EXIT;
 	return this;
+	#endif
 }
 

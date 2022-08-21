@@ -1,6 +1,4 @@
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -13,6 +11,8 @@ struct task* new_task(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct task* this = smalloc(alloc_size);
 	
 	this->kind = kind;
@@ -20,5 +20,6 @@ struct task* new_task(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

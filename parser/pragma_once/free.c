@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <avl/free_nodes.h>
@@ -19,3 +20,4 @@ void free_pragma_once(struct pragma_once* this)
 	EXIT;
 }
 
+#endif

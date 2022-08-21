@@ -5,5 +5,10 @@
  * the supplied strcmp()-like function.
  * Returns the value of avltree (even if it's NULL).
  * O(1) */
-extern avl_tree_t *avl_init_tree(avl_tree_t *avltree, avl_compare_t, avl_freeitem_t);
+
+avl_tree_t *avl_init_tree(
+	avl_tree_t *rc,
+	struct memory_arena* arena,
+	avl_compare_t cmp,
+	avl_freeitem_t freeitem);
 

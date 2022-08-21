@@ -7,8 +7,6 @@
 
 #include <debug.h>
 
-#include <memory/sstrndup.h>
-
 #include "charset/root.h"
 
 #include "tokenizer/struct.h"
@@ -27,6 +25,8 @@ void read_charset(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_bracketed_identifier);
 	
 	char* name = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
@@ -50,6 +50,7 @@ void read_charset(
 	}
 	
 	EXIT;
+	#endif
 }
 
 

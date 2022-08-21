@@ -36,6 +36,8 @@ void read_inline_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_parenthesised_identifier);
 	
 	char* name = sstrdup(tokenizer->tokenchars.chars);
@@ -65,6 +67,7 @@ void read_inline_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
+	#endif
 	
 	EXIT;
 }

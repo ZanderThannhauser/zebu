@@ -4,8 +4,8 @@
 #include <debug.h>
 
 /*#include <memory/arena/strdup.h>*/
-#include <memory/arena/malloc.h>
-#include <memory/arena/realloc.h>
+/*#include <memory/arena/malloc.h>*/
+/*#include <memory/arena/realloc.h>*/
 
 #include "struct.h"
 #include "add_grammar_transition.h"
@@ -18,6 +18,8 @@ void gegex_add_grammar_transition(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gtransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
 	
 	dpv(gtransition);
@@ -47,6 +49,7 @@ void gegex_add_grammar_transition(
 	gdata[i + 1] = gtransition;
 	
 	EXIT;
+	#endif
 }
 
 

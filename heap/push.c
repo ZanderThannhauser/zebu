@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/srealloc.h>
+/*#include <memory/srealloc.h>*/
 
 #include "struct.h"
 #include "push.h"
@@ -10,6 +10,8 @@ void heap_push(struct heap* this, void* new)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
@@ -30,6 +32,7 @@ void heap_push(struct heap* this, void* new)
 		data[i] = data[j];
 		data[j] = swap;
 	}
+	#endif
 	
 	EXIT;
 }

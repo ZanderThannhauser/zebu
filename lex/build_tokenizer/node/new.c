@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include <set/of_tokens/clone.h>
 
@@ -15,6 +15,8 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct build_tokenizer_node* this = smalloc(sizeof(*this));
 	
 	this->given = tokenset_clone(token_ids);
@@ -25,5 +27,6 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

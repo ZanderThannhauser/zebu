@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -10,6 +10,8 @@ struct heap* new_heap(int (*cmp)(const void*, const void*))
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct heap* this = smalloc(sizeof(*this));
 	
 	this->cmp = cmp;
@@ -20,5 +22,6 @@ struct heap* new_heap(int (*cmp)(const void*, const void*))
 	
 	EXIT;
 	return this;
+	#endif
 }
 

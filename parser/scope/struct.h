@@ -8,6 +8,8 @@ struct scope
 	// prefix-appended, not owned by scope:
 	struct avl_tree_t* grammar; // struct named_grammar*
 	
+	struct memory_arena* arena;
+	
 	struct {
 		char* chars;
 		size_t n, cap;

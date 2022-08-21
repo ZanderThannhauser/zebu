@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include "struct.h"
 #include "new.h"
 
@@ -13,6 +11,8 @@ struct yacc_stateinfo_node* new_yacc_stateinfo_node(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct yacc_stateinfo_node* this = smalloc(sizeof(*this));
 	
 	this->state = state;
@@ -21,5 +21,6 @@ struct yacc_stateinfo_node* new_yacc_stateinfo_node(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

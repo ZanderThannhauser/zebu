@@ -1,8 +1,4 @@
 
-#include <memory/smalloc.h>
-#include <memory/srealloc.h>
-#include <memory/smemdup.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -13,6 +9,8 @@ struct gegexset* gegexset_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegexset* this = smalloc(sizeof(*this));
 	
 	this->data = smemdup(other->data, sizeof(*other->data) * other->n);
@@ -21,5 +19,6 @@ struct gegexset* gegexset_clone(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

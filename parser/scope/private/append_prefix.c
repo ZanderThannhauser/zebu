@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <memory/srealloc.h>
-
 #include "../struct.h"
 
 #include "append_prefix.h"
@@ -15,6 +13,8 @@ static void append_prefix(struct scope* this, const char* appendme)
 	
 	dpvs(appendme);
 	
+	TODO;
+	#if 0
 	size_t len = strlen(appendme);
 	
 	while (this->prefix.n + len > this->prefix.cap)
@@ -27,6 +27,7 @@ static void append_prefix(struct scope* this, const char* appendme)
 	memcpy(this->prefix.chars + this->prefix.n, appendme, len);
 	
 	this->prefix.n += len;
+	#endif
 	
 	EXIT;
 }

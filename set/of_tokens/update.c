@@ -1,6 +1,5 @@
 
 #include <stdlib.h>
-#include <memory/smalloc.h>
 
 #include <debug.h>
 
@@ -9,6 +8,8 @@
 
 bool tokenset_update(struct tokenset* this, struct tokenset* them)
 {
+	TODO;
+	#if 0
 	bool changed = false;
 	
 	unsigned i = 0, n = this->n;
@@ -52,6 +53,7 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	}
 	
 	return changed;
+	#endif
 }
 
 

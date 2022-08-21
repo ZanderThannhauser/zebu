@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -18,3 +19,4 @@ void free_named_token(void* ptr)
 	EXIT;
 }
 
+#endif

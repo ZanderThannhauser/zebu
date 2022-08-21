@@ -2,8 +2,6 @@
 #include <debug.h>
 
 #include <avl/free_tree.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 #include <avl/search.h>
 
 #include <assert.h>
@@ -32,6 +30,8 @@ unsigned lex_add_token(
 	unsigned retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(token);
 	
 	dpvb(is_literal);
@@ -95,6 +95,7 @@ unsigned lex_add_token(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 

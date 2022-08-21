@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
-#include <memory/arena/realloc.h>
+/*#include <memory/arena/malloc.h>*/
+/*#include <memory/arena/realloc.h>*/
 
 #include "struct.h"
 #include "add_transition.h"
@@ -15,6 +15,8 @@ void lex_state_add_transition(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct ltransition* transition = arena_malloc(arena, sizeof(*transition));
 	
 	dpv(transition);
@@ -45,5 +47,6 @@ void lex_state_add_transition(
 	data[i + 1] = transition;
 	
 	EXIT;
+	#endif
 }
 

@@ -1,6 +1,6 @@
 
 #include <string.h>
-#include <memory/srealloc.h>
+/*#include <memory/srealloc.h>*/
 
 #include <debug.h>
 
@@ -13,6 +13,8 @@ char* strfandr(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct {
 		char* data; unsigned n, cap;
 	} buffer = {};
@@ -50,6 +52,7 @@ char* strfandr(
 	
 	EXIT;
 	return buffer.data;
+	#endif
 }
 
 

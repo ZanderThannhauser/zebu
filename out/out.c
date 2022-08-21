@@ -5,8 +5,6 @@
 
 #include <avl/foreach.h>
 
-#include <memory/smalloc.h>
-
 #include <linux/limits.h>
 
 #include <debug.h>
@@ -96,6 +94,8 @@ void out(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	char path[PATH_MAX];
 	
 	FILE* source = NULL;
@@ -190,6 +190,7 @@ void out(
 	
 	fclose(source);
 	fclose(header);
+	#endif
 	
 	EXIT;
 }

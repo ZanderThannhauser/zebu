@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
+/*#include <memory/arena/malloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -10,6 +10,8 @@ struct gegex* new_gegex(struct memory_arena* arena)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegex* this = arena_malloc(arena, sizeof(*this));
 	
 	this->transitions.data = NULL;
@@ -42,5 +44,6 @@ struct gegex* new_gegex(struct memory_arena* arena)
 	
 	EXIT;
 	return this;
+	#endif
 }
 

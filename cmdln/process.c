@@ -13,14 +13,16 @@
 
 #include <enums/error.h>
 
-#include <memory/smalloc.h>
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "usage.h"
 #include "verbose.h"
 #include "process.h"
 
-struct cmdln* cmdln_process(int argc, char* argv[])
+struct cmdln* cmdln_process(
+	struct memory_arena* arena,
+	int argc, char* const* argv)
 {
 	ENTER;
 	
@@ -105,7 +107,7 @@ struct cmdln* cmdln_process(int argc, char* argv[])
 		usage(e_bad_cmdline_args);
 	}
 	
-	struct cmdln* flags = smalloc(sizeof(*flags));
+	struct cmdln* flags = arena_malloc(arena, sizeof(*flags));
 	
 	flags->input_path = input_path;
 	flags->output_path = output_path;

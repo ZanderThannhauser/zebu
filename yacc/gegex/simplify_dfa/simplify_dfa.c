@@ -1,7 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
 #include <avl/free_tree.h>
 
 #include <set/of_gegexes/new.h>
@@ -27,6 +26,8 @@ struct gegex* gegex_simplify_dfa(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* cache = new_avl_tree(compare_gegex_caches, free_gegex_cache);
 	
 	struct gegexset* unique_states = new_gegexset();
@@ -47,5 +48,6 @@ struct gegex* gegex_simplify_dfa(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 

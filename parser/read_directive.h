@@ -12,7 +12,6 @@ void read_directive(
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,
-	struct memory_arena* scratchpad,
 	int absolute_dirfd,
 	int relative_dirfd,
 	struct lex* lex);

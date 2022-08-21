@@ -23,6 +23,8 @@ void lex_add_EOF_token(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct memory_arena* const scratchpad = this->scratchpad;
 	
 	struct regex* start = new_regex(scratchpad);
@@ -65,6 +67,7 @@ void lex_add_EOF_token(
 	this->EOF_token_id = tid;
 	
 	dpv(this->EOF_token_id);
+	#endif
 	
 	EXIT;
 }

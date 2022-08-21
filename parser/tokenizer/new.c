@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include "struct.h"
 #include "new.h"
 
@@ -10,7 +8,9 @@ struct tokenizer* new_tokenizer(int fd)
 {
 	ENTER;
 	
-	struct tokenizer* this = smalloc(sizeof(*this));
+	struct tokenizer* this = malloc(sizeof(*this));
+	
+	assert(this);
 	
 	this->fd = fd;
 	

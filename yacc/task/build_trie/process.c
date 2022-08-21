@@ -3,7 +3,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/strdup.h>
+/*#include <memory/arena/strdup.h>*/
 
 #include <avl/search.h>
 /*#include <avl/safe_insert.h>*/
@@ -38,6 +38,8 @@ static struct gegex* process_to(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegex* building_to = new_gegex(scratchpad);
 		
 	assert(mirrorme_to->refcount);
@@ -78,6 +80,7 @@ static struct gegex* process_to(
 	
 	EXIT;
 	return building_to;
+	#endif
 }
 
 void build_trie_task_process(struct task* super, struct yacc_shared* shared)

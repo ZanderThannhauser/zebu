@@ -1,7 +1,4 @@
 
-#include <memory/smalloc.h>
-#include <memory/smemdup.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -12,6 +9,8 @@ struct ptrset* ptrset_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct ptrset* this = smalloc(sizeof(*this));
 	
 	this->data = smemdup(other->data, other->n);
@@ -20,5 +19,6 @@ struct ptrset* ptrset_clone(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

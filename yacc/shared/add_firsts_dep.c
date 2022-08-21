@@ -2,7 +2,6 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include <set/of_strs/new.h>
 #include <set/of_strs/add.h>
@@ -14,6 +13,8 @@
 
 void add_firsts_dep(struct avl_tree_t* tree, const char* they, const char* need_me)
 {
+	TODO;
+	#if 0
 	struct avl_node_t* node;
 	
 	if ((node = avl_search(tree, &they)))
@@ -27,5 +28,6 @@ void add_firsts_dep(struct avl_tree_t* tree, const char* they, const char* need_
 		strset_add(news, need_me);
 		safe_avl_insert(tree, new_named_strset(they, news));
 	}
+	#endif
 }
 

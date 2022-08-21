@@ -1,10 +1,9 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
+/*#include <memory/arena/malloc.h>*/
 
 #include "struct.h"
-
 #include "build_absolute_name.h"
 
 char* scope_build_absolute_name(
@@ -15,6 +14,8 @@ char* scope_build_absolute_name(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(suffix);
 	
 	char* full = arena_malloc(
@@ -37,5 +38,6 @@ char* scope_build_absolute_name(
 	
 	EXIT;
 	return full;
+	#endif
 }
 

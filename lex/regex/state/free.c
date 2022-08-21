@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/dealloc.h>
+/*#include <memory/arena/dealloc.h>*/
 
 #include <set/of_tokens/free.h>
 
@@ -12,6 +12,8 @@ void free_regex(
 	struct regex* this,
 	struct memory_arena* arena)
 {
+	TODO;
+	#if 0
 	if (this && !this->is_freeing)
 	{
 		this->is_freeing = true;
@@ -40,6 +42,7 @@ void free_regex(
 		
 		arena_dealloc(arena, this);
 	}
+	#endif
 }
 
 

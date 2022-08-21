@@ -43,6 +43,8 @@ void setup_start_task_process(struct task* super, struct yacc_shared* shared)
 	// struct setup_start_task* const this = (void*) super;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct yacc_stateinfo* tree = new_yacc_stateinfo();
 	
 	struct lookahead_deps* ldeps = new_lookahead_deps();
@@ -70,6 +72,7 @@ void setup_start_task_process(struct task* super, struct yacc_shared* shared)
 	heap_push(shared->todo, new_add_transition_task(&shared->yacc_start, tree));
 	
 	//// heap_push(todo, new_expand_state_task(tree, state));
+	#endif
 	
 	EXIT;
 }

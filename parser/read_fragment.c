@@ -1,16 +1,13 @@
 
 #include <assert.h>
-
 #include <stdlib.h>
-
-#include <enums/error.h>
 
 #include <debug.h>
 
 /*#include <avl/avl.h>*/
 /*#include <avl/safe_insert.h>*/
 
-#include <memory/sstrndup.h>
+#include <arena/memdup.h>
 
 #include <lex/regex/simplify_dfa/simplify_dfa.h>
 #include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
@@ -18,6 +15,7 @@
 #include <lex/regex/state/free.h>
 
 #include "scope/get_arena.h"
+
 #include "scope/declare/fragment.h"
 
 #include "tokenizer/struct.h"
@@ -41,15 +39,15 @@ void read_fragment(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	char* name = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	struct memory_arena* const arena = scope_get_arena(scope);
+	
+	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	
 	read_token(tokenizer, colon_machine);
 	
 	read_token(tokenizer, regex_root_machine);
-	
-	struct memory_arena* const arena = scope_get_arena(scope);
 	
 	struct rbundle bun = read_root_token_expression(tokenizer, arena, scope, token_skip);
 	
@@ -74,6 +72,8 @@ void read_fragment(
 		scope_declare_fragment(scope, name, bun.dfa);
 	}
 	
+	TODO;
+	#if 0
 	if (true
 		&& tokenizer->token != t_semicolon
 		&& tokenizer->token != t_colon)
@@ -81,6 +81,7 @@ void read_fragment(
 		TODO;
 		exit(e_syntax_error);
 	}
+	#endif
 	
 	EXIT;
 }

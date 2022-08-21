@@ -3,13 +3,9 @@
 
 #include <debug.h>
 
-#include <memory/sstrdup.h>
-#include <memory/sasprintf.h>
-
 #include <macros/strequals.h>
 
 /*#include <avl/search.h>*/
-#include <avl/safe_insert.h>
 
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
@@ -45,6 +41,8 @@ void setup_trie_task_process(struct task* super, struct yacc_shared* shared)
 	struct setup_trie_task* const this = (void*) super;
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(this->node);
 	
 	dpvs(this->name);
@@ -71,6 +69,7 @@ void setup_trie_task_process(struct task* super, struct yacc_shared* shared)
 	heap_push(shared->todo, new_percolate_firsts_task(name));
 	
 	this->built_name = name;
+	#endif
 	
 	EXIT;
 }

@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include <set/of_gegexes/new.h>
 #include <set/of_gegexes/add.h>
 
@@ -15,6 +13,8 @@ struct lookahead_deps_node* new_lookahead_deps_node(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct lookahead_deps_node* this = smalloc(sizeof(*this));
 	
 	this->a = a;
@@ -25,5 +25,6 @@ struct lookahead_deps_node* new_lookahead_deps_node(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

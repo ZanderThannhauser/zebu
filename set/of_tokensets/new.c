@@ -1,6 +1,4 @@
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -9,6 +7,8 @@
 struct tokensetset* new_tokensetset()
 {
 	ENTER;
+	TODO;
+	#if 0
 	struct tokensetset* this = smalloc(sizeof(*this));
 	
 	this->data = NULL;
@@ -17,5 +17,6 @@ struct tokensetset* new_tokensetset()
 	
 	EXIT;
 	return this;
+	#endif
 }
 

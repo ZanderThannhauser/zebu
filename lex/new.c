@@ -1,9 +1,9 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
+#include <avl/alloc_tree.h>
 
-#include <memory/smalloc.h>
+#include <arena/malloc.h>
 
 #include <set/of_tokens/new.h>
 
@@ -18,32 +18,38 @@
 #include "struct.h"
 #include "new.h"
 
-struct lex* new_lex(struct memory_arena* scratchpad)
+struct lex* new_lex(struct memory_arena* arena)
 {
 	ENTER;
 	
-	struct lex* this = smalloc(sizeof(*this));
+	struct lex* this = arena_malloc(arena, sizeof(*this));
 	
 	this->dfa_to_id =
-		new_avl_tree(compare_dfa_to_id_nodes, free_dfa_to_id_node);
+		avl_alloc_tree(arena, compare_dfa_to_id_nodes, free_dfa_to_id_node);
 		
 	this->dfa_from_id =
-		new_avl_tree(compare_dfa_from_id_nodes, free_dfa_from_id_node);
+		avl_alloc_tree(arena, compare_dfa_from_id_nodes, free_dfa_from_id_node);
 	
 	this->tokenizer.cache =
-		new_avl_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
+		avl_alloc_tree(arena, compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
-	this->disambiguations.literal_ids = new_tokenset();
+	this->disambiguations.literal_ids = new_tokenset(arena);
 	
-	this->disambiguations.regex_ids = new_tokenset();
+	this->disambiguations.regex_ids = new_tokenset(arena);
 	
 	this->next_id = 1; // because token 0 is for error
 	
 	this->EOF_token_id = 0;
 	
-	this->scratchpad = scratchpad;
+	this->arena = arena;
 	
 	EXIT;
 	return this;
 }
+
+
+
+
+
+
 

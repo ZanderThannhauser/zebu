@@ -1,17 +1,16 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include <avl/tree_t.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 
 #include "struct.h"
 #include "clone.h"
 
 struct regextree* regextree_clone(struct regextree* this)
 {
+	TODO;
+	
+	#if 0
 	struct avl_tree_t* tree = new_avl_tree(this->tree->cmp, this->tree->freeitem);
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
@@ -26,5 +25,6 @@ struct regextree* regextree_clone(struct regextree* this)
 	new->n = this->n;
 	
 	return new;
+	#endif
 }
 

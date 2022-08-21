@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
 #include <set/of_tokens/new.h>
 
 #include <named/tokenset/struct.h>
@@ -19,6 +17,8 @@ struct tokenset* shared_lookup_firsts(
 	struct yacc_shared* this,
 	const char* name)
 {
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(this->firsts.sets, &name);
 	
 	if (node)
@@ -36,5 +36,6 @@ struct tokenset* shared_lookup_firsts(
 		
 		return new;
 	}
+	#endif
 }
 

@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
 #include "node/new.h"
 
 #include "struct.h"
@@ -16,9 +14,12 @@ void yacc_stateinfo_add(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct yacc_stateinfo_node* node = new_yacc_stateinfo_node(state, grammar, lookaheads);
 	
 	safe_avl_insert(this->tree, node);
+	#endif
 	
 	EXIT;
 }

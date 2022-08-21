@@ -1,8 +1,6 @@
 
 #include <assert.h>
 
-#include <memory/srealloc.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -10,6 +8,8 @@
 
 bool regexset_add(struct regexset* this, struct regex* ptr)
 {
+	TODO;
+	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
@@ -40,6 +40,7 @@ bool regexset_add(struct regexset* this, struct regex* ptr)
 	
 	this->data[this->n++] = ptr;
 	return true;
+	#endif
 }
 
 

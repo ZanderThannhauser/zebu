@@ -1,5 +1,5 @@
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include <debug.h>
 
@@ -12,6 +12,8 @@ struct named_strset* new_named_strset(const char* name, struct strset* strset)
 	
 	dpvs(name);
 	
+	TODO;
+	#if 0
 	struct named_strset* new = smalloc(sizeof(*new));
 	
 	new->name = name;
@@ -19,5 +21,6 @@ struct named_strset* new_named_strset(const char* name, struct strset* strset)
 	
 	EXIT;
 	return new;
+	#endif
 }
 

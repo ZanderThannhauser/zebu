@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include <set/of_gegexes/clone.h>
 
 #include "struct.h"
@@ -12,6 +10,8 @@ struct gegex_mapping* new_gegex_mapping(struct gegexset* set, struct gegex* stat
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegex_mapping* this = smalloc(sizeof(*this));
 	
 	this->original_states = gegexset_clone(set);
@@ -19,5 +19,6 @@ struct gegex_mapping* new_gegex_mapping(struct gegexset* set, struct gegex* stat
 	
 	EXIT;
 	return this;
+	#endif
 }
 

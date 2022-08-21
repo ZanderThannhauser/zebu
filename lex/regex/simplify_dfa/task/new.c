@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -12,6 +12,8 @@ struct simplify_task* new_simplify_task(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct simplify_task* this = smalloc(sizeof(*this));
 	
 	this->pair.a = a;
@@ -21,5 +23,6 @@ struct simplify_task* new_simplify_task(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

@@ -10,14 +10,12 @@
 /*#include <avl/avl.h>*/
 /*#include <avl/new.h>*/
 
-#include <memory/sstrdup.h>
-
 #include <misc/sopen.h>
 #include <misc/sopenat.h>
 #include <misc/break_path.h>
 
-/*#include <memory/arena/new.h>*/
-/*#include <memory/arena/free.h>*/
+#include <arena/mmap/new.h>
+#include <arena/free.h>
 
 /*#include <set/of_strs/add.h>*/
 
@@ -34,31 +32,27 @@
 #include "mains_parse.h"
 
 void mains_parse(
+	struct memory_arena* token_arena,
+	struct memory_arena* grammar_arena,
 	struct options* options,
 	struct avl_tree_t* grammar,
-	struct memory_arena* scratchpad,
 	struct lex* lex,
 	const char* path)
 {
 	ENTER;
 	
-	dpvs(path);
+	struct memory_arena* parser_arena = new_mmap_arena();
+	
+	struct scope* scope = new_scope(parser_arena, grammar);
+	
+	struct pragma_once* pragma_once = new_pragma_once(parser_arena);
 	
 	struct br_rettype br = break_path(AT_FDCWD, path);
-	
-	dpv(br.dirfd);
-	
-	dpv(br.fd);
-	
-	struct scope* scope = new_scope(grammar);
-	
-	struct pragma_once* pragma_once = new_pragma_once();
 	
 	recursive_parse(
 		/* options: */ options,
 		/* scope: */ scope,
 		/* pragma_once: */ pragma_once,
-		/* scratchpad: */ scratchpad,
 		/* absolute_dirfd: */ br.dirfd,
 		/* relative_dirfd: */ br.dirfd,
 		/* fd: */ br.fd,
@@ -71,13 +65,20 @@ void mains_parse(
 	
 	resolve_grammar_names(scope);
 	
+	lex_add_EOF_token(lex, options->skip);
+	
 	free_scope(scope);
 	#endif
 	
+	free_memory_arena(parser_arena);
+	
+	TODO;
+	#if 0
 	if (br.dirfd > 0)
 		close(br.dirfd);
 	
 	close(br.fd);
+	#endif
 	
 	EXIT;
 }

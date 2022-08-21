@@ -1,10 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
-#include <memory/sstrndup.h>
-
 #include <named/grammar/new.h>
 
 /*#include <named/name/new.h>*/
@@ -24,6 +20,8 @@ void scope_declare_grammar(
 	
 	dpvs(name);
 	
+	TODO;
+	#if 0
 	size_t old_len = this->prefix.n;
 	
 	private_scope_append_prefix(this, name);
@@ -35,6 +33,7 @@ void scope_declare_grammar(
 	safe_avl_insert(this->grammar, new_named_grammar(full_name, grammar));
 	
 	this->prefix.n = old_len;
+	#endif
 	
 	EXIT;
 }

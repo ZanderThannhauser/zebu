@@ -4,12 +4,10 @@
 
 #include <avl/search.h>
 #include <avl/free_tree.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -59,6 +57,8 @@ static struct regex* clone_helper(
 		
 		new->is_accepting = old->is_accepting;
 		
+		TODO;
+		#if 0
 		struct mapping* mapping = smalloc(sizeof(*mapping));
 		
 		mapping->old = old;
@@ -107,6 +107,7 @@ static struct regex* clone_helper(
 		
 		EXIT;
 		return new;
+		#endif
 	}
 }
 
@@ -116,6 +117,8 @@ struct regex* regex_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare, free);
 	
 	struct regex* retval = clone_helper(mappings, arena, in);
@@ -124,6 +127,7 @@ struct regex* regex_clone(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 
@@ -134,6 +138,8 @@ struct clone_nfa_bundle regex_clone_nfa(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare, free);
 	
 	struct regex* new_start = clone_helper(mappings, arena, start);
@@ -143,6 +149,7 @@ struct clone_nfa_bundle regex_clone_nfa(
 	
 	EXIT;
 	return (struct clone_nfa_bundle) {new_start, new_end};
+	#endif
 }
 
 

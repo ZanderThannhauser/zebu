@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-
 #include "struct.h"
 #include "new.h"
 #include "union.h"
@@ -16,6 +14,8 @@ struct charset* charset_union(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	size_t n = 0;
 	
 	char* chars = smalloc(sizeof(*chars) * (a->len + b->len));
@@ -47,6 +47,7 @@ struct charset* charset_union(
 	
 	EXIT;
 	return new;
+	#endif
 }
 
 

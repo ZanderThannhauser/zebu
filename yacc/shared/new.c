@@ -1,11 +1,7 @@
 
-#include <memory/smalloc.h>
-
 #include <debug.h>
 
 #include <heap/new.h>
-
-#include <avl/new.h>
 
 #include <named/tokenset/compare.h>
 #include <named/tokenset/free.h>
@@ -35,6 +31,8 @@ struct yacc_shared* new_yacc_shared(
 	unsigned EOF_token_id)
 {
 	ENTER;
+	TODO;
+	#if 0
 	struct yacc_shared* this = smalloc(sizeof(*this));
 	
 	this->grammar = grammar;
@@ -63,6 +61,7 @@ struct yacc_shared* new_yacc_shared(
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 

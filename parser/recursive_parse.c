@@ -1,10 +1,7 @@
 
 #include <unistd.h>
-
 #include <assert.h>
-
 #include <fcntl.h>
-
 #include <strings.h>
 
 #include <debug.h>
@@ -33,7 +30,6 @@ void recursive_parse(
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,
-	struct memory_arena* scratchpad,
 	int absolute_dirfd,
 	int relative_dirfd,
 	int fd,
@@ -58,42 +54,57 @@ void recursive_parse(
 			switch (tokenizer->token)
 			{
 				case t_directive:
+				{
 					read_directive(
 						/* tokenizer:      */ tokenizer,
 						/* options:        */ options,
 						/* scope:          */ scope,
 						/* pragma_once:    */ pragma_once,
-						/* scratchpad:     */ scratchpad,
 						/* absolute_dirfd: */ absolute_dirfd,
 						/* relative_dirfd: */ relative_dirfd,
 						/* lex:            */ lex);
 					break;
+				}
 				
 				case t_bracketed_identifier:
+				{
+					TODO;
+					#if 0
 					read_charset(
 						/* tokenizer: */ tokenizer,
 						/* scope      */ scope);
+					#endif
 					break;
+				}
 				
 				case t_gravemarked_identifier:
+				{
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
 						/* scope       */ scope,
 						/* token_skip: */ options->token_skip);
 					break;
+				}
 				
 				case t_parenthesised_identifier:
+				{
 					TODO;
 					break;
+				}
 				
 				case t_identifier:
+				{
+					TODO;
+					#if 0
 					read_grammar(
 						/* tokenizer:   */ tokenizer,
 						/* scratchpad:  */ scratchpad,
 						/* options:     */ options,
 						/* scope        */ scope,
 						/* lex:         */ lex);
+					#endif
 					break;
+				}
 				
 				default:
 					dpv(tokenizer->token);
@@ -106,7 +117,6 @@ void recursive_parse(
 		
 		free_tokenizer(tokenizer);
 	}
-	
 	
 	EXIT;
 }

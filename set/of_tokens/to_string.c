@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <memory/smalloc.h>
 
 #include <debug.h>
 
@@ -10,6 +9,8 @@
 char* tokenset_to_string(
 	const struct tokenset* this)
 {
+	TODO;
+	#if 0
 	char* buffer = smalloc(this->n * 30 + 1);
 	
 	char* moving = buffer;
@@ -28,5 +29,6 @@ char* tokenset_to_string(
 	*moving = '\0';
 	
 	return buffer;
+	#endif
 }
 

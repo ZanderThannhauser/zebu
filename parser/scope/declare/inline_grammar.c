@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/safe_insert.h>
-
 /*#include <memory/sstrndup.h>*/
 
 #include "../struct.h"
@@ -23,6 +21,8 @@ void scope_declare_inline_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(name);
 	dpv(start);
 	dpv(end);
@@ -30,6 +30,7 @@ void scope_declare_inline_grammar(
 	assert(this->layer);
 	
 	safe_avl_insert(this->layer->inline_grammar, new_named_gbundle(name, start, end));
+	#endif
 	
 	EXIT;
 }

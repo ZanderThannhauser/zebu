@@ -1,10 +1,8 @@
 
-#include <memory/smalloc.h>
 
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include "struct.h"
 #include "tokenset_to_id.h"
@@ -16,6 +14,8 @@ unsigned tokenset_to_id(
 	unsigned retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(this->tree, &(struct tokenset_to_id_node){
 		.is_tokenset = true,
 		.tokenset = tokenset
@@ -42,5 +42,6 @@ unsigned tokenset_to_id(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 

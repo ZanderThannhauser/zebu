@@ -2,7 +2,6 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include <set/of_gegexes/add.h>
 
@@ -19,6 +18,8 @@ static void add(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(tree, &a);
 	
 	if (node)
@@ -31,6 +32,7 @@ static void add(
 		struct lookahead_deps_node* new = new_lookahead_deps_node(a, b);
 		safe_avl_insert(tree, new);
 	}
+	#endif
 	
 	EXIT;
 }

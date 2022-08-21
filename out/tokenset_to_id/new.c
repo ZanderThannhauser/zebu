@@ -1,12 +1,9 @@
 
-#include <memory/smalloc.h>
 
 #include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
-
-#include <avl/new.h>
 
 #include <set/of_tokens/new.h>
 #include <set/of_tokens/add.h>
@@ -49,6 +46,8 @@ struct tokenset_to_id* new_tokenset_to_id()
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct tokenset_to_id* this = smalloc(sizeof(*this));
 	
 	this->tree = new_avl_tree(compare_tokenset_to_id_nodes, free_tokenset_to_id_node);
@@ -64,6 +63,7 @@ struct tokenset_to_id* new_tokenset_to_id()
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 

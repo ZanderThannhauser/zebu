@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/dealloc.h>
+/*#include <memory/arena/dealloc.h>*/
 
 #include "struct.h"
 #include "free.h"
@@ -10,6 +10,8 @@ void free_gegex(struct gegex* this, struct memory_arena* arena)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (this && !this->is_freeing)
 	{
 		this->is_freeing = true;
@@ -20,6 +22,7 @@ void free_gegex(struct gegex* this, struct memory_arena* arena)
 		
 		arena_dealloc(arena, this);
 	}
+	#endif
 	
 	EXIT;
 }

@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -12,6 +12,8 @@ struct named_name* new_named_name(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct named_name* this = smalloc(sizeof(*this));
 	
 	this->name = name;
@@ -22,5 +24,6 @@ struct named_name* new_named_name(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

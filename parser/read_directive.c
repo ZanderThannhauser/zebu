@@ -1,50 +1,46 @@
 
 #include <assert.h>
-
 #include <stdlib.h>
-
-#include <macros/strequals.h>
-
-#include <enums/error.h>
 
 #include <debug.h>
 
+/*#include <macros/strequals.h>*/
+
+/*#include <enums/error.h>*/
+
 #include <misc/break_path.h>
 
-#include <memory/sstrdup.h>
-#include <memory/smemdup.h>
-#include <memory/smalloc.h>
+/*#include "options/struct.h"*/
+/*#include "options/dlink.h"*/
 
-#include "options/struct.h"
-#include "options/dlink.h"
+/*#include <lex/regex/state/free.h>*/
+/*#include <lex/regex/dfa_to_nfa.h>*/
+/*#include <lex/regex/state/add_lambda_transition.h>*/
 
-#include <lex/regex/state/free.h>
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/state/add_lambda_transition.h>
-
-#include <yacc/gegex/state/struct.h>
-#include <yacc/gegex/state/free.h>
-#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
+/*#include <yacc/gegex/state/struct.h>*/
+/*#include <yacc/gegex/state/free.h>*/
+/*#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>*/
+/*#include <yacc/gegex/simplify_dfa/simplify_dfa.h>*/
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
-#include "tokenizer/machines/production/root.h"
-#include "tokenizer/machines/misc/semicolon.h"
-#include "tokenizer/machines/misc/colon.h"
-#include "tokenizer/machines/misc/identifier_or_string.h"
-#include "tokenizer/machines/misc/comparision.h"
-#include "tokenizer/machines/regex/root.h"
-#include "tokenizer/machines/root.h"
+/*#include "tokenizer/machines/production/root.h"*/
+/*#include "tokenizer/machines/misc/semicolon.h"*/
+/*#include "tokenizer/machines/misc/colon.h"*/
+/*#include "tokenizer/machines/misc/identifier_or_string.h"*/
+/*#include "tokenizer/machines/misc/comparision.h"*/
+/*#include "tokenizer/machines/regex/root.h"*/
+/*#include "tokenizer/machines/root.h"*/
 
-#include "scope/declare/grammar.h"
+/*#include "scope/declare/grammar.h"*/
 
-#include "grammar/root.h"
+/*#include "grammar/root.h"*/
 
-#include "token/root.h"
+/*#include "token/root.h"*/
 
 #include "recursive_parse.h"
+
 #include "read_directive.h"
 
 void read_directive(
@@ -52,7 +48,6 @@ void read_directive(
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,
-	struct memory_arena* scratchpad,
 	int absolute_dirfd,
 	int relative_dirfd,
 	struct lex* lex)
@@ -63,6 +58,8 @@ void read_directive(
 	
 	if (strequals(tokenizer->tokenchars.chars, "%""start"))
 	{
+		TODO;
+		#if 0
 		read_token(tokenizer, colon_machine);
 		
 		// prep production-rule reader:
@@ -91,9 +88,12 @@ void read_directive(
 		
 		free_gegex(nfa_start, scratchpad);
 		free_gegex(dfa_start, scratchpad);
+		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""skip"))
 	{
+		TODO;
+		#if 0
 		free_regex(options->skip, scratchpad);
 		
 		read_token(tokenizer, colon_machine);
@@ -110,9 +110,12 @@ void read_directive(
 		regex_add_lambda_transition(bun.nfa.end, scratchpad, bun.nfa.start);
 		
 		options->skip = bun.nfa.start;
+		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""token_skip"))
 	{
+		TODO;
+		#if 0
 		free_regex(options->skip, scratchpad);
 		
 		read_token(tokenizer, colon_machine);
@@ -129,9 +132,12 @@ void read_directive(
 		regex_add_lambda_transition(bun.nfa.end, scratchpad, bun.nfa.start);
 		
 		options->token_skip = bun.nfa.start;
+		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""disambiguate"))
 	{
+		TODO;
+		#if 0
 		read_token(tokenizer, colon_machine);
 		
 		struct dop read_dop()
@@ -208,6 +214,7 @@ void read_directive(
 		}
 		
 		read_token(tokenizer, semicolon_machine);
+		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""include"))
 	{
@@ -236,7 +243,6 @@ void read_directive(
 			/* options: */ options,
 			/* scope: */ scope,
 			/* pragma_once: */ pragma_once,
-			/* token_scratchpad: */ scratchpad,
 			/* absolute_dirfd: */ absolute_dirfd,
 			/* relative_dirfd: */ br.dirfd,
 			/* fd */ br.fd,

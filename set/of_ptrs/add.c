@@ -1,6 +1,5 @@
 
 #include <assert.h>
-#include <memory/srealloc.h>
 
 #include <debug.h>
 
@@ -11,6 +10,8 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(ptr);
 	
 	if (this->n + 1 > this->cap)
@@ -46,5 +47,6 @@ void ptrset_add(struct ptrset* this, const void* ptr)
 	this->data[this->n++] = ptr;
 	
 	EXIT;
+	#endif
 }
 

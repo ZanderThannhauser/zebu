@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -22,3 +23,4 @@ void free_named_charset(void* ptr)
 	EXIT;
 }
 
+#endif

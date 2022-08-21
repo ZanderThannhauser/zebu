@@ -1,11 +1,8 @@
 
-#include <memory/smalloc.h>
 
 #include <stdlib.h>
 
 #include <debug.h>
-
-#include <avl/new.h>
 
 #include "struct.h"
 #include "new.h"
@@ -41,6 +38,8 @@ struct lstate_to_id* new_lstate_to_id()
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct lstate_to_id* this = smalloc(sizeof(*this));
 	
 	this->tree = new_avl_tree(compare_lstate_to_id_nodes, free_lstate_to_id_node);
@@ -50,5 +49,6 @@ struct lstate_to_id* new_lstate_to_id()
 	
 	EXIT;
 	return this;
+	#endif
 }
 

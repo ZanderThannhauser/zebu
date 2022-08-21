@@ -4,10 +4,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
-#include <avl/safe_insert.h>
-#include <avl/new.h>
 #include <avl/search.h>
 #include <avl/free_tree.h>
 
@@ -28,12 +26,15 @@ static void insert_number(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct node* new = smalloc(sizeof(*new));
 	
 	new->regex = regex;
 	new->number = number;
 	
 	safe_avl_insert(avl, new);
+	#endif
 	
 	EXIT;
 }
@@ -54,6 +55,8 @@ int compare_regexes(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (a == b)
 	{
 		dputs("a == b");
@@ -194,6 +197,7 @@ int compare_regexes(
 	
 	EXIT;
 	return cmp;
+	#endif
 }
 
 

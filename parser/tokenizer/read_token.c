@@ -4,21 +4,30 @@
 
 #include <debug.h>
 
-#include <memory/srealloc.h>
-
 #include "struct.h"
 #include "read_char.h"
 #include "read_token.h"
 
 static void append(struct tokenizer* this, char c)
 {
+	ENTER;
+	
+	dpvc(c);
+	
 	if (this->tokenchars.n + 1 >= this->tokenchars.cap)
 	{
 		this->tokenchars.cap = this->tokenchars.cap * 2 ?: 1;
-		this->tokenchars.chars = srealloc(this->tokenchars.chars, this->tokenchars.cap);
+		
+		dpv(this->tokenchars.cap);
+		
+		this->tokenchars.chars = realloc(this->tokenchars.chars, this->tokenchars.cap);
+		
+		assert(this->tokenchars.chars);
 	}
 	
 	this->tokenchars.chars[this->tokenchars.n++] = c;
+	
+	EXIT;
 }
 
 enum token read_token(

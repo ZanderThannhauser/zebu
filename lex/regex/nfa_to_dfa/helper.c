@@ -4,9 +4,8 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
-#include <memory/srealloc.h>
+/*#include <memory/srealloc.h>*/
 
 /*#include <heap/struct.h>*/
 #include <heap/new.h>
@@ -51,6 +50,8 @@ struct regex* regex_nfa_to_dfa_helper(
 	struct avl_node_t* search_result;
 	ENTER;
 	
+	TODO;
+	#if 0
 	if ((search_result = avl_search(mappings, &states)))
 	{
 		struct regex_mapping* cached = search_result->item;
@@ -117,9 +118,12 @@ struct regex* regex_nfa_to_dfa_helper(
 					{
 						if (defaults.n + 1 >= defaults.cap)
 						{
+							TODO;
+							#if 0
 							defaults.cap = defaults.cap << 1 ?: 1;
 							defaults.data = srealloc(defaults.data,
 								sizeof(*defaults.data) * defaults.cap);
+							#endif
 						}
 						
 						defaults.data[defaults.n++] = iter;
@@ -233,6 +237,7 @@ struct regex* regex_nfa_to_dfa_helper(
 		EXIT;
 		return state;
 	}
+	#endif
 	
 }
 

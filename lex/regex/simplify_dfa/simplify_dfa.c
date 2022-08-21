@@ -4,8 +4,6 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
-#include <avl/safe_insert.h>
 #include <avl/foreach.h>
 #include <avl/search.h>
 #include <avl/free_tree.h>
@@ -77,6 +75,8 @@ struct regex* regex_simplify_dfa(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* dependent_of = new_avl_tree(
 		compare_dependent_of_nodes, free_dependent_of_node);
 	
@@ -353,6 +353,7 @@ struct regex* regex_simplify_dfa(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 

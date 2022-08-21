@@ -7,10 +7,7 @@
 
 #include <macros/strequals.h>
 
-#include <memory/smalloc.h>
-
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include <set/of_gegexes/new.h>
 #include <set/of_gegexes/foreach.h>
@@ -41,6 +38,8 @@ struct gegex* gegex_nfa_to_dfa_helper(
 	struct avl_node_t* search_result;
 	ENTER;
 	
+	TODO;
+	#if 0
 	if ((search_result = avl_search(mappings, &states)))
 	{
 		struct gegex_mapping* cached = search_result->item;
@@ -173,6 +172,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 		EXIT;
 		return state;
 	}
+	#endif
 }
 
 

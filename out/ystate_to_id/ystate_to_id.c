@@ -1,10 +1,8 @@
 
-#include <memory/smalloc.h>
 
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include "struct.h"
 #include "ystate_to_id.h"
@@ -16,6 +14,8 @@ unsigned ystate_to_id(
 	unsigned retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(this->tree, &state);
 	
 	if (node)
@@ -38,5 +38,6 @@ unsigned ystate_to_id(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 

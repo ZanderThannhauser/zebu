@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/arena/malloc.h>
+/*#include <memory/arena/malloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -11,6 +11,8 @@ struct yacc_state* new_yacc_state(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct yacc_state* this = arena_malloc(scratchpad, sizeof(*this));
 	
 	this->transitions.data = NULL;
@@ -29,5 +31,6 @@ struct yacc_state* new_yacc_state(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

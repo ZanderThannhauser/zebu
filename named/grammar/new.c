@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -12,6 +12,8 @@ struct named_grammar* new_named_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct named_grammar* this = smalloc(sizeof(*this));
 	
 	this->name = name;
@@ -21,5 +23,6 @@ struct named_grammar* new_named_grammar(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

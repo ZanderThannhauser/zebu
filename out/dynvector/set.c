@@ -1,9 +1,6 @@
 
-#include <memory/smalloc.h>
 
 #include <debug.h>
-
-#include <avl/safe_insert.h>
 
 #include "struct.h"
 #include "set.h"
@@ -15,6 +12,8 @@ void dynvector_set(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (index > this->length)
 	{
 		this->length = index;
@@ -31,5 +30,6 @@ void dynvector_set(
 	safe_avl_insert(this->list, node);
 	
 	EXIT;
+	#endif
 }
 

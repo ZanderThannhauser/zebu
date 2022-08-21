@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <memory/smalloc.h>
 
 #include <debug.h>
 
@@ -13,6 +12,8 @@ void gegexset_update(struct gegexset* this, struct gegexset* them)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	unsigned cap = this->n + them->n;
 	dpv(cap);
 	
@@ -68,6 +69,7 @@ void gegexset_update(struct gegexset* this, struct gegexset* them)
 	}
 	
 	EXIT;
+	#endif
 }
 
 

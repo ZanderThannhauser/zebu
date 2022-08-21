@@ -1,11 +1,7 @@
 
-#include <memory/smalloc.h>
-
 #include <stdlib.h>
 
 #include <debug.h>
-
-#include <avl/new.h>
 
 #include "struct.h"
 #include "new.h"
@@ -43,6 +39,8 @@ struct dyntable* new_dyntable(const char* name)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct dyntable* this = smalloc(sizeof(*this));
 	
 	this->tree = new_avl_tree(compare_dyntable_nodes, free_dyntable_node);
@@ -52,6 +50,7 @@ struct dyntable* new_dyntable(const char* name)
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 

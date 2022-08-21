@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <assert.h>
 
@@ -18,3 +19,4 @@ void free_named_grammar(void* ptr)
 	EXIT;
 }
 
+#endif

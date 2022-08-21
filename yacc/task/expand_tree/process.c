@@ -40,6 +40,8 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 	struct expand_tree_task* const this = (void*) super;
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(this->state);
 	
 	if (yacc_stateinfo_contains(this->stateinfo, this->state))
@@ -100,6 +102,7 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 		
 		heap_push(shared->todo, new_percolate_lookaheads_task(this->stateinfo, this->state, this->ldeps));
 	}
+	#endif
 	
 	EXIT;
 }

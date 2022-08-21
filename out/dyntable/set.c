@@ -1,9 +1,6 @@
 
-#include <memory/smalloc.h>
 
 #include <debug.h>
-
-#include <avl/safe_insert.h>
 
 #include "struct.h"
 #include "set.h"
@@ -13,6 +10,8 @@ void dyntable_set(
 	unsigned x, unsigned y,
 	unsigned value)
 {
+	TODO;
+	#if 0
 	if (x > this->width)
 	{
 		this->width = x;
@@ -34,8 +33,7 @@ void dyntable_set(
 	ddprintf("%s[%u][%u] = %u\n", this->name, x, y, value);
 	
 	safe_avl_insert(this->tree, node);
-	
-	
+	#endif
 }
 
 

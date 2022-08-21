@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "../../state/struct.h"
 
@@ -12,6 +12,8 @@ struct iterator* new_iterator(struct regex* state)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct iterator* this = smalloc(sizeof(*this));
 	
 	this->moving = state->transitions.data;
@@ -24,5 +26,6 @@ struct iterator* new_iterator(struct regex* state)
 	
 	EXIT;
 	return this;
+	#endif
 }
 

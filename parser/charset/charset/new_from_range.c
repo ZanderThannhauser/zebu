@@ -3,9 +3,6 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
-#include <memory/smemdup.h>
-
 #include "struct.h"
 #include "new.h"
 
@@ -17,6 +14,8 @@ struct charset* new_charset_from_range(
 	dpvc(low);
 	dpvc(high);
 	
+	TODO;
+	#if 0
 	struct charset* this = smalloc(sizeof(*this));
 	
 	assert(high >= low);
@@ -35,6 +34,7 @@ struct charset* new_charset_from_range(
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 

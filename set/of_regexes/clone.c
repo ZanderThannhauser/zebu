@@ -1,7 +1,4 @@
 
-#include <memory/smalloc.h>
-#include <memory/smemdup.h>
-
 #include <debug.h>
 
 #include "struct.h"
@@ -12,6 +9,8 @@ struct regexset* regexset_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(other->n);
 	
 	struct regexset* this = smalloc(sizeof(*this));
@@ -24,5 +23,6 @@ struct regexset* regexset_clone(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

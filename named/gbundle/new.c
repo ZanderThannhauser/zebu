@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include "struct.h"
 #include "new.h"
@@ -13,6 +13,8 @@ struct named_gbundle* new_named_gbundle(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct named_gbundle* this = smalloc(sizeof(*this));
 	
 	this->name = name;
@@ -23,5 +25,6 @@ struct named_gbundle* new_named_gbundle(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

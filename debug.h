@@ -30,12 +30,12 @@
 	
 	#include <enums/error.h>
 	
-	#include <memory/smalloc.h>
-	#include <memory/srealloc.h>
-	#include <memory/scalloc.h>
-	#include <memory/smemdup.h>
-	#include <memory/sasprintf.h>
-	#include <memory/sstrdup.h>
+/*	#include <memory/smalloc.h>*/
+/*	#include <memory/srealloc.h>*/
+/*	#include <memory/scalloc.h>*/
+/*	#include <memory/smemdup.h>*/
+/*	#include <memory/sasprintf.h>*/
+/*	#include <memory/sstrdup.h>*/
 	
 	#include <macros/strequals.h>
 	
@@ -71,8 +71,10 @@
 	struct yacc_stateinfo;
 	struct yacc_state;
 	struct pair;
+	struct memory_arena;
 	struct simplify_task;
 	struct set;
+	struct mmap_memory_arena;
 	struct regextree;
 	
 #endif

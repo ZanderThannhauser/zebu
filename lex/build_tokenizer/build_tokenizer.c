@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
+/*#include <avl/safe_insert.h>*/
 
 #include <set/of_regexes/new.h>
 #include <set/of_regexes/add.h>
@@ -45,6 +45,8 @@ struct tokensetset* lex_build_tokenzer(
 	struct tokensetset* retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct memory_arena* const scratchpad = this->scratchpad;
 	
 	// check cache
@@ -88,6 +90,7 @@ struct tokensetset* lex_build_tokenzer(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 

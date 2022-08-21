@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include <avl/search.h>
-#include <avl/free_tree.h>
-#include <avl/new.h>
-#include <avl/safe_insert.h>
-
 #include <debug.h>
 
-#include <memory/smalloc.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
+
+/*#include <memory/smalloc.h>*/
 
 #include "../state/struct.h"
 #include "../state/new.h"
@@ -32,6 +30,8 @@ static struct mapping* new_mapping(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct mapping* this = smalloc(sizeof(*this));
 	
 	this->a = a;
@@ -40,6 +40,7 @@ static struct mapping* new_mapping(
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 static int compare_mappings(
@@ -76,6 +77,8 @@ static struct regex* helper(
 	struct regex* retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A, B});
 	
 	if (node)
@@ -171,6 +174,7 @@ static struct regex* helper(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 struct regex* regex_intersect_dfas(
@@ -180,6 +184,8 @@ struct regex* regex_intersect_dfas(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free_mapping);
 	
 	struct regex* start = helper(A, B, mappings, arena);
@@ -192,6 +198,7 @@ struct regex* regex_intersect_dfas(
 	
 	EXIT;
 	return start;
+	#endif
 }
 
 

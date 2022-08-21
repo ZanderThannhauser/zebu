@@ -4,7 +4,6 @@
 #include <debug.h>
 
 #include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include "cache/struct.h"
 #include "cache/new.h"
@@ -21,6 +20,8 @@ bool gegex_are_equal(
 	bool are_equal = true;
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (a > b)
 	{
 		typeof(a) t = a;
@@ -107,6 +108,7 @@ bool gegex_are_equal(
 	
 	EXIT;
 	return are_equal;
+	#endif
 }
 
 

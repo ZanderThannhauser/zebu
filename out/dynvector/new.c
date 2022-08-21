@@ -1,9 +1,6 @@
 
-#include <memory/smalloc.h>
 
 #include <stdlib.h>
-
-#include <avl/new.h>
 
 #include <debug.h>
 
@@ -40,6 +37,8 @@ struct dynvector* new_dynvector(const char* name)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct dynvector* this = smalloc(sizeof(*this));
 	
 	this->list = new_avl_tree(compare_dynvector_nodes, free_dynvector_node);
@@ -48,6 +47,7 @@ struct dynvector* new_dynvector(const char* name)
 	
 	EXIT;
 	return this;
+	#endif
 }
 
 

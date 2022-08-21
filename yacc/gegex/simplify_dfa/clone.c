@@ -4,15 +4,10 @@
 #include <debug.h>
 
 #include <stdlib.h>
-#include <avl/avl.h>
-#include <avl/new.h>
 #include <avl/search.h>
 #include <avl/free_tree.h>
-#include <avl/safe_insert.h>
 
 #include <debug.h>
-
-#include <memory/smalloc.h>
 
 #include <macros/lambda.h>
 
@@ -30,10 +25,14 @@
 static struct gegex_mapping {
 	struct gegex* old; // must be the first
 	struct gegex* new;
-}* new_gegex_mapping(struct gegex* old, struct gegex* new) {
+}* new_gegex_mapping(struct gegex* old, struct gegex* new)
+{
+	TODO;
+	#if 0
 	struct gegex_mapping* this = smalloc(sizeof(*this));
 	this->old = old, this->new = new;
 	return this;
+	#endif
 }
 
 static int compare_gegex_mappings(const void* a, const void* b)
@@ -66,6 +65,8 @@ static struct gegex* clone_helper(
 	struct gegex_mapping* mapping;
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(old);
 	
 	if ((node = avl_search(mappings, &old)))
@@ -113,6 +114,7 @@ static struct gegex* clone_helper(
 		EXIT;
 		return new;
 	}
+	#endif
 }
 
 struct gegex* gegex_simplify_dfa_clone(
@@ -123,6 +125,8 @@ struct gegex* gegex_simplify_dfa_clone(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpv(start);
 	
 	struct avl_tree_t* mappings = new_avl_tree(compare_gegex_mappings, free);
@@ -142,6 +146,7 @@ struct gegex* gegex_simplify_dfa_clone(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 

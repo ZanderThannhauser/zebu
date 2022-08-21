@@ -1,10 +1,6 @@
 
 #include <debug.h>
 
-#include <avl/new.h>
-
-#include <memory/smalloc.h>
-
 #include "struct.h"
 #include "new.h"
 
@@ -22,6 +18,8 @@ struct regextree* new_regextree()
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct regextree* this = smalloc(sizeof(*this));
 	
 	this->tree = new_avl_tree(compare, NULL);
@@ -29,5 +27,6 @@ struct regextree* new_regextree()
 	
 	EXIT;
 	return this;
+	#endif
 }
 

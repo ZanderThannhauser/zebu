@@ -5,10 +5,9 @@
 
 #include <debug.h>
 
-#include <memory/smalloc.h>
+/*#include <memory/smalloc.h>*/
 
 #include <avl/search.h>
-#include <avl/new.h>
 #include <avl/insert.h>
 #include <avl/free_tree.h>
 
@@ -60,6 +59,8 @@ static void set_dist(
 	struct avl_tree_t* tree,
 	const struct lex_state* state, unsigned dist)
 {
+	TODO;
+	#if 0
 	struct avl_node_t* node = avl_search(tree, &state);
 	if (node)
 	{
@@ -72,6 +73,7 @@ static void set_dist(
 		new->state = state, new->dist = dist;
 		avl_insert(tree, new);
 	}
+	#endif
 }
 
 static unsigned get_dist(
@@ -117,11 +119,14 @@ static void set_prev(
 	}
 	else
 	{
+		TODO;
+		#if 0
 		struct prev_node* new = smalloc(sizeof(*new));
 		new->state = state;
 		new->prev = prev;
 		new->value = value;
 		avl_insert(tree, new);
+		#endif
 	}
 }
 
@@ -314,6 +319,8 @@ struct lfsa_rettype lex_find_shortest_accepting(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* dist = new_avl_tree(compare_dist_nodes, free);
 	struct avl_tree_t* prev = new_avl_tree(compare_prev_nodes, free);
 	
@@ -479,6 +486,7 @@ struct lfsa_rettype lex_find_shortest_accepting(
 	
 	EXIT;
 	return (struct lfsa_rettype) {.data = data, .len = min_dist};
+	#endif
 }
 
 

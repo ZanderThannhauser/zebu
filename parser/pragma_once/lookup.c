@@ -1,20 +1,14 @@
 
 #include <stdlib.h>
 
-#include <enums/error.h>
-
 #include <stdio.h>
-
-#include <defines/argv0.h>
-
-#include <sys/stat.h>
-
-#include <avl/search.h>
-#include <avl/safe_insert.h>
 
 #include <debug.h>
 
-#include <memory/smemdup.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+
+#include <arena/memdup.h>
 
 #include "struct.h"
 #include "node.h"
@@ -39,13 +33,15 @@ bool pragma_once_lookup(struct pragma_once* this, int fd)
 		.ino = statbuf.st_ino,
 	};
 	
-	bool first_time;
+	bool first_time = !avl_search(this->tree, &node);
 	
-	if ((first_time = !avl_search(&this->tree, &node)))
+	dpvb(first_time);
+	
+	if (first_time)
 	{
-		struct pragma_once_node* new = smemdup(&node, sizeof(node));
+		struct pragma_once_node* new = arena_memdup(this->arena, &node, sizeof(node));
 		
-		safe_avl_insert(&this->tree, new);
+		avl_insert(this->tree, new);
 	}
 	
 	EXIT;
