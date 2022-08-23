@@ -144,15 +144,19 @@ struct rbundle read_suffixes_token_expression(
 		
 		case t_ocurly:
 		{
-			TODO;
-			#if 0
 			struct rbundle original;
 			
 			// convert into nfa:
 			if (retval.is_nfa)
 				original = retval;
 			else
-				original = regex_dfa_to_nfa(retval.dfa, arena);
+			{
+				#ifdef WITH_ARENAS
+				original = regex_dfa_to_nfa(arena, retval.dfa);
+				#else
+				original = regex_dfa_to_nfa(retval.dfa);
+				#endif
+			}
 			
 			if (token_skip)
 			{
@@ -174,7 +178,11 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(tokenizer, ccurly_machine);
 			
+			#ifdef WITH_ARENAS
 			struct regex* start = new_regex(arena);
+			#else
+			struct regex* start = new_regex();
+			#endif
 			
 			struct regex* moving = start;
 			
@@ -189,24 +197,31 @@ struct rbundle read_suffixes_token_expression(
 				TODO;
 			}
 			
+			#ifdef WITH_ARENAS
 			struct regex* end = new_regex(arena);
+			#else
+			struct regex* end = new_regex();
+			#endif
 			
-			regex_add_lambda_transition(moving, arena, end);
+			regex_add_lambda_transition(moving, end);
 			
 			for (; i < max; i++)
 			{
 				// new_start, new_end = clone();
-				struct clone_nfa_bundle clone = regex_clone_nfa(arena,
-					original.nfa.start, original.nfa.end);
+				#ifdef WITH_ARENAS
+				struct clone_nfa_bundle clone = regex_clone_nfa(arena, original.nfa.start, original.nfa.end);
+				#else
+				struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+				#endif
 				
 				// moving -> new_start
-				regex_add_lambda_transition(moving, arena, clone.start);
+				regex_add_lambda_transition(moving, clone.start);
 				
 				// moving = new_end
 				moving = clone.end;
 				
 				// moving -> end
-				regex_add_lambda_transition(moving, arena, end);
+				regex_add_lambda_transition(moving, end);
 			}
 			
 			retval.is_nfa = true;
@@ -221,8 +236,7 @@ struct rbundle read_suffixes_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_after_suffix_machine);
 			
-			free_regex(original.nfa.start, arena);
-			#endif
+			free_regex(original.nfa.start);
 			break;
 		}
 		

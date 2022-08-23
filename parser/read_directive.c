@@ -14,7 +14,7 @@
 #include <misc/break_path.h>
 
 #include "options/struct.h"
-/*#include "options/dlink.h"*/
+#include "options/dlink.h"
 
 #include <lex/regex/state/free.h>
 #include <lex/regex/dfa_to_nfa.h>
@@ -29,10 +29,10 @@
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
 #include "tokenizer/machines/production/root.h"
-/*#include "tokenizer/machines/misc/semicolon.h"*/
+#include "tokenizer/machines/misc/semicolon.h"
 #include "tokenizer/machines/misc/colon.h"
-/*#include "tokenizer/machines/misc/identifier_or_string.h"*/
-/*#include "tokenizer/machines/misc/comparision.h"*/
+#include "tokenizer/machines/misc/identifier_or_string.h"
+#include "tokenizer/machines/misc/comparision.h"
 #include "tokenizer/machines/regex/root.h"
 /*#include "tokenizer/machines/root.h"*/
 
@@ -161,8 +161,6 @@ void read_directive(
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""disambiguate"))
 	{
-		TODO;
-		#if 0
 		read_token(tokenizer, colon_machine);
 		
 		struct dop read_dop()
@@ -190,12 +188,15 @@ void read_directive(
 			{
 				dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 				
+				TODO;
+				#if 0
 				unsigned char* dup = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 				
 				return (struct dop) {
 					.kind = dk_string,
 					.s.chars = dup,
 					.s.len = tokenizer->tokenchars.n};
+				#endif
 			}
 			else
 			{
@@ -220,7 +221,11 @@ void read_directive(
 		
 		struct dop right = read_dop();
 		
-		struct dlink* dlink = smalloc(sizeof(*dlink));
+		#ifdef WITH_ARENAS
+		TODO;
+		#else
+		struct dlink* dlink = malloc(sizeof(*dlink));
+		#endif
 		
 		dlink->left = left;
 		dlink->cmp = cmp;
@@ -239,7 +244,6 @@ void read_directive(
 		}
 		
 		read_token(tokenizer, semicolon_machine);
-		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""include"))
 	{

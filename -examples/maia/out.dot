@@ -35,7 +35,7 @@ node [shape = box];
 "0x4c99650" -> "0x4c994f0"
 "0x4c99700" -> "0x4c99650"
 "0x4c99a20" -> "0x4c99700"
-"0x4c99970" [ label = "(trie #1)" ];"0x4c998c0" [ label = "newline" ];"0x4c995a0" [ label = "&#92;&#92;&#110;" ];
+"0x4c99970" [ label = "(trie #0)" ];"0x4c998c0" [ label = "newline" ];"0x4c995a0" [ label = "&#92;&#92;&#110;" ];
 "0x4c998c0" -> "0x4c995a0"
 "0x4c99970" -> "0x4c998c0"
 "0x4c99a20" -> "0x4c99970"
@@ -74,7 +74,7 @@ node [shape = box];
 "0x4c9a7d0" -> "0x4c9a680"
 "0x4c9a880" -> "0x4c9a7d0"
 "0x4c9ab50" -> "0x4c9a880"
-"0x4c9aaa0" [ label = "(trie #1)" ];"0x4c9a9f0" [ label = "newline" ];"0x4c9a730" [ label = "" ];
+"0x4c9aaa0" [ label = "(trie #0)" ];"0x4c9a9f0" [ label = "newline" ];"0x4c9a730" [ label = "" ];
 "0x4c9a9f0" -> "0x4c9a730"
 "0x4c9aaa0" -> "0x4c9a9f0"
 "0x4c9ab50" -> "0x4c9aaa0"

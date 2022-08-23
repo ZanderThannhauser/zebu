@@ -15,8 +15,7 @@
 #include <cmdln/free.h>
 
 #include <lex/new.h>
-/*#include <lex/add_EOF_token.h>*/
-/*#include <lex/process_disambiguatations.h>*/
+#include <lex/process_disambiguatations.h>
 #include <lex/free.h>
 
 #include <misc/default_sighandler.h>
@@ -105,10 +104,7 @@ int main(int argc, char* argv[])
 	
 	if (options->disambiguatations.head)
 	{
-		TODO;
-		#if 0
 		lex_process_disambiguatations(lex, options->disambiguatations.head);
-		#endif
 	}
 	
 	#ifdef WITH_ARENAS

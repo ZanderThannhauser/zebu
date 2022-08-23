@@ -109,15 +109,15 @@ void recursive_parse(
 				
 				case t_identifier:
 				{
-					TODO;
-					#if 0
 					read_grammar(
+						#ifdef WITH_ARENAS
+						/* grammar_arena:  */ grammar_arena,
+						/* token_arena:    */ token_arena,
+						#endif
 						/* tokenizer:   */ tokenizer,
-						/* scratchpad:  */ scratchpad,
 						/* options:     */ options,
 						/* scope        */ scope,
 						/* lex:         */ lex);
-					#endif
 					break;
 				}
 				

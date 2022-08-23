@@ -144,6 +144,8 @@ void lex_process_disambiguatations(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	int compare(unsigned lid, unsigned rid)
 	{
 		struct dlink* moving = head;
@@ -262,6 +264,7 @@ void lex_process_disambiguatations(
 	
 	free_tokenset_array(original);
 	free_tokenset_array(sorted);
+	#endif
 	
 	EXIT;
 }

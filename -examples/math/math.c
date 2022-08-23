@@ -1,127 +1,192 @@
-const unsigned zebu_shifts[18][16] = {
+const unsigned zebu_shifts[35][16] = {
 	[1][2] = 3,
 	[1][3] = 2,
-	[1][10] = 5,
-	[1][11] = 4,
-	[1][12] = 19,
-	[1][14] = 11,
-	[3][2] = 3,
-	[3][3] = 2,
-	[3][10] = 5,
-	[3][11] = 4,
-	[3][12] = 17,
-	[3][14] = 11,
-	[5][5] = 6,
-	[5][8] = 9,
-	[6][2] = 3,
-	[6][3] = 2,
-	[6][10] = 5,
-	[6][13] = 7,
-	[6][14] = 8,
-	[9][2] = 3,
-	[9][3] = 2,
-	[9][10] = 5,
-	[9][13] = 10,
-	[9][14] = 8,
-	[11][6] = 12,
-	[11][7] = 15,
-	[12][2] = 3,
-	[12][3] = 2,
-	[12][10] = 5,
-	[12][11] = 14,
-	[12][14] = 11,
-	[12][15] = 13,
-	[15][2] = 3,
-	[15][3] = 2,
-	[15][10] = 5,
-	[15][11] = 14,
-	[15][14] = 11,
-	[15][15] = 16,
-	[17][4] = 18,
+	[1][9] = 24,
+	[1][11] = 23,
+	[1][12] = 36,
+	[1][14] = 30,
+	[3][2] = 5,
+	[3][3] = 4,
+	[3][9] = 7,
+	[3][11] = 6,
+	[3][12] = 21,
+	[3][14] = 13,
+	[5][2] = 5,
+	[5][3] = 4,
+	[5][9] = 7,
+	[5][11] = 6,
+	[5][12] = 19,
+	[5][14] = 13,
+	[7][4] = 8,
+	[7][7] = 11,
+	[8][2] = 5,
+	[8][3] = 4,
+	[8][9] = 7,
+	[8][13] = 9,
+	[8][14] = 10,
+	[11][2] = 5,
+	[11][3] = 4,
+	[11][9] = 7,
+	[11][13] = 12,
+	[11][14] = 10,
+	[13][5] = 14,
+	[13][6] = 17,
+	[14][2] = 5,
+	[14][3] = 4,
+	[14][9] = 7,
+	[14][11] = 16,
+	[14][14] = 13,
+	[14][15] = 15,
+	[17][2] = 5,
+	[17][3] = 4,
+	[17][9] = 7,
+	[17][11] = 16,
+	[17][14] = 13,
+	[17][15] = 18,
+	[19][10] = 20,
+	[21][10] = 22,
+	[24][4] = 25,
+	[24][7] = 28,
+	[25][2] = 3,
+	[25][3] = 2,
+	[25][9] = 24,
+	[25][13] = 26,
+	[25][14] = 27,
+	[28][2] = 3,
+	[28][3] = 2,
+	[28][9] = 24,
+	[28][13] = 29,
+	[28][14] = 27,
+	[30][5] = 31,
+	[30][6] = 34,
+	[31][2] = 3,
+	[31][3] = 2,
+	[31][9] = 24,
+	[31][11] = 33,
+	[31][14] = 30,
+	[31][15] = 32,
+	[34][2] = 3,
+	[34][3] = 2,
+	[34][9] = 24,
+	[34][11] = 33,
+	[34][14] = 30,
+	[34][15] = 35,
 };
-const unsigned zebu_reduces[20][10] = {
-	[2][4] = 10,
-	[2][5] = 10,
-	[2][6] = 10,
-	[2][7] = 10,
-	[2][8] = 10,
-	[2][9] = 10,
-	[4][4] = 12,
-	[4][9] = 12,
-	[5][4] = 14,
-	[5][6] = 14,
-	[5][7] = 14,
-	[5][9] = 14,
-	[7][4] = 14,
+const unsigned zebu_reduces[37][11] = {
+	[2][4] = 9,
+	[2][5] = 9,
+	[2][6] = 9,
+	[2][7] = 9,
+	[2][8] = 9,
+	[4][4] = 9,
+	[4][5] = 9,
+	[4][6] = 9,
+	[4][7] = 9,
+	[4][10] = 9,
+	[6][10] = 12,
+	[7][5] = 14,
 	[7][6] = 14,
-	[7][7] = 14,
-	[7][9] = 14,
-	[8][4] = 13,
-	[8][6] = 13,
-	[8][7] = 13,
-	[8][9] = 13,
-	[10][4] = 14,
-	[10][6] = 14,
-	[10][7] = 14,
-	[10][9] = 14,
-	[11][4] = 11,
-	[11][9] = 11,
-	[13][4] = 11,
-	[13][9] = 11,
-	[14][4] = 15,
-	[14][9] = 15,
-	[16][4] = 11,
-	[16][9] = 11,
-	[18][4] = 10,
-	[18][5] = 10,
-	[18][6] = 10,
-	[18][7] = 10,
-	[18][8] = 10,
-	[18][9] = 10,
-	[19][9] = 16,
+	[7][10] = 14,
+	[9][5] = 14,
+	[9][6] = 14,
+	[9][10] = 14,
+	[10][5] = 13,
+	[10][6] = 13,
+	[10][10] = 13,
+	[12][5] = 14,
+	[12][6] = 14,
+	[12][10] = 14,
+	[13][10] = 11,
+	[15][10] = 11,
+	[16][10] = 15,
+	[18][10] = 11,
+	[20][4] = 9,
+	[20][5] = 9,
+	[20][6] = 9,
+	[20][7] = 9,
+	[20][10] = 9,
+	[22][4] = 9,
+	[22][5] = 9,
+	[22][6] = 9,
+	[22][7] = 9,
+	[22][8] = 9,
+	[23][8] = 12,
+	[24][5] = 14,
+	[24][6] = 14,
+	[24][8] = 14,
+	[26][5] = 14,
+	[26][6] = 14,
+	[26][8] = 14,
+	[27][5] = 13,
+	[27][6] = 13,
+	[27][8] = 13,
+	[29][5] = 14,
+	[29][6] = 14,
+	[29][8] = 14,
+	[30][8] = 11,
+	[32][8] = 11,
+	[33][8] = 15,
+	[35][8] = 11,
+	[36][8] = 16,
 };
-const unsigned zebu_popcounts[20][10] = {
+const unsigned zebu_popcounts[37][11] = {
 	[2][4] = 1,
 	[2][5] = 1,
 	[2][6] = 1,
 	[2][7] = 1,
 	[2][8] = 1,
-	[2][9] = 1,
 	[4][4] = 1,
-	[4][9] = 1,
-	[5][4] = 1,
-	[5][6] = 1,
-	[5][7] = 1,
-	[5][9] = 1,
-	[7][4] = 3,
-	[7][6] = 3,
-	[7][7] = 3,
-	[7][9] = 3,
-	[8][4] = 1,
-	[8][6] = 1,
-	[8][7] = 1,
-	[8][9] = 1,
-	[10][4] = 3,
-	[10][6] = 3,
-	[10][7] = 3,
-	[10][9] = 3,
-	[11][4] = 1,
-	[11][9] = 1,
-	[13][4] = 3,
-	[13][9] = 3,
-	[14][4] = 1,
-	[14][9] = 1,
-	[16][4] = 3,
-	[16][9] = 3,
-	[18][4] = 3,
-	[18][5] = 3,
-	[18][6] = 3,
-	[18][7] = 3,
-	[18][8] = 3,
-	[18][9] = 3,
-	[19][9] = 1,
+	[4][5] = 1,
+	[4][6] = 1,
+	[4][7] = 1,
+	[4][10] = 1,
+	[6][10] = 1,
+	[7][5] = 1,
+	[7][6] = 1,
+	[7][10] = 1,
+	[9][5] = 3,
+	[9][6] = 3,
+	[9][10] = 3,
+	[10][5] = 1,
+	[10][6] = 1,
+	[10][10] = 1,
+	[12][5] = 3,
+	[12][6] = 3,
+	[12][10] = 3,
+	[13][10] = 1,
+	[15][10] = 3,
+	[16][10] = 1,
+	[18][10] = 3,
+	[20][4] = 3,
+	[20][5] = 3,
+	[20][6] = 3,
+	[20][7] = 3,
+	[20][10] = 3,
+	[22][4] = 3,
+	[22][5] = 3,
+	[22][6] = 3,
+	[22][7] = 3,
+	[22][8] = 3,
+	[23][8] = 1,
+	[24][5] = 1,
+	[24][6] = 1,
+	[24][8] = 1,
+	[26][5] = 3,
+	[26][6] = 3,
+	[26][8] = 3,
+	[27][5] = 1,
+	[27][6] = 1,
+	[27][8] = 1,
+	[29][5] = 3,
+	[29][6] = 3,
+	[29][8] = 3,
+	[30][8] = 1,
+	[32][8] = 3,
+	[33][8] = 1,
+	[35][8] = 3,
+	[36][8] = 1,
 };
-const unsigned zebu_lexer[22][58] = {
+const unsigned zebu_lexer[25][58] = {
 	[1][32] = 1,
 	[1][40] = 2,
 	[1][48] = 3,
@@ -145,51 +210,73 @@ const unsigned zebu_lexer[22][58] = {
 	[3][56] = 3,
 	[3][57] = 3,
 	[4][32] = 4,
-	[4][41] = 5,
-	[4][42] = 6,
-	[4][43] = 7,
-	[4][45] = 8,
-	[4][47] = 9,
-	[11][32] = 11,
-	[11][41] = 12,
-	[14][32] = 14,
-	[14][41] = 15,
-	[14][43] = 16,
-	[14][45] = 17,
-	[19][32] = 19,
-	[19][41] = 20,
-	[21][32] = 21,
+	[4][42] = 5,
+	[4][43] = 6,
+	[4][45] = 7,
+	[4][47] = 8,
+	[10][32] = 10,
+	[10][41] = 11,
+	[10][42] = 12,
+	[10][43] = 13,
+	[10][45] = 14,
+	[10][47] = 15,
+	[16][32] = 16,
+	[16][41] = 17,
+	[18][32] = 18,
+	[18][41] = 19,
+	[18][43] = 20,
+	[18][45] = 21,
+	[22][32] = 22,
+	[24][32] = 24,
+	[24][43] = 25,
+	[24][45] = 26,
 };
-const unsigned zebu_starts[20] = {
+const unsigned zebu_starts[37] = {
 	[1] = 1,
 	[2] = 4,
 	[3] = 1,
-	[4] = 11,
-	[5] = 4,
-	[6] = 1,
-	[7] = 14,
-	[8] = 14,
-	[9] = 1,
-	[10] = 14,
-	[11] = 14,
-	[12] = 1,
-	[13] = 11,
-	[14] = 11,
-	[15] = 1,
-	[16] = 11,
-	[17] = 19,
-	[18] = 4,
-	[19] = 21,
+	[4] = 10,
+	[5] = 1,
+	[6] = 16,
+	[7] = 10,
+	[8] = 1,
+	[9] = 18,
+	[10] = 18,
+	[11] = 1,
+	[12] = 18,
+	[13] = 18,
+	[14] = 1,
+	[15] = 16,
+	[16] = 16,
+	[17] = 1,
+	[18] = 16,
+	[19] = 16,
+	[20] = 10,
+	[21] = 16,
+	[22] = 4,
+	[23] = 22,
+	[24] = 4,
+	[25] = 1,
+	[26] = 24,
+	[27] = 24,
+	[28] = 1,
+	[29] = 24,
+	[30] = 24,
+	[31] = 1,
+	[32] = 22,
+	[33] = 22,
+	[34] = 1,
+	[35] = 22,
+	[36] = 22,
 };
 const unsigned zebu_defaults[1] = {
 };
-const unsigned zebu_EOFs[22] = {
-	[4] = 10,
-	[11] = 13,
-	[14] = 18,
-	[21] = 22,
+const unsigned zebu_EOFs[25] = {
+	[4] = 9,
+	[22] = 23,
+	[24] = 27,
 };
-const unsigned zebu_accepts[23] = {
+const unsigned zebu_accepts[28] = {
 	[2] = 2,
 	[3] = 3,
 	[5] = 4,
@@ -197,23 +284,27 @@ const unsigned zebu_accepts[23] = {
 	[7] = 6,
 	[8] = 7,
 	[9] = 8,
-	[10] = 9,
+	[11] = 10,
 	[12] = 4,
-	[13] = 9,
-	[15] = 4,
-	[16] = 6,
-	[17] = 7,
-	[18] = 9,
-	[20] = 4,
-	[22] = 9,
+	[13] = 5,
+	[14] = 6,
+	[15] = 7,
+	[17] = 10,
+	[19] = 10,
+	[20] = 5,
+	[21] = 6,
+	[23] = 8,
+	[25] = 5,
+	[26] = 6,
+	[27] = 8,
 };
 const unsigned start_grammar_id = 16;
 const char* zebu_grammar_names[18] = {
 	[16] = "(start)",
-	[15] = "(trie #0)",
-	[13] = "(trie #2)",
+	[13] = "(trie #1)",
+	[15] = "(trie #2)",
 	[11] = "add",
-	[10] = "lit",
+	[9] = "lit",
 	[14] = "mul",
 	[12] = "root",
 };
@@ -238,6 +329,19 @@ struct zebu_state
 	struct { unsigned char* data, n, cap; } l;
 	unsigned lstate, t;
 };
+
+static void ddprintf(struct zebu_state* this, const char* fmt, ...)
+{
+	for (unsigned i = 0, n = this->y.n; i < n; i++)
+		printf("%u ", this->y.data[i]);
+	
+	printf("| ");
+	
+	va_list va;
+	va_start(va, fmt);
+	vprintf(fmt, va);
+	va_end(va);
+}
 
 static void push(struct zebu_state* this, unsigned ystate)
 {
@@ -278,31 +382,39 @@ static void zebu_reset(struct zebu_state* this)
 	this->l.n = 0;
 	this->lstate = 1;
 	push(this, 1);
+	ddprintf(this, "y = %u, l == %u\n", 1, 1);
 }
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
 static void process_token(struct zebu_state* this, unsigned t)
 {
-	unsigned b, d, y = this->y.data[this->y.n - 1];
+	unsigned b, d, p, y = this->y.data[this->y.n - 1];
 	
 	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
 	{
 		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t]))
 		{
+			ddprintf(this, "b == %u\n", b);
+			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
+			
 			if (b == start_grammar_id)
 			{
 				this->y.n = 0;
 				return;
 			}
 			
-			this->y.n -= zebu_popcounts[y][t];
+			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
+			
+			this->y.n -= p;
 			
 			y = this->y.data[this->y.n - 1];
+			ddprintf(this, "y = %u\n", y);
 			
 			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
 			
 			d = zebu_shifts[y][b];
+			ddprintf(this, "d = %u\n", d);
 			
 			push(this, d), y = d;
 		}
@@ -316,10 +428,58 @@ static void process_token(struct zebu_state* this, unsigned t)
 	push(this, b), y = b;
 }
 
+static void escape(char *out, unsigned char in)
+{
+	switch (in)
+	{
+		case ' ':
+		case '~':
+		case '!':
+		case '@':
+		case '#':
+		case '$':
+		case '%':
+		case '^':
+		case '&':
+		case '*':
+		case '-':
+		case '+':
+		case '=':
+		case '|':
+		case '<': case '>':
+		case '(': case ')':
+		case '{': case '}':
+		case '[': case ']':
+		case ':': case ';':
+		case ',': case '.':
+		case '_':
+		case '0' ... '9':
+		case 'a' ... 'z':
+		case 'A' ... 'Z':
+			*out++ = in;
+			*out = 0;
+			break;
+		
+		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
+		
+		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
+		
+		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
+		
+		default:
+			sprintf(out, "\\x%02X", in);
+			break;
+	}
+}
+
 static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length)
 {
 	unsigned c, l = this->lstate;
 	unsigned a, b, i, n, f, t = this->t;
+	
+	char escaped[10];
 	
 	i = this->l.n;
 	
@@ -329,7 +489,11 @@ static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_
 	{
 		c = this->l.data[i];
 		
-		a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
+		escape(escaped, c);
+		
+		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
+		
+		a = (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
 		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
 		
 		if (a)
@@ -337,21 +501,25 @@ static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_
 			if (b)
 			{
 				l = a, t = b, f = i++;
+				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
 			}
 			else
 			{
 				l = a, i++;
+				ddprintf(this, "l == %u\n", l);
 			}
 		}
 		else if (b)
 		{
 			process_token(this, b);
 			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
+			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
 		}
 		else if (t)
 		{
 			process_token(this, t);
 			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
+			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
 		}
 		else
 		{
@@ -371,6 +539,8 @@ static void zebu_parse_EOF(struct zebu_state* this)
 	unsigned i = this->l.n, n = i, l = this->lstate;
 	unsigned a, b, c, f = 0, t = this->t;
 	
+	char escaped[10];
+	
 	while (1)
 	{
 		assert(i <= n + 1);
@@ -379,10 +549,15 @@ static void zebu_parse_EOF(struct zebu_state* this)
 		{
 			c = this->l.data[i];
 			
+			escape(escaped, c);
+			
+			ddprintf(this, "c = %s (0x%X)\n", escaped, c);
+		
 			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
 		}
 		else
 		{
+			ddprintf(this, "c == <EOF>\n");
 			a = l < N(zebu_EOFs) ? zebu_EOFs[l] : 0;
 		}
 		
@@ -393,10 +568,12 @@ static void zebu_parse_EOF(struct zebu_state* this)
 			if (b)
 			{
 				l = a, t = b, f = i++;
+				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
 			}
 			else
 			{
 				l = a, i++;
+				ddprintf(this, "l == %u\n", l);
 			}
 		}
 		else if (b)
@@ -406,11 +583,13 @@ static void zebu_parse_EOF(struct zebu_state* this)
 			if (!this->y.n) break;
 			
 			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
+			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
 		}
 		else if (t)
 		{
 			process_token(this, t);
 			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
+			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
 		}
 		else
 		{

@@ -1,6 +1,6 @@
 
 
-%start root;
+%start: root;
 
 %skip: ' ';
 

@@ -70,7 +70,7 @@ static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
 	#endif
 	
 	#ifdef WITH_ARENAS
-	node->states = regexset_clone(original_states, arena);
+	node->states = regexset_clone(arena, original_states);
 	#else
 	node->states = regexset_clone(original_states);
 	#endif

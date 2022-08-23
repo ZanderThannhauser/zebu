@@ -183,18 +183,24 @@ struct clone_nfa_bundle regex_clone_nfa(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	TODO;
-	#if 0
-	struct avl_tree_t* mappings = new_avl_tree(compare, free);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#endif
 	
-	struct regex* new_start = clone_helper(mappings, arena, start);
-	struct regex* new_end = clone_helper(mappings, arena, end);
+	#ifdef WITH_ARENAS
+	struct regex* new_start = clone_helper(arena, mappings, start);
+	struct regex* new_end = clone_helper(arena, mappings, end);
+	#else
+	struct regex* new_start = clone_helper(mappings, start);
+	struct regex* new_end = clone_helper(mappings, end);
+	#endif
 	
 	avl_free_tree(mappings);
 	
 	EXIT;
 	return (struct clone_nfa_bundle) {new_start, new_end};
-	#endif
 }
 
 
