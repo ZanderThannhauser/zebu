@@ -14,8 +14,10 @@
 #include "suffixes.h"
 
 struct gbundle read_suffixes_production(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -23,7 +25,11 @@ struct gbundle read_suffixes_production(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct gbundle retval = read_highest_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+	#else
+	struct gbundle retval = read_highest_production(tokenizer, options, scope, lex);
+	#endif
 	
 	dpv(retval.start);
 	dpv(retval.end);
@@ -39,7 +45,6 @@ struct gbundle read_suffixes_production(
 			#endif
 			
 			read_token(tokenizer, production_after_suffix_machine);
-			
 			break;
 		}
 		

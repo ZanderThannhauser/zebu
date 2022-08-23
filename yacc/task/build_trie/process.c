@@ -1,4 +1,6 @@
 
+#include <string.h>
+
 #include <assert.h>
 
 #include <debug.h>
@@ -37,10 +39,16 @@ static struct gegex* process_to(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = shared->arena;
+	#endif
 	
+	#ifdef WITH_ARENAS
 	struct gegex* building_to = new_gegex(arena);
-		
+	#else
+	struct gegex* building_to = new_gegex();
+	#endif
+	
 	assert(mirrorme_to->refcount);
 	
 	if (mirrorme_to->is_reduction_point)
@@ -52,7 +60,9 @@ static struct gegex* process_to(
 	if (mirrorme_to->refcount == 1)
 	{
 		heap_push(shared->todo, new_build_trie_task(
+			#ifdef WTIH_ARENAS
 			arena,
+			#endif
 			this->name,
 			this->start,
 			mirrorme_to,
@@ -69,12 +79,20 @@ static struct gegex* process_to(
 		
 		dpvs(gtot->trie);
 		
+		#ifdef WTIH_ARENAS
 		struct gegex* reduction = new_gegex(arena);
+		#else
+		struct gegex* reduction = new_gegex();
+		#endif
 		
 		reduction->is_reduction_point = true;
 		reduction->popcount = this->popcount + 2;
 		
+		#ifdef WTIH_ARENAS
 		char* dup = arena_strdup(arena, gtot->trie);
+		#else
+		char* dup = strdup(gtot->trie);
+		#endif
 		
 		gegex_add_grammar_transition(building_to, dup, reduction);
 	}

@@ -81,28 +81,43 @@ struct shift_node
 	
 	struct yacc_stateinfo* stateinfo; // "owned" by struct
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 
 static struct shift_node* new_shift_node(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	unsigned token)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct shift_node* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct shift_node* this = malloc(sizeof(*this));
+	#endif
 	
 	this->token = token;
-	this->stateinfo = new_yacc_stateinfo(arena);
 	
+	#ifdef WITH_ARENAS
+	this->stateinfo = new_yacc_stateinfo(arena);
 	this->arena = arena;
+	#else
+	this->stateinfo = new_yacc_stateinfo();
+	#endif
+	
 	
 	EXIT;
 	return this;
 }
 
 static void add_shift(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* tree,
 	unsigned token,
 	struct gegex* to,
@@ -120,15 +135,27 @@ static void add_shift(
 	{
 		struct shift_node* old = node->item;
 		
-		struct tokenset* duped = tokenset_clone(lookaheads, arena);
+		#ifdef WITH_ARENAS
+		struct tokenset* duped = tokenset_clone(arena, lookaheads);
+		#else
+		struct tokenset* duped = tokenset_clone(lookaheads);
+		#endif
 		
 		yacc_stateinfo_add(old->stateinfo, to, reduce_as, duped);
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct shift_node* new = new_shift_node(arena, token);
+		#else
+		struct shift_node* new = new_shift_node(token);
+		#endif
 		
-		struct tokenset* duped = tokenset_clone(lookaheads, arena);
+		#ifdef WITH_ARENAS
+		struct tokenset* duped = tokenset_clone(arena, lookaheads);
+		#else
+		struct tokenset* duped = tokenset_clone(lookaheads);
+		#endif
 		
 		yacc_stateinfo_add(new->stateinfo, to, reduce_as, duped);
 		
@@ -159,7 +186,11 @@ static void free_shift_node(void* ptr)
 	
 	free_yacc_stateinfo(this->stateinfo);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }
@@ -170,24 +201,34 @@ struct reduce_node
 	const char* reduce_as;
 	unsigned popcount;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 
 static struct reduce_node* new_reduce_node(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	unsigned token,
 	const char* reduce_as,
 	unsigned popcount)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct reduce_node* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct reduce_node* this = malloc(sizeof(*this));
+	#endif
 	
 	this->token = token;
 	this->reduce_as = reduce_as;
 	this->popcount = popcount;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	dpv(this->token);
 	dpvs(this->reduce_as);
@@ -198,7 +239,9 @@ static struct reduce_node* new_reduce_node(
 }
 
 static void add_reduce(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* tree,
 	unsigned token,
 	const char* reduce_as,
@@ -226,7 +269,11 @@ static void add_reduce(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct reduce_node* new = new_reduce_node(arena, token, reduce_as, popcount);
+		#else
+		struct reduce_node* new = new_reduce_node(token, reduce_as, popcount);
+		#endif
 		
 		avl_insert(tree, new);
 	}
@@ -251,8 +298,11 @@ static void free_reduce_node(void* ptr)
 	struct reduce_node* this = ptr;
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
-	
+	#else
+	free(this);
+	#endif
 	EXIT;
 }
 
@@ -262,21 +312,34 @@ struct subgrammar_node
 	
 	struct yacc_stateinfo* stateinfo; // free me
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 
 static struct subgrammar_node* new_subgrammar_node(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	const char* grammar)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct subgrammar_node* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct subgrammar_node* this = malloc(sizeof(*this));
+	#endif
 	
 	this->grammar = grammar;
+	
+	#ifdef WITH_ARENAS
 	this->stateinfo = new_yacc_stateinfo(arena);
 	
 	this->arena = arena;
+	#else
+	this->stateinfo = new_yacc_stateinfo();
+	#endif
 	
 	dpvs(this->grammar);
 	
@@ -285,7 +348,9 @@ static struct subgrammar_node* new_subgrammar_node(
 }
 
 static void add_subgrammar(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* tree,
 	const char* grammar,
 	struct gegex* to,
@@ -303,15 +368,27 @@ static void add_subgrammar(
 	{
 		struct subgrammar_node* old = node->item;
 		
-		struct tokenset* duped = tokenset_clone(lookaheads, arena);
+		#ifdef WITH_ARENAS
+		struct tokenset* duped = tokenset_clone(arena, lookaheads);
+		#else
+		struct tokenset* duped = tokenset_clone(lookaheads);
+		#endif
 		
 		yacc_stateinfo_add(old->stateinfo, to, reduce_as, duped);
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct subgrammar_node* new = new_subgrammar_node(arena, grammar);
+		#else
+		struct subgrammar_node* new = new_subgrammar_node(grammar);
+		#endif
 		
-		struct tokenset* duped = tokenset_clone(lookaheads, arena);
+		#ifdef WITH_ARENAS
+		struct tokenset* duped = tokenset_clone(arena, lookaheads);
+		#else
+		struct tokenset* duped = tokenset_clone(lookaheads);
+		#endif
 		
 		yacc_stateinfo_add(new->stateinfo, to, reduce_as, duped);
 		
@@ -335,7 +412,11 @@ static void free_subgrammar_node(void* ptr)
 	
 	free_yacc_stateinfo(this->stateinfo);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }
@@ -345,21 +426,21 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 	struct build_ystate_task* const this = (void*) super;
 	ENTER;
 	
-	struct memory_arena* const arena = shared->arena;
 	
 	struct yacc_state* const state = this->state;
 	
-	// create set for all tokens accepted by all gegex states:
+	#ifdef WITH_ARENAS
+	struct memory_arena* const arena = shared->arena;
 	struct tokenset* all_tokens = new_tokenset(arena);
-
-	// map from token to set of gegex states:
 	struct avl_tree_t* shift_tokens = avl_alloc_tree(arena, compare_shift_nodes, free_shift_node);
-
-	// map from token to name to reduce by:
 	struct avl_tree_t* reduce_tokens = avl_alloc_tree(arena, compare_reduce_nodes, free_reduce_node);
-
-	// map from subgrammar name to set of gegex states:
 	struct avl_tree_t* subgrammars = avl_alloc_tree(arena, compare_subgrammar_nodes, free_subgrammar_node);
+	#else
+	struct tokenset* all_tokens = new_tokenset();
+	struct avl_tree_t* shift_tokens = avl_alloc_tree(compare_shift_nodes, free_shift_node);
+	struct avl_tree_t* reduce_tokens = avl_alloc_tree(compare_reduce_nodes, free_reduce_node);
+	struct avl_tree_t* subgrammars = avl_alloc_tree(compare_subgrammar_nodes, free_subgrammar_node);
+	#endif
 	
 	yacc_stateinfo_foreach(this->stateinfo, ({
 		void runme(struct gegex* state, const char* reduce_as, struct tokenset* lookaheads)
@@ -372,8 +453,11 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 			{
 				tokenset_foreach(lookaheads, ({
 					void runme(unsigned token) {
-						
+						#ifdef WITH_ARENAS
 						add_reduce(arena, reduce_tokens, token, reduce_as, state->popcount);
+						#else
+						add_reduce(reduce_tokens, token, reduce_as, state->popcount);
+						#endif
 						
 						tokenset_add(all_tokens, token);
 					}
@@ -387,9 +471,17 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 				
 				unsigned token = ele->token;
 				
-				struct tokenset* duped = tokenset_clone(lookaheads, arena);
+				#ifdef WITH_ARENAS
+				struct tokenset* duped = tokenset_clone(arena, lookaheads);
+				#else
+				struct tokenset* duped = tokenset_clone(lookaheads);
+				#endif
 				
+				#ifdef WITH_ARENAS
 				add_shift(arena, shift_tokens, token, ele->to, reduce_as, duped);
+				#else
+				add_shift(shift_tokens, token, ele->to, reduce_as, duped);
+				#endif
 				
 				tokenset_add(all_tokens, token);
 			}
@@ -400,9 +492,17 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 				
 				dpvs(t->grammar);
 				
-				struct tokenset* duped = tokenset_clone(lookaheads, arena);
+				#ifdef WITH_ARENAS
+				struct tokenset* duped = tokenset_clone(arena, lookaheads);
+				#else
+				struct tokenset* duped = tokenset_clone(lookaheads);
+				#endif
 				
+				#ifdef WITH_ARENAS
 				add_subgrammar(arena, subgrammars, t->grammar, t->to, reduce_as, duped);
+				#else
+				add_subgrammar(subgrammars, t->grammar, t->to, reduce_as, duped);
+				#endif
 			}
 			
 			EXIT;
@@ -414,7 +514,9 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 	
 	// don't free 'tokens', lex will do that
 	struct tokensetset* tokens = lex_build_tokenzer(
+		#ifdef WITH_ARENAS
 		/* (in/out) struct memory_arena* arena: */ shared->tokenizer_arena,
+		#endif
 		/* (   out) struct lex_state* start:    */ &tokenizer_start,
 		/* (in/out) struct lex* lex:            */ shared->lex,
 		/* (in)     struct tokenset* tokens:    */ all_tokens);
@@ -433,9 +535,13 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 			// is this a shift or a reduce transition?
 			if (avl_search(shift_tokens, &first))
 			{
+				#ifdef WITH_ARENAS
 				struct yacc_stateinfo* subinfo = new_yacc_stateinfo(arena);
-				
 				struct lookahead_deps* subldeps = new_lookahead_deps(arena);
+				#else
+				struct yacc_stateinfo* subinfo = new_yacc_stateinfo();
+				struct lookahead_deps* subldeps = new_lookahead_deps();
+				#endif
 				
 				tokenset_foreach(ele, ({
 					void runme(unsigned token) {
@@ -460,10 +566,17 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 								
 								dpv(token);
 								
-								struct tokenset* duped = tokenset_clone(sublookaheads, arena);
+								#ifdef WTIH_ARENAS
+								struct tokenset* duped = tokenset_clone(arena, sublookaheads);
+								#else
+								struct tokenset* duped = tokenset_clone(sublookaheads);
+								#endif
 								
-								heap_push(shared->todo, new_expand_tree_task(arena,
-									subinfo, subldeps, substate, subreduce_as, duped));
+								#ifdef WITH_ARENAS
+								heap_push(shared->todo, new_expand_tree_task(arena, subinfo, subldeps, substate, subreduce_as, duped));
+								#else
+								heap_push(shared->todo, new_expand_tree_task(subinfo, subldeps, substate, subreduce_as, duped));
+								#endif
 							}
 							runme;
 						}));
@@ -471,11 +584,19 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 					runme;
 				}));
 				
+				#ifdef WITH_ARENAS
 				heap_push(shared->todo, new_free_lookahead_deps_task(arena, subldeps));
+				#else
+				heap_push(shared->todo, new_free_lookahead_deps_task(subldeps));
+				#endif
 				
 				struct ytransition* yt = yacc_state_add_transition(state, ele, NULL);
 				
+				#ifdef WITH_ARENAS
 				heap_push(shared->todo, new_add_transition_task(arena, &yt->to, subinfo));
+				#else
+				heap_push(shared->todo, new_add_transition_task(&yt->to, subinfo));
+				#endif
 			}
 			else if (avl_search(reduce_tokens, &first))
 			{
@@ -515,7 +636,11 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 				dpvs(reduce_as);
 				assert(reduce_as);
 				
+				#ifdef WITH_ARENAS
 				char* dup = arena_strdup(shared->parser_arena, reduce_as);
+				#else
+				char* dup = strdup(reduce_as);
+				#endif
 				
 				dpvs(dup);
 				dpv(popcount);
@@ -540,30 +665,53 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 		
 		dpvs(ele->grammar);
 		
+		#ifdef WITH_ARENAS
 		struct yacc_stateinfo* subinfo = new_yacc_stateinfo(arena);
-		
 		struct lookahead_deps* subldeps = new_lookahead_deps(arena);
+		#else
+		struct yacc_stateinfo* subinfo = new_yacc_stateinfo();
+		struct lookahead_deps* subldeps = new_lookahead_deps();
+		#endif
 		
 		yacc_stateinfo_foreach(ele->stateinfo, ({
 			void runme(struct gegex* substate, const char* reduce_as, struct tokenset* sublookaheads) {
 				
-				struct tokenset* duped = tokenset_clone(sublookaheads, arena);
+				#ifdef WITH_ARENAS
+				struct tokenset* duped = tokenset_clone(arena, sublookaheads);
+				#else
+				struct tokenset* duped = tokenset_clone(sublookaheads);
+				#endif
 				
-				heap_push(shared->todo, new_expand_tree_task(arena,
-					subinfo, subldeps, substate, reduce_as, duped));
+				#ifdef WITH_ARENAS
+				heap_push(shared->todo, new_expand_tree_task(arena, subinfo, subldeps, substate, reduce_as, duped));
+				#else
+				heap_push(shared->todo, new_expand_tree_task(subinfo, subldeps, substate, reduce_as, duped));
+				#endif
 			}
 			runme;
 		}));
 		
+		#ifdef WTIH_ARENAS
 		heap_push(shared->todo, new_free_lookahead_deps_task(arena, subldeps));
+		#else
+		heap_push(shared->todo, new_free_lookahead_deps_task(subldeps));
+		#endif
 		
+		#ifdef WITH_ARENAS
 		char* grammar = arena_strdup(shared->parser_arena, ele->grammar);
+		#else
+		char* grammar = strdup(ele->grammar);
+		#endif
 		
 		dpvs(grammar);
 		
 		struct gytransition* yt = yacc_state_add_grammar_transition(state, grammar, NULL);
 		
+		#ifdef WITH_ARENAS
 		heap_push(shared->todo, new_add_transition_task(arena, &yt->to, subinfo));
+		#else
+		heap_push(shared->todo, new_add_transition_task(&yt->to, subinfo));
+		#endif
 	}
 	
 	free_tokenset(all_tokens);

@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -6,11 +8,18 @@
 #include "struct.h"
 #include "new.h"
 
-struct regex* new_regex(struct memory_arena* arena)
-{
+struct regex* new_regex(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+) {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct regex* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct regex* this = malloc(sizeof(*this));
+	#endif
 	
 	this->lambda_transitions.data = NULL;
 	this->lambda_transitions.cap = 0;
@@ -24,7 +33,9 @@ struct regex* new_regex(struct memory_arena* arena)
 	
 	this->EOF_transition_to = NULL;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	this->phase = 0;
 	

@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include "struct.h"
@@ -60,5 +62,7 @@ void free_memory_arena(struct memory_arena* this)
 	
 	EXIT;
 }
+
+#endif
 
 #endif

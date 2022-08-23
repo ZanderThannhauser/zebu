@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -21,3 +23,5 @@ void* child_malloc(struct memory_arena* arena, size_t size)
 	return ptr;
 }
 
+
+#endif

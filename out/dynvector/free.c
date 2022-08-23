@@ -13,9 +13,11 @@ void free_dynvector(struct dynvector* this)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	avl_free_tree(this->list);
+	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(this);
 	#endif
 	

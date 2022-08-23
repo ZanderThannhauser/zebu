@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -70,3 +72,4 @@ char* arena_asprintf(
 
 
 
+#endif

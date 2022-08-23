@@ -1,3 +1,5 @@
-
 struct options* new_options(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

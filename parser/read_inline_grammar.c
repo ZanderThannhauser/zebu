@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -30,7 +31,9 @@
 #include "read_inline_grammar.h"
 
 void read_inline_grammar(
+	#ifdef WITH_ARENAS
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -40,9 +43,12 @@ void read_inline_grammar(
 	
 	assert(tokenizer->token == t_parenthesised_identifier);
 	
+	#if WITH_ARENAS
 	struct memory_arena* const arena = scope_get_arena(scope);
-	
 	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	#else
+	char* name = strdup(tokenizer->tokenchars.chars);
+	#endif
 	
 	dpvs(name);
 	
@@ -54,8 +60,10 @@ void read_inline_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
+		#ifdef WITH_ARENAS
 		/* grammar_arena: */ arena,
 		/* token_arena: */ token_arena,
+		#endif
 		/* tokenizer:  */ tokenizer,
 		/* options:    */ options,
 		/* scope:      */ scope,

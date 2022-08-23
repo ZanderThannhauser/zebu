@@ -5,6 +5,7 @@
 struct named_gbundle
 {
 	char* name;
+	
 	struct gegex* start;
 	struct gegex* end;
 };

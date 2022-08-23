@@ -23,26 +23,36 @@
 #include "suffixes.h"
 
 struct rbundle read_suffixes_token_expression(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct rbundle retval = read_prefixes_token_expression(arena, tokenizer, scope, token_skip);
+	#else
+	struct rbundle retval = read_prefixes_token_expression(tokenizer, scope, token_skip);
+	#endif
 	
 	switch (tokenizer->token)
 	{
 		case t_qmark:
 		{
-			TODO;
-			#if 0
 			// convert into nfa:
 			if (!retval.is_nfa)
-				retval = regex_dfa_to_nfa(retval.dfa, arena);
+			{
+				#ifdef WITH_ARENAS
+				retval = regex_dfa_to_nfa(arena, retval.dfa);
+				#else
+				retval = regex_dfa_to_nfa(retval.dfa);
+				#endif
+			}
 			
-			regex_add_lambda_transition(retval.nfa.start, arena, retval.nfa.end);
+			regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
@@ -51,7 +61,6 @@ struct rbundle read_suffixes_token_expression(
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
-			#endif
 			break;
 		}
 		
@@ -59,11 +68,21 @@ struct rbundle read_suffixes_token_expression(
 		{
 			// convert into nfa:
 			if (!retval.is_nfa)
+			{
+				#ifdef WITH_ARENAS
 				retval = regex_dfa_to_nfa(retval.dfa, arena);
+				#else
+				retval = regex_dfa_to_nfa(retval.dfa);
+				#endif
+			}
 			
 			if (token_skip)
 			{
+				#ifdef WITH_ARENAS
 				struct regex* cloned = regex_clone(token_skip, arena);
+				#else
+				struct regex* cloned = regex_clone(token_skip);
+				#endif
 				
 				regex_add_lambda_transition(retval.nfa.end, cloned);
 				regex_add_lambda_transition(cloned, retval.nfa.start);
@@ -89,11 +108,21 @@ struct rbundle read_suffixes_token_expression(
 		{
 			// convert into nfa:
 			if (!retval.is_nfa)
+			{
+				#ifdef WITH_ARENAS
 				retval = regex_dfa_to_nfa(retval.dfa, arena);
+				#else
+				retval = regex_dfa_to_nfa(retval.dfa);
+				#endif
+			}
 			
 			if (token_skip)
 			{
+				#ifdef WITH_ARENAS
 				struct regex* cloned = regex_clone(token_skip, arena);
+				#else
+				struct regex* cloned = regex_clone(token_skip);
+				#endif
 				
 				regex_add_lambda_transition(retval.nfa.end, cloned);
 				regex_add_lambda_transition(cloned, retval.nfa.start);

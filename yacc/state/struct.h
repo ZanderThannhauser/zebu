@@ -3,6 +3,7 @@
 #define STRUCT_YACC_STATE
 
 #include <stddef.h>
+#include <stdbool.h>
 
 struct yacc_state
 {
@@ -17,7 +18,7 @@ struct yacc_state
 	struct {
 		struct rytransition {
 			const struct tokenset* value; // lex will free
-			const char* reduce_as; // arena will free
+			char* reduce_as; // arena will free
 			unsigned popcount;
 		}** data;
 		size_t n, cap;
@@ -25,17 +26,21 @@ struct yacc_state
 	
 	struct {
 		struct gytransition {
-			const char* grammar; // arena will free
+			char* grammar; // arena will free
 			struct yacc_state* to;
 		}** data;
 		size_t n, cap;
 	} grammar_transitions;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 	
 	struct lex_state* tokenizer_start;
 	
 	unsigned phase;
+	
+	bool is_freeing;
 };
 
 #endif

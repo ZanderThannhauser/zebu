@@ -1,4 +1,7 @@
 
+#ifdef WITH_ARENAS
+
+#include <stdio.h>
 #include <string.h>
 
 #include <debug.h>
@@ -75,3 +78,4 @@ void* arena_realloc(
 
 
 
+#endif

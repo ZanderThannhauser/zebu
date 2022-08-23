@@ -39,7 +39,9 @@
 #include "build_tokenizer.h"
 
 struct tokensetset* lex_build_tokenzer(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct lex_state** outgoing,
 	struct lex* this,
 	struct tokenset* token_ids)
@@ -64,9 +66,17 @@ struct tokensetset* lex_build_tokenzer(
 	else
 	{
 		// build dfa of all tokens' dfas
+		#ifdef WITH_ARENAS
 		struct regexset* starts = new_regexset(arena);
+		#else
+		struct regexset* starts = new_regexset();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		retval = new_tokensetset(arena);
+		#else
+		retval = new_tokensetset();
+		#endif
 		
 		tokenset_foreach(token_ids, ({
 			void runme(unsigned token) {
@@ -75,13 +85,20 @@ struct tokensetset* lex_build_tokenzer(
 			runme;
 		}));
 		
+		#ifdef WITH_ARENAS
 		struct lex_state* new_state = dfas_to_dfa(arena, retval, starts);
+		#else
+		struct lex_state* new_state = dfas_to_dfa(retval, starts);
+		#endif
 		
 		dpv(new_state);
 		dpv(retval->n);
 		
-		avl_insert(this->tokenizer.cache,
-			new_build_tokenizer_node(arena, token_ids, retval, new_state));
+		#ifdef WITH_ARENAS
+		avl_insert(this->tokenizer.cache, new_build_tokenizer_node(arena, token_ids, retval, new_state));
+		#else
+		avl_insert(this->tokenizer.cache, new_build_tokenizer_node(token_ids, retval, new_state));
+		#endif
 		
 		*outgoing = new_state;
 	}

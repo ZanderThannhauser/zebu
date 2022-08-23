@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -32,9 +33,12 @@ void read_charset(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena = scope_get_arena(scope);
-	
 	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	#else
+	char* name = strdup(tokenizer->tokenchars.chars);
+	#endif
 	
 	dpvs(name);
 	
@@ -42,7 +46,11 @@ void read_charset(
 	
 	read_token(tokenizer, charset_root_machine);
 	
+	#ifdef WITH_ARENAS
 	struct charset* charset = read_root_charset(arena, tokenizer, scope);
+	#else
+	struct charset* charset = read_root_charset(tokenizer, scope);
+	#endif
 	
 	scope_declare_charset(scope, name, charset);
 	

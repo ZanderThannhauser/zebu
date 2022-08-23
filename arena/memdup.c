@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <string.h>
 
 #include <debug.h>
@@ -20,3 +22,4 @@ void* arena_memdup(
 	return retval;
 }
 
+#endif

@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 
 #include <debug.h>
 
@@ -18,8 +19,6 @@ unsigned tokenset_to_id(
 	unsigned retval;
 	ENTER;
 	
-	dpv(this->arena);
-	
 	struct avl_node_t* node = avl_search(this->tree, &(struct tokenset_to_id_node){
 		.is_tokenset = true,
 		.tokenset = tokenset
@@ -33,7 +32,11 @@ unsigned tokenset_to_id(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct tokenset_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
+		#else
+		struct tokenset_to_id_node* new = malloc(sizeof(*new));
+		#endif
 		
 		new->is_tokenset = true;
 		new->tokenset = tokenset;
@@ -47,4 +50,12 @@ unsigned tokenset_to_id(
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
 

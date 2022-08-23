@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 #include <debug.h>
 
@@ -19,3 +21,4 @@ size_t arena_get_size(void* ptr)
 	return user_size;
 }
 
+#endif

@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -7,11 +8,17 @@
 #include "new.h"
 
 struct yacc_state* new_yacc_state(
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+) {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct yacc_state* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct yacc_state* this = malloc(sizeof(*this));
+	#endif
 	
 	this->transitions.data = NULL;
 	this->transitions.n = 0;
@@ -25,7 +32,9 @@ struct yacc_state* new_yacc_state(
 	this->reduction_transitions.n = 0;
 	this->reduction_transitions.cap = 0;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	this->phase = 0;
 	

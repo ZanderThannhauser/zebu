@@ -78,8 +78,13 @@ unsigned lex_add_token(
 		
 		lex_phase_counter++, helper(token);
 		
+		#ifdef WITH_ARENAS
 		struct dfa_to_id_node*   to = new_dfa_to_id_node(this->arena, retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(this->arena, retval, token);
+		#else
+		struct dfa_to_id_node*   to = new_dfa_to_id_node(retval, token);
+		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);
+		#endif
 		
 		avl_insert(this->dfa_to_id,   to);
 		avl_insert(this->dfa_from_id, from);

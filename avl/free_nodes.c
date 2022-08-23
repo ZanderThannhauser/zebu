@@ -12,12 +12,9 @@ void avl_free_nodes(avl_tree_t *avltree)
 {
 	avl_node_t *node, *next;
 	avl_freeitem_t freeitem;
-	struct memory_arena* arena;
 	ENTER;
 	
 	freeitem = avltree->freeitem;
-	
-	arena = avltree->arena;
 	
 	for (node = avltree->head; node; node = next)
 	{
@@ -28,7 +25,11 @@ void avl_free_nodes(avl_tree_t *avltree)
 			freeitem(node->item);
 		}
 		
-		arena_dealloc(arena, node);
+		#ifdef WITH_ARENAS
+		arena_dealloc(avltree->arena, node);
+		#else
+		free(node);
+		#endif
 	}
 	
 	avl_clear_tree(avltree);

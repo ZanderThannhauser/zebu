@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <stdio.h>
 #include <sys/mman.h>
 #include <stdlib.h>
@@ -22,3 +24,6 @@ void mmap_free(struct memory_arena* this, void* ptr, size_t oldsize)
 	EXIT;
 }
 
+
+
+#endif

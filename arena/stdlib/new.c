@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include "../struct.h"
@@ -42,3 +44,4 @@ struct memory_arena* new_stdlib_arena()
 
 
 
+#endif

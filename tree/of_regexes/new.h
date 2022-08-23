@@ -1,2 +1,5 @@
-
-struct regextree* new_regextree(struct memory_arena* arena);
+struct regextree* new_regextree(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

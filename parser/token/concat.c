@@ -14,14 +14,20 @@
 #include "concat.h"
 
 struct rbundle read_concat_token_expression(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct rbundle retval = read_suffixes_token_expression(arena, tokenizer, scope, token_skip);
+	#else
+	struct rbundle retval = read_suffixes_token_expression(tokenizer, scope, token_skip);
+	#endif
 	
 	switch (tokenizer->token)
 	{
@@ -32,17 +38,37 @@ struct rbundle read_concat_token_expression(
 		case t_character_literal:
 		case t_dot:
 		{
+			#ifdef WITH_ARENAS
 			struct rbundle next = read_concat_token_expression(arena, tokenizer, scope, token_skip);
+			#else
+			struct rbundle next = read_concat_token_expression(tokenizer, scope, token_skip);
+			#endif
 			
 			if (!retval.is_nfa)
-				retval = regex_dfa_to_nfa(retval.dfa, arena);
+			{
+				#ifdef WITH_ARENAS
+				retval = regex_dfa_to_nfa(arena, retval.dfa);
+				#else
+				retval = regex_dfa_to_nfa(retval.dfa);
+				#endif
+			}
 			
 			if (!next.is_nfa)
-				next = regex_dfa_to_nfa(next.dfa, arena);
+			{
+				#ifdef WITH_ARENAS
+				next = regex_dfa_to_nfa(arena, next.dfa);
+				#else
+				next = regex_dfa_to_nfa(next.dfa);
+				#endif
+			}
 			
 			if (token_skip)
 			{
-				struct regex* cloned = regex_clone(token_skip, arena);
+				#ifdef WITH_ARENAS
+				struct regex* cloned = regex_clone(arena, token_skip);
+				#else
+				struct regex* cloned = regex_clone(token_skip);
+				#endif
 				
 				regex_add_lambda_transition(retval.nfa.end, cloned);
 				regex_add_lambda_transition(cloned, next.nfa.start);

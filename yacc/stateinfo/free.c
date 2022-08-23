@@ -16,7 +16,11 @@ void free_yacc_stateinfo(struct yacc_stateinfo* this)
 	
 	avl_free_tree(this->tree);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

@@ -21,7 +21,9 @@
 #include "process.h"
 
 struct cmdln* cmdln_process(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	int argc, char* const* argv)
 {
 	ENTER;
@@ -118,7 +120,11 @@ struct cmdln* cmdln_process(
 		usage(e_bad_cmdline_args);
 	}
 	
+	#ifdef WITH_ARENAS
 	struct cmdln* flags = arena_malloc(arena, sizeof(*flags));
+	#else
+	struct cmdln* flags = malloc(sizeof(*flags));
+	#endif
 	
 	flags->input_path = input_path;
 	flags->output_path = output_path;

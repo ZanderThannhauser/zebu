@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <stddef.h>
 #include <debug.h>
 
@@ -25,7 +26,11 @@ struct tokenset* tokensetset_add(struct tokensetset* this, struct tokenset* ts)
 		
 		dpv(this->cap);
 		
+		#ifdef WITH_ARENAS
 		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	unsigned i, n;

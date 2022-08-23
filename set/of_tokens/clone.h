@@ -1,4 +1,6 @@
-
 struct tokenset* tokenset_clone(
-	const struct tokenset* other,
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	const struct tokenset* othe
+);

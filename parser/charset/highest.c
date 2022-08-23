@@ -18,7 +18,9 @@
 #include "highest.h"
 
 struct charset* read_highest_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
@@ -33,7 +35,11 @@ struct charset* read_highest_charset(
 			
 			dpvc(first);
 			
+			#ifdef WITH_ARENAS
 			retval = new_charset(arena, &first, 1, false);
+			#else
+			retval = new_charset(&first, 1, false);
+			#endif
 			break;
 		}
 		
@@ -41,7 +47,11 @@ struct charset* read_highest_charset(
 		{
 			struct charset* copyme = scope_lookup_charset(scope, tokenizer->tokenchars.chars);
 			
+			#ifdef WITH_ARENAS
 			retval = clone_charset(arena, copyme);
+			#else
+			retval = clone_charset(copyme);
+			#endif
 			break;
 		}
 		
@@ -49,7 +59,11 @@ struct charset* read_highest_charset(
 		{
 			read_token(tokenizer, charset_root_machine);
 			
+			#ifdef WITH_ARENAS
 			retval = read_root_charset(arena, tokenizer, scope);
+			#else
+			retval = read_root_charset(tokenizer, scope);
+			#endif
 			
 			if (tokenizer->token != t_cparen)
 			{

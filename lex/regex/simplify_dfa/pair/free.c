@@ -13,7 +13,11 @@ void free_pair(void* ptr)
 	struct pair* this = ptr;
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

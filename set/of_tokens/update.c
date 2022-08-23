@@ -20,7 +20,11 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	
 	unsigned  new_cap = this->n + them->n;
 	unsigned  new_n = 0;
+	#ifdef WTIH_ARENAS
 	unsigned* new_data = arena_malloc(this->arena, sizeof(*new_data) * new_cap);
+	#else
+	unsigned* new_data = malloc(sizeof(*new_data) * new_cap);
+	#endif
 	
 	while (i < n && j < m)
 	{
@@ -44,7 +48,11 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	
 	if (changed)
 	{
+		#ifdef WITH_ARENAS
 		arena_dealloc(this->arena, this->data);
+		#else
+		free(this->data);
+		#endif
 		
 		this->data = new_data;
 		this->n = new_n;
@@ -52,7 +60,11 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		arena_dealloc(this->arena, new_data);
+		#else
+		free(new_data);
+		#endif
 	}
 	
 	EXIT;

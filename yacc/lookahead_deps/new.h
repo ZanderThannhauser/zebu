@@ -1,3 +1,5 @@
-
 struct lookahead_deps* new_lookahead_deps(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

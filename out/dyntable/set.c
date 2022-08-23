@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 
 #include <debug.h>
 
@@ -28,7 +30,11 @@ void dyntable_set(
 		dpv(this->height);
 	}
 	
+	#ifdef WITH_ARENAS
 	struct dyntable_node* node = arena_malloc(this->arena, sizeof(*node));
+	#else
+	struct dyntable_node* node = malloc(sizeof(*node));
+	#endif
 	
 	node->x = x;
 	node->y = y;

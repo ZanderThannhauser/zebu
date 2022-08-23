@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
@@ -20,7 +21,11 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 		
 		dpv(this->cap);
 		
+		#ifdef WITH_ARENAS
 		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	unsigned i, n;
@@ -45,7 +50,6 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 	}
 	
 	this->data[this->n++] = ptr;
-	
 	EXIT;
 }
 

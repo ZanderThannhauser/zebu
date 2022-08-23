@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <string.h>
 
 #include <debug.h>
@@ -8,7 +10,9 @@
 #include "strfandr.h"
 
 char* strfandr(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	const char* original,
 	const char* findme,
 	const char* replacewith)
@@ -29,7 +33,11 @@ char* strfandr(
 			
 			dpv(buffer.cap);
 			
+			#ifdef WITH_ARENAS
 			buffer.data = arena_realloc(arena, buffer.data, buffer.cap);
+			#else
+			buffer.data = realloc(buffer.data, buffer.cap);
+			#endif
 		}
 		
 		memcpy(buffer.data + buffer.n, start, length);

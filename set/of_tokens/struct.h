@@ -1,7 +1,10 @@
 
 struct tokenset
 {
-	struct memory_arena* arena;
 	unsigned *data, n, cap;
+	
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena;
+	#endif
 };
 

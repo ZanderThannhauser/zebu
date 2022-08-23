@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include "../struct.h"
@@ -32,6 +34,9 @@ struct memory_arena* new_mmap_arena()
 	EXIT;
 	return this;
 }
+
+
+#endif
 
 
 

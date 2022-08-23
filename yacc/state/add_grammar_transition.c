@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
@@ -11,14 +12,18 @@
 
 struct gytransition* yacc_state_add_grammar_transition(
 	struct yacc_state* from,
-	const char* grammar,
+	char* grammar,
 	struct yacc_state* to)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = from->arena;
 	
 	struct gytransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
+	#else
+	struct gytransition* gtransition = malloc(sizeof(*gtransition));
+	#endif
 	
 	gtransition->grammar = grammar;
 	gtransition->to = to;
@@ -29,9 +34,14 @@ struct gytransition* yacc_state_add_grammar_transition(
 		
 		dpv(from->grammar_transitions.cap);
 		
+		#ifdef WITH_ARENAS
 		from->grammar_transitions.data = arena_realloc(
 			arena, from->grammar_transitions.data,
 			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
+		#else
+		from->grammar_transitions.data = realloc(from->grammar_transitions.data,
+			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
+		#endif
 	}
 	
 	size_t i;
@@ -47,6 +57,7 @@ struct gytransition* yacc_state_add_grammar_transition(
 	
 	EXIT;
 	return gtransition;
+	
 }
 
 

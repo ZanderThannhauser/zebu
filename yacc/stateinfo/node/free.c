@@ -17,7 +17,11 @@ void free_yacc_stateinfo_node(void* ptr)
 	
 	free_tokenset(this->lookaheads);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

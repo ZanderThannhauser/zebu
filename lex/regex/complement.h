@@ -3,4 +3,8 @@ struct regex;
 
 struct memory_arena;
 
-void regex_complement(struct regex* start, struct memory_arena* scratchpad);
+void regex_complement(
+	#ifdef WTIH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct regex* start);

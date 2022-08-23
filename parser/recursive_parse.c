@@ -28,9 +28,11 @@
 #include "recursive_parse.h"
 
 void recursive_parse(
+	#ifdef WITH_ARENAS
 	struct memory_arena* parser_arena,
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,
@@ -60,9 +62,11 @@ void recursive_parse(
 				case t_directive:
 				{
 					read_directive(
+						#ifdef WITH_ARENAS
 						/* parser_arena:   */ parser_arena,
 						/* grammar_arena:  */ grammar_arena,
 						/* token_arena:    */ token_arena,
+						#endif
 						/* tokenizer:      */ tokenizer,
 						/* options:        */ options,
 						/* scope:          */ scope,
@@ -93,7 +97,9 @@ void recursive_parse(
 				case t_parenthesised_identifier:
 				{
 					read_inline_grammar(
+						#ifdef WITH_ARENAS
 						/* token_arena: */ token_arena,
+						#endif
 						/* tokenizer: */ tokenizer,
 						/* options: */ options,
 						/* scope: */ scope,

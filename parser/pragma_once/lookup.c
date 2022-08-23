@@ -1,8 +1,7 @@
 
+#include <string.h>
 #include <sys/stat.h>
-
 #include <stdlib.h>
-
 #include <stdio.h>
 
 #include <debug.h>
@@ -45,7 +44,11 @@ bool pragma_once_lookup(struct pragma_once* this, int fd)
 	
 	if (first_time)
 	{
+		#ifdef WITH_ARENAS
 		struct pragma_once_node* new = arena_memdup(this->arena, &node, sizeof(node));
+		#else
+		struct pragma_once_node* new = memcpy(malloc(sizeof(node)), &node, sizeof(node));
+		#endif
 		
 		avl_insert(this->tree, new);
 	}

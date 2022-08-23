@@ -21,12 +21,13 @@
 avl_node_t *avl_insert(avl_tree_t *avltree, void *item)
 {
 	avl_node_t *newnode;
-	struct memory_arena* arena;
 	ENTER;
 	
-	arena = avltree->arena;
-	
-	newnode = avl_init_node(arena_malloc(arena, sizeof(avl_node_t)), item);
+	#ifdef WITH_ARENAS
+	newnode = avl_init_node(arena_malloc(avltree->arena, sizeof(avl_node_t)), item);
+	#else
+	newnode = avl_init_node(malloc(sizeof(avl_node_t)), item);
+	#endif
 	
 	if (newnode)
 	{
@@ -36,7 +37,11 @@ avl_node_t *avl_insert(avl_tree_t *avltree, void *item)
 			return newnode;
 		}
 		
-		arena_dealloc(arena, newnode);
+		#ifdef WITH_ARENAS
+		arena_dealloc(avltree->arena, newnode);
+		#else
+		free(newnode);
+		#endif
 		
 		errno = EEXIST;
 	}
@@ -44,4 +49,18 @@ avl_node_t *avl_insert(avl_tree_t *avltree, void *item)
 	EXIT;
 	return NULL;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

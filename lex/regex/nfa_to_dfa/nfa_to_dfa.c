@@ -38,8 +38,12 @@
 
 #include "nfa_to_dfa.h"
 
-struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
-{
+struct regex* regex_nfa_to_dfa(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct regex* in
+) {
 	ENTER;
 	
 	#ifdef RELEASE
@@ -65,13 +69,25 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	}
 	#endif
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_regex_mappings, free_regex_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_regex_mappings, free_regex_mapping);
+	#endif
 	
+	#ifdef WITH_ARENAS
 	struct regexset* start_set = new_regexset(arena);
+	#else
+	struct regexset* start_set = new_regexset();
+	#endif
 	
 	regex_add_lamda_states(start_set, in);
 	
-	struct regex* new_start = regex_nfa_to_dfa_helper(start_set, mappings, arena);
+	#ifdef WITH_ARENAS
+	struct regex* new_start = regex_nfa_to_dfa_helper(arena, start_set, mappings);
+	#else
+	struct regex* new_start = regex_nfa_to_dfa_helper(start_set, mappings);
+	#endif
 	
 	#ifdef DEBUGGING
 	regex_dotout(new_start, __PRETTY_FUNCTION__);

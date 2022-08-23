@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -8,11 +10,15 @@
 #include "clone.h"
 
 struct gegexset* gegexset_clone(
-	const struct gegexset* other,
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	const struct gegexset* other
+) {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegexset* this = arena_malloc(arena, sizeof(*this));
 	
 	this->data = arena_memdup(arena, other->data, sizeof(*other->data) * other->n);
@@ -23,5 +29,6 @@ struct gegexset* gegexset_clone(
 	
 	EXIT;
 	return this;
+	#endif
 }
 

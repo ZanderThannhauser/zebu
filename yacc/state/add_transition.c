@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -16,9 +17,13 @@ struct ytransition* yacc_state_add_transition(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = from->arena;
 	
 	struct ytransition* transition = arena_malloc(arena, sizeof(*transition));
+	#else
+	struct ytransition* transition = malloc(sizeof(*transition));
+	#endif
 	
 	transition->value = value;
 	transition->to = to;
@@ -27,11 +32,17 @@ struct ytransition* yacc_state_add_transition(
 	{
 		from->transitions.cap = from->transitions.cap * 2 ?: 1;
 		
-		dpv(from->transitions.cap );
+		dpv(from->transitions.cap);
 		
+		#ifdef WITH_ARENAS
 		from->transitions.data = arena_realloc(
 			arena, from->transitions.data,
 			sizeof(*from->transitions.data) * from->transitions.cap);
+		#else
+		from->transitions.data = realloc(
+			from->transitions.data,
+			sizeof(*from->transitions.data) * from->transitions.cap);
+		#endif
 	}
 	
 	size_t i;

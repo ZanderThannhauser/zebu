@@ -1,5 +1,8 @@
 
 struct task;
-struct memory_arena;
 
-void free_task(struct task* this, struct memory_arena* arena);
+void free_task(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct task* this);

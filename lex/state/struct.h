@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <stddef.h>
 
 struct lex_state
@@ -17,7 +18,11 @@ struct lex_state
 	
 	struct tokenset* accepting; // freed by tokensetset
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
+	
+	bool is_freeing;
 	
 	unsigned phase;
 };

@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include <arena/dealloc.h>
@@ -15,3 +17,5 @@ void child_free(struct memory_arena* arena, void* ptr, size_t oldsize)
 	
 	EXIT;
 }
+
+#endif

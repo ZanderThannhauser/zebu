@@ -13,7 +13,9 @@
 #include "add.h"
 
 static void add(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* tree,
 	struct gegex* a,
 	struct gegex* b)
@@ -25,11 +27,17 @@ static void add(
 	if (node)
 	{
 		struct lookahead_deps_node* old = node->item;
+		
 		gegexset_add(old->b, b);
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct lookahead_deps_node* new = new_lookahead_deps_node(arena, a, b);
+		#else
+		struct lookahead_deps_node* new = new_lookahead_deps_node(a, b);
+		#endif
+		
 		avl_insert(tree, new);
 	}
 	
@@ -43,9 +51,26 @@ void lookahead_deps_add(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	add(this->arena, this->dependant_of, I, feed_them);
 	add(this->arena, this->dependant_on, feed_them, I);
+	#else
+	add(this->dependant_of, I, feed_them);
+	add(this->dependant_on, feed_them, I);
+	#endif
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

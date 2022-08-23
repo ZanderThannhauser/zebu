@@ -7,7 +7,9 @@ struct memory_arena;
 struct scope;
 
 struct rbundle read_suffixes_token_expression(
-	struct memory_arena* token_arena,
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct regex* token_skip);

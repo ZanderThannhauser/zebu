@@ -25,24 +25,34 @@ struct mapping
 	struct regex* a, *b;
 	struct regex* new;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 
 static struct mapping* new_mapping(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct regex* a,
 	struct regex* b,
 	struct regex* new)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct mapping* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct mapping* this = malloc(sizeof(*this));
+	#endif
 	
 	this->a = a;
 	this->b = b;
 	this->new = new;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	EXIT;
 	return this;
@@ -68,15 +78,25 @@ static int compare_mappings(
 
 static void free_mapping(void* a)
 {
-	struct mapping* A = a;
+	ENTER;
+	
+	#ifdef WITH_ARENAS
+	struct mapping* const A = a;
 	arena_dealloc(A->arena, A);
+	#else
+	free(a);
+	#endif
+	
+	EXIT;
 }
 
 static struct regex* helper(
-	struct regex* A,
-	struct regex* B,
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* mappings,
-	struct memory_arena* arena)
+	struct regex* A,
+	struct regex* B)
 {
 	struct regex* retval;
 	ENTER;
@@ -91,9 +111,17 @@ static struct regex* helper(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct regex* state = new_regex(arena);
+		#else
+		struct regex* state = new_regex();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		avl_insert(mappings, new_mapping(arena, A, B, state));
+		#else
+		avl_insert(mappings, new_mapping(A, B, state));
+		#endif
 		
 		state->is_accepting = A->is_accepting && B->is_accepting;
 		
@@ -158,10 +186,12 @@ static struct regex* helper(
 			const struct transition* const A_trans = A->transitions.data[a.i++];
 			
 			struct regex* substate = helper(
-				/* A: */ A_trans->to,
-				/* B: */ B->default_transition_to,
+				#ifdef WITH_ARENAS
+				/* arena: */ arena,
+				#endif
 				/* mappings: */ mappings,
-				/* arena: */ arena);
+				/* A: */ A_trans->to,
+				/* B: */ B->default_transition_to);
 			
 			regex_add_transition(state, A_trans->value, substate);
 		}
@@ -185,15 +215,25 @@ static struct regex* helper(
 }
 
 struct regex* regex_intersect_dfas(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct regex* A,
-	struct regex* B,
-	struct memory_arena* arena)
+	struct regex* B)
 {
 	ENTER;
 	
+	#ifdef WTIH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#endif
 	
-	struct regex* start = helper(A, B, mappings, arena);
+	#ifdef WITH_ARENAS
+	struct regex* start = helper(arena,  mappings, A, B);
+	#else
+	struct regex* start = helper(mappings, A, B);
+	#endif
 	
 	#ifdef DEBUGGING
 	regex_dotout(start, __PRETTY_FUNCTION__);

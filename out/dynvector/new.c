@@ -30,10 +30,11 @@ static void free_dynvector_node(void* ptr)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct dynvector_node* node = ptr;
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(node);
 	#endif
 	
@@ -41,18 +42,31 @@ static void free_dynvector_node(void* ptr)
 }
 
 struct dynvector* new_dynvector(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	const char* name)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct dynvector* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct dynvector* this = malloc(sizeof(*this));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	this->list = avl_alloc_tree(arena, compare_dynvector_nodes, free_dynvector_node);
+	#else
+	this->list = avl_alloc_tree(compare_dynvector_nodes, free_dynvector_node);
+	#endif
+	
 	this->length = 0;
 	this->name = name;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	EXIT;
 	return this;

@@ -58,8 +58,10 @@
 #include "highest.h"
 
 struct gbundle read_highest_production(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -76,7 +78,11 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_root_machine);
 			
+			#ifdef WITH_ARENAS
 			retval = read_root_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+			#else
+			retval = read_root_production(tokenizer, options, scope, lex);
+			#endif
 			
 			if (tokenizer->token != t_cparen)
 			{
@@ -95,15 +101,21 @@ struct gbundle read_highest_production(
 			dpvc(tokenizer->tokenchars.chars[0]);
 			
 			struct regex* start = regex_from_literal(
+				#ifdef WITH_ARENAS
 				/* scratchpad: */ token_arena,
+				#endif
 				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ 1);
 			
 			if (options->skip)
 			{
+				#ifdef WITH_ARENAS
 				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				
 				struct regex* clone = regex_clone(options->skip, token_arena);
+				#else
+				struct rbundle nfa = regex_dfa_to_nfa(start);
+				struct regex* clone = regex_clone(options->skip);
+				#endif
 				
 				regex_add_lambda_transition(clone, start);
 				
@@ -113,9 +125,13 @@ struct gbundle read_highest_production(
 				
 				nfa.nfa.end->is_accepting = true;
 				
+				#ifdef WITH_ARENAS
 				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				
 				start = regex_simplify_dfa(dfa, token_arena);
+				#else
+				struct regex* dfa = regex_nfa_to_dfa(clone);
+				start = regex_simplify_dfa(dfa);
+				#endif
 				
 				#ifdef DEBUGGING
 				regex_dotout(start, __PRETTY_FUNCTION__);
@@ -129,7 +145,9 @@ struct gbundle read_highest_production(
 			dpv(token_id);
 			
 			retval = gegex_from_token(
+				#ifdef WITH_ARENAS
 				/* scratchpad: */ grammar_arena,
+				#endif
 				/* token_id: */ token_id);
 			
 			read_token(
@@ -147,15 +165,21 @@ struct gbundle read_highest_production(
 			dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 			
 			struct regex* start = regex_from_literal(
+				#ifdef WITH_ARENAS
 				/* arena:  */ token_arena,
+				#endif
 				/* chars:  */ tokenizer->tokenchars.chars,
 				/* strlen: */ tokenizer->tokenchars.n);
 			
 			if (options->skip)
 			{
+				#ifdef WITH_ARENAS
 				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				
 				struct regex* clone = regex_clone(options->skip, token_arena);
+				#else
+				struct rbundle nfa = regex_dfa_to_nfa(start);
+				struct regex* clone = regex_clone(options->skip);
+				#endif
 				
 				regex_add_lambda_transition(clone, start);
 				
@@ -165,9 +189,13 @@ struct gbundle read_highest_production(
 				
 				nfa.nfa.end->is_accepting = true;
 				
+				#ifdef WITH_ARENAS
 				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				
 				start = regex_simplify_dfa(dfa, token_arena);
+				#else
+				struct regex* dfa = regex_nfa_to_dfa(clone);
+				start = regex_simplify_dfa(dfa);
+				#endif
 				
 				#ifdef DEBUGGING
 				regex_dotout(start, __PRETTY_FUNCTION__);
@@ -181,7 +209,9 @@ struct gbundle read_highest_production(
 			dpv(token_id);
 			
 			retval = gegex_from_token(
+				#ifdef WITH_ARENAS
 				/* scratchpad: */ grammar_arena,
+				#endif
 				/* token_id: */ token_id);
 			
 			read_token(
@@ -199,8 +229,12 @@ struct gbundle read_highest_production(
 			read_token(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ charset_root_machine);
-				
+			
+			#ifdef WITH_ARENAS
 			struct charset* charset = read_root_charset(token_arena, tokenizer, scope);
+			#else
+			struct charset* charset = read_root_charset(tokenizer, scope);
+			#endif
 			
 			dpv(charset);
 			
@@ -210,13 +244,21 @@ struct gbundle read_highest_production(
 				exit(1);
 			}
 			
+			#ifdef WITH_ARENAS
 			struct regex* start = regex_from_charset(charset, token_arena);
+			#else
+			struct regex* start = regex_from_charset(charset);
+			#endif
 			
 			if (options->skip)
 			{
+				#ifdef WITH_ARENAS
 				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				
 				struct regex* clone = regex_clone(options->skip, token_arena);
+				#else
+				struct rbundle nfa = regex_dfa_to_nfa(start);
+				struct regex* clone = regex_clone(options->skip);
+				#endif
 				
 				regex_add_lambda_transition(clone, start);
 				
@@ -226,9 +268,13 @@ struct gbundle read_highest_production(
 				
 				nfa.nfa.end->is_accepting = true;
 				
+				#ifdef WITH_ARENAS
 				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				
 				start = regex_simplify_dfa(dfa, token_arena);
+				#else
+				struct regex* dfa = regex_nfa_to_dfa(clone);
+				start = regex_simplify_dfa(dfa);
+				#endif
 				
 				#ifdef DEBUGGING
 				regex_dotout(start, __PRETTY_FUNCTION__);
@@ -242,7 +288,9 @@ struct gbundle read_highest_production(
 			dpv(token_id);
 			
 			retval = gegex_from_token(
+				#ifdef WITH_ARENAS
 				/* scratchpad: */ grammar_arena,
+				#endif
 				/* token_id: */ token_id);
 			
 			read_token(
@@ -263,7 +311,11 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_root_machine);
 			
+			#ifdef WITH_ARENAS
 			struct rbundle regex = read_root_token_expression(token_arena, tokenizer, scope, options->token_skip);
+			#else
+			struct rbundle regex = read_root_token_expression(tokenizer, scope, options->token_skip);
+			#endif
 			
 			if (tokenizer->token != t_gravemark)
 			{
@@ -276,9 +328,19 @@ struct gbundle read_highest_production(
 			if (options->skip)
 			{
 				if (!regex.is_nfa)
+				{
+					#ifdef WITH_ARENAS
 					regex = regex_dfa_to_nfa(regex.dfa, token_arena);
+					#else
+					regex = regex_dfa_to_nfa(regex.dfa);
+					#endif
+				}
 				
+				#ifdef WITH_ARENAS
 				struct regex* clone = regex_clone(options->skip, token_arena);
+				#else
+				struct regex* clone = regex_clone(options->skip);
+				#endif
 				
 				regex_add_lambda_transition(clone, regex.nfa.start);
 				
@@ -294,9 +356,15 @@ struct gbundle read_highest_production(
 				regex.nfa.end->is_accepting = true;
 				
 				struct regex* nfa = regex.nfa.start;
-				struct regex* dfa = regex_nfa_to_dfa(nfa, token_arena);
 				
+				#ifdef WITH_ARENAS
+				struct regex* dfa = regex_nfa_to_dfa(nfa, token_arena);
 				start = regex_simplify_dfa(dfa, token_arena);
+				#else
+				struct regex* dfa = regex_nfa_to_dfa(nfa);
+				start = regex_simplify_dfa(dfa);
+				#endif
+				
 				
 				free_regex(nfa), free_regex(dfa);
 			}
@@ -310,7 +378,9 @@ struct gbundle read_highest_production(
 			dpv(token_id);
 			
 			retval = gegex_from_token(
+				#ifdef WITH_ARENAS
 				/* scratchpad: */ grammar_arena,
+				#endif
 				/* token_id: */ token_id);
 			
 			read_token(
@@ -331,15 +401,25 @@ struct gbundle read_highest_production(
 			
 			if ((inlined = scope_lookup_inline_grammar(scope, tokenizer->tokenchars.chars)).start)
 			{
+				#ifdef WITH_ARENAS
 				retval = gegex_clone_nfa(grammar_arena, inlined.start, inlined.end);
+				#else
+				retval = gegex_clone_nfa(inlined.start, inlined.end);
+				#endif
 			}
 			else
 			{
+				#ifdef WITH_ARENAS
 				char* full_name = scope_build_absolute_name(scope, grammar_arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+				#else
+				char* full_name = scope_build_absolute_name(scope, tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+				#endif
 				
 				retval = gegex_from_subgrammar(
-					/* grammar name: */ full_name,
-					/* scratchpad: */ grammar_arena);
+					#ifdef WITH_ARENAS
+					/* scratchpad: */ grammar_arena,
+					#endif
+					/* grammar name: */ full_name);
 			}
 			
 			read_token(

@@ -8,7 +8,10 @@ struct scope
 	// prefix-appended, not owned by scope:
 	struct avl_tree_t* grammar; // struct named_grammar*
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena;
+	#endif
+	
 	struct memory_arena* arena;
 	
 	struct {
@@ -23,7 +26,9 @@ struct scope
 		struct avl_tree_t* fragments;      // struct named_token*
 		struct avl_tree_t* inline_grammar; // struct named_gbundle*
 		
+		#ifdef WITH_ARENAS
 		struct memory_arena* arena;
+		#endif
 		
 		size_t prefix_len;
 		

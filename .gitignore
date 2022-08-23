@@ -3,3 +3,6 @@ dot
 -junk
 *.png
 *.pdf
+copy+paste.txt
+gmon.out
+suppressions.txt

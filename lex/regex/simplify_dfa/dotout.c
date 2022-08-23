@@ -26,7 +26,9 @@
 #include "dotout.h"
 
 void simplify_dfa_dotout(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct regextree* universe,
 	struct avl_tree_t* connections,
 	unsigned hopcount)
@@ -53,7 +55,11 @@ void simplify_dfa_dotout(
 	
 	fprintf(out, "\t" "label = \"%s: hopcount: %u\";" "\n", __PRETTY_FUNCTION__, hopcount);
 	
+	#ifdef WITH_ARENAS
 	struct regextree* done = new_regextree(arena);
+	#else
+	struct regextree* done = new_regextree();
+	#endif
 	
 	regextree_foreach(universe, ({
 		void runme(struct regex* state)

@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <arena/dealloc.h>
@@ -16,7 +18,9 @@ void free_regex(struct regex* this)
 	{
 		this->is_freeing = true;
 		
+		#ifdef WITH_ARENAS
 		struct memory_arena* const arena = this->arena;
+		#endif
 		
 		for (size_t i = 0, n = this->transitions.n; i < n; i++)
 		{
@@ -24,7 +28,11 @@ void free_regex(struct regex* this)
 			
 			free_regex(ele->to);
 			
+			#ifdef WITH_ARENAS
 			arena_dealloc(arena, ele);
+			#else
+			free(ele);
+			#endif
 		}
 		
 		for (size_t i = 0, n = this->lambda_transitions.n; i < n; i++)
@@ -34,13 +42,25 @@ void free_regex(struct regex* this)
 			free_regex(ele);
 		}
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(arena, this->transitions.data);
+		#else
+		free(this->transitions.data);
+		#endif
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(arena, this->lambda_transitions.data);
+		#else
+		free(this->lambda_transitions.data);
+		#endif
 		
 		free_regex(this->default_transition_to);
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(arena, this);
+		#else
+		free(this);
+		#endif
 	}
 	
 	EXIT;

@@ -24,7 +24,11 @@ void scope_declare_charset(
 	
 	assert(this->layer);
 	
+	#ifdef WITH_ARENAS
 	avl_insert(this->layer->charsets, new_named_charset(this->layer->arena, name, charset));
+	#else
+	avl_insert(this->layer->charsets, new_named_charset(name, charset));
+	#endif
 	
 	EXIT;
 }

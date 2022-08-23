@@ -31,9 +31,11 @@
 #include "nfa_to_dfa.h"
 
 struct gegex* gegex_nfa_to_dfa(
-	struct gegex* start,
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegex* start
+) {
 	ENTER;
 	
 	#ifdef RELEASE
@@ -45,7 +47,7 @@ struct gegex* gegex_nfa_to_dfa(
 		{
 			char ptr[100] = {};
 			
-			size_t len = snprintf(ptr, 100, "\e[k" "%s: %s (%u)\r", argv0, "gegex_nfa_to_dfa", depth);
+			size_t len = snprintf(ptr, 100, "\e[k" "%s: %s (%u)\r", argv0, "gegex_nfa_to_dfa", node_count);
 			
 			if (write(1, ptr, len) != len)
 			{
@@ -57,9 +59,17 @@ struct gegex* gegex_nfa_to_dfa(
 	}
 	#endif
 	
+	#ifdef WTIH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_gegex_mappings, free_gegex_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_gegex_mappings, free_gegex_mapping);
+	#endif
 	
+	#ifdef WTIH_ARENAS
 	struct gegextree* start_set = new_gegextree(arena);
+	#else
+	struct gegextree* start_set = new_gegextree();
+	#endif
 	
 	gegex_add_lamda_states(start_set, start);
 	
@@ -67,7 +77,10 @@ struct gegex* gegex_nfa_to_dfa(
 		#ifdef RELEASE
 		&node_count,
 		#endif
-		start_set, mappings, arena);
+		#ifdef WITH_ARENAS
+		arena,
+		#endif
+		start_set, mappings);
 	
 	free_gegextree(start_set);
 	

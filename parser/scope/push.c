@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <debug.h>
@@ -8,10 +9,13 @@
 #include <arena/malloc.h>
 
 #include <named/charset/compare.h>
+#include <named/charset/free.h>
 
 #include <named/token/compare.h>
+#include <named/token/free.h>
 
 #include <named/gbundle/compare.h>
+#include <named/gbundle/free.h>
 
 #include <arena/child/new.h>
 
@@ -24,15 +28,30 @@ void scope_push(struct scope* this)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct scope_layer* new = arena_malloc(this->arena, sizeof(*new));
+	#else
+	struct scope_layer* new = malloc(sizeof(*new));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena = new_child_arena(this->arena);
+	#endif
 	
-	new->charsets       = avl_alloc_tree(arena, compare_named_charsets, NULL);
-	new->fragments      = avl_alloc_tree(arena, compare_named_tokens,   NULL);
-	new->inline_grammar = avl_alloc_tree(arena, compare_named_gbundles, NULL);
-	
+	#ifdef WITH_ARENAS
 	new->arena = arena;
+	
+	new->charsets       = avl_alloc_tree(arena, compare_named_charsets, free_named_charset);
+	new->fragments      = avl_alloc_tree(arena, compare_named_tokens,   free_named_token);
+	new->inline_grammar = avl_alloc_tree(arena, compare_named_gbundles, free_named_gbundle);
+	
+	#else
+	
+	new->charsets       = avl_alloc_tree(compare_named_charsets, free_named_charset);
+	new->fragments      = avl_alloc_tree(compare_named_tokens,   free_named_token);
+	new->inline_grammar = avl_alloc_tree(compare_named_gbundles, free_named_gbundle);
+	
+	#endif
 	
 	new->sublayer_counter = 0;
 	

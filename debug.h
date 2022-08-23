@@ -44,6 +44,7 @@
 	#include <avl/alloc_tree.h>
 	#include <avl/insert.h>
 	#include <avl/search.h>
+	#include <avl/free_tree.h>
 	
 	struct task;
 	struct heap;
@@ -54,6 +55,10 @@
 	struct tokensetset;
 	struct dyntable;
 	struct dynvector;
+	struct oldavl_tree_t;
+	struct oldregextree;
+	struct pragma_once;
+	struct charset;
 	struct ystate_to_id;
 	struct tokenset;
 	struct scope;

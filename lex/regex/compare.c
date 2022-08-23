@@ -27,14 +27,20 @@ struct node
 };
 
 static void insert_number(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* avl,
 	const struct regex* regex,
 	unsigned number)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct node* new = arena_malloc(arena, sizeof(*new));
+	#else
+	struct node* new = malloc(sizeof(*new));
+	#endif
 	
 	new->regex = regex;
 	new->number = number;
@@ -54,6 +60,20 @@ static int compare_node(const void* a, const void* b)
 	return 0;
 }
 
+static void free_node(void* ptr)
+{
+	struct node* const node = ptr;
+	ENTER;
+	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
+	free(node);
+	#endif
+	
+	EXIT;
+}
+
 int compare_regexes(
 	const struct regex* a,
 	const struct regex* b)
@@ -67,10 +87,14 @@ int compare_regexes(
 		return 0;
 	}
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena = new_stdlib_arena();
-	
-	struct avl_tree_t* a_numbers = avl_alloc_tree(arena, compare_node, NULL);
-	struct avl_tree_t* b_numbers = avl_alloc_tree(arena, compare_node, NULL);
+	struct avl_tree_t* a_numbers = avl_alloc_tree(arena, compare_node, free_node);
+	struct avl_tree_t* b_numbers = avl_alloc_tree(arena, compare_node, free_node);
+	#else
+	struct avl_tree_t* a_numbers = avl_alloc_tree(compare_node, free_node);
+	struct avl_tree_t* b_numbers = avl_alloc_tree(compare_node, free_node);
+	#endif
 	
 	unsigned next_number = 0;
 	
@@ -112,8 +136,13 @@ int compare_regexes(
 		}
 		else
 		{
+			#ifdef WITH_ARENAS
 			insert_number(arena, a_numbers, a, next_number);
 			insert_number(arena, b_numbers, b, next_number);
+			#else
+			insert_number(a_numbers, a, next_number);
+			insert_number(b_numbers, b, next_number);
+			#endif
 			
 			next_number++;
 			
@@ -197,7 +226,12 @@ int compare_regexes(
 	
 	dpv(cmp);
 	
+	#ifdef WITH_ARENAS
 	free_memory_arena(arena);
+	#else
+	avl_free_tree(a_numbers);
+	avl_free_tree(b_numbers);
+	#endif
 	
 	EXIT;
 	return cmp;

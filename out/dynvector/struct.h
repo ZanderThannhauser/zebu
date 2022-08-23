@@ -10,6 +10,8 @@ struct dynvector
 	const char* name;
 	unsigned length;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 

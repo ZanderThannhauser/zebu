@@ -4,6 +4,8 @@
 
 #include <debug.h>
 
+#include "pop.h"
+#include "struct.h"
 #include "free.h"
 
 void free_scope(struct scope* this)
@@ -11,15 +13,17 @@ void free_scope(struct scope* this)
 	ENTER;
 	
 	// pop remaining layers
-	TODO;
+	while (this->layer)
+	{
+		scope_pop(this);
+	}
 	
-	// free fragment tree (and regexes)
+	#ifdef WITH_ARENAS
 	TODO;
-	
-	// free inline_grammar tree (and gegexes)
-	TODO;
-	
+	#else
+	free(this->prefix.chars);
 	free(this);
+	#endif
 	
 	EXIT;
 }

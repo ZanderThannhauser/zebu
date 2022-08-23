@@ -17,7 +17,11 @@ void free_dependent_of_node(void* ptr)
 	
 	avl_free_tree(this->dependent_of);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

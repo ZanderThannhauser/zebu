@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 
 #include <debug.h>
 
@@ -32,7 +33,11 @@ unsigned grammar_to_id(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct tokenset_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
+		#else
+		struct tokenset_to_id_node* new = malloc(sizeof(*new));
+		#endif
 		
 		new->is_tokenset = false;
 		new->grammar = grammar;

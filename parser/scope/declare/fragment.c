@@ -28,7 +28,11 @@ void scope_declare_fragment(
 	
 	assert(this->layer);
 	
+	#ifdef WITH_ARENAS
 	avl_insert(this->layer->fragments, new_named_token(this->layer->arena, name, token));
+	#else
+	avl_insert(this->layer->fragments, new_named_token(name, token));
+	#endif
 	
 	EXIT;
 }

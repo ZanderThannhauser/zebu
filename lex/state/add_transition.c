@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -14,9 +16,13 @@ void lex_state_add_transition(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = from->arena;
 	
 	struct ltransition* transition = arena_malloc(arena, sizeof(*transition));
+	#else
+	struct ltransition* transition = malloc(sizeof(*transition));
+	#endif
 	
 	dpv(transition);
 	
@@ -29,9 +35,14 @@ void lex_state_add_transition(
 		
 		dpv(from->transitions.cap );
 		
+		#ifdef WITH_ARENAS
 		from->transitions.data = arena_realloc(
 			arena, from->transitions.data,
 			sizeof(*from->transitions.data) * from->transitions.cap);
+		#else
+		from->transitions.data = realloc(from->transitions.data,
+			sizeof(*from->transitions.data) * from->transitions.cap);
+		#endif
 	}
 	
 	size_t i;

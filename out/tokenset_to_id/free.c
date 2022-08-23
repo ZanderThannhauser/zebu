@@ -1,5 +1,4 @@
 
-#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -19,9 +18,12 @@ void free_tokenset_to_id(struct tokenset_to_id* this)
 	
 	free_tokenset(this->eof);
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(this);
+	#endif
 	
 	EXIT;
 }
 
-#endif

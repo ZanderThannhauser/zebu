@@ -38,10 +38,12 @@ struct gegex* gegex_nfa_to_dfa_helper(
 	#ifdef RELEASE
 	unsigned *node_count,
 	#endif
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct gegextree* states,
-	struct avl_tree_t* mappings,
-	struct memory_arena* arena)
-{
+	struct avl_tree_t* mappings
+) {
 	struct avl_node_t* search_result;
 	ENTER;
 	
@@ -58,9 +60,17 @@ struct gegex* gegex_nfa_to_dfa_helper(
 		(*node_count)++;
 		#endif
 		
+		#ifdef WITH_ARENAS
 		struct gegex* state = new_gegex(arena);
+		#else
+		struct gegex* state = new_gegex();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		struct gegex_mapping* mapping = new_gegex_mapping(arena, states, state);
+		#else
+		struct gegex_mapping* mapping = new_gegex_mapping(states, state);
+		#endif
 		
 		avl_insert(mappings, mapping);
 		
@@ -82,11 +92,20 @@ struct gegex* gegex_nfa_to_dfa_helper(
 			dpvb(state->is_reduction_point);
 		}
 		
+		#ifdef WITH_ARENAS
 		unsigned (*indexes)[len(states)] = arena_malloc(arena, sizeof(*indexes));
+		#else
+		unsigned (*indexes)[len(states)] = malloc(sizeof(*indexes));
+		#endif
 		
 		memset(*indexes, 0, sizeof(*indexes));
 		
+		#ifdef WTIH_ARENAS
 		struct gegextree* subset = new_gegextree(arena);
+		#else
+		struct gegextree* subset = new_gegextree();
+		#endif
+		
 		bool assigned;
 		unsigned token;
 		
@@ -117,9 +136,12 @@ struct gegex* gegex_nfa_to_dfa_helper(
 			
 			struct gegex* to = gegex_nfa_to_dfa_helper(
 				#ifdef RELEASE
-				depth,
+				node_count,
 				#endif
-				subset, mappings, arena);
+				#ifdef WITH_ARENAS
+				arena,
+				#endif
+				subset, mappings);
 			
 			gegex_add_transition(state, token, to);
 			
@@ -166,11 +188,20 @@ struct gegex* gegex_nfa_to_dfa_helper(
 			
 			struct gegex* to = gegex_nfa_to_dfa_helper(
 				#ifdef RELEASE
-				depth,
+				node_count,
 				#endif
-				subset, mappings, arena);
+				#ifdef WITH_ARENAS
+				arena,
+				#endif
+				subset, mappings);
 			
-			gegex_add_grammar_transition(state, grammar, to);
+			#ifdef WITH_ARENAS
+			char* dup = arena_strdup(arena, grammar);
+			#else
+			char* dup = strdup(grammar);
+			#endif
+			
+			gegex_add_grammar_transition(state, dup, to);
 			
 			// move forward all indexes that whose ele_token == token
 			gegextree_enumerate(states, ({
@@ -185,7 +216,11 @@ struct gegex* gegex_nfa_to_dfa_helper(
 		
 		free_gegextree(subset);
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(arena, indexes);
+		#else
+		free(indexes);
+		#endif
 		
 		EXIT;
 		return state;

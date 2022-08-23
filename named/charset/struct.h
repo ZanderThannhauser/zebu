@@ -7,6 +7,8 @@ struct named_charset
 	
 	struct charset* charset;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 

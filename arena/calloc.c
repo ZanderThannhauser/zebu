@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <string.h>
 
 #include <debug.h>
@@ -24,3 +26,5 @@ void* arena_calloc(
 	return ptr;
 }
 
+
+#endif

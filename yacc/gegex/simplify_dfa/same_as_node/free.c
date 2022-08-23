@@ -17,7 +17,11 @@ void free_gegex_same_as_node(void* ptr)
 	
 	free_gegextree(this->set);
 	
+	#ifdef WTIH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

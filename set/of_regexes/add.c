@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
@@ -18,7 +19,11 @@ bool regexset_add(struct regexset* this, struct regex* ptr)
 		
 		dpv(this->cap);
 		
+		#ifdef WITH_ARENAS
 		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	unsigned i, n;

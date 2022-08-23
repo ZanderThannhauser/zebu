@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 #include <stdio.h>
 
@@ -131,3 +133,5 @@ void* arena_sbrk(
 
 
 
+
+#endif

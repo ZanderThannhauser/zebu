@@ -17,7 +17,11 @@ void free_lookahead_deps(struct lookahead_deps* this)
 	avl_free_tree(this->dependant_of);
 	avl_free_tree(this->dependant_on);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

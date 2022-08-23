@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -9,3 +11,5 @@ struct memory_arena_header
 	struct memory_arena_header *prev, *next;
 };
 
+
+#endif

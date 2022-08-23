@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 
 #include <debug.h>
 
@@ -27,7 +28,11 @@ unsigned ystate_to_id(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct ystate_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
+		#else
+		struct ystate_to_id_node* new = malloc(sizeof(*new));
+		#endif
 		
 		new->ystate = state;
 		new->id = retval = this->next++;

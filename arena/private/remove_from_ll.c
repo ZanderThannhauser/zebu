@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 
 #include <debug.h>
@@ -29,3 +31,6 @@ void remove_from_ll(
 	EXIT;
 }
 
+
+
+#endif

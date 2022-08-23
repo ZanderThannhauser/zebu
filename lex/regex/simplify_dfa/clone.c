@@ -29,18 +29,29 @@
 static struct mapping {
 	struct regex* old; // must be the first
 	struct regex* new;
+	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 }* new_mapping(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct regex* old, struct regex* new)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct mapping* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct mapping* this = malloc(sizeof(*this));
+	#endif
 	
 	this->old = old, this->new = new;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	EXIT;
 	return this;
@@ -63,7 +74,11 @@ static void free_mapping(void* ptr)
 	struct mapping* this = ptr;
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }
@@ -82,8 +97,10 @@ static struct regex* find(struct avl_tree_t* connections, struct regex* a)
 }
 
 static struct regex* clone_helper(
-	struct avl_tree_t* mappings,
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
+	struct avl_tree_t* mappings,
 	struct avl_tree_t* connections,
 	struct regex* old)
 {
@@ -100,11 +117,19 @@ static struct regex* clone_helper(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct regex* new = new_regex(arena);
+		#else
+		struct regex* new = new_regex();
+		#endif
 		
 		new->is_accepting = old->is_accepting;
 		
+		#ifdef WITH_ARENAS
 		avl_insert(mappings, new_mapping(arena, old, new));
+		#else
+		avl_insert(mappings, new_mapping(old, new));
+		#endif
 		
 		// calculate default transition first,
 		if (old->default_transition_to)
@@ -116,8 +141,10 @@ static struct regex* clone_helper(
 			regex_set_default_transition(
 				/* from: */ new,
 				/* to */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* connections: */ connections,
 					/* in: */ cloneme));
 		}
@@ -131,8 +158,10 @@ static struct regex* clone_helper(
 			struct regex* cloneme = find(connections, ele->to);
 			
 			struct regex* to = clone_helper(
-				/* mappings: */ mappings,
+				#ifdef WITH_ARENAS
 				/* arena: */ arena,
+				#endif
+				/* mappings: */ mappings,
 				/* connections: */ connections,
 				/* in: */ cloneme);
 			
@@ -156,8 +185,10 @@ static struct regex* clone_helper(
 			regex_set_EOF_transition(
 				/* from: */ new,
 				/* to */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* connections: */ connections,
 					/* in: */ cloneme));
 		}
@@ -168,22 +199,31 @@ static struct regex* clone_helper(
 }
 
 struct regex* regex_simplify_dfa_clone(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* connections,
-	struct regex* original_start,
-	struct memory_arena* arena)
+	struct regex* original_start)
 {
 	ENTER;
 	
 	dpv(original_start);
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#endif
 	
 	struct regex* cloneme = find(connections, original_start);
 	
 	dpv(cloneme);
 	
-	struct regex* new_start = clone_helper(
-		mappings, arena, connections, cloneme);
+	#ifdef WITH_ARENAS
+	struct regex* new_start = clone_helper(arena, mappings, connections, cloneme);
+	#else
+	struct regex* new_start = clone_helper(mappings, connections, cloneme);
+	#endif
 	
 	avl_free_tree(mappings);
 	

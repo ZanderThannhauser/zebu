@@ -37,7 +37,9 @@ struct gegex
 		size_t n, cap;
 	} lambda_transitions;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 	
 	bool is_freeing;
 	

@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <assert.h>
 
 #include <debug.h>
@@ -44,9 +46,11 @@
 #include "mapping/new.h"
 
 struct regex* regex_nfa_to_dfa_helper(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct regexset* states, // not yours to keep
-	struct avl_tree_t* mappings,
-	struct memory_arena* arena)
+	struct avl_tree_t* mappings)
 {
 	struct avl_node_t* search_result;
 	ENTER;
@@ -60,9 +64,17 @@ struct regex* regex_nfa_to_dfa_helper(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct regex* state = new_regex(arena);
+		#else
+		struct regex* state = new_regex();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		struct regex_mapping* mapping = new_regex_mapping(arena, states, state);
+		#else
+		struct regex_mapping* mapping = new_regex_mapping(states, state);
+		#endif
 		
 		avl_insert(mappings, mapping);
 		
@@ -87,7 +99,11 @@ struct regex* regex_nfa_to_dfa_helper(
 		}
 		
 		// create heap:
+		#ifdef WITH_ARENAS
 		struct heap* heap = new_heap(arena, compare_iterators);
+		#else
+		struct heap* heap = new_heap(compare_iterators);
+		#endif
 		
 		// create default iterator list:
 		struct {
@@ -101,7 +117,11 @@ struct regex* regex_nfa_to_dfa_helper(
 		// create iterators for each state:
 		regexset_foreach(states, ({
 			void runme(struct regex* ele) {
+				#ifdef WITH_ARENAS
 				struct iterator* iter = new_iterator(arena, ele);
+				#else
+				struct iterator* iter = new_iterator(ele);
+				#endif
 				
 				bool needed = false;
 				
@@ -119,8 +139,13 @@ struct regex* regex_nfa_to_dfa_helper(
 						
 						dpv(defaults.cap);
 						
+						#ifdef WITH_ARENAS
 						defaults.data = arena_realloc(arena, defaults.data,
 							sizeof(*defaults.data) * defaults.cap);
+						#else
+						defaults.data = realloc(defaults.data,
+							sizeof(*defaults.data) * defaults.cap);
+						#endif
 					}
 					
 					defaults.data[defaults.n++] = iter;
@@ -128,7 +153,13 @@ struct regex* regex_nfa_to_dfa_helper(
 				}
 				
 				if (!needed)
-					free_iterator(iter, arena);
+				{
+					#ifdef WITH_ARENAS
+					free_iterator(arena, iter);
+					#else
+					free_iterator(iter);
+					#endif
+				}
 			}
 			runme;
 		}));
@@ -141,7 +172,11 @@ struct regex* regex_nfa_to_dfa_helper(
 			
 			dpv(min_value);
 			
+			#ifdef WITH_ARENAS
 			struct regexset* subregexset = new_regexset(arena);
+			#else
+			struct regexset* subregexset = new_regexset();
+			#endif
 			
 			while (heap->n && heap->datai[0]->moving[0]->value == min_value)
 			{
@@ -154,7 +189,13 @@ struct regex* regex_nfa_to_dfa_helper(
 				if (iter->moving < iter->end)
 					heap_push(heap, iter);
 				else if (!iter->default_to)
-					free_iterator(iter, arena);
+				{
+					#ifdef WITH_ARENAS
+					free_iterator(arena, iter);
+					#else
+					free_iterator(iter);
+					#endif
+				}
 			}
 			
 			// for each iterator with defaults:
@@ -164,9 +205,11 @@ struct regex* regex_nfa_to_dfa_helper(
 			
 			// substate = myself(state-set);
 			struct regex* substate = regex_nfa_to_dfa_helper(
+				#ifdef WITH_ARENAS
+				/* arena: */ arena,
+				#endif
 				/* states: */ subregexset,
-				/* mappings: */ mappings,
-				/* arena: */ arena);
+				/* mappings: */ mappings);
 			
 			// node.transitions[min] = substate;
 			regex_add_transition(state, min_value, substate);
@@ -179,16 +222,22 @@ struct regex* regex_nfa_to_dfa_helper(
 		if (defaults.n)
 		{
 			// create regexset of all defaults
+			#ifdef WITH_ARENAS
 			struct regexset* subregexset = new_regexset(arena);
+			#else
+			struct regexset* subregexset = new_regexset();
+			#endif
 			
 			for (size_t i = 0, n = defaults.n; i < n; i++)
 				regex_add_lamda_states(subregexset, defaults.data[i]->default_to);
 			
 			// node.default = call myself
 			struct regex* substate = regex_nfa_to_dfa_helper(
+				#ifdef WITH_ARENAS
+				/* arena: */ arena,
+				#endif
 				/* states: */ subregexset,
-				/* mappings: */ mappings,
-				/* arena: */ arena);
+				/* mappings: */ mappings);
 			
 			regex_set_default_transition(state, substate);
 			
@@ -197,7 +246,11 @@ struct regex* regex_nfa_to_dfa_helper(
 		
 		// EOF transitions?
 		{
+			#ifdef WITH_ARENAS
 			struct regexset* subregexset = new_regexset(arena);
+			#else
+			struct regexset* subregexset = new_regexset();
+			#endif
 			
 			regexset_foreach(states, ({
 				void runme(struct regex* ele) {
@@ -211,9 +264,11 @@ struct regex* regex_nfa_to_dfa_helper(
 			if (regexset_is_nonempty(subregexset))
 			{
 				struct regex* substate = regex_nfa_to_dfa_helper(
+					#ifdef WITH_ARENAS
+					/* arena: */ arena,
+					#endif
 					/* states: */ subregexset,
-					/* mappings: */ mappings,
-					/* arena: */ arena);
+					/* mappings: */ mappings);
 				
 				regex_set_EOF_transition(state, substate);
 			}
@@ -223,7 +278,13 @@ struct regex* regex_nfa_to_dfa_helper(
 		
 		// free default iterator list and it's elements
 		for (size_t i = 0, n = defaults.n; i < n; i++)
-			free_iterator(defaults.data[i], arena);
+		{
+			#ifdef WITH_ARENAS
+			free_iterator(arena, defaults.data[i]);
+			#else
+			free_iterator(defaults.data[i]);
+			#endif
+		}
 		
 		free_heap(heap);
 		

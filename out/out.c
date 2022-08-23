@@ -99,28 +99,52 @@ void out(
 {
 	ENTER;
 	
-	struct memory_arena* out_arena = new_mmap_arena();
-	
 	char path[PATH_MAX];
 	
 	FILE* source = NULL;
 	FILE* header = NULL;
 	
-	struct out_shared* shared = arena_malloc(out_arena, sizeof(*shared));
+	#ifdef WITH_ARENAS
+	struct memory_arena* out_arena = new_mmap_arena();
 	
+	struct out_shared* shared = arena_malloc(out_arena, sizeof(*shared));
+	#else
+	struct out_shared* shared = malloc(sizeof(*shared));
+	#endif
+	
+	#ifdef WITH_ARENAS
 	shared->ytoi = new_ystate_to_id(out_arena);
 	shared->ltoi = new_lstate_to_id(out_arena);
 	shared->ttoi = new_tokenset_to_id(out_arena);
+	#else
+	shared->ytoi = new_ystate_to_id();
+	shared->ltoi = new_lstate_to_id();
+	shared->ttoi = new_tokenset_to_id();
+	#endif
 	
+	#ifdef WITH_ARENAS
 	shared->shifts = new_dyntable(out_arena, "shifts");
 	shared->reduces = new_dyntable(out_arena, "reduces");
 	shared->popcounts = new_dyntable(out_arena, "popcounts");
 	shared->lexer = new_dyntable(out_arena, "lexer");
+	#else
+	shared->shifts = new_dyntable("shifts");
+	shared->reduces = new_dyntable("reduces");
+	shared->popcounts = new_dyntable("popcounts");
+	shared->lexer = new_dyntable("lexer");
+	#endif
 	
+	#ifdef WITH_ARENAS
 	shared->starts = new_dynvector(out_arena, "starts");
 	shared->defaults = new_dynvector(out_arena, "defaults");
 	shared->EOFs = new_dynvector(out_arena, "EOFs");
 	shared->accepts = new_dynvector(out_arena, "accepts");
+	#else
+	shared->starts = new_dynvector("starts");
+	shared->defaults = new_dynvector("defaults");
+	shared->EOFs = new_dynvector("EOFs");
+	shared->accepts = new_dynvector("accepts");
+	#endif
 	
 	yacc_phase_counter++;
 	lex_phase_counter++;
@@ -169,17 +193,44 @@ void out(
 		const char* template_source = *lookup[parser_template].source;
 		const char* template_header = *lookup[parser_template].header;
 		
+		#ifdef WITH_ARENAS
 		char* specialized_source = strfandr(out_arena, template_source, "<PREFIX>", output_prefix);
 		char* specialized_header = strfandr(out_arena, template_header, "<PREFIX>", output_prefix);
+		#else
+		char* specialized_source = strfandr(template_source, "<PREFIX>", output_prefix);
+		char* specialized_header = strfandr(template_header, "<PREFIX>", output_prefix);
+		#endif
 		
 		fputs(specialized_source, source);
 		fputs(specialized_header, header);
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(out_arena, specialized_source);
 		arena_dealloc(out_arena, specialized_header);
+		#endif
 	}
 	
+	#ifdef WITH_ARENAS
 	free_memory_arena(out_arena);
+	#else
+
+	free_ystate_to_id(shared->ytoi);
+	free_lstate_to_id(shared->ltoi);
+	free_tokenset_to_id(shared->ttoi);
+
+	free_dyntable(shared->shifts);
+	free_dyntable(shared->reduces);
+	free_dyntable(shared->popcounts);
+	free_dyntable(shared->lexer);
+
+	free_dynvector(shared->starts);
+	free_dynvector(shared->defaults);
+	free_dynvector(shared->EOFs);
+	free_dynvector(shared->accepts);
+
+	free(shared);
+	
+	#endif
 	
 	fclose(source);
 	fclose(header);

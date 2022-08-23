@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <assert.h>
 #include <stdlib.h>
 
@@ -26,7 +27,9 @@ struct mapping
 	struct gegex* old; // must be the first
 	struct gegex* new;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 
 static int compare_mappings(const void* a, const void* b)
@@ -46,7 +49,11 @@ static void free_mapping(void* ptr)
 	struct mapping* const this = ptr;
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }
@@ -54,8 +61,10 @@ static void free_mapping(void* ptr)
 struct memory_arena;
 
 static struct gegex* clone_helper(
-	struct avl_tree_t* mappings,
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
+	struct avl_tree_t* mappings,
 	struct gegex* old)
 {
 	struct avl_node_t* node;
@@ -70,16 +79,26 @@ static struct gegex* clone_helper(
 	}
 	else
 	{
+		#ifdef WTIH_ARENAS
 		struct gegex* new = new_gegex(arena);
+		#else
+		struct gegex* new = new_gegex();
+		#endif
 		
 		new->is_reduction_point = old->is_reduction_point;
 		
+		#ifdef WTIH_ARENAS
 		struct mapping* mapping = arena_malloc(arena, sizeof(*mapping));
+		#else
+		struct mapping* mapping = malloc(sizeof(*mapping));
+		#endif
 		
 		mapping->old = old;
 		mapping->new = new;
 		
+		#ifdef WITH_ARENAS
 		mapping->arena = arena;
+		#endif
 		
 		avl_insert(mappings, mapping);
 		
@@ -95,8 +114,10 @@ static struct gegex* clone_helper(
 				/* from: */ new,
 				/* value: */ ele->token,
 				/* to */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* in: */ ele->to));
 		}
 		
@@ -104,14 +125,20 @@ static struct gegex* clone_helper(
 		{
 			struct gtransition* const ele = old->grammar_transitions.data[i];
 			
+			#ifdef WITH_ARENAS
 			char* grammar = arena_strdup(arena, ele->grammar);
+			#else
+			char* grammar = strdup(ele->grammar);
+			#endif
 			
 			gegex_add_grammar_transition(
 				/* from: */ new,
 				/* value: */ grammar,
 				/* to */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* in: */ ele->to));
 		}
 		
@@ -121,8 +148,10 @@ static struct gegex* clone_helper(
 			gegex_add_lambda_transition(
 				/* from: */ new,
 				/* to */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WTIH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* in: */ old->lambda_transitions.data[i]));
 		}
 		
@@ -132,8 +161,10 @@ static struct gegex* clone_helper(
 }
 
 struct gegex* gegex_clone(
-	struct gegex* in,
-	struct memory_arena* arena)
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegex* in)
 {
 	ENTER;
 	
@@ -151,17 +182,27 @@ struct gegex* gegex_clone(
 }
 
 struct gbundle gegex_clone_nfa(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct gegex* start,
 	struct gegex* end)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#endif
 	
-	struct gegex* new_start = clone_helper(mappings, arena, start);
-	
-	struct gegex* new_end = clone_helper(mappings, arena, end);
+	#ifdef WITH_ARENAS
+	struct gegex* new_start = clone_helper(arena, mappings, start);
+	struct gegex* new_end = clone_helper(arena, mappings, end);
+	#else
+	struct gegex* new_start = clone_helper(mappings, start);
+	struct gegex* new_end = clone_helper(mappings, end);
+	#endif
 	
 	avl_free_tree(mappings);
 	

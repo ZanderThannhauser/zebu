@@ -14,8 +14,17 @@ void free_charset(struct charset* this)
 	
 	if (this)
 	{
+		#ifdef WITH_ARENAS
+		
 		arena_dealloc(this->arena, this->chars);
 		arena_dealloc(this->arena, this);
+		
+		#else
+		
+		free(this->chars);
+		free(this);
+		
+		#endif
 	}
 	
 	EXIT;

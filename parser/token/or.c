@@ -15,31 +15,49 @@
 #include "or.h"
 
 struct rbundle read_or_token_expression(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct rbundle retval = read_and_token_expression(arena, tokenizer, scope, token_skip);
+	#else
+	struct rbundle retval = read_and_token_expression(tokenizer, scope, token_skip);
+	#endif
 	
 	if (tokenizer->token == t_vertical_bar)
 	{
 		if (!retval.is_nfa)
 		{
-			retval = regex_dfa_to_nfa(retval.dfa, arena);
+			#ifdef WITH_ARENAS
+			retval = regex_dfa_to_nfa(arena, retval.dfa);
+			#else
+			retval = regex_dfa_to_nfa(retval.dfa);
+			#endif
 		}
 		
 		do
 		{
 			read_token(tokenizer, regex_inside_or_machine);
 			
+			#ifdef WITH_ARENAS
 			struct rbundle sub = read_and_token_expression(arena, tokenizer, scope, token_skip);
+			#else
+			struct rbundle sub = read_and_token_expression(tokenizer, scope, token_skip);
+			#endif
 			
 			if (!sub.is_nfa)
 			{
-				sub = regex_dfa_to_nfa(sub.dfa, arena);
+				#ifdef WITH_ARENAS
+				sub = regex_dfa_to_nfa(arena, sub.dfa);
+				#else
+				sub = regex_dfa_to_nfa(sub.dfa);
+				#endif
 			}
 			
 			regex_add_lambda_transition(retval.nfa.start, sub.nfa.start);

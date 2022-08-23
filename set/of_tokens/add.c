@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <debug.h>
 
 #include <arena/realloc.h>
@@ -18,7 +19,11 @@ void tokenset_add(struct tokenset* this, unsigned token)
 		
 		dpv(this->cap);
 		
+		#ifdef WITH_ARENAS
 		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	unsigned i, n;

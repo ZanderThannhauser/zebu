@@ -78,19 +78,34 @@ static const char* colors[] = {
 #endif
 
 struct gegex* gegex_simplify_dfa(
-	struct gegex* original_start,
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegex* original_start
+) {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* dependent_of = avl_alloc_tree(arena,
 		compare_gegex_dependent_of_nodes, free_gegex_dependent_of_node);
+	#else
+	struct avl_tree_t* dependent_of = avl_alloc_tree(
+		compare_gegex_dependent_of_nodes, free_gegex_dependent_of_node);
+	#endif
 	
+	#ifdef WITH_ARENAS
 	struct gegextree* universe = new_gegextree(arena);
+	#else
+	struct gegextree* universe = new_gegextree();
+	#endif
 	
 	gegex_simplify_dfa_build_universe(universe, original_start);
 	
+	#ifdef WITH_ARENAS
 	struct heap* todo = new_heap(arena, compare_gegex_simplify_tasks);
+	#else
+	struct heap* todo = new_heap(compare_gegex_simplify_tasks);
+	#endif
 	
 	#ifdef RELEASE
 	uintmax_t count = 0, n;
@@ -154,7 +169,11 @@ struct gegex* gegex_simplify_dfa(
 								}
 								else
 								{
+									#ifdef WITH_ARENAS
 									gegex_simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, bt->to);
+									#else
+									gegex_simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
+									#endif
 									a_i++, b_i++;
 								}
 							}
@@ -188,7 +207,11 @@ struct gegex* gegex_simplify_dfa(
 								}
 								else
 								{
+									#ifdef WITH_ARENAS
 									gegex_simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, bt->to);
+									#else
+									gegex_simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
+									#endif
 									a_i++, b_i++;
 								}
 							}
@@ -201,7 +224,11 @@ struct gegex* gegex_simplify_dfa(
 						
 						if (unequal)
 						{
+							#ifdef WITH_ARENAS
 							heap_push(todo, new_gegex_simplify_task(arena, a, b, 0));
+							#else
+							heap_push(todo, new_gegex_simplify_task(a, b, 0));
+							#endif
 						}
 						
 						#ifdef RELEASE
@@ -217,15 +244,27 @@ struct gegex* gegex_simplify_dfa(
 		runme;
 	}));
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* connections = avl_alloc_tree(arena, compare_gegex_same_as_nodes, free_gegex_same_as_node);
+	#else
+	struct avl_tree_t* connections = avl_alloc_tree(compare_gegex_same_as_nodes, free_gegex_same_as_node);
+	#endif
 	
 	gegextree_foreach(universe, ({
 		void runme(struct gegex* a) {
 			ENTER;
 			
-			struct gegextree* uni = gegextree_clone(universe, arena);
+			#ifdef WITH_ARENAS
+			struct gegextree* uni = gegextree_clone(arena, universe);
+			#else
+			struct gegextree* uni = gegextree_clone(universe);
+			#endif
 			
+			#ifdef WITH_ARENAS
 			struct gegex_same_as_node* sa = new_gegex_same_as_node(arena, a, uni);
+			#else
+			struct gegex_same_as_node* sa = new_gegex_same_as_node(a, uni);
+			#endif
 			
 			avl_insert(connections, sa);
 			
@@ -297,7 +336,11 @@ struct gegex* gegex_simplify_dfa(
 	#endif
 	
 	#ifdef DEBUGGING
+	#ifdef WITH_ARENAS
 	gegex_simplify_dfa_dotout(arena, universe, connections, 0);
+	#else
+	gegex_simplify_dfa_dotout(universe, connections, 0);
+	#endif
 	#endif
 	
 	while (is_heap_nonempty(todo))
@@ -318,14 +361,22 @@ struct gegex* gegex_simplify_dfa(
 					void runme(const void* ptr) {
 						const struct gegex_pair* pair = ptr;
 						
+						#ifdef WITH_ARENAS
 						heap_push(todo, new_gegex_simplify_task(arena, pair->a, pair->b, hopcount));
+						#else
+						heap_push(todo, new_gegex_simplify_task(pair->a, pair->b, hopcount));
+						#endif
 					}
 					runme;
 				}));
 			}
 			
 			#ifdef DEBUGGING
+			#ifdef WITH_ARENAS
 			gegex_simplify_dfa_dotout(arena, universe, connections, task->hopcount);
+			#else
+			gegex_simplify_dfa_dotout(universe, connections, task->hopcount);
+			#endif
 			#endif
 		}
 		
@@ -343,7 +394,11 @@ struct gegex* gegex_simplify_dfa(
 	}
 	#endif
 	
-	struct gegex* new_start = gegex_simplify_dfa_clone(connections, original_start, arena);
+	#ifdef WITH_ARENAS
+	struct gegex* new_start = gegex_simplify_dfa_clone(arena, connections, original_start);
+	#else
+	struct gegex* new_start = gegex_simplify_dfa_clone(connections, original_start);
+	#endif
 	
 	#ifdef DEBUGGING
 	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);

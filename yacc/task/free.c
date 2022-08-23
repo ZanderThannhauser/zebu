@@ -10,7 +10,11 @@
 #include "inheritance.h"
 #include "free.h"
 
-void free_task(struct task* this, struct memory_arena* arena)
+void free_task(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct task* this)
 {
 	ENTER;
 	
@@ -20,7 +24,11 @@ void free_task(struct task* this, struct memory_arena* arena)
 		
 		(this->inheritance->free)(this);
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(arena, this);
+		#else
+		free(this);
+		#endif
 	}
 	
 	EXIT;

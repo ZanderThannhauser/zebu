@@ -13,8 +13,10 @@
 #include "concat.h"
 
 struct gbundle read_concat_production(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -22,7 +24,11 @@ struct gbundle read_concat_production(
 {
 	ENTER;
 	
-	struct gbundle inner = read_subdefinitions_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+	struct gbundle inner = read_subdefinitions_production(
+		#ifdef WITH_ARENAS
+		grammar_arena, token_arena,
+		#endif
+		tokenizer, options, scope, lex);
 	
 	switch (tokenizer->token)
 	{
@@ -33,7 +39,11 @@ struct gbundle read_concat_production(
 		case t_gravemark:
 		case t_osquare:
 		{
-			struct gbundle right = read_concat_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+			struct gbundle right = read_concat_production(
+				#ifdef WITH_ARENAS
+				grammar_arena, token_arena,
+				#endif
+				tokenizer, options, scope, lex);
 			
 			gegex_add_lambda_transition(inner.end, right.start);
 			
@@ -56,7 +66,6 @@ struct gbundle read_concat_production(
 			TODO;
 			break;
 	}
-	
 }
 
 

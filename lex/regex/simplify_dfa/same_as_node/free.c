@@ -17,7 +17,11 @@ void free_same_as_node(void* ptr)
 	
 	free_regextree(this->set);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

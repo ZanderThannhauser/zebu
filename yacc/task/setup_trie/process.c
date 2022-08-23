@@ -1,4 +1,7 @@
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #include <assert.h>
 
 #include <debug.h>
@@ -49,28 +52,66 @@ void setup_trie_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
-	struct memory_arena* const arena = shared->arena;
-	
 	char* name;
+	
+	#ifdef WITH_ARENAS
+	struct memory_arena* const arena = shared->arena;
 	
 	if (this->name)
 		name = arena_strdup(arena, this->name);
 	else
 		name = arena_asprintf(arena, "(trie #%u)", shared->next_trie_id++);
+	#else
+	
+	if (this->name)
+		name = strdup(this->name);
+	else
+	{
+		int val = asprintf(&name, "(trie #%u)", shared->next_trie_id++);
+		
+		if (val < 0)
+			abort();
+	}
+	
+	#endif
 	
 	dpvs(name);
 	
+	#ifdef WITH_ARENAS
 	struct gegex* trie = new_gegex(arena);
+	#else
+	struct gegex* trie = new_gegex();
+	#endif
 	
+	#ifdef WITH_ARENAS
 	avl_insert(shared->gegex_to_trie, new_gegex_to_trie(arena, this->node, name));
+	#else
+	avl_insert(shared->gegex_to_trie, new_gegex_to_trie(this->node, name));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	avl_insert(shared->new_grammar, new_named_grammar(arena, name, trie));
+	#else
+	avl_insert(shared->new_grammar, new_named_grammar(name, trie));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	heap_push(shared->todo, new_build_trie_task(arena, name, trie, this->node, trie, 0));
+	#else
+	heap_push(shared->todo, new_build_trie_task(name, trie, this->node, trie, 0));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	heap_push(shared->todo, new_explore_firsts_task(arena, trie, name, trie));
+	#else
+	heap_push(shared->todo, new_explore_firsts_task(trie, name, trie));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	heap_push(shared->todo, new_percolate_firsts_task(arena, name));
+	#else
+	heap_push(shared->todo, new_percolate_firsts_task(name));
+	#endif
 	
 	this->built_name = name;
 	

@@ -1,4 +1,7 @@
 
+#ifdef WITH_ARENAS
+
+#include <stdio.h>
 #include <assert.h>
 
 #include <valgrind/memcheck.h>
@@ -109,3 +112,12 @@ void* arena_malloc(struct memory_arena* this, size_t user_size)
 
 
 
+
+
+
+
+
+
+
+
+#endif

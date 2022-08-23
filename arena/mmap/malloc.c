@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <stdio.h>
 #include <sys/mman.h>
 #include <stdlib.h>
@@ -35,3 +37,6 @@ void* mmap_malloc(struct memory_arena* this, size_t size)
 	return ptr;
 }
 
+
+
+#endif

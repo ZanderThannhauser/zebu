@@ -1,3 +1,5 @@
-
 struct setup_start_task* new_setup_start_task(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

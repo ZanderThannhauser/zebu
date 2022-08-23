@@ -1,5 +1,4 @@
 
-#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -15,9 +14,12 @@ void free_ystate_to_id(struct ystate_to_id* this)
 	
 	avl_free_tree(this->tree);
 	
+	#if WITH_ARENAS
+	TODO;
+	#else
 	free(this);
+	#endif
 	
 	EXIT;
 }
 
-#endif

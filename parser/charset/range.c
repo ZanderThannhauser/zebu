@@ -22,14 +22,21 @@
 #include "range.h"
 
 struct charset* read_range_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
 	struct charset* retval;
+	
+	#ifdef WITH_ARENAS
 	struct charset* inner = read_highest_charset(arena, tokenizer, scope);
+	#else
+	struct charset* inner = read_highest_charset(tokenizer, scope);
+	#endif
 	
 	if (tokenizer->token == t_hypen)
 	{
@@ -37,7 +44,11 @@ struct charset* read_range_charset(
 		
 		read_token(tokenizer, charset_inside_range_machine);
 		
+		#ifdef WITH_ARENAS
 		struct charset* right = read_highest_charset(arena, tokenizer, scope);
+		#else
+		struct charset* right = read_highest_charset(tokenizer, scope);
+		#endif
 		
 		if (left->is_complement || right->is_complement)
 		{
@@ -50,7 +61,11 @@ struct charset* read_range_charset(
 		dpvc(l);
 		dpvc(r);
 		
+		#ifdef WITH_ARENAS
 		retval = new_charset_from_range(arena, min(l, r), max(l, r));
+		#else
+		retval = new_charset_from_range(min(l, r), max(l, r));
+		#endif
 		
 		free_charset(left), free_charset(right);
 		

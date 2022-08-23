@@ -17,7 +17,11 @@ void free_lookahead_deps_node(void* ptr)
 	
 	free_gegexset(node->b);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(node->arena, node);
+	#else
+	free(node);
+	#endif
 	
 	EXIT;
 }

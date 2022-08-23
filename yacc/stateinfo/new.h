@@ -1,3 +1,5 @@
-
 struct yacc_stateinfo* new_yacc_stateinfo(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

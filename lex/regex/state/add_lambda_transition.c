@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <arena/realloc.h>
@@ -16,9 +18,15 @@ void regex_add_lambda_transition(
 	{
 		from->lambda_transitions.cap = from->lambda_transitions.cap * 2 ?: 1;
 		
+		#ifdef WITH_ARENAS
 		from->lambda_transitions.data = arena_realloc(
 			from->arena, from->lambda_transitions.data,
 			sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
+		#else
+		from->lambda_transitions.data = realloc(
+			from->lambda_transitions.data,
+			sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
+		#endif
 	}
 	
 	from->lambda_transitions.data[from->lambda_transitions.n++] = to;

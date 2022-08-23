@@ -1,6 +1,6 @@
-
-struct memory_arena;
-
 struct gegexset* gegexset_clone(
-	const struct gegexset* other,
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	const struct gegexset* other
+);

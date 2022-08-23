@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
@@ -17,9 +18,12 @@ void gegex_add_grammar_transition(
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = from->arena;
-	
 	struct gtransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
+	#else
+	struct gtransition* gtransition = malloc(sizeof(*gtransition));
+	#endif
 	
 	dpv(gtransition);
 	
@@ -31,9 +35,14 @@ void gegex_add_grammar_transition(
 	{
 		from->grammar_transitions.cap = from->grammar_transitions.cap * 2 ?: 1;
 		
+		#ifdef WITH_ARENAS
 		from->grammar_transitions.data = arena_realloc(
 			arena, from->grammar_transitions.data,
 			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
+		#else
+		from->grammar_transitions.data = realloc(from->grammar_transitions.data,
+			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
+		#endif
 	}
 	
 	size_t i;

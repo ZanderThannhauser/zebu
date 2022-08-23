@@ -1,8 +1,7 @@
 
-#if 0
 #include <stdlib.h>
 
-#include <avl/free_nodes.h>
+#include <avl/free_tree.h>
 
 #include <debug.h>
 
@@ -13,11 +12,14 @@ void free_pragma_once(struct pragma_once* this)
 {
 	ENTER;
 	
-	avl_free_nodes(&this->tree);
+	avl_free_tree(this->tree);
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(this);
+	#endif
 	
 	EXIT;
 }
 
-#endif

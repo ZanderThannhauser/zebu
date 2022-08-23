@@ -18,5 +18,7 @@ struct tokenset_to_id
 	struct tokenset* eof;
 	unsigned next;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };

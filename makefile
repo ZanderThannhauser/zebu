@@ -34,8 +34,21 @@ CFLAGS += -Wno-unused-function
 CFLAGS += -Wno-unused-but-set-variable
 CFLAGS += -Wno-unused-label
 
+#CFLAGS += -pg
+#LDFLAGS += -pg
+
 else
 $(error "invalid buildtype!");
+endif
+
+using_arenas ?= with
+
+ifeq ($(using_arenas), with)
+CPPFLAGS += -D WITH_ARENAS
+else ifeq ($(using_arenas), without)
+CPPFLAGS += -D WITHOUT_ARENAS
+else
+$(error "invalid using_arenas!");
 endif
 
 on_error ?= do_nothing
@@ -48,7 +61,7 @@ else
 $(error "invalid on_error option!");
 endif
 
-buildprefix = gen/$(buildtype)-build
+buildprefix = gen/$(buildtype)-build/$(using_arenas)-arenas
 
 default: $(buildprefix)/zebu
 
@@ -57,7 +70,6 @@ ARGS += -v
 #ARGS += --simplify=tokenizer
 
 #ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -74,17 +86,19 @@ ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/ilo
 # ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
 #ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
 # ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
+ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
 
 valrun: $(buildprefix)/zebu
-	valgrind $< $(ARGS)
+	valgrind --suppressions=./suppressions.txt $< $(ARGS)
 
 valrun-stop: $(buildprefix)/zebu
 	valgrind --gen-suppressions=yes -- $< ${ARGS}

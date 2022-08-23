@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <arena/realloc.h>
@@ -16,7 +18,11 @@ void heap_push(struct heap* this, void* new)
 		
 		dpv(this->cap);
 		
+		#ifdef WITH_ARENAS
 		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	size_t i = this->n++, j;

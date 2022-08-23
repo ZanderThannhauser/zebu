@@ -12,8 +12,10 @@
 #include "or.h"
 
 struct gbundle read_or_production(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -22,13 +24,20 @@ struct gbundle read_or_production(
 	ENTER;
 	
 	struct gbundle retval = read_concat_production(
-		grammar_arena, token_arena, tokenizer, options, scope, lex);
+		#ifdef WITH_ARENAS
+		grammar_arena, token_arena,
+		#endif
+		tokenizer, options, scope, lex);
 	
 	while (tokenizer->token == t_vertical_bar)
 	{
 		read_token(tokenizer, production_inside_or_machine);
 		
-		struct gbundle sub = read_concat_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+		struct gbundle sub = read_concat_production(
+			#ifdef WITH_ARENAS
+			grammar_arena, token_arena,
+			#endif
+			tokenizer, options, scope, lex);
 		
 		gegex_add_lambda_transition(retval.start, sub.start);
 		

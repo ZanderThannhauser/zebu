@@ -8,8 +8,9 @@
  * Returns NULL if memory could not be allocated.
  * O(1) */
 
-avl_tree_t *avl_alloc_tree(
+avl_tree_t* avl_alloc_tree(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	avl_compare_t cmp,
 	avl_freeitem_t freeitem);
-

@@ -33,22 +33,39 @@ static void free_ystate_to_id_node(void* ptr)
 	
 	struct ystate_to_id_node* node = ptr;
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(node);
+	#endif
 	
 	EXIT;
 }
 
 struct ystate_to_id* new_ystate_to_id(
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+) {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct ystate_to_id* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct ystate_to_id* this = malloc(sizeof(*this));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	this->tree = avl_alloc_tree(arena, compare_ystate_to_id_nodes, free_ystate_to_id_node);
+	#else
+	this->tree = avl_alloc_tree(compare_ystate_to_id_nodes, free_ystate_to_id_node);
+	#endif
+	
 	this->next = 1; // 0 indicates error
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	dpv(this->next);
 	

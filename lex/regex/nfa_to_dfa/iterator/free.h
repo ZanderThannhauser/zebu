@@ -1,6 +1,6 @@
-
-struct iterator;
-
 void free_iterator(
-	struct iterator* this,
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct iterator* this
+);

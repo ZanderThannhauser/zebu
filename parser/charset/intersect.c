@@ -16,14 +16,21 @@
 #include "intersect.h"
 
 struct charset* read_intersect_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
 	struct charset* retval;
+	
+	#ifdef WITH_ARENAS
 	struct charset* inner = read_range_charset(arena, tokenizer, scope);
+	#else
+	struct charset* inner = read_range_charset(tokenizer, scope);
+	#endif
 	
 	if (tokenizer->token == t_ampersand)
 	{
@@ -31,13 +38,21 @@ struct charset* read_intersect_charset(
 		
 		read_token(tokenizer, charset_inside_intersect_machine);
 		
+		#ifdef WITH_ARENAS
 		struct charset* right = read_range_charset(arena, tokenizer, scope);
+		#else
+		struct charset* right = read_range_charset(tokenizer, scope);
+		#endif
 		
 		if (left->is_complement)
 		{
 			if (right->is_complement)
 			{
+				#ifdef WITH_ARENAS
 				retval = charset_union(arena, left, right, true);
+				#else
+				retval = charset_union(left, right, true);
+				#endif
 			}
 			else
 			{
@@ -48,7 +63,11 @@ struct charset* read_intersect_charset(
 		{
 			if (right->is_complement)
 			{
+				#ifdef WITH_ARENAS
 				retval = charset_difference(arena, left, right, false);
+				#else
+				retval = charset_difference(left, right, false);
+				#endif
 			}
 			else
 			{

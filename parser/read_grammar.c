@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -28,8 +29,10 @@
 #include "read_grammar.h"
 
 void read_grammar(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -39,7 +42,11 @@ void read_grammar(
 	
 	assert(tokenizer->token == t_identifier);
 	
+	#ifdef WITH_ARENAS
 	char* name = arena_memdup(grammar_arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	#else
+	char* name = strdup(tokenizer->tokenchars.chars);
+	#endif
 	
 	dpvs(name);
 	
@@ -51,8 +58,10 @@ void read_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
+		#ifdef WITH_ARENAS
 		/* grammar_arena: */ grammar_arena,
 		/* token_arena:   */ token_arena,
+		#endif
 		/* tokenizer:     */ tokenizer,
 		/* options:       */ options,
 		/* scope:         */ scope,
@@ -62,11 +71,13 @@ void read_grammar(
 	
 	struct gegex* nfa_start = bundle.start;
 	
-	// nfa to dfa
-	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, grammar_arena);
-	
-	// simplify
-	struct gegex* simp_start = gegex_simplify_dfa(dfa_start, grammar_arena);
+	#ifdef WITH_ARENAS
+	struct gegex* dfa_start = gegex_nfa_to_dfa(grammar_arena, nfa_start);
+	struct gegex* simp_start = gegex_simplify_dfa(grammar_arena, dfa_start);
+	#else
+	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
+	#endif
 	
 	// add grammar rule to scope
 	scope_declare_grammar(scope, name, simp_start);

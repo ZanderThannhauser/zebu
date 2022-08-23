@@ -13,9 +13,11 @@ void free_dyntable(struct dyntable* this)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	avl_free_tree(this->tree);
+	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(this);
 	#endif
 	

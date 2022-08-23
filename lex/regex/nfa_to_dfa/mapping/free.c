@@ -17,7 +17,11 @@ void free_regex_mapping(void* a)
 	
 	free_regexset(this->original_states);
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }

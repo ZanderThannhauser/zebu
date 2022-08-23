@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -29,18 +30,28 @@ static struct mapping {
 	struct gegex* old; // must be the first
 	struct gegex* new;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 }* new_mapping(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct gegex* old, struct gegex* new)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct mapping* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct mapping* this = malloc(sizeof(*this));
+	#endif
 	
 	this->old = old, this->new = new;
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	EXIT;
 	return this;
@@ -63,7 +74,11 @@ static void free_mapping(void* ptr)
 	struct mapping* this = ptr;
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
+	#else
+	free(this);
+	#endif
 	
 	EXIT;
 }
@@ -82,8 +97,10 @@ static struct gegex* find(struct avl_tree_t* connections, struct gegex* a)
 }
 
 static struct gegex* clone_helper(
-	struct avl_tree_t* mappings,
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
+	struct avl_tree_t* mappings,
 	struct avl_tree_t* connections,
 	struct gegex* old)
 {
@@ -100,11 +117,19 @@ static struct gegex* clone_helper(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct gegex* new = new_gegex(arena);
+		#else
+		struct gegex* new = new_gegex();
+		#endif
 		
 		new->is_reduction_point = old->is_reduction_point;
 		
+		#ifdef WITH_ARENAS
 		avl_insert(mappings, new_mapping(arena, old, new));
+		#else
+		avl_insert(mappings, new_mapping(old, new));
+		#endif
 		
 		size_t i, n;
 		for (i = 0, n = old->transitions.n; i < n; i++)
@@ -115,8 +140,10 @@ static struct gegex* clone_helper(
 				/* from: */ new,
 				/* value: */ ele->token,
 				/* to: */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WTIH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* connections: */ connections,
 					/* in: */ find(connections, ele->to)));
 		}
@@ -125,12 +152,20 @@ static struct gegex* clone_helper(
 		{
 			struct gtransition* const ele = old->grammar_transitions.data[i];
 			
+			#ifdef WITH_ARENAS
+			char* dup = arena_strdup(arena, ele->grammar);
+			#else
+			char* dup = strdup(ele->grammar);
+			#endif
+			
 			gegex_add_grammar_transition(
 				/* from: */ new,
-				/* value: */ ele->grammar,
+				/* value: */ dup,
 				/* to: */ clone_helper(
-					/* mappings: */ mappings,
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
+					#endif
+					/* mappings: */ mappings,
 					/* connections: */ connections,
 					/* in: */ find(connections, ele->to)));
 		}
@@ -141,22 +176,31 @@ static struct gegex* clone_helper(
 }
 
 struct gegex* gegex_simplify_dfa_clone(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct avl_tree_t* connections,
-	struct gegex* original_start,
-	struct memory_arena* arena)
-{
+	struct gegex* original_start
+) {
 	ENTER;
 	
 	dpv(original_start);
 	
+	#ifdef WTIH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
+	#else
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#endif
 	
 	struct gegex* cloneme = find(connections, original_start);
 	
 	dpv(cloneme);
 	
 	struct gegex* new_start = clone_helper(
-		mappings, arena, connections, cloneme);
+		#ifdef WITH_ARENAS
+		arena,
+		#endif
+		mappings, connections, cloneme);
 	
 	avl_free_tree(mappings);
 	

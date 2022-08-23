@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
@@ -10,7 +11,9 @@
 
 char* scope_build_absolute_name(
 	struct scope* this,
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	const char* suffix,
 	size_t suffix_strlen)
 {
@@ -18,8 +21,11 @@ char* scope_build_absolute_name(
 	
 	dpvs(suffix);
 	
-	char* full = arena_malloc(
-		arena,
+	#ifdef WITH_ARENAS
+	char* full = arena_malloc(arena,
+	#else
+	char* full = malloc(
+	#endif
 		this->prefix.n + 1 + 
 		suffix_strlen + 1), *m = full;
 	

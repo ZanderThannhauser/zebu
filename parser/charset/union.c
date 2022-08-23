@@ -15,13 +15,19 @@
 #include "union.h"
 
 struct charset* read_union_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct charset* retval = read_symdiff_charset(arena, tokenizer, scope);
+	#else
+	struct charset* retval = read_symdiff_charset(tokenizer, scope);
+	#endif
 	
 	while (false
 		|| tokenizer->token == t_oparen
@@ -38,7 +44,11 @@ struct charset* read_union_charset(
 			read_token(tokenizer, charset_inside_union_machine);
 		}
 		
+		#ifdef WITH_ARENAS
 		struct charset* right = read_symdiff_charset(arena, tokenizer, scope);
+		#else
+		struct charset* right = read_symdiff_charset(tokenizer, scope);
+		#endif
 		
 		if (left->is_complement)
 		{
@@ -59,7 +69,11 @@ struct charset* read_union_charset(
 			}
 			else
 			{
+				#ifdef WITH_ARENAS
 				retval = charset_union(arena, left, right, false);
+				#else
+				retval = charset_union(left, right, false);
+				#endif
 			}
 		}
 		

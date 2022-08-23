@@ -58,18 +58,31 @@ void add_transition_task_process(struct task* super, struct yacc_shared* shared)
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct yacc_state* state = new_yacc_state(shared->parser_arena);
+		#else
+		struct yacc_state* state = new_yacc_state();
+		#endif
 		
 		*this->write_to_me = state;
 		
 		// add state to mapping:
 		{
+			#ifdef WITH_ARENAS
 			struct stateinfo_to_state* tos = new_stateinfo_to_state(shared->arena, this->stateinfo, state);
+			#else
+			struct stateinfo_to_state* tos = new_stateinfo_to_state(this->stateinfo, state);
+			#endif
+			
 			avl_insert(shared->stateinfo_to_state, tos);
 		}
 		
 		// submit task to consider transitions from new state
+		#ifdef WITH_ARENAS
 		heap_push(shared->todo, new_build_ystate_task(shared->arena, state, this->stateinfo));
+		#else
+		heap_push(shared->todo, new_build_ystate_task(state, this->stateinfo));
+		#endif
 	}
 	
 	EXIT;

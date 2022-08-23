@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <assert.h>
 #include <stdlib.h>
 
@@ -41,9 +42,14 @@ void read_fragment(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = scope_get_arena(scope);
-	
 	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	
+	#else
+	
+	char* name = strdup(tokenizer->tokenchars.chars);
+	#endif
 	
 	dpvs(name);
 	
@@ -51,7 +57,11 @@ void read_fragment(
 	
 	read_token(tokenizer, regex_root_machine);
 	
+	#ifdef WITH_ARENAS
 	struct rbundle bun = read_root_token_expression(arena, tokenizer, scope, token_skip);
+	#else
+	struct rbundle bun = read_root_token_expression(tokenizer, scope, token_skip);
+	#endif
 	
 	if (bun.is_nfa)
 	{
@@ -59,10 +69,13 @@ void read_fragment(
 		
 		bun.nfa.end->is_accepting = true;
 		
+		#ifdef WITH_ARENAS
 		struct regex* dfa = regex_nfa_to_dfa(nfa, arena);
-		
 		struct regex* simp = regex_simplify_dfa(dfa, arena);
-		
+		#else
+		struct regex* dfa = regex_nfa_to_dfa(nfa);
+		struct regex* simp = regex_simplify_dfa(dfa);
+		#endif
 		scope_declare_fragment(scope, name, simp);
 		
 		free_regex(nfa), free_regex(dfa);

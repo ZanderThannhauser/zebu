@@ -29,9 +29,17 @@ struct strset* get_firsts_deps(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		retval = new_strset(shared->arena);
+		#else
+		retval = new_strset();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		struct named_strset* ns = new_named_strset(shared->arena, name, retval);
+		#else
+		struct named_strset* ns = new_named_strset(name, retval);
+		#endif
 		
 		avl_insert(tree, ns);
 	}

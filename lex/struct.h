@@ -21,5 +21,7 @@ struct lex
 		struct tokenset* regex_ids;
 	} disambiguations;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };

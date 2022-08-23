@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 
 #include <debug.h>
 
@@ -24,7 +25,11 @@ void dynvector_set(
 	dpv(index);
 	dpv(value);
 	
+	#ifdef WITH_ARENAS
 	struct dynvector_node* node = arena_malloc(this->arena, sizeof(*node));
+	#else
+	struct dynvector_node* node = malloc(sizeof(*node));
+	#endif
 	
 	node->i = index;
 	node->v = value;

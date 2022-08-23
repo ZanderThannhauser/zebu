@@ -10,8 +10,14 @@
 #include "dotout.h"
 #include "complement.h"
 
-static void helper(struct regex* regex, struct memory_arena* scratchpad)
+static void helper(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct regex* regex)
 {
+	ENTER;
+	
 	if (regex->phase != lex_phase_counter)
 	{
 		regex->phase = lex_phase_counter;
@@ -21,34 +27,66 @@ static void helper(struct regex* regex, struct memory_arena* scratchpad)
 		
 		// normal transitions:
 		for (i = 0, n = regex->transitions.n; i < n; i++)
-			helper(regex->transitions.data[i]->to, scratchpad);
+		{
+			#ifdef WITH_ARENAS
+			helper(arena, regex->transitions.data[i]->to);
+			#else
+			helper(regex->transitions.data[i]->to);
+			#endif
+		}
 		
 		// lambda transitions:
 		for (i = 0, n = regex->lambda_transitions.n; i < n; i++)
-			helper(regex->lambda_transitions.data[i], scratchpad);
+		{
+			#ifdef WITH_ARENAS
+			helper(arena, regex->lambda_transitions.data[i]);
+			#else
+			helper(regex->lambda_transitions.data[i]);
+			#endif
+		}
 		
 		// default transition?:
 		if (regex->default_transition_to)
 		{
-			helper(regex->default_transition_to, scratchpad);
+			#ifdef WITH_ARENAS
+			helper(arena, regex->default_transition_to);
+			#else
+			helper(regex->default_transition_to);
+			#endif
 		}
 		else
 		{
-			struct regex* phi = new_regex(scratchpad);
+			#ifdef WITH_ARENAS
+			struct regex* phi = new_regex(arena);
+			#else
+			struct regex* phi = new_regex();
+			#endif
+			
 			phi->is_accepting = true;
+			
 			regex_set_default_transition(regex, phi);
 			regex_set_default_transition(phi, phi);
 		}
 	}
+	
+	EXIT;
 }
 
-void regex_complement(struct regex* start, struct memory_arena* scratchpad)
+void regex_complement(
+	#ifdef WTIH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct regex* start)
 {
 	ENTER;
 	
 	lex_phase_counter++;
 	
-	helper(start, scratchpad);
+	#ifdef WITH_ARENAS
+	helper(arena, start);
+	#else
+	helper(start);
+	#endif
 	
 	#ifdef DEBUGGING
 	regex_dotout(start, __PRETTY_FUNCTION__);
@@ -56,4 +94,18 @@ void regex_complement(struct regex* start, struct memory_arena* scratchpad)
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

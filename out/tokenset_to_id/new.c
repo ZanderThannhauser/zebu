@@ -40,10 +40,11 @@ static void free_tokenset_to_id_node(void* ptr)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct tokenset_to_id_node* node = ptr;
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(node);
 	#endif
 	
@@ -51,22 +52,41 @@ static void free_tokenset_to_id_node(void* ptr)
 }
 
 struct tokenset_to_id* new_tokenset_to_id(
-	struct memory_arena* arena)
-{
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+) {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct tokenset_to_id* this = arena_malloc(arena, sizeof(*this));
+	#else
+	struct tokenset_to_id* this = malloc(sizeof(*this));
+	#endif
 	
+	#ifdef WITH_ARENAS
 	this->tree = avl_alloc_tree(arena, compare_tokenset_to_id_nodes, free_tokenset_to_id_node);
+	#else
+	this->tree = avl_alloc_tree(compare_tokenset_to_id_nodes, free_tokenset_to_id_node);
+	#endif
+	
 	this->next = 1; // 0 indicates error
 	
 	dpv(this->next);
 	
+	#ifdef WITH_ARENAS
 	this->arena = arena;
+	#endif
 	
 	{
+		#ifdef WITH_ARENAS
 		this->eof = new_tokenset(arena);
+		#else
+		this->eof = new_tokenset();
+		#endif
+		
 		tokenset_add(this->eof, 0); // 0 indicates EOF
+		
 		tokenset_to_id(this, this->eof);
 	}
 	

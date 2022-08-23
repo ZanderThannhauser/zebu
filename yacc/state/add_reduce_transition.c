@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -12,14 +13,17 @@
 void yacc_state_add_reduce_transition(
 	struct yacc_state* from,
 	const struct tokenset* value,
-	const char* reduce_as,
+	char* reduce_as,
 	unsigned popcount)
 {
 	ENTER;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* const arena = from->arena;
-	
 	struct rytransition* transition = arena_malloc(arena, sizeof(*transition));
+	#else
+	struct rytransition* transition = malloc(sizeof(*transition));
+	#endif
 	
 	transition->value = value;
 	transition->reduce_as = reduce_as;
@@ -31,9 +35,14 @@ void yacc_state_add_reduce_transition(
 		
 		dpv(from->reduction_transitions.cap );
 		
+		#ifdef WITH_ARENAS
 		from->reduction_transitions.data = arena_realloc(
 			arena, from->reduction_transitions.data,
 			sizeof(*from->reduction_transitions.data) * from->reduction_transitions.cap);
+		#else
+		from->reduction_transitions.data = realloc(from->reduction_transitions.data,
+			sizeof(*from->reduction_transitions.data) * from->reduction_transitions.cap);
+		#endif
 	}
 	
 	size_t i;

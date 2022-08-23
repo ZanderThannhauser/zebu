@@ -72,19 +72,32 @@ static const char* colors[] = {
 #endif
 
 struct regex* regex_simplify_dfa(
-	struct regex* original_start,
-	struct memory_arena* arena)
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct regex* original_start)
 {
 	ENTER;
 	
-	struct avl_tree_t* dependent_of = avl_alloc_tree(arena,
-		compare_dependent_of_nodes, free_dependent_of_node);
+	#ifdef WITH_ARENAS
+	struct avl_tree_t* dependent_of = avl_alloc_tree(arena, compare_dependent_of_nodes, free_dependent_of_node);
+	#else
+	struct avl_tree_t* dependent_of = avl_alloc_tree(compare_dependent_of_nodes, free_dependent_of_node);
+	#endif
 	
+	#ifdef WITH_ARENAS
 	struct regextree* universe = new_regextree(arena);
+	#else
+	struct regextree* universe = new_regextree();
+	#endif
 	
 	simplify_dfa_build_universe(universe, original_start);
 	
+	#ifdef WITH_ARENAS
 	struct heap* todo = new_heap(arena, compare_simplify_tasks);
+	#else
+	struct heap* todo = new_heap(compare_simplify_tasks);
+	#endif
 	
 	#ifdef RELEASE
 	unsigned count = 0, n;
@@ -119,7 +132,7 @@ struct regex* regex_simplify_dfa(
 					if (a < b)
 					{
 						ENTER;
-						
+					
 						bool unequal = false;
 						
 						if (a->is_accepting != b->is_accepting)
@@ -139,19 +152,28 @@ struct regex* regex_simplify_dfa(
 							{
 								if (b->default_transition_to)
 								{
+									#ifdef WITH_ARENAS
 									simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, b->default_transition_to);
-									a_i++;
+									#else
+									simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
+									#endif
 								}
 								else
 								{
-									unequal = true, a_i++;
+									unequal = true;
 								}
+								
+								a_i++;
 							}
 							else if (at->value > bt->value)
 							{
 								if (a->default_transition_to)
 								{
+									#ifdef WITH_ARENAS
 									simplify_dfa_add_dep(arena, dependent_of, a, b, a->default_transition_to, bt->to);
+									#else
+									simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
+									#endif
 								}
 								else
 								{
@@ -162,7 +184,11 @@ struct regex* regex_simplify_dfa(
 							}
 							else
 							{
+								#ifdef WITH_ARENAS
 								simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, bt->to);
+								#else
+								simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
+								#endif
 								a_i++, b_i++;
 							}
 						}
@@ -171,14 +197,22 @@ struct regex* regex_simplify_dfa(
 						{
 							const struct transition* const at = a->transitions.data[a_i++];
 							
+							#ifdef WITH_ARENAS
 							simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, b->default_transition_to);
+							#else
+							simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
+							#endif
 						}
 						
 						while (a->default_transition_to && b_i < b_n)
 						{
 							const struct transition* const bt = b->transitions.data[b_i++];
 							
+							#ifdef WITH_ARENAS
 							simplify_dfa_add_dep(arena, dependent_of, a, b, a->default_transition_to, bt->to);
+							#else
+							simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
+							#endif
 						}
 						
 						if (!unequal && (a_i < a_n || b_i < b_n))
@@ -193,13 +227,22 @@ struct regex* regex_simplify_dfa(
 						
 						if (a->default_transition_to && b->default_transition_to)
 						{
+							#ifdef WITH_ARENAS
 							simplify_dfa_add_dep(arena, dependent_of, a, b,
 								a->default_transition_to, b->default_transition_to);
+							#else
+							simplify_dfa_add_dep(dependent_of, a, b,
+								a->default_transition_to, b->default_transition_to);
+							#endif
 						}
 						
 						if (unequal)
 						{
+							#ifdef WITH_ARENAS
 							heap_push(todo, new_simplify_task(arena, a, b, 0));
+							#else
+							heap_push(todo, new_simplify_task(a, b, 0));
+							#endif
 						}
 						
 						#ifdef RELEASE
@@ -215,15 +258,27 @@ struct regex* regex_simplify_dfa(
 		runme;
 	}));
 	
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* connections = avl_alloc_tree(arena, compare_same_as_nodes, free_same_as_node);
+	#else
+	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
+	#endif
 	
 	regextree_foreach(universe, ({
 		void runme(struct regex* a) {
 			ENTER;
 			
-			struct regextree* uni = regextree_clone(universe, arena);
+			#ifdef WITH_ARENAS
+			struct regextree* uni = regextree_clone(arena, universe);
+			#else
+			struct regextree* uni = regextree_clone(universe);
+			#endif
 			
+			#ifdef WITH_ARENAS
 			struct same_as_node* sa = new_same_as_node(arena, a, uni);
+			#else
+			struct same_as_node* sa = new_same_as_node(a, uni);
+			#endif
 			
 			avl_insert(connections, sa);
 			
@@ -295,7 +350,11 @@ struct regex* regex_simplify_dfa(
 	#endif
 	
 	#ifdef DEBUGGING
+	#ifdef WITH_ARENAS
 	simplify_dfa_dotout(arena, universe, connections, 0);
+	#else
+	simplify_dfa_dotout(universe, connections, 0);
+	#endif
 	#endif
 	
 	while (is_heap_nonempty(todo))
@@ -316,22 +375,26 @@ struct regex* regex_simplify_dfa(
 					void runme(const void* ptr) {
 						const struct pair* pair = ptr;
 						
+						#ifdef WITH_ARENAS
 						heap_push(todo, new_simplify_task(arena, pair->a, pair->b, hopcount));
+						#else
+						heap_push(todo, new_simplify_task(pair->a, pair->b, hopcount));
+						#endif
 					}
 					runme;
 				}));
 			}
 			
 			#ifdef DEBUGGING
+			#ifdef WITH_ARENAS
 			simplify_dfa_dotout(arena, universe, connections, task->hopcount);
+			#else
+			simplify_dfa_dotout(universe, connections, task->hopcount);
+			#endif
 			#endif
 		}
 		
 		free_simplify_task(task);
-		
-		#ifdef RELEASE
-/*		count++;*/
-		#endif
 	}
 	
 	#ifdef RELEASE
@@ -341,15 +404,22 @@ struct regex* regex_simplify_dfa(
 	}
 	#endif
 	
-	struct regex* new_start = regex_simplify_dfa_clone(connections, original_start, arena);
+	#ifdef WITH_ARENAS
+	struct regex* new_start = regex_simplify_dfa_clone(arena, connections, original_start);
+	#else
+	struct regex* new_start = regex_simplify_dfa_clone(connections, original_start);
+	#endif
 	
 	#ifdef DEBUGGING
 	regex_dotout(new_start, __PRETTY_FUNCTION__);
 	#endif
 	
 	avl_free_tree(dependent_of);
+	
 	free_regextree(universe);
+	
 	avl_free_tree(connections);
+	
 	free_heap(todo);
 	
 	EXIT;

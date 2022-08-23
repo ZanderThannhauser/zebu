@@ -11,14 +11,21 @@
 #include "symdiff.h"
 
 struct charset* read_symdiff_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
 	struct charset* retval;
+	
+	#ifdef WITH_ARENAS
 	struct charset* inner = read_intersect_charset(arena, tokenizer, scope);
+	#else
+	struct charset* inner = read_intersect_charset(tokenizer, scope);
+	#endif
 	
 	if (tokenizer->token == t_caret)
 	{

@@ -13,6 +13,8 @@ struct heap
 	
 	int (*cmp)(const void*, const void*);
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 

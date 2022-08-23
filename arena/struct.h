@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -43,3 +45,4 @@ struct memory_arena
 
 
 
+#endif

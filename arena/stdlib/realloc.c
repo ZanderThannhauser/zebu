@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 #include <stdlib.h>
 
@@ -23,4 +25,7 @@ void* stdlib_realloc(struct memory_arena* this, void* ptr, size_t newsize)
 	EXIT;
 	return new;
 }
+
+
+#endif
 

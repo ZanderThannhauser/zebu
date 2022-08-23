@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 
 #include <debug.h>
@@ -12,3 +14,4 @@ struct memory_arena* scope_get_arena(struct scope* this)
 	return this->layer->arena;
 }
 
+#endif

@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <string.h>
 
 #include <debug.h>
@@ -22,3 +24,4 @@ char* arena_strdup(
 	return retval;
 }
 
+#endif

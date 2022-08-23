@@ -8,7 +8,9 @@
 #include "new.h"
 
 struct percolate_firsts_task* new_percolate_firsts_task(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	const char* name)
 {
 	ENTER;
@@ -16,7 +18,9 @@ struct percolate_firsts_task* new_percolate_firsts_task(
 	dpvs(name);
 	
 	struct percolate_firsts_task* this = (void*) new_task(
+		#ifdef WITH_ARENAS
 		arena,
+		#endif
 		tk_percolate_firsts,
 		&percolate_firsts_task_inheritance,
 		sizeof(*this));

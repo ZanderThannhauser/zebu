@@ -59,7 +59,11 @@ void percolate_lookaheads_task_process(struct task* super, struct yacc_shared* s
 		{
 			gegexset_foreach(of, ({
 				void runme(struct gegex* substate) {
+					#ifdef WITH_ARENAS
 					heap_push(shared->todo, new_percolate_lookaheads_task(shared->arena, this->stateinfo, substate, this->ldeps));
+					#else
+					heap_push(shared->todo, new_percolate_lookaheads_task(this->stateinfo, substate, this->ldeps));
+					#endif
 				}
 				runme;
 			}));

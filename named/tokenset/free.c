@@ -15,7 +15,11 @@ void free_named_tokenset(void* a)
 	
 	free_tokenset(this->tokenset);
 	
+	#ifdef WITH_ARENAS
+	TODO;
+	#else
 	free(a);
+	#endif
 	
 	EXIT;
 }

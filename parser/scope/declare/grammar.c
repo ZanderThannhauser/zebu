@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
@@ -29,8 +30,12 @@ void scope_declare_grammar(
 	
 	if (this->prefix.n)
 	{
+		#ifdef WITH_ARENAS
 		full = arena_malloc(
 			this->grammar_arena,
+		#else
+		full = malloc(
+		#endif
 			this->prefix.n + 1 + len + 1);
 		
 		char* moving = full;
@@ -45,15 +50,27 @@ void scope_declare_grammar(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		full = arena_strdup(this->grammar_arena, name);
+		#else
+		full = strdup(name);
+		#endif
 	}
 	
 	dpvs(full);
 	
+	#ifdef WITH_ARENAS
 	avl_insert(this->grammar, new_named_grammar(this->grammar_arena, full, grammar));
+	#else
+	avl_insert(this->grammar, new_named_grammar(full, grammar));
+	#endif
 	
 	EXIT;
 }
+
+
+
+
 
 
 

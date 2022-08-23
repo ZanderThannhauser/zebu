@@ -9,7 +9,9 @@
 #include "unlink_node.h"
 #include "delete_node.h"
 
-void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode)
+void *avl_delete_node(
+	avl_tree_t *avltree,
+	avl_node_t *avlnode)
 {
 	ENTER;
 	
@@ -26,7 +28,11 @@ void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode)
 			avltree->freeitem(item);
 		}
 		
+		#ifdef WITH_ARENAS
 		arena_dealloc(avltree->arena, avlnode);
+		#else
+		free(avlnode);
+		#endif
 	}
 	
 	EXIT;

@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include <arena/realloc.h>
@@ -21,3 +23,5 @@ void* child_realloc(struct memory_arena* arena, void* old, size_t newsize)
 	return new;
 }
 
+
+#endif

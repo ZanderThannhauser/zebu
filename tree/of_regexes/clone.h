@@ -1,4 +1,6 @@
 
 struct regextree* regextree_clone(
-	struct regextree* this,
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	const struct regextree* this);

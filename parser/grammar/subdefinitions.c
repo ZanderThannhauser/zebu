@@ -22,8 +22,10 @@
 #include "subdefinitions.h"
 
 struct gbundle read_subdefinitions_production(
+	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -56,13 +58,21 @@ struct gbundle read_subdefinitions_production(
 				
 				case t_parenthesised_identifier:
 				{
+					#ifdef WITH_ARENAS
 					read_inline_grammar(token_arena, tokenizer, options, scope, lex);
+					#else
+					read_inline_grammar(tokenizer, options, scope, lex);
+					#endif
 					break;
 				}
 				
 				case t_identifier:
 				{
+					#ifdef WITH_ARENAS
 					read_grammar(grammar_arena, token_arena, tokenizer, options, scope, lex);
+					#else
+					read_grammar(tokenizer, options, scope, lex);
+					#endif
 					break;
 				}
 				
@@ -80,13 +90,21 @@ struct gbundle read_subdefinitions_production(
 		// read production rule:
 		read_token(tokenizer, production_inside_subdefinitions_machine);
 		
+		#ifdef WITH_ARENAS
 		retval = read_suffixes_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+		#else
+		retval = read_suffixes_production(tokenizer, options, scope, lex);
+		#endif
 		
 		scope_pop(scope);
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		retval = read_suffixes_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
+		#else
+		retval = read_suffixes_production(tokenizer, options, scope, lex);
+		#endif
 	}
 	
 	EXIT;

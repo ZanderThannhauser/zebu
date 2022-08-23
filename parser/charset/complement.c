@@ -13,7 +13,9 @@
 #include "complement.h"
 
 struct charset* read_complement_charset(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
@@ -25,7 +27,11 @@ struct charset* read_complement_charset(
 	{
 		read_token(tokenizer, charset_root_machine);
 		
+		#ifdef WITH_ARENAS
 		struct charset* inner = read_union_charset(arena, tokenizer, scope);
+		#else
+		struct charset* inner = read_union_charset(tokenizer, scope);
+		#endif
 		
 		inner->is_complement = !inner->is_complement;
 		
@@ -33,12 +39,17 @@ struct charset* read_complement_charset(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		retval = read_union_charset(arena, tokenizer, scope);
+		#else
+		retval = read_union_charset(tokenizer, scope);
+		#endif
 	}
 	
 	EXIT;
 	return retval;
 }
+
 
 
 

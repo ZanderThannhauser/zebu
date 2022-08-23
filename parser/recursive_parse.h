@@ -1,15 +1,12 @@
 
-struct lex;
-struct options;
-struct avl_tree_t;
 struct pragma_once;
-struct memory_arena;
-struct scope;
 
 void recursive_parse(
+	#ifdef WITH_ARENAS
 	struct memory_arena* parser_arena,
 	struct memory_arena* grammar_arena,
 	struct memory_arena* token_arena,
+	#endif
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,

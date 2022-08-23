@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <sys/mman.h>
 
 #include <debug.h>
@@ -24,3 +26,6 @@ bool mmap_resize(struct memory_arena* this, void* ptr, size_t oldsize, size_t ne
 	return successful;
 }
 
+
+
+#endif

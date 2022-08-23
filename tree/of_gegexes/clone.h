@@ -1,4 +1,6 @@
-
 struct gegextree* gegextree_clone(
-	struct gegextree* this,
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegextree* this
+);

@@ -51,7 +51,11 @@ void percolate_firsts_task_process(struct task* super, struct yacc_shared* share
 		
 		strset_foreach(of, ({
 			void runme(const char* dep) {
+				#ifdef WITH_ARENAS
 				heap_push(shared->todo, new_percolate_firsts_task(shared->arena, dep));
+				#else
+				heap_push(shared->todo, new_percolate_firsts_task(dep));
+				#endif
 			}
 			runme;
 		}));

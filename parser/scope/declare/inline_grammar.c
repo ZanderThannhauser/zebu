@@ -31,7 +31,11 @@ void scope_declare_inline_grammar(
 	
 	assert(this->layer);
 	
+	#ifdef WITH_ARENAS
 	avl_insert(this->layer->inline_grammar, new_named_gbundle(this->layer->arena, name, start, end));
+	#else
+	avl_insert(this->layer->inline_grammar, new_named_gbundle(name, start, end));
+	#endif
 	
 	EXIT;
 }

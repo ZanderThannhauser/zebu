@@ -8,7 +8,9 @@
 #include "new.h"
 
 struct explore_firsts_task* new_explore_firsts_task(
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
+	#endif
 	struct gegex* start,
 	const char* name,
 	struct gegex* node)
@@ -18,7 +20,9 @@ struct explore_firsts_task* new_explore_firsts_task(
 	dpvs(name);
 	
 	struct explore_firsts_task* this = (void*) new_task(
+		#ifdef WITH_ARENAS
 		arena,
+		#endif
 		tk_explore_firsts,
 		&explore_firsts_task_inheritance,
 		sizeof(*this));

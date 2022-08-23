@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 
 #include <debug.h>
@@ -97,3 +99,5 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 
 
 
+
+#endif

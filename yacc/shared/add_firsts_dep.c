@@ -29,11 +29,19 @@ void add_firsts_dep(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct strset* news = new_strset(shared->arena);
+		#else
+		struct strset* news = new_strset();
+		#endif
 		
 		strset_add(news, need_me);
 		
+		#ifdef WITH_ARENAS
 		avl_insert(tree, new_named_strset(shared->arena, they, news));
+		#else
+		avl_insert(tree, new_named_strset(they, news));
+		#endif
 	}
 	
 	EXIT;

@@ -1,3 +1,5 @@
-
 struct ystate_to_id* new_ystate_to_id(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

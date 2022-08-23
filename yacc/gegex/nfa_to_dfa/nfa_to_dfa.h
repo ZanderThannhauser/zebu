@@ -1,4 +1,6 @@
-
 struct gegex* gegex_nfa_to_dfa(
-	struct gegex* start,
-	struct memory_arena* scratchpad);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegex* start
+);

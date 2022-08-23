@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <debug.h>
 
 #include <arena/malloc.h>
@@ -36,3 +38,6 @@ struct memory_arena* new_child_arena(
 	EXIT;
 	return this;
 }
+
+
+#endif

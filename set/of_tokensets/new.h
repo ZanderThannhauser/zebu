@@ -1,3 +1,5 @@
-
 struct tokensetset* new_tokensetset(
-	struct memory_arena* arena);
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+);

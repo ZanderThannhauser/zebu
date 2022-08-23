@@ -1,4 +1,6 @@
 
+#ifdef WITH_ARENAS
+
 #include <assert.h>
 #include <stdlib.h>
 
@@ -26,3 +28,5 @@ void* stdlib_malloc(struct memory_arena* this, size_t size)
 	return ptr;
 }
 
+
+#endif

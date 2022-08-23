@@ -9,6 +9,8 @@ struct charset
 	
 	bool is_complement;
 	
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena;
+	#endif
 };
 

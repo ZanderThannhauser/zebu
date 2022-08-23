@@ -31,9 +31,17 @@ struct tokenset* shared_lookup_firsts(
 	}
 	else
 	{
+		#ifdef WITH_ARENAS
 		struct tokenset* new = new_tokenset(this->arena);
+		#else
+		struct tokenset* new = new_tokenset();
+		#endif
 		
+		#ifdef WITH_ARENAS
 		struct named_tokenset* nt = new_named_tokenset(this->arena, name, new);
+		#else
+		struct named_tokenset* nt = new_named_tokenset(name, new);
+		#endif
 		
 		avl_insert(this->firsts.sets, nt);
 		
