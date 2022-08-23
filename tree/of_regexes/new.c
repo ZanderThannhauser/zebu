@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
+#include <avl/alloc_tree.h>
+
 #include "struct.h"
 #include "new.h"
 
@@ -14,19 +18,18 @@ static int compare(const void* a, const void* b)
 		return +0;
 }
 
-struct regextree* new_regextree()
+struct regextree* new_regextree(struct memory_arena* arena)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct regextree* this = smalloc(sizeof(*this));
+	struct regextree* this = arena_malloc(arena, sizeof(*this));
 	
-	this->tree = new_avl_tree(compare, NULL);
+	this->tree = avl_alloc_tree(arena, compare, NULL);
 	this->n = 0;
+	
+	this->arena = arena;
 	
 	EXIT;
 	return this;
-	#endif
 }
 

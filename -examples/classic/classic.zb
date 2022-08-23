@@ -15,8 +15,6 @@
 // NFA-NFA suffixes: <$1>?, <$1>+, <$1>*, <$1>{a, b}
 // NFA-NFA concatenation: <$1>   <$2>   ...
 // DFA-DFA boolean-and  : <$1> & <$2> & ...
-// NFA-NFA boolean-or   : <$1> |> <$2> |> ... # on shift/reduce error: left wins
-// NFA-NFA boolean-or   : <$1> |< <$2> |< ... # on shift/reduce error: right wins
 // NFA-NFA boolean-or   : <$1> | <$2> | ...
 
 // LRP charater/string literal, regex, parenthesis: "token", `DFA $1`, (LRP $1)
@@ -33,7 +31,7 @@
 // to parser state machine.
 
 // %disambiguate: error;
-%disambiguate: literal > regex;
+// %disambiguate: literal > regex;
 // %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
 
 %skip: [' ', 'g'];

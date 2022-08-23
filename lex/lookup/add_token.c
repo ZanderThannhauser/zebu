@@ -1,10 +1,11 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include <avl/free_tree.h>
 #include <avl/search.h>
-
-#include <assert.h>
+#include <avl/insert.h>
 
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
@@ -30,8 +31,6 @@ unsigned lex_add_token(
 	unsigned retval;
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(token);
 	
 	dpvb(is_literal);
@@ -42,7 +41,7 @@ unsigned lex_add_token(
 	{
 		struct dfa_to_id_node* found = node->item;
 		
-		free_regex(token, this->scratchpad);
+		free_regex(token);
 		
 		retval = found->id;
 	}
@@ -79,11 +78,11 @@ unsigned lex_add_token(
 		
 		lex_phase_counter++, helper(token);
 		
-		struct dfa_to_id_node*   to = new_dfa_to_id_node(retval, token);
-		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);
+		struct dfa_to_id_node*   to = new_dfa_to_id_node(this->arena, retval, token);
+		struct dfa_from_id_node* from = new_dfa_from_id_node(this->arena, retval, token);
 		
-		safe_avl_insert(this->dfa_to_id,   to);
-		safe_avl_insert(this->dfa_from_id, from);
+		avl_insert(this->dfa_to_id,   to);
+		avl_insert(this->dfa_from_id, from);
 		
 		if (is_literal)
 			tokenset_add(this->disambiguations.literal_ids, retval);
@@ -95,7 +94,6 @@ unsigned lex_add_token(
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 

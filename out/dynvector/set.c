@@ -2,6 +2,10 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
+#include <avl/insert.h>
+
 #include "struct.h"
 #include "set.h"
 
@@ -12,8 +16,6 @@ void dynvector_set(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (index > this->length)
 	{
 		this->length = index;
@@ -22,14 +24,13 @@ void dynvector_set(
 	dpv(index);
 	dpv(value);
 	
-	struct dynvector_node* node = smalloc(sizeof(*node));
+	struct dynvector_node* node = arena_malloc(this->arena, sizeof(*node));
 	
 	node->i = index;
 	node->v = value;
 	
-	safe_avl_insert(this->list, node);
+	avl_insert(this->list, node);
 	
 	EXIT;
-	#endif
 }
 

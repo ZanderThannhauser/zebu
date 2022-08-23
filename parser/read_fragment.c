@@ -4,6 +4,8 @@
 
 #include <debug.h>
 
+#include <enums/error.h>
+
 /*#include <avl/avl.h>*/
 /*#include <avl/safe_insert.h>*/
 
@@ -49,7 +51,7 @@ void read_fragment(
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	struct rbundle bun = read_root_token_expression(tokenizer, arena, scope, token_skip);
+	struct rbundle bun = read_root_token_expression(arena, tokenizer, scope, token_skip);
 	
 	if (bun.is_nfa)
 	{
@@ -59,21 +61,17 @@ void read_fragment(
 		
 		struct regex* dfa = regex_nfa_to_dfa(nfa, arena);
 		
-		free_regex(nfa, arena);
-		
 		struct regex* simp = regex_simplify_dfa(dfa, arena);
 		
-		free_regex(dfa, arena);
-		
 		scope_declare_fragment(scope, name, simp);
+		
+		free_regex(nfa), free_regex(dfa);
 	}
 	else
 	{
 		scope_declare_fragment(scope, name, bun.dfa);
 	}
 	
-	TODO;
-	#if 0
 	if (true
 		&& tokenizer->token != t_semicolon
 		&& tokenizer->token != t_colon)
@@ -81,7 +79,6 @@ void read_fragment(
 		TODO;
 		exit(e_syntax_error);
 	}
-	#endif
 	
 	EXIT;
 }

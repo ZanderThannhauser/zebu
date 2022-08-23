@@ -4,5 +4,5 @@ struct gegex;
 
 void scope_declare_grammar(
 	struct scope* this,
-	char* name,
+	const char* name,
 	struct gegex* grammar);

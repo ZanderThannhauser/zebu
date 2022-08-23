@@ -41,8 +41,9 @@ void percolate_lookaheads_task_process(struct task* super, struct yacc_shared* s
 			void runme(struct gegex* substate) {
 				struct tokenset* dep_lookaheads = yacc_stateinfo_get(this->stateinfo, substate);
 				
-				if (tokenset_update(lookaheads, dep_lookaheads))
+				if (tokenset_update(lookaheads, dep_lookaheads)) {
 					changed = true;
+				}
 			}
 			runme;
 		}));
@@ -58,7 +59,7 @@ void percolate_lookaheads_task_process(struct task* super, struct yacc_shared* s
 		{
 			gegexset_foreach(of, ({
 				void runme(struct gegex* substate) {
-					heap_push(shared->todo, new_percolate_lookaheads_task(this->stateinfo, substate, this->ldeps));
+					heap_push(shared->todo, new_percolate_lookaheads_task(shared->arena, this->stateinfo, substate, this->ldeps));
 				}
 				runme;
 			}));

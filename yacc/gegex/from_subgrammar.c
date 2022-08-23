@@ -16,7 +16,7 @@ struct gbundle gegex_from_subgrammar(
 	
 	struct gegex* end = new_gegex(arena);
 	
-	gegex_add_grammar_transition(start, arena, grammar_name, end);
+	gegex_add_grammar_transition(start, grammar_name, end);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

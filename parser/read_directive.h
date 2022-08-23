@@ -8,6 +8,9 @@ struct memory_arena;
 struct options;
 
 void read_directive(
+	struct memory_arena* parser_arena,
+	struct memory_arena* token_arena,
+	struct memory_arena* grammar_arena,
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,

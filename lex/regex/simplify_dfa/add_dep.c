@@ -2,6 +2,7 @@
 #include <debug.h>
 
 #include <avl/search.h>
+#include <avl/insert.h>
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/new.h"
@@ -12,14 +13,13 @@
 #include "add_dep.h"
 
 void simplify_dfa_add_dep(
+	struct memory_arena* arena,
 	struct avl_tree_t* dependent_of,
 	struct regex* a_on, struct regex* b_on,
 	struct regex* a_of, struct regex* b_of)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (a_of > b_of)
 	{
 		struct regex* swap = b_of;
@@ -34,22 +34,21 @@ void simplify_dfa_add_dep(
 		
 		if (!avl_search(old->dependent_of, &(struct pair){a_on, b_on}))
 		{
-			struct pair* dep = new_pair(a_on, b_on);
+			struct pair* dep = new_pair(arena, a_on, b_on);
 			
-			safe_avl_insert(old->dependent_of, dep);
+			avl_insert(old->dependent_of, dep);
 		}
 	}
 	else
 	{
-		struct dependent_of_node* new = new_dependent_of_node(a_of, b_of);
+		struct dependent_of_node* new = new_dependent_of_node(arena, a_of, b_of);
 		
-		struct pair* dep = new_pair(a_on, b_on);
+		struct pair* dep = new_pair(arena, a_on, b_on);
 		
-		safe_avl_insert(new->dependent_of, dep);
+		avl_insert(new->dependent_of, dep);
 		
-		safe_avl_insert(dependent_of, new);
+		avl_insert(dependent_of, new);
 	}
-	#endif
 	
 	EXIT;
 }

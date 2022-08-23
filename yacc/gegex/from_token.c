@@ -20,7 +20,7 @@ struct gbundle gegex_from_token(
 	dpv(start);
 	dpv(end);
 	
-	gegex_add_transition(start, arena, token_id, end);
+	gegex_add_transition(start, token_id, end);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

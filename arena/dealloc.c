@@ -17,6 +17,7 @@ void arena_dealloc(struct memory_arena* this, void* ptr)
 	
 	if (!ptr)
 	{
+		EXIT;
 		return;
 	}
 	

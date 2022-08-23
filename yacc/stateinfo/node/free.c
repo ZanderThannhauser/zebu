@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include <set/of_tokens/free.h>
 
 #include "struct.h"
@@ -15,7 +17,7 @@ void free_yacc_stateinfo_node(void* ptr)
 	
 	free_tokenset(this->lookaheads);
 	
-	free(this);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

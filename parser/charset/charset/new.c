@@ -1,28 +1,29 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+#include <arena/memdup.h>
+
 #include "struct.h"
 #include "new.h"
 
 struct charset* new_charset(
-	const char* src, size_t len,
+	struct memory_arena* arena,
+	const unsigned char* src, size_t len,
 	bool is_complement)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct charset* this = smalloc(sizeof(*this));
+	struct charset* this = arena_malloc(arena, sizeof(*this));
 	
-	this->chars = smemdup(src, len);
+	this->chars = arena_memdup(arena, src, len);
 	this->len = len;
 	
 	this->is_complement = is_complement;
 	
-	this->refcount = 1;
+	this->arena = arena;
 	
 	EXIT;
 	return this;
-	#endif
 }
 

@@ -6,9 +6,13 @@
 #include <macros/strequals.h>
 
 /*#include <avl/search.h>*/
+#include <avl/insert.h>
 
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
+
+#include <arena/strdup.h>
+#include <arena/asprintf.h>
 
 /*#include <set/of_tokens/new.h>*/
 /*#include <set/of_tokens/add.h>*/
@@ -41,35 +45,34 @@ void setup_trie_task_process(struct task* super, struct yacc_shared* shared)
 	struct setup_trie_task* const this = (void*) super;
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(this->node);
 	
 	dpvs(this->name);
 	
+	struct memory_arena* const arena = shared->arena;
+	
 	char* name;
 	
 	if (this->name)
-		name = sstrdup(this->name);
+		name = arena_strdup(arena, this->name);
 	else
-		name = sasprintf("(trie #%u)", shared->next_trie_id++);
+		name = arena_asprintf(arena, "(trie #%u)", shared->next_trie_id++);
 	
 	dpvs(name);
 	
-	struct gegex* trie = new_gegex(shared->scratchpad);
+	struct gegex* trie = new_gegex(arena);
 	
-	safe_avl_insert(shared->gegex_to_trie, new_gegex_to_trie(this->node, name));
+	avl_insert(shared->gegex_to_trie, new_gegex_to_trie(arena, this->node, name));
 	
-	safe_avl_insert(shared->new_grammar, new_named_grammar(name, trie));
+	avl_insert(shared->new_grammar, new_named_grammar(arena, name, trie));
 	
-	heap_push(shared->todo, new_build_trie_task(name, trie, this->node, trie, 0));
+	heap_push(shared->todo, new_build_trie_task(arena, name, trie, this->node, trie, 0));
 	
-	heap_push(shared->todo, new_explore_firsts_task(trie, name, trie));
+	heap_push(shared->todo, new_explore_firsts_task(arena, trie, name, trie));
 	
-	heap_push(shared->todo, new_percolate_firsts_task(name));
+	heap_push(shared->todo, new_percolate_firsts_task(arena, name));
 	
 	this->built_name = name;
-	#endif
 	
 	EXIT;
 }

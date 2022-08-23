@@ -1,5 +1,11 @@
 
+#include <stdio.h>
+#include <sys/mman.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <defines/argv0.h>
 
 #include "malloc.h"
 
@@ -20,7 +26,7 @@ void* mmap_malloc(struct memory_arena* this, size_t size)
 		/* offset: */  0)) == MAP_FAILED)
 	{
 		fprintf(stderr, "%s: mmap(): %m\n", argv0);
-		exit(e_syscall_failed);
+		exit(1);
 	}
 	
 	dpv(ptr);

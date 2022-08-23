@@ -23,6 +23,8 @@ struct regex
 	
 	struct regex* EOF_transition_to;
 	
+	struct memory_arena* arena;
+	
 	unsigned phase;
 	
 	#ifdef DEBUGGING

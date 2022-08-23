@@ -1,8 +1,5 @@
 
-struct memory_arena;
-struct tokensetset;
-
 struct lex_state* dfas_to_dfa(
+	struct memory_arena* arena,
 	struct tokensetset* accepting,
-	struct memory_arena* scratchpad,
 	struct regexset* starts);

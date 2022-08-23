@@ -3,18 +3,22 @@
 
 #include <debug.h>
 
+#include <arena/realloc.h>
+
 #include "struct.h"
 #include "add.h"
 
 bool regexset_add(struct regexset* this, struct regex* ptr)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
 		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		dpv(this->cap);
+		
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	unsigned i, n;
@@ -34,13 +38,15 @@ bool regexset_add(struct regexset* this, struct regex* ptr)
 		}
 		else
 		{
+			EXIT;
 			return false;
 		}
 	}
 	
 	this->data[this->n++] = ptr;
+	
+	EXIT;
 	return true;
-	#endif
 }
 
 

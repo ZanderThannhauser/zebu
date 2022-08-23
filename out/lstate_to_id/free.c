@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -19,3 +20,4 @@ void free_lstate_to_id(struct lstate_to_id* this)
 	EXIT;
 }
 
+#endif

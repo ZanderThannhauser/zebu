@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <arena/realloc.h>
+
 #include "struct.h"
 #include "add.h"
 
@@ -8,16 +10,15 @@ void tokenset_add(struct tokenset* this, unsigned token)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(token);
 	
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
+		
 		dpv(this->cap);
 		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	unsigned i, n;
@@ -36,15 +37,12 @@ void tokenset_add(struct tokenset* this, unsigned token)
 		}
 		else
 		{
-			ddprintf("token is already in set!\n");
 			EXIT;
 			return;
 		}
 	}
 	
 	this->data[this->n++] = token;
-	#endif
-	
 	EXIT;
 }
 

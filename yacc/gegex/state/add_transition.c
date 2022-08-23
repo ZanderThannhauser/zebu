@@ -1,22 +1,21 @@
 
 #include <debug.h>
 
-/*#include <memory/arena/malloc.h>*/
-/*#include <memory/arena/realloc.h>*/
+#include <arena/malloc.h>
+#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_transition.h"
 
 void gegex_add_transition(
 	struct gegex* from,
-	struct memory_arena* arena,
 	unsigned token,
 	struct gegex* to)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
+	struct memory_arena* const arena = from->arena;
+	
 	struct transition* transition = arena_malloc(arena, sizeof(*transition));
 	
 	dpv(transition);
@@ -45,7 +44,6 @@ void gegex_add_transition(
 	data[i + 1] = transition;
 	
 	EXIT;
-	#endif
 }
 
 

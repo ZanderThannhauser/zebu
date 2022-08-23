@@ -1,4 +1,8 @@
 
+#include <fcntl.h>
+#include <limits.h>
+#include <string.h>
+
 #include <debug.h>
 
 #include "sopenat.h"

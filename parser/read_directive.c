@@ -1,49 +1,55 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <debug.h>
 
-/*#include <macros/strequals.h>*/
+#include <enums/error.h>
+
+#include <macros/strequals.h>
 
 /*#include <enums/error.h>*/
 
 #include <misc/break_path.h>
 
-/*#include "options/struct.h"*/
+#include "options/struct.h"
 /*#include "options/dlink.h"*/
 
-/*#include <lex/regex/state/free.h>*/
-/*#include <lex/regex/dfa_to_nfa.h>*/
-/*#include <lex/regex/state/add_lambda_transition.h>*/
+#include <lex/regex/state/free.h>
+#include <lex/regex/dfa_to_nfa.h>
+#include <lex/regex/state/add_lambda_transition.h>
 
-/*#include <yacc/gegex/state/struct.h>*/
-/*#include <yacc/gegex/state/free.h>*/
-/*#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>*/
-/*#include <yacc/gegex/simplify_dfa/simplify_dfa.h>*/
+#include <yacc/gegex/state/struct.h>
+#include <yacc/gegex/state/free.h>
+#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
+#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
 #include "tokenizer/machines/include.h"
-/*#include "tokenizer/machines/production/root.h"*/
+#include "tokenizer/machines/production/root.h"
 /*#include "tokenizer/machines/misc/semicolon.h"*/
-/*#include "tokenizer/machines/misc/colon.h"*/
+#include "tokenizer/machines/misc/colon.h"
 /*#include "tokenizer/machines/misc/identifier_or_string.h"*/
 /*#include "tokenizer/machines/misc/comparision.h"*/
-/*#include "tokenizer/machines/regex/root.h"*/
+#include "tokenizer/machines/regex/root.h"
 /*#include "tokenizer/machines/root.h"*/
 
-/*#include "scope/declare/grammar.h"*/
+#include "scope/declare/grammar.h"
 
-/*#include "grammar/root.h"*/
+#include "grammar/root.h"
 
-/*#include "token/root.h"*/
+#include "token/root.h"
 
 #include "recursive_parse.h"
 
 #include "read_directive.h"
 
 void read_directive(
+	struct memory_arena* parser_arena,
+	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -58,8 +64,6 @@ void read_directive(
 	
 	if (strequals(tokenizer->tokenchars.chars, "%""start"))
 	{
-		TODO;
-		#if 0
 		read_token(tokenizer, colon_machine);
 		
 		// prep production-rule reader:
@@ -67,72 +71,65 @@ void read_directive(
 		
 		// read a prodution rule:
 		struct gbundle bundle = read_root_production(
-			/* tokenizer:  */ tokenizer,
-			/* scratchpad: */ scratchpad,
-			/* options:    */ options,
-			/* scope:      */ scope,
-			/* lex:        */ lex);
+			/* grammar_arena: */ grammar_arena,
+			/*   token_arena: */ token_arena,
+			/*     tokenizer: */ tokenizer,
+			/*       options: */ options,
+			/*         scope: */ scope,
+			/*           lex: */ lex);
 		
 		bundle.end->is_reduction_point = true;
 		
 		struct gegex* nfa_start = bundle.start;
 		
 		// nfa to dfa
-		struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, scratchpad);
+		struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, grammar_arena);
 		
 		// simplify
-		struct gegex* simp_start = gegex_simplify_dfa(dfa_start, scratchpad);
+		struct gegex* simp_start = gegex_simplify_dfa(dfa_start, grammar_arena);
 		
 		// add grammar rule to scope
 		scope_declare_grammar(scope, "(start)", simp_start);
 		
-		free_gegex(nfa_start, scratchpad);
-		free_gegex(dfa_start, scratchpad);
-		#endif
+		free_gegex(nfa_start), free_gegex(dfa_start);
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""skip"))
 	{
-		TODO;
-		#if 0
-		free_regex(options->skip, scratchpad);
+		free_regex(options->skip), options->skip = NULL;
 		
 		read_token(tokenizer, colon_machine);
 		
 		read_token(tokenizer, regex_root_machine);
 		
-		struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope, options->token_skip);
+		struct rbundle bun = read_root_token_expression(parser_arena, tokenizer, scope, options->token_skip);
 		
 		if (!bun.is_nfa)
 		{
-			bun = regex_dfa_to_nfa(bun.dfa, scratchpad);
+			bun = regex_dfa_to_nfa(bun.dfa, parser_arena);
 		}
 		
-		regex_add_lambda_transition(bun.nfa.end, scratchpad, bun.nfa.start);
+		regex_add_lambda_transition(bun.nfa.end, bun.nfa.start);
 		
 		options->skip = bun.nfa.start;
-		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""token_skip"))
 	{
-		TODO;
-		#if 0
-		free_regex(options->skip, scratchpad);
+		free_regex(options->token_skip), options->token_skip = NULL;
 		
 		read_token(tokenizer, colon_machine);
 		
 		read_token(tokenizer, regex_root_machine);
 		
-		struct rbundle bun = read_root_token_expression(tokenizer, scratchpad, scope, options->token_skip);
+		struct rbundle bun = read_root_token_expression(parser_arena, tokenizer, scope, options->token_skip);
 		
 		if (!bun.is_nfa)
 		{
-			bun = regex_dfa_to_nfa(bun.dfa, scratchpad);
+			bun = regex_dfa_to_nfa(bun.dfa, parser_arena);
 		}
 		
-		regex_add_lambda_transition(bun.nfa.end, scratchpad, bun.nfa.start);
+		regex_add_lambda_transition(bun.nfa.end, bun.nfa.start);
 		
 		options->token_skip = bun.nfa.start;
-		#endif
 	}
 	else if (strequals(tokenizer->tokenchars.chars, "%""disambiguate"))
 	{
@@ -240,6 +237,9 @@ void read_directive(
 		struct br_rettype br = break_path(dirfd, tokenizer->tokenchars.chars);
 		
 		recursive_parse(
+			/* parser_arena: */ parser_arena,
+			/* grammar_arena: */ grammar_arena,
+			/* token_arena: */ token_arena,
 			/* options: */ options,
 			/* scope: */ scope,
 			/* pragma_once: */ pragma_once,

@@ -47,6 +47,7 @@ static struct tokenset_array* new_tokenset_array()
 	#endif
 }
 
+#if 0
 static void tokenset_array_append(struct tokenset_array* this, struct tokenset* ele)
 {
 	TODO;
@@ -60,6 +61,7 @@ static void tokenset_array_append(struct tokenset_array* this, struct tokenset* 
 	this->data[this->n++] = ele;
 	#endif
 }
+#endif
 
 static void free_tokenset_array(struct tokenset_array* this)
 {

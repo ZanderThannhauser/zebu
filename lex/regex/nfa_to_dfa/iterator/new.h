@@ -1,4 +1,4 @@
 
-struct regex;
-
-struct iterator* new_iterator(struct regex* state);
+struct iterator* new_iterator(
+	struct memory_arena* arena,
+	struct regex* state);

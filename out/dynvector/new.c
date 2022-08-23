@@ -1,8 +1,12 @@
 
-
+#include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
+
+#include <avl/alloc_tree.h>
+
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
@@ -26,28 +30,32 @@ static void free_dynvector_node(void* ptr)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct dynvector_node* node = ptr;
 	
 	free(node);
+	#endif
 	
 	EXIT;
 }
 
-struct dynvector* new_dynvector(const char* name)
+struct dynvector* new_dynvector(
+	struct memory_arena* arena,
+	const char* name)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct dynvector* this = smalloc(sizeof(*this));
+	struct dynvector* this = arena_malloc(arena, sizeof(*this));
 	
-	this->list = new_avl_tree(compare_dynvector_nodes, free_dynvector_node);
+	this->list = avl_alloc_tree(arena, compare_dynvector_nodes, free_dynvector_node);
 	this->length = 0;
 	this->name = name;
 	
+	this->arena = arena;
+	
 	EXIT;
 	return this;
-	#endif
 }
 
 

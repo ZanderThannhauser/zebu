@@ -4,11 +4,11 @@
 
 struct charset
 {
-	char* chars;
+	unsigned char* chars;
 	size_t len;
 	
 	bool is_complement;
 	
-	unsigned refcount;
+	struct memory_arena* arena;
 };
 

@@ -1,15 +1,19 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 /*#include <memory/sstrndup.h>*/
 
-#include "../struct.h"
-
 /*#include "../private/append_prefix.h"*/
+
+#include <avl/insert.h>
 
 #include <named/gbundle/new.h>
 
 /*#include <named/name/new.h>*/
+
+#include "../struct.h"
 
 #include "inline_grammar.h"
 
@@ -21,16 +25,13 @@ void scope_declare_inline_grammar(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpvs(name);
 	dpv(start);
 	dpv(end);
 	
 	assert(this->layer);
 	
-	safe_avl_insert(this->layer->inline_grammar, new_named_gbundle(name, start, end));
-	#endif
+	avl_insert(this->layer->inline_grammar, new_named_gbundle(this->layer->arena, name, start, end));
 	
 	EXIT;
 }

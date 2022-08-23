@@ -59,7 +59,6 @@ static void helper(
 			{
 				regex_add_lambda_transition(
 					/* from:  */ regex,
-					/* arena: */ arena,
 					/* to:    */ dest);
 			}
 			

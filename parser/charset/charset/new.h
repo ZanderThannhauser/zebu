@@ -1,6 +1,9 @@
 
 #include <stdbool.h>
 
+struct memory_arena;
+
 struct charset* new_charset(
-	const char* src, size_t len,
+	struct memory_arena* arena,
+	const unsigned char* src, size_t len,
 	bool is_complement);

@@ -5,9 +5,6 @@
 
 struct lex
 {
-	
-	struct memory_arena* arena;
-	
 	struct avl_tree_t* dfa_to_id; // token -> token id
 	struct avl_tree_t* dfa_from_id; // token id -> token
 	
@@ -24,4 +21,5 @@ struct lex
 		struct tokenset* regex_ids;
 	} disambiguations;
 	
+	struct memory_arena* arena;
 };

@@ -2,18 +2,33 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <debug.h>
+
+#include <arena/dealloc.h>
+
 #include "unlink_node.h"
 #include "delete_node.h"
 
 void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode)
 {
+	ENTER;
+	
 	void *item = NULL;
-	if(avlnode) {
+	
+	if (avlnode)
+	{
 		item = avlnode->item;
+		
 		avl_unlink_node(avltree, avlnode);
-		if(avltree->freeitem)
+		
+		if (avltree->freeitem)
+		{
 			avltree->freeitem(item);
-		free(avlnode);
+		}
+		
+		arena_dealloc(avltree->arena, avlnode);
 	}
+	
+	EXIT;
 	return item;
 }

@@ -6,6 +6,8 @@ struct named_grammar
 {
 	char* name;
 	struct gegex* grammar;
+	
+	struct memory_arena* arena;
 };
 
 #endif

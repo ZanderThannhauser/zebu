@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include <avl/free_tree.h>
 
 #include "struct.h"
@@ -14,7 +16,7 @@ void free_yacc_stateinfo(struct yacc_stateinfo* this)
 	
 	avl_free_tree(this->tree);
 	
-	free(this);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

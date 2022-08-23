@@ -9,13 +9,12 @@
 
 void regex_add_transition(
 	struct regex* from,
-	struct memory_arena* arena,
 	unsigned value,
 	struct regex* to)
 {
 	ENTER;
 	
-	struct transition* transition = arena_malloc(arena, sizeof(*transition));
+	struct transition* transition = arena_malloc(from->arena, sizeof(*transition));
 	
 	transition->value = value;
 	transition->to = to;
@@ -25,7 +24,7 @@ void regex_add_transition(
 		from->transitions.cap = from->transitions.cap * 2 ?: 1;
 		
 		from->transitions.data = arena_realloc(
-			arena, from->transitions.data,
+			from->arena, from->transitions.data,
 			sizeof(*from->transitions.data) * from->transitions.cap);
 	}
 	

@@ -8,6 +8,7 @@
 #include "new.h"
 
 struct percolate_lookaheads_task* new_percolate_lookaheads_task(
+	struct memory_arena* arena,
 	struct yacc_stateinfo* stateinfo,
 	struct gegex* state,
 	struct lookahead_deps* ldeps)
@@ -15,6 +16,7 @@ struct percolate_lookaheads_task* new_percolate_lookaheads_task(
 	ENTER;
 	
 	struct percolate_lookaheads_task* this = (void*) new_task(
+		arena,
 		tk_percolate_lookaheads,
 		&percolate_lookaheads_task_inheritance,
 		sizeof(*this));

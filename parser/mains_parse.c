@@ -1,4 +1,5 @@
 
+#include <unistd.h>
 #include <stdlib.h>
 
 #include <assert.h>
@@ -19,7 +20,9 @@
 
 /*#include <set/of_strs/add.h>*/
 
-/*#include "options/struct.h"*/
+#include "options/struct.h"
+
+#include <lex/add_EOF_token.h>
 
 #include "scope/new.h"
 #include "scope/free.h"
@@ -32,8 +35,8 @@
 #include "mains_parse.h"
 
 void mains_parse(
-	struct memory_arena* token_arena,
 	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct options* options,
 	struct avl_tree_t* grammar,
 	struct lex* lex,
@@ -43,13 +46,16 @@ void mains_parse(
 	
 	struct memory_arena* parser_arena = new_mmap_arena();
 	
-	struct scope* scope = new_scope(parser_arena, grammar);
+	struct scope* scope = new_scope(parser_arena, grammar_arena, grammar);
 	
 	struct pragma_once* pragma_once = new_pragma_once(parser_arena);
 	
 	struct br_rettype br = break_path(AT_FDCWD, path);
 	
 	recursive_parse(
+		/* parser_arena: */ parser_arena,
+		/* grammar_arena: */ grammar_arena,
+		/* token_arena: */ token_arena,
 		/* options: */ options,
 		/* scope: */ scope,
 		/* pragma_once: */ pragma_once,
@@ -59,26 +65,16 @@ void mains_parse(
 		/* lex: */ lex
 	);
 	
-	TODO;
-	#if 0
-	free_pragma_once(pragma_once);
-	
 	resolve_grammar_names(scope);
 	
 	lex_add_EOF_token(lex, options->skip);
 	
-	free_scope(scope);
-	#endif
-	
 	free_memory_arena(parser_arena);
 	
-	TODO;
-	#if 0
 	if (br.dirfd > 0)
 		close(br.dirfd);
 	
 	close(br.fd);
-	#endif
 	
 	EXIT;
 }

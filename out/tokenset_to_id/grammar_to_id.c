@@ -2,6 +2,9 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
+#include <avl/insert.h>
 #include <avl/search.h>
 
 #include "struct.h"
@@ -14,8 +17,8 @@ unsigned grammar_to_id(
 	unsigned retval;
 	ENTER;
 	
-	TODO;
-	#if 0
+	dpvs(grammar);
+	
 	struct avl_node_t* node = avl_search(this->tree, &(struct tokenset_to_id_node){
 		.is_tokenset = false,
 		.grammar = grammar,
@@ -29,18 +32,17 @@ unsigned grammar_to_id(
 	}
 	else
 	{
-		struct tokenset_to_id_node* new = smalloc(sizeof(*new));
+		struct tokenset_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
 		
 		new->is_tokenset = false;
 		new->grammar = grammar;
 		new->id = retval = this->next++;
 		
-		safe_avl_insert(this->tree, new);
+		avl_insert(this->tree, new);
 	}
 	
 	dpv(retval);
 	
 	EXIT;
 	return retval;
-	#endif
 }

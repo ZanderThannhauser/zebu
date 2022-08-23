@@ -2,12 +2,15 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <avl/search.h>
-#include <avl/free_tree.h>
-
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+#include <avl/alloc_tree.h>
+
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -21,9 +24,11 @@ struct mapping
 {
 	struct regex* old; // must be the first
 	struct regex* new;
+	
+	struct memory_arena* arena;
 };
 
-static int compare(const void* a, const void* b)
+static int compare_mappings(const void* a, const void* b)
 {
 	const struct mapping* A = a, *B = b;
 	
@@ -33,6 +38,12 @@ static int compare(const void* a, const void* b)
 		return -1;
 	else
 		return  0;
+}
+
+static void free_mapping(void* ptr)
+{
+	struct mapping* m = ptr;
+	arena_dealloc(m->arena, m);
 }
 
 struct memory_arena;
@@ -57,14 +68,13 @@ static struct regex* clone_helper(
 		
 		new->is_accepting = old->is_accepting;
 		
-		TODO;
-		#if 0
-		struct mapping* mapping = smalloc(sizeof(*mapping));
+		struct mapping* mapping = arena_malloc(arena, sizeof(*mapping));
 		
 		mapping->old = old;
 		mapping->new = new;
+		mapping->arena = arena;
 		
-		safe_avl_insert(mappings, mapping);
+		avl_insert(mappings, mapping);
 		
 		// for each transition:
 		size_t i, n;
@@ -74,7 +84,6 @@ static struct regex* clone_helper(
 			
 			regex_add_transition(
 				/* from: */ new,
-				/* arena */ arena,
 				/* value: */ ele->value,
 				/* to */ clone_helper(
 					/* mappings: */ mappings,
@@ -87,7 +96,6 @@ static struct regex* clone_helper(
 		{
 			regex_add_lambda_transition(
 				/* from: */ new,
-				/* arena */ arena,
 				/* to */ clone_helper(
 					/* mappings: */ mappings,
 					/* arena: */ arena,
@@ -107,7 +115,6 @@ static struct regex* clone_helper(
 		
 		EXIT;
 		return new;
-		#endif
 	}
 }
 
@@ -117,9 +124,7 @@ struct regex* regex_clone(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* mappings = new_avl_tree(compare, free);
+	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	
 	struct regex* retval = clone_helper(mappings, arena, in);
 	
@@ -127,7 +132,6 @@ struct regex* regex_clone(
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 

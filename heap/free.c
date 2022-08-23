@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -10,8 +12,8 @@ void free_heap(struct heap* this)
 {
 	ENTER;
 	
-	free(this->data);
-	free(this);
+	arena_dealloc(this->arena, this->data);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

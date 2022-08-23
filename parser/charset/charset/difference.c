@@ -3,29 +3,29 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
 #include "struct.h"
-#include "new.h"
 #include "difference.h"
 
 struct charset* charset_difference(
+	struct memory_arena* arena,
 	const struct charset* a,
 	const struct charset* b,
 	bool is_complement)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	size_t n = 0;
 	
-	char* chars = smalloc(sizeof(*chars) * a->len);
+	unsigned char* chars = arena_malloc(arena, sizeof(*chars) * a->len);
 	
 	size_t a_i = 0, a_n = a->len;
 	size_t b_i = 0, b_n = b->len;
 	
 	while (a_i < a_n && b_i < b_n)
 	{
-		char a_ele = a->chars[a_i], b_ele = b->chars[b_i];
+		unsigned char a_ele = a->chars[a_i], b_ele = b->chars[b_i];
 		
 		if (a_ele < b_ele)
 			chars[n++] = a_ele, a_i++;
@@ -38,13 +38,17 @@ struct charset* charset_difference(
 	while (a_i < a_n)
 		chars[n++] = a->chars[a_i++];
 	
-	struct charset* new = new_charset(chars, n, is_complement);
+	struct charset* this = arena_malloc(arena, sizeof(*this));
 	
-	free(chars);
+	this->chars = chars;
+	this->len = n;
+	
+	this->is_complement = is_complement;
+	
+	this->arena = arena;
 	
 	EXIT;
-	return new;
-	#endif
+	return this;
 }
 
 

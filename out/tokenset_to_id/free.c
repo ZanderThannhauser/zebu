@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -23,3 +24,4 @@ void free_tokenset_to_id(struct tokenset_to_id* this)
 	EXIT;
 }
 
+#endif

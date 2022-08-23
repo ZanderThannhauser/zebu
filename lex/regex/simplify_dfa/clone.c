@@ -8,10 +8,13 @@
 
 #include <tree/of_regexes/struct.h>
 
+#include <avl/alloc_tree.h>
 #include <avl/search.h>
+#include <avl/insert.h>
 #include <avl/free_tree.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
 
 #include "../state/struct.h"
 #include "../state/new.h"
@@ -26,14 +29,21 @@
 static struct mapping {
 	struct regex* old; // must be the first
 	struct regex* new;
-}* new_mapping(struct regex* old, struct regex* new)
+	struct memory_arena* arena;
+}* new_mapping(
+	struct memory_arena* arena,
+	struct regex* old, struct regex* new)
 {
-	TODO;
-	#if 0
-	struct mapping* this = smalloc(sizeof(*this));
+	ENTER;
+	
+	struct mapping* this = arena_malloc(arena, sizeof(*this));
+	
 	this->old = old, this->new = new;
+	
+	this->arena = arena;
+	
+	EXIT;
 	return this;
-	#endif
 }
 
 static int compare_mappings(const void* a, const void* b)
@@ -48,12 +58,26 @@ static int compare_mappings(const void* a, const void* b)
 		return  0;
 }
 
+static void free_mapping(void* ptr)
+{
+	struct mapping* this = ptr;
+	ENTER;
+	
+	arena_dealloc(this->arena, this);
+	
+	EXIT;
+}
+
 static struct regex* find(struct avl_tree_t* connections, struct regex* a)
 {
 	struct avl_node_t* node = avl_search(connections, &a);
+	
 	assert(node);
+	
 	struct same_as_node* sa = node->item;
+	
 	assert(sa->set->n);
+	
 	return sa->set->tree->head->item;
 }
 
@@ -67,8 +91,6 @@ static struct regex* clone_helper(
 	struct mapping* mapping;
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(old);
 	
 	if ((node = avl_search(mappings, &old)))
@@ -82,7 +104,7 @@ static struct regex* clone_helper(
 		
 		new->is_accepting = old->is_accepting;
 		
-		safe_avl_insert(mappings, new_mapping(old, new));
+		avl_insert(mappings, new_mapping(arena, old, new));
 		
 		// calculate default transition first,
 		if (old->default_transition_to)
@@ -119,7 +141,6 @@ static struct regex* clone_helper(
 			{
 				regex_add_transition(
 					/* from: */ new,
-					/* arena */ arena,
 					/* value: */ ele->value,
 					/* to: */ to);
 			}
@@ -144,7 +165,6 @@ static struct regex* clone_helper(
 		EXIT;
 		return new;
 	}
-	#endif
 }
 
 struct regex* regex_simplify_dfa_clone(
@@ -156,9 +176,7 @@ struct regex* regex_simplify_dfa_clone(
 	
 	dpv(original_start);
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free);
+	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	
 	struct regex* cloneme = find(connections, original_start);
 	
@@ -171,7 +189,6 @@ struct regex* regex_simplify_dfa_clone(
 	
 	EXIT;
 	return new_start;
-	#endif
 }
 
 

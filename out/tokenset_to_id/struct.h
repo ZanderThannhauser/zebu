@@ -17,4 +17,6 @@ struct tokenset_to_id
 	struct avl_tree_t* tree;
 	struct tokenset* eof;
 	unsigned next;
+	
+	struct memory_arena* arena;
 };

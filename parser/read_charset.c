@@ -3,9 +3,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include <debug.h>
+
 #include <enums/error.h>
 
-#include <debug.h>
+#include <arena/memdup.h>
 
 #include "charset/root.h"
 
@@ -15,6 +17,7 @@
 #include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/charset/root.h"
 
+#include "scope/get_arena.h"
 #include "scope/declare/charset.h"
 
 #include "read_charset.h"
@@ -25,11 +28,13 @@ void read_charset(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	assert(tokenizer->token == t_bracketed_identifier);
 	
-	char* name = smemdup(tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
+	dpvs(tokenizer->tokenchars.chars);
+	
+	struct memory_arena* arena = scope_get_arena(scope);
+	
+	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	
@@ -37,7 +42,7 @@ void read_charset(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	struct charset* charset = read_root_charset(tokenizer, scope);
+	struct charset* charset = read_root_charset(arena, tokenizer, scope);
 	
 	scope_declare_charset(scope, name, charset);
 	
@@ -50,7 +55,6 @@ void read_charset(
 	}
 	
 	EXIT;
-	#endif
 }
 
 

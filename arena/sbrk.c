@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdio.h>
 
 #include <sys/mman.h>
@@ -70,7 +71,7 @@ void* arena_sbrk(
 	
 	dpv(new_size);
 	
-	if (this->mmaps.n > 0)
+	if (this->mmaps.n > 0 && (this->resize))
 	{
 		struct mentry* mentry = &this->mmaps.data[this->mmaps.n - 1];
 		

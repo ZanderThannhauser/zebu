@@ -9,5 +9,7 @@ struct dyntable
 	struct avl_tree_t* tree;
 	const char* name;
 	unsigned width, height;
+	
+	struct memory_arena* arena;
 };
 

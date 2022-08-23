@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-/*#include <memory/srealloc.h>*/
+#include <arena/realloc.h>
 
 #include "struct.h"
 #include "push.h"
@@ -10,15 +10,13 @@ void heap_push(struct heap* this, void* new)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
 		
 		dpv(this->cap);
 		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	size_t i = this->n++, j;
@@ -32,7 +30,6 @@ void heap_push(struct heap* this, void* new)
 		data[i] = data[j];
 		data[j] = swap;
 	}
-	#endif
 	
 	EXIT;
 }

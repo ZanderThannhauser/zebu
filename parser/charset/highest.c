@@ -12,11 +12,13 @@
 #include "../scope/lookup/charset.h"
 
 #include "charset/new.h"
-#include "charset/inc.h"
+#include "charset/clone.h"
+
 #include "root.h"
 #include "highest.h"
 
 struct charset* read_highest_charset(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
@@ -27,24 +29,27 @@ struct charset* read_highest_charset(
 	{
 		case t_character_literal:
 		{
-			char* first = tokenizer->tokenchars.chars;
+			unsigned char first = *tokenizer->tokenchars.chars;
 			
-			dpvc(*first);
+			dpvc(first);
 			
-			retval = new_charset(first, 1, false);
+			retval = new_charset(arena, &first, 1, false);
 			break;
 		}
 		
 		case t_identifier:
-			retval = scope_lookup_charset(scope, tokenizer->tokenchars.chars);
-			inc_charset(retval);
+		{
+			struct charset* copyme = scope_lookup_charset(scope, tokenizer->tokenchars.chars);
+			
+			retval = clone_charset(arena, copyme);
 			break;
+		}
 		
 		case t_oparen:
 		{
 			read_token(tokenizer, charset_root_machine);
 			
-			retval = read_root_charset(tokenizer, scope);
+			retval = read_root_charset(arena, tokenizer, scope);
 			
 			if (tokenizer->token != t_cparen)
 			{

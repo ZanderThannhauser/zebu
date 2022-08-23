@@ -7,41 +7,34 @@
 
 #include "charset/struct.h"
 #include "charset/new.h"
-#include "charset/inc.h"
 #include "charset/free.h"
 
 #include "union.h"
 #include "complement.h"
 
 struct charset* read_complement_charset(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	bool take_complement = false;
+	struct charset* retval;
 	
 	if (tokenizer->token == t_tilda)
 	{
-		take_complement = true;
 		read_token(tokenizer, charset_root_machine);
-	}
-	
-	struct charset* retval;
-	struct charset* inner = read_union_charset(tokenizer, scope);
-	
-	if (take_complement)
-	{
-		retval = new_charset(
-			inner->chars, inner->len,
-			/* is_complement: */ !inner->is_complement);
+		
+		struct charset* inner = read_union_charset(arena, tokenizer, scope);
+		
+		inner->is_complement = !inner->is_complement;
+		
+		retval = inner;
 	}
 	else
 	{
-		retval = inc_charset(inner);
+		retval = read_union_charset(arena, tokenizer, scope);
 	}
-	
-	free_charset(inner);
 	
 	EXIT;
 	return retval;

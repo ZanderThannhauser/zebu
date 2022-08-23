@@ -43,13 +43,13 @@ void setup_start_task_process(struct task* super, struct yacc_shared* shared)
 	// struct setup_start_task* const this = (void*) super;
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct yacc_stateinfo* tree = new_yacc_stateinfo();
+	struct memory_arena* const arena = shared->arena;
 	
-	struct lookahead_deps* ldeps = new_lookahead_deps();
+	struct yacc_stateinfo* tree = new_yacc_stateinfo(arena);
 	
-	struct tokenset* lookahead = new_tokenset();
+	struct lookahead_deps* ldeps = new_lookahead_deps(arena);
+	
+	struct tokenset* lookahead = new_tokenset(arena);
 	
 	tokenset_add(lookahead, shared->EOF_token_id);
 	
@@ -63,16 +63,15 @@ void setup_start_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpv(start);
 	
-	heap_push(shared->todo, new_expand_tree_task(tree, ldeps, start, "(start)", lookahead));
+	heap_push(shared->todo, new_expand_tree_task(arena, tree, ldeps, start, "(start)", lookahead));
 	
-	//// heap_push(todo, new_percolate_lookaheads_task(ldeps, gegex));
+	// // heap_push(todo, new_percolate_lookaheads_task(ldeps, gegex));
 	
-	heap_push(shared->todo, new_free_lookahead_deps_task(ldeps));
+	heap_push(shared->todo, new_free_lookahead_deps_task(arena, ldeps));
 	
-	heap_push(shared->todo, new_add_transition_task(&shared->yacc_start, tree));
+	heap_push(shared->todo, new_add_transition_task(arena, &shared->yacc_start, tree));
 	
-	//// heap_push(todo, new_expand_state_task(tree, state));
-	#endif
+	// // heap_push(todo, new_expand_state_task(tree, state));
 	
 	EXIT;
 }

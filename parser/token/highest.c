@@ -25,8 +25,8 @@
 #include "highest.h"
 
 struct rbundle read_highest_token_expression(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip)
 {
@@ -40,7 +40,7 @@ struct rbundle read_highest_token_expression(
 			dpvc(tokenizer->tokenchars.chars[0]);
 			
 			struct regex* dfa = regex_from_literal(
-				/* scratchpad: */ scratchpad,
+				/* arena: */ arena,
 				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ 1);
 			
@@ -61,7 +61,7 @@ struct rbundle read_highest_token_expression(
 			dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 			
 			struct regex* dfa = regex_from_literal(
-				/* scratchpad: */ scratchpad,
+				/* arena: */ arena,
 				/* chars:      */ tokenizer->tokenchars.chars,
 				/* strlen:     */ tokenizer->tokenchars.n);
 			
@@ -83,7 +83,7 @@ struct rbundle read_highest_token_expression(
 			
 			struct regex* original = scope_lookup_token(scope, tokenizer->tokenchars.chars);
 			
-			struct regex* start = regex_clone(original, scratchpad);
+			struct regex* start = regex_clone(original, arena);
 			
 			retval = (struct rbundle) {
 				.is_nfa = false,
@@ -102,7 +102,7 @@ struct rbundle read_highest_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ charset_root_machine);
 				
-			struct charset* charset = read_root_charset(tokenizer, scope);
+			struct charset* charset = read_root_charset(arena, tokenizer, scope);
 			
 			dpv(charset);
 			
@@ -114,7 +114,7 @@ struct rbundle read_highest_token_expression(
 			
 			retval = (struct rbundle) {
 				.is_nfa = false,
-				.dfa = regex_from_charset(charset, scratchpad),
+				.dfa = regex_from_charset(charset, arena),
 			};
 			
 			#ifdef DEBUGGING
@@ -129,7 +129,7 @@ struct rbundle read_highest_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_root_machine);
 			
-			retval = read_root_token_expression(tokenizer, scratchpad, scope, token_skip);
+			retval = read_root_token_expression(arena, tokenizer, scope, token_skip);
 			
 			if (tokenizer->token != t_cparen)
 			{
@@ -143,7 +143,7 @@ struct rbundle read_highest_token_expression(
 		{
 			retval = (struct rbundle) {
 				.is_nfa = false,
-				.dfa = regex_from_dot(scratchpad),
+				.dfa = regex_from_dot(arena),
 			};
 			
 			#ifdef DEBUGGING

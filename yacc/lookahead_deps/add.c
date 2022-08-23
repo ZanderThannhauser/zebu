@@ -2,6 +2,7 @@
 #include <debug.h>
 
 #include <avl/search.h>
+#include <avl/insert.h>
 
 #include <set/of_gegexes/add.h>
 
@@ -12,14 +13,13 @@
 #include "add.h"
 
 static void add(
+	struct memory_arena* arena,
 	struct avl_tree_t* tree,
 	struct gegex* a,
 	struct gegex* b)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(tree, &a);
 	
 	if (node)
@@ -29,10 +29,9 @@ static void add(
 	}
 	else
 	{
-		struct lookahead_deps_node* new = new_lookahead_deps_node(a, b);
-		safe_avl_insert(tree, new);
+		struct lookahead_deps_node* new = new_lookahead_deps_node(arena, a, b);
+		avl_insert(tree, new);
 	}
-	#endif
 	
 	EXIT;
 }
@@ -44,8 +43,8 @@ void lookahead_deps_add(
 {
 	ENTER;
 	
-	add(this->dependant_of, I, feed_them);
-	add(this->dependant_on, feed_them, I);
+	add(this->arena, this->dependant_of, I, feed_them);
+	add(this->arena, this->dependant_on, feed_them, I);
 	
 	EXIT;
 }

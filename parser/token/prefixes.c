@@ -13,8 +13,8 @@
 #include "prefixes.h"
 
 struct rbundle read_prefixes_token_expression(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip)
 {
@@ -24,7 +24,7 @@ struct rbundle read_prefixes_token_expression(
 	{
 		read_token(tokenizer, regex_inside_emark_machine);
 		
-		struct rbundle inner = read_highest_token_expression(tokenizer, scratchpad, scope, token_skip);
+		struct rbundle inner = read_highest_token_expression(arena, tokenizer, scope, token_skip);
 		
 		struct regex* machine;
 		
@@ -45,7 +45,7 @@ struct rbundle read_prefixes_token_expression(
 			machine = inner.dfa;
 		}
 		
-		regex_complement(machine, scratchpad);
+		regex_complement(machine, arena);
 		
 		EXIT;
 		return (struct rbundle) {
@@ -55,7 +55,7 @@ struct rbundle read_prefixes_token_expression(
 	}
 	else
 	{
-		struct rbundle retval = read_highest_token_expression(tokenizer, scratchpad, scope, token_skip);
+		struct rbundle retval = read_highest_token_expression(arena, tokenizer, scope, token_skip);
 		EXIT;
 		return retval;
 	}

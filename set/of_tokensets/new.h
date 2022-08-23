@@ -1,2 +1,3 @@
 
-struct tokensetset* new_tokensetset();
+struct tokensetset* new_tokensetset(
+	struct memory_arena* arena);

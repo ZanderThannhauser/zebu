@@ -2,6 +2,9 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
+#include <avl/insert.h>
 #include <avl/search.h>
 
 #include "struct.h"
@@ -14,8 +17,6 @@ unsigned ystate_to_id(
 	unsigned retval;
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(this->tree, &state);
 	
 	if (node)
@@ -26,18 +27,17 @@ unsigned ystate_to_id(
 	}
 	else
 	{
-		struct ystate_to_id_node* new = smalloc(sizeof(*new));
+		struct ystate_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
 		
 		new->ystate = state;
 		new->id = retval = this->next++;
 		
-		safe_avl_insert(this->tree, new);
+		avl_insert(this->tree, new);
 	}
 	
 	dpv(retval);
 	
 	EXIT;
 	return retval;
-	#endif
 }
 

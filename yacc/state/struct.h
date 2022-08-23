@@ -31,6 +31,8 @@ struct yacc_state
 		size_t n, cap;
 	} grammar_transitions;
 	
+	struct memory_arena* arena;
+	
 	struct lex_state* tokenizer_start;
 	
 	unsigned phase;

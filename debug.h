@@ -30,14 +30,20 @@
 	
 	#include <enums/error.h>
 	
-/*	#include <memory/smalloc.h>*/
-/*	#include <memory/srealloc.h>*/
-/*	#include <memory/scalloc.h>*/
-/*	#include <memory/smemdup.h>*/
-/*	#include <memory/sasprintf.h>*/
-/*	#include <memory/sstrdup.h>*/
-	
 	#include <macros/strequals.h>
+	
+	#include <arena/memdup.h>
+	#include <arena/malloc.h>
+	#include <arena/calloc.h>
+	#include <arena/realloc.h>
+	#include <arena/dealloc.h>
+	#include <arena/strdup.h>
+	#include <arena/asprintf.h>
+	#include <arena/free.h>
+	
+	#include <avl/alloc_tree.h>
+	#include <avl/insert.h>
+	#include <avl/search.h>
 	
 	struct task;
 	struct heap;
@@ -55,6 +61,7 @@
 	struct regexset;
 	struct lex_state;
 	struct lex;
+	struct gegextree;
 	struct tokenset_to_id;
 	struct grammar_to_id;
 	struct out_shared;

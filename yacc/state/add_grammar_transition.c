@@ -3,20 +3,21 @@
 
 #include <debug.h>
 
-/*#include <memory/arena/malloc.h>*/
-/*#include <memory/arena/realloc.h>*/
+#include <arena/malloc.h>
+#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_grammar_transition.h"
 
 struct gytransition* yacc_state_add_grammar_transition(
 	struct yacc_state* from,
-	struct memory_arena* arena,
 	const char* grammar,
 	struct yacc_state* to)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
+	struct memory_arena* const arena = from->arena;
+	
 	struct gytransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
 	
 	gtransition->grammar = grammar;
@@ -44,8 +45,8 @@ struct gytransition* yacc_state_add_grammar_transition(
 	
 	gdata[i + 1] = gtransition;
 	
+	EXIT;
 	return gtransition;
-	#endif
 }
 
 

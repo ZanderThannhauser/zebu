@@ -4,6 +4,10 @@
 
 #include <debug.h>
 
+#include <avl/alloc_tree.h>
+
+#include <arena/malloc.h>
+
 #include "struct.h"
 #include "new.h"
 
@@ -34,21 +38,37 @@ static void free_ystate_to_id_node(void* ptr)
 	EXIT;
 }
 
-struct ystate_to_id* new_ystate_to_id()
+struct ystate_to_id* new_ystate_to_id(
+	struct memory_arena* arena)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct ystate_to_id* this = smalloc(sizeof(*this));
+	struct ystate_to_id* this = arena_malloc(arena, sizeof(*this));
 	
-	this->tree = new_avl_tree(compare_ystate_to_id_nodes, free_ystate_to_id_node);
+	this->tree = avl_alloc_tree(arena, compare_ystate_to_id_nodes, free_ystate_to_id_node);
 	this->next = 1; // 0 indicates error
+	
+	this->arena = arena;
 	
 	dpv(this->next);
 	
 	EXIT;
 	return this;
-	#endif
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

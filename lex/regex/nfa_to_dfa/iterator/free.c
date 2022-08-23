@@ -1,14 +1,19 @@
 
-#include <stdlib.h>
-
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
+#include "struct.h"
 #include "free.h"
 
-void free_iterator(struct iterator* this)
+void free_iterator(
+	struct iterator* this,
+	struct memory_arena* arena)
 {
 	ENTER;
-	free(this);
+	
+	arena_dealloc(arena, this);
+	
 	EXIT;
 }
 

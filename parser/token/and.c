@@ -17,20 +17,20 @@
 #include "and.h"
 
 struct rbundle read_and_token_expression(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_concat_token_expression(tokenizer, scratchpad, scope, token_skip);
+	struct rbundle retval = read_concat_token_expression(arena, tokenizer, scope, token_skip);
 	
 	while (tokenizer->token == t_ampersand)
 	{
 		read_token(tokenizer, regex_inside_and_machine);
 		
-		struct rbundle right = read_concat_token_expression(tokenizer, scratchpad, scope, token_skip);
+		struct rbundle right = read_concat_token_expression(arena, tokenizer, scope, token_skip);
 		
 		struct regex* left_machine;
 		
@@ -50,11 +50,11 @@ struct rbundle read_and_token_expression(
 			right.nfa.end->is_accepting = true;
 			
 			struct regex* nfa = right.nfa.start;
-			struct regex* dfa = regex_nfa_to_dfa(nfa, scratchpad);
+			struct regex* dfa = regex_nfa_to_dfa(nfa, arena);
 			
-			right_machine = regex_simplify_dfa(dfa, scratchpad);
+			right_machine = regex_simplify_dfa(dfa, arena);
 			
-			free_regex(nfa, scratchpad), free_regex(dfa, scratchpad);
+			free_regex(nfa), free_regex(dfa);
 		}
 		else
 		{
@@ -64,11 +64,11 @@ struct rbundle read_and_token_expression(
 		dpv(left_machine);
 		dpv(right_machine);
 		
-		struct regex* intersected = regex_intersect_dfas(left_machine, right_machine, scratchpad);
+		struct regex* intersected = regex_intersect_dfas(left_machine, right_machine, arena);
 		
-		struct regex* outgoing = regex_simplify_dfa(intersected, scratchpad);
+		struct regex* outgoing = regex_simplify_dfa(intersected, arena);
 		
-		free_regex(intersected, scratchpad);
+		free_regex(intersected);
 		
 		retval = (struct rbundle) {
 			.is_nfa = false,

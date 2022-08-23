@@ -8,9 +8,19 @@ void free_memory_arena(struct memory_arena* this)
 {
 	ENTER;
 	
-	TODO;
-	
-	free(this);
+	if (this)
+	{
+		for (unsigned i = 0, n = this->mmaps.n; i < n; i++)
+		{
+			struct mentry* mentry = &(this->mmaps.data[i]);
+			
+			(this->free)(this, mentry->start, mentry->size);
+		}
+		
+		(this->realloc)(this, this->mmaps.data, 0);
+		
+		(this->realloc)(this, this, 0);
+	}
 	
 	EXIT;
 }
@@ -33,8 +43,6 @@ void free_memory_arena(struct memory_arena* this)
 	ENTER;
 	
 	#if 0
-	TODO;
-	
 	if (this)
 	{
 		for (i = 0, n = this->mmaps.n; i < n; i++)

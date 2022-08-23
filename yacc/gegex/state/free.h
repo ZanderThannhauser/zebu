@@ -1,2 +1,2 @@
 
-void free_gegex(struct gegex* this, struct memory_arena* scratchpad);
+void free_gegex(struct gegex* this);

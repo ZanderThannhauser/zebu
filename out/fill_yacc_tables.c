@@ -77,6 +77,8 @@ void fill_yacc_tables(
 		{
 			struct gytransition* const ele = ystate->grammar_transitions.data[i];
 			
+			dpvs(ele->grammar);
+			
 			unsigned gid = grammar_to_id(shared->ttoi, ele->grammar);
 			
 			unsigned syid = ystate_to_id(shared->ytoi, ele->to);

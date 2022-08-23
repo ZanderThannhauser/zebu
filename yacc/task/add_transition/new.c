@@ -8,12 +8,14 @@
 #include "new.h"
 
 struct add_transition_task* new_add_transition_task(
+	struct memory_arena* arena,
 	struct yacc_state** write_to_me,
 	struct yacc_stateinfo* stateinfo)
 {
 	ENTER;
 	
 	struct add_transition_task* this = (void*) new_task(
+		arena,
 		tk_add_transition,
 		&add_transition_task_inheritance,
 		sizeof(*this));

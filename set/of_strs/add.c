@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/realloc.h>
+
 #include "struct.h"
 #include "add.h"
 
@@ -10,14 +12,13 @@ void strset_add(struct strset* this, const char* str)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (this->n + 1 > this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
+		
 		dpv(this->cap);
 		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	unsigned i, n;
@@ -41,7 +42,6 @@ void strset_add(struct strset* this, const char* str)
 		}
 		else
 		{
-			dputs("element already in set");
 			EXIT;
 			return;
 		}
@@ -52,6 +52,5 @@ void strset_add(struct strset* this, const char* str)
 	this->data[this->n++] = str;
 	
 	EXIT;
-	#endif
 }
 

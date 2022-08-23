@@ -26,10 +26,11 @@
 #include <misc/phase_counters.h>
 
 #ifdef DEBUGGING
+
 #include <misc/escape.h>
 #include <misc/frame_counter.h>
 #include <set/of_tokens/to_string.h>
-#endif
+
 
 struct dist_node
 {
@@ -148,7 +149,6 @@ static struct lex_state* get_prev(
 	}
 }
 
-#ifdef DEBUGGING
 static void helper(FILE* out, struct lex_state* state,
 	struct avl_tree_t* dist,
 	unsigned max_dist)

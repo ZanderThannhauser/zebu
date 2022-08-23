@@ -40,8 +40,6 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 	struct expand_tree_task* const this = (void*) super;
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(this->state);
 	
 	if (yacc_stateinfo_contains(this->stateinfo, this->state))
@@ -54,6 +52,8 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 	}
 	else
 	{
+		struct memory_arena* const arena = shared->arena;
+		
 		// add new entry to tree
 		yacc_stateinfo_add(this->stateinfo, this->state, this->reduce_as, this->lookaheads);
 		
@@ -71,7 +71,7 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 			
 			struct gegex* substate = ng->grammar;
 			
-			struct tokenset* lookaheads = new_tokenset();
+			struct tokenset* lookaheads = new_tokenset(arena);
 			
 			struct gegex* to = t->to;
 			
@@ -97,12 +97,11 @@ void expand_tree_task_process(struct task* super, struct yacc_shared* shared)
 			}
 			
 			// submit this new task
-			heap_push(shared->todo, new_expand_tree_task(this->stateinfo, this->ldeps, substate, t->grammar, lookaheads));
+			heap_push(shared->todo, new_expand_tree_task(arena, this->stateinfo, this->ldeps, substate, t->grammar, lookaheads));
 		}
 		
-		heap_push(shared->todo, new_percolate_lookaheads_task(this->stateinfo, this->state, this->ldeps));
+		heap_push(shared->todo, new_percolate_lookaheads_task(arena, this->stateinfo, this->state, this->ldeps));
 	}
-	#endif
 	
 	EXIT;
 }

@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <debug.h>
@@ -9,15 +10,13 @@
 char* tokenset_to_string(
 	const struct tokenset* this)
 {
-	TODO;
-	#if 0
-	char* buffer = smalloc(this->n * 30 + 1);
+	char* buffer = malloc(this->n * 30 + 1);
 	
 	char* moving = buffer;
 	
 	for (unsigned i = 0, n = this->n; i < n; i++)
 	{
-		moving += sprintf(moving, "%i", this->data[i]);
+		moving += sprintf(moving, "%u", this->data[i]);
 		
 		if (i + 1 < n)
 		{
@@ -29,6 +28,5 @@ char* tokenset_to_string(
 	*moving = '\0';
 	
 	return buffer;
-	#endif
 }
 

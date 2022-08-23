@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-/*#include <memory/arena/malloc.h>*/
-/*#include <memory/arena/realloc.h>*/
+#include <arena/malloc.h>
+#include <arena/realloc.h>
 
 #include <set/of_tokens/compare.h>
 
@@ -11,13 +11,14 @@
 
 void yacc_state_add_reduce_transition(
 	struct yacc_state* from,
-	struct memory_arena* arena,
 	const struct tokenset* value,
 	const char* reduce_as,
 	unsigned popcount)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
+	struct memory_arena* const arena = from->arena;
+	
 	struct rytransition* transition = arena_malloc(arena, sizeof(*transition));
 	
 	transition->value = value;
@@ -45,7 +46,8 @@ void yacc_state_add_reduce_transition(
 	}
 	
 	data[i + 1] = transition;
-	#endif
+	
+	EXIT;
 }
 
 

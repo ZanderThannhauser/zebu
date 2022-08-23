@@ -3,23 +3,24 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
 
-struct pair* new_pair(struct regex* a, struct regex* b)
+struct pair* new_pair(
+	struct memory_arena* arena,
+	struct regex* a, struct regex* b)
 {
-	TODO;
-	#if 0
-	struct pair* this = smalloc(sizeof(*this));
+	struct pair* this = arena_malloc(arena, sizeof(*this));
 	
 	assert(a < b);
 	
 	this->a = a;
 	this->b = b;
 	
+	this->arena = arena;
+	
 	return this;
-	#endif
 }
 

@@ -27,7 +27,7 @@ struct regex* regex_from_literal(
 	{
 		struct regex* temp = new_regex(arena);
 		
-		regex_add_transition(accept, arena, (unsigned) *string++, temp);
+		regex_add_transition(accept, (unsigned) *string++, temp);
 		
 		accept = temp;
 	}

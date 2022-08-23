@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include <tree/of_regexes/free.h>
 
 #include "struct.h"
@@ -10,12 +12,12 @@
 
 void free_same_as_node(void* ptr)
 {
-	struct same_as_node* node = ptr;
+	struct same_as_node* this = ptr;
 	ENTER;
 	
-	free_regextree(node->set);
+	free_regextree(this->set);
 	
-	free(node);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

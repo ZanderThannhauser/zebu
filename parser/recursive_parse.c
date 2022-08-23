@@ -23,10 +23,14 @@
 #include "read_charset.h"
 #include "read_fragment.h"
 #include "read_grammar.h"
+#include "read_inline_grammar.h"
 
 #include "recursive_parse.h"
 
 void recursive_parse(
+	struct memory_arena* parser_arena,
+	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct options* options,
 	struct scope* scope,
 	struct pragma_once* pragma_once,
@@ -56,6 +60,9 @@ void recursive_parse(
 				case t_directive:
 				{
 					read_directive(
+						/* parser_arena:   */ parser_arena,
+						/* grammar_arena:  */ grammar_arena,
+						/* token_arena:    */ token_arena,
 						/* tokenizer:      */ tokenizer,
 						/* options:        */ options,
 						/* scope:          */ scope,
@@ -68,12 +75,9 @@ void recursive_parse(
 				
 				case t_bracketed_identifier:
 				{
-					TODO;
-					#if 0
 					read_charset(
 						/* tokenizer: */ tokenizer,
 						/* scope      */ scope);
-					#endif
 					break;
 				}
 				
@@ -88,7 +92,12 @@ void recursive_parse(
 				
 				case t_parenthesised_identifier:
 				{
-					TODO;
+					read_inline_grammar(
+						/* token_arena: */ token_arena,
+						/* tokenizer: */ tokenizer,
+						/* options: */ options,
+						/* scope: */ scope,
+						/* lex: */ lex);
 					break;
 				}
 				

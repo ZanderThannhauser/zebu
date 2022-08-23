@@ -1,9 +1,11 @@
 
 struct gegex;
-struct gegexset;
+struct gegextree;
 
 struct gegex_mapping
 {
-	struct gegexset* original_states; // must be the first
+	struct gegextree* original_states; // must be the first
 	struct gegex* combined_state;
+	
+	struct memory_arena* arena;
 };

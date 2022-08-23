@@ -5,7 +5,11 @@ struct yacc_shared
 	
 	struct lex* lex;
 	
-	struct memory_arena* scratchpad;
+	struct memory_arena* arena;
+	
+	struct memory_arena* tokenizer_arena;
+	
+	struct memory_arena* parser_arena;
 	
 	struct avl_tree_t* grammar; // named_gegex
 	

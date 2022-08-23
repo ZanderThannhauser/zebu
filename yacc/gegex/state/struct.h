@@ -37,6 +37,8 @@ struct gegex
 		size_t n, cap;
 	} lambda_transitions;
 	
+	struct memory_arena* arena;
+	
 	bool is_freeing;
 	
 	bool is_reduction_point;

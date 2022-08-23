@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
 #include "../struct.h"
 
 #include "malloc.h"
@@ -15,7 +17,7 @@ struct memory_arena* new_child_arena(
 {
 	ENTER;
 	
-	struct memory_arena* this = malloc(sizeof(*this));
+	struct memory_arena* this = arena_malloc(parent, sizeof(*this));
 	
 	this->free_list.head = NULL;
 	this->free_list.tail = NULL;

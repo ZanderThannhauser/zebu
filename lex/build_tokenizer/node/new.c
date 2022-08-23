@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
 
 #include <set/of_tokens/clone.h>
 
@@ -9,17 +9,16 @@
 #include "new.h"
 
 struct build_tokenizer_node* new_build_tokenizer_node(
+	struct memory_arena* arena,
 	struct tokenset* token_ids,  // needs to be cloned
 	struct tokensetset* matches,
 	struct lex_state* start)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct build_tokenizer_node* this = smalloc(sizeof(*this));
+	struct build_tokenizer_node* this = arena_malloc(arena, sizeof(*this));
 	
-	this->given = tokenset_clone(token_ids);
+	this->given = tokenset_clone(token_ids, arena);
 	
 	this->matches = matches;
 	
@@ -27,6 +26,5 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 	
 	EXIT;
 	return this;
-	#endif
 }
 

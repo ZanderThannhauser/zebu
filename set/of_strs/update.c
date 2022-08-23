@@ -1,6 +1,6 @@
 
 #include <assert.h>
-
+#include <stdbool.h>
 #include <string.h>
 
 #include <debug.h>
@@ -10,11 +10,11 @@
 
 bool strset_update(struct strset* this, struct strset* them)
 {
+	TODO;
+	#if 0
 	bool changed = false;
 	ENTER;
 	
-	TODO;
-	#if 0
 	unsigned i = 0, n = this->n;
 	unsigned j = 0, m = them->n;
 	

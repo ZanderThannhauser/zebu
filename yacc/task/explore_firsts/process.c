@@ -40,8 +40,8 @@ void explore_firsts_task_process(struct task* super, struct yacc_shared* shared)
 		
 		dpvs(g->grammar);
 		
-		add_firsts_dep(shared->firsts.dependant_on, this->name, g->grammar);
-		add_firsts_dep(shared->firsts.dependant_of, g->grammar, this->name);
+		add_firsts_dep(shared, shared->firsts.dependant_on, this->name, g->grammar);
+		add_firsts_dep(shared, shared->firsts.dependant_of, g->grammar, this->name);
 	}
 	
 	EXIT;

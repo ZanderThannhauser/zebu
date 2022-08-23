@@ -5,9 +5,9 @@
 
 #include <debug.h>
 
-/*#include <enums/error.h>*/
+#include <enums/error.h>
 
-/*#include <memory/sstrdup.h>*/
+#include <arena/memdup.h>
 
 /*#include <yacc/gegex/state/struct.h>*/
 /*#include <yacc/gegex/state/new.h>*/
@@ -25,22 +25,24 @@
 #include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/production/root.h"
 
+#include "scope/get_arena.h"
+
 #include "read_inline_grammar.h"
 
 void read_inline_grammar(
+	struct memory_arena* token_arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	assert(tokenizer->token == t_parenthesised_identifier);
 	
-	char* name = sstrdup(tokenizer->tokenchars.chars);
+	struct memory_arena* const arena = scope_get_arena(scope);
+	
+	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	
@@ -52,8 +54,9 @@ void read_inline_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
+		/* grammar_arena: */ arena,
+		/* token_arena: */ token_arena,
 		/* tokenizer:  */ tokenizer,
-		/* scratchpad: */ scratchpad,
 		/* options:    */ options,
 		/* scope:      */ scope,
 		/* lex:        */ lex);
@@ -67,7 +70,6 @@ void read_inline_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
-	#endif
 	
 	EXIT;
 }

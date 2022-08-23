@@ -36,14 +36,14 @@ void refcount_task_process(struct task* super, struct yacc_shared* shared)
 			{
 				struct gegex* to = this->node->transitions.data[i]->to;
 				
-				heap_push(shared->todo, new_refcount_task(this->start, to));
+				heap_push(shared->todo, new_refcount_task(shared->arena, this->start, to));
 			}
 			
 			for (unsigned i = 0, n = this->node->grammar_transitions.n; i < n; i++)
 			{
 				struct gegex* to = this->node->grammar_transitions.data[i]->to;
 				
-				heap_push(shared->todo, new_refcount_task(this->start, to));
+				heap_push(shared->todo, new_refcount_task(shared->arena, this->start, to));
 			}
 			
 			break;
@@ -51,7 +51,7 @@ void refcount_task_process(struct task* super, struct yacc_shared* shared)
 		
 		case 1: if (this->start != this->node)
 		{
-			heap_push(shared->todo, new_setup_trie_task(this->node, false));
+			heap_push(shared->todo, new_setup_trie_task(shared->arena, this->node, false));
 			break;
 		}
 		

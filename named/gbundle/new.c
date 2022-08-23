@@ -1,21 +1,20 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
 
 struct named_gbundle* new_named_gbundle(
+	struct memory_arena* arena,
 	char* name,
 	struct gegex* start,
 	struct gegex* end)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct named_gbundle* this = smalloc(sizeof(*this));
+	struct named_gbundle* this = arena_malloc(arena, sizeof(*this));
 	
 	this->name = name;
 	this->start = start;
@@ -25,6 +24,5 @@ struct named_gbundle* new_named_gbundle(
 	
 	EXIT;
 	return this;
-	#endif
 }
 

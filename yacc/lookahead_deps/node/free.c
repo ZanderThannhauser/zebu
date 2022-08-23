@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include <set/of_gegexes/free.h>
 
 #include "struct.h"
@@ -10,10 +12,13 @@
 
 void free_lookahead_deps_node(void* ptr)
 {
-	struct lookahead_deps_node* node = ptr;
+	struct lookahead_deps_node* const node = ptr;
+	ENTER;
 	
 	free_gegexset(node->b);
 	
-	free(node);
+	arena_dealloc(node->arena, node);
+	
+	EXIT;
 }
 

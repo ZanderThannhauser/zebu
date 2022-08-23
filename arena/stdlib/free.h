@@ -1,2 +1,6 @@
 
-void stdlib_free(struct memory_arena* this, void* ptr);
+#include <stdlib.h>
+
+struct memory_arena;
+
+void stdlib_free(struct memory_arena* this, void* ptr, size_t oldsize);

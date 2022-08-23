@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <valgrind/memcheck.h>
 
 #include <debug.h>
@@ -74,6 +76,8 @@ static void* private_arena_find_block(
 void* arena_malloc(struct memory_arena* this, size_t user_size)
 {
 	ENTER;
+	
+	assert(this);
 	
 	dpv(user_size);
 	

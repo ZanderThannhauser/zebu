@@ -3,22 +3,22 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
 #include "struct.h"
-#include "new.h"
 #include "union.h"
 
 struct charset* charset_union(
+	struct memory_arena* arena,
 	const struct charset* a,
 	const struct charset* b,
 	bool is_complement)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	size_t n = 0;
 	
-	char* chars = smalloc(sizeof(*chars) * (a->len + b->len));
+	unsigned char* chars = arena_malloc(arena, sizeof(*chars) * (a->len + b->len));
 	
 	size_t a_i = 0, a_n = a->len;
 	size_t b_i = 0, b_n = b->len;
@@ -41,13 +41,17 @@ struct charset* charset_union(
 	while (b_i < b_n)
 		chars[n++] = b->chars[b_i++];
 	
-	struct charset* new = new_charset(chars, n, is_complement);
+	struct charset* this = arena_malloc(arena, sizeof(*this));
 	
-	free(chars);
+	this->chars = chars;
+	this->len = n;
+	
+	this->is_complement = is_complement;
+	
+	this->arena = arena;
 	
 	EXIT;
-	return new;
-	#endif
+	return this;
 }
 
 

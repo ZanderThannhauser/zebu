@@ -3,6 +3,7 @@
 
 #include <debug.h>
 
+#include <avl/alloc_tree.h>
 #include <avl/free_tree.h>
 /*#include <avl/insert.h>*/
 
@@ -41,10 +42,6 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* mappings = new_avl_tree(compare_regex_mappings, free_regex_mapping);
-	
 	#ifdef RELEASE
 	unsigned count = 0;
 	
@@ -68,7 +65,9 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	}
 	#endif
 	
-	struct regexset* start_set = new_regexset();
+	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_regex_mappings, free_regex_mapping);
+	
+	struct regexset* start_set = new_regexset(arena);
 	
 	regex_add_lamda_states(start_set, in);
 	
@@ -91,7 +90,6 @@ struct regex* regex_nfa_to_dfa(struct regex* in, struct memory_arena* arena)
 	
 	EXIT;
 	return new_start;
-	#endif
 }
 
 

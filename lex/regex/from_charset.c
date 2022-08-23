@@ -27,7 +27,7 @@ struct regex* regex_from_charset(
 		outside = new_regex(arena);
 	
 	for (size_t i = 0, n = charset->len; i < n; i++)
-		regex_add_transition(start, arena, charset->chars[i], inside);
+		regex_add_transition(start, charset->chars[i], inside);
 	
 	if (charset->is_complement)
 		regex_set_default_transition(start, outside);

@@ -4,10 +4,13 @@
 #include <assert.h>
 #include <stdlib.h>
 
-/*#include <memory/smalloc.h>*/
-/*#include <memory/scalloc.h>*/
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
+#include <arena/calloc.h>
 
+#include <avl/alloc_tree.h>
 #include <avl/search.h>
+#include <avl/insert.h>
 #include <avl/free_tree.h>
 
 #include <lex/regex/state/struct.h>
@@ -43,22 +46,28 @@
 struct dfas_to_dfa_node
 {
 	struct regexset* states; // must be first
+	
 	struct lex_state* result;
+	
+	struct memory_arena* arena;
 };
 
 static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
+	struct memory_arena* arena,
 	const struct regexset* const original_states,
 	struct lex_state* result)
 {
-	TODO;
-	#if 0
-	struct dfas_to_dfa_node* node = smalloc(sizeof(*node));
+	ENTER;
 	
-	node->states = regexset_clone(original_states);
+	struct dfas_to_dfa_node* node = arena_malloc(arena, sizeof(*node));
+	
+	node->states = regexset_clone(original_states, arena);
 	node->result = result;
 	
+	node->arena = arena;
+	
+	EXIT;
 	return node;
-	#endif
 }
 
 static int compare_dfas_to_dfa_nodes(
@@ -74,26 +83,25 @@ static int compare_dfas_to_dfa_nodes(
 
 static void free_dfas_to_dfa_node(void* ptr)
 {
-	struct dfas_to_dfa_node* this = ptr;
+	struct dfas_to_dfa_node* const this = ptr;
+	ENTER;
 	
-	TODO;
-	#if 0
 	free_regexset(this->states);
-	free(this);
-	#endif
+	
+	arena_dealloc(this->arena, this);
+	
+	EXIT;
 }
 
 static struct lex_state* helper(
+	struct memory_arena* arena,
 	struct tokensetset* accepting,
-	struct memory_arena* scratchpad,
 	struct avl_tree_t* cache,
 	struct regexset* states)
 {
 	struct lex_state* state;
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(cache, &states);
 	
 	if (node)
@@ -104,13 +112,13 @@ static struct lex_state* helper(
 	}
 	else
 	{
-		state = new_lex_state(scratchpad);
+		state = new_lex_state(arena);
 		
-		safe_avl_insert(cache, new_dfas_to_dfa_node(states, state));
+		avl_insert(cache, new_dfas_to_dfa_node(arena, states, state));
 		
 		// accepting?
 		{
-			struct tokenset* ts = new_tokenset();
+			struct tokenset* ts = new_tokenset(arena);
 			unsigned prority;
 			
 			regexset_foreach(states, ({
@@ -148,10 +156,10 @@ static struct lex_state* helper(
 		
 		// merge transitions and sub-states:
 		{
-			unsigned *positions = scalloc(states->n, sizeof(unsigned));
+			unsigned *positions = arena_calloc(arena, states->n, sizeof(unsigned));
 			
 			unsigned value;
-			struct regexset* subset = new_regexset();
+			struct regexset* subset = new_regexset(arena);
 			
 			while (({
 				value = -1, regexset_clear(subset);
@@ -199,10 +207,10 @@ static struct lex_state* helper(
 				dpv(value);
 				
 				// call myself:
-				struct lex_state* substate = helper(accepting, scratchpad, cache, subset);
+				struct lex_state* substate = helper(arena, accepting, cache, subset);
 				
 				// create new transition:
-				lex_state_add_transition(state, scratchpad, value, substate);
+				lex_state_add_transition(state, value, substate);
 				
 				// move positions:
 				for (unsigned i = 0, n = states->n; i < n; i++)
@@ -217,17 +225,18 @@ static struct lex_state* helper(
 			}
 			
 			free_regexset(subset);
-			free(positions);
+			arena_dealloc(arena, positions);
 		}
 		
 		// handle default_transition_to:
 		{
-			struct regexset* rs = new_regexset();
+			struct regexset* rs = new_regexset(arena);
 			
 			regexset_foreach(states, ({
 				void runme(struct regex* ele) {
-					if (ele->default_transition_to)
+					if (ele->default_transition_to) {
 						regexset_add(rs, ele->default_transition_to);
+					}
 				}
 				runme;
 			}));
@@ -235,7 +244,7 @@ static struct lex_state* helper(
 			if (rs->n)
 			{
 				// call myself:
-				struct lex_state* substate = helper(accepting, scratchpad, cache, rs);
+				struct lex_state* substate = helper(arena, accepting, cache, rs);
 				
 				// create new transition:
 				lex_state_set_default_transition(state, substate);
@@ -246,12 +255,13 @@ static struct lex_state* helper(
 		
 		// handle EOF transitions:
 		{
-			struct regexset* rs = new_regexset();
+			struct regexset* rs = new_regexset(arena);
 			
 			regexset_foreach(states, ({
 				void runme(struct regex* ele) {
-					if (ele->EOF_transition_to)
+					if (ele->EOF_transition_to) {
 						regexset_add(rs, ele->EOF_transition_to);
+					}
 				}
 				runme;
 			}));
@@ -259,7 +269,7 @@ static struct lex_state* helper(
 			if (rs->n)
 			{
 				// call myself:
-				struct lex_state* substate = helper(accepting, scratchpad, cache, rs);
+				struct lex_state* substate = helper(arena, accepting, cache, rs);
 				
 				// create new transition:
 				lex_state_set_EOF_transition(state, substate);
@@ -271,12 +281,11 @@ static struct lex_state* helper(
 	
 	EXIT;
 	return state;
-	#endif
 }
 
 struct lex_state* dfas_to_dfa(
+	struct memory_arena* arena,
 	struct tokensetset* accepting,
-	struct memory_arena* scratchpad,
 	struct regexset* starts)
 {
 	ENTER;
@@ -285,11 +294,9 @@ struct lex_state* dfas_to_dfa(
 	regex_dotout_set(starts);
 	#endif
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* cache = new_avl_tree(compare_dfas_to_dfa_nodes, free_dfas_to_dfa_node);
+	struct avl_tree_t* cache = avl_alloc_tree(arena, compare_dfas_to_dfa_nodes, free_dfas_to_dfa_node);
 	
-	struct lex_state* new = helper(accepting, scratchpad, cache, starts);
+	struct lex_state* new = helper(arena, accepting, cache, starts);
 	
 	#ifdef DEBUGGING
 	lex_state_dotout(new);
@@ -299,7 +306,6 @@ struct lex_state* dfas_to_dfa(
 	
 	EXIT;
 	return new;
-	#endif
 }
 
 

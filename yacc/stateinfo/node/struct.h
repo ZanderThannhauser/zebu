@@ -6,5 +6,7 @@ struct yacc_stateinfo_node
 	const char* grammar;
 	
 	struct tokenset* lookaheads; // "owns" the lookaheads
+	
+	struct memory_arena* arena;
 };
 

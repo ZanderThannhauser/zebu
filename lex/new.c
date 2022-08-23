@@ -24,14 +24,11 @@ struct lex* new_lex(struct memory_arena* arena)
 	
 	struct lex* this = arena_malloc(arena, sizeof(*this));
 	
-	this->dfa_to_id =
-		avl_alloc_tree(arena, compare_dfa_to_id_nodes, free_dfa_to_id_node);
+	this->dfa_to_id = avl_alloc_tree(arena, compare_dfa_to_id_nodes, NULL);
 		
-	this->dfa_from_id =
-		avl_alloc_tree(arena, compare_dfa_from_id_nodes, free_dfa_from_id_node);
+	this->dfa_from_id = avl_alloc_tree(arena, compare_dfa_from_id_nodes, NULL);
 	
-	this->tokenizer.cache =
-		avl_alloc_tree(arena, compare_build_tokenizer_nodes, free_build_tokenizer_node);
+	this->tokenizer.cache = avl_alloc_tree(arena, compare_build_tokenizer_nodes, NULL);
 	
 	this->disambiguations.literal_ids = new_tokenset(arena);
 	

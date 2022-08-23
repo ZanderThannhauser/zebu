@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <stdlib.h>
 
 struct memory_arena
@@ -22,7 +23,7 @@ struct memory_arena
 	
 	bool (*resize)(struct memory_arena* arena, void* ptr, size_t oldsize, size_t newsize);
 	
-	void (*free)(struct memory_arena* arena, void* ptr);
+	void (*free)(struct memory_arena* arena, void* ptr, size_t oldsize);
 	
 	union
 	{

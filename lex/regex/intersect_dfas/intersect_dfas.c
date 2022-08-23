@@ -6,8 +6,11 @@
 
 #include <avl/search.h>
 #include <avl/free_tree.h>
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
 
 #include "../state/struct.h"
 #include "../state/new.h"
@@ -21,26 +24,28 @@ struct mapping
 {
 	struct regex* a, *b;
 	struct regex* new;
+	
+	struct memory_arena* arena;
 };
 
 static struct mapping* new_mapping(
+	struct memory_arena* arena,
 	struct regex* a,
 	struct regex* b,
 	struct regex* new)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct mapping* this = smalloc(sizeof(*this));
+	struct mapping* this = arena_malloc(arena, sizeof(*this));
 	
 	this->a = a;
 	this->b = b;
 	this->new = new;
 	
+	this->arena = arena;
+	
 	EXIT;
 	return this;
-	#endif
 }
 
 static int compare_mappings(
@@ -61,11 +66,10 @@ static int compare_mappings(
 	return 0;
 }
 
-static void free_mapping(
-	void* a)
+static void free_mapping(void* a)
 {
 	struct mapping* A = a;
-	free(A);
+	arena_dealloc(A->arena, A);
 }
 
 static struct regex* helper(
@@ -77,8 +81,6 @@ static struct regex* helper(
 	struct regex* retval;
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A, B});
 	
 	if (node)
@@ -91,7 +93,7 @@ static struct regex* helper(
 	{
 		struct regex* state = new_regex(arena);
 		
-		safe_avl_insert(mappings, new_mapping(A, B, state));
+		avl_insert(mappings, new_mapping(arena, A, B, state));
 		
 		state->is_accepting = A->is_accepting && B->is_accepting;
 		
@@ -112,6 +114,8 @@ static struct regex* helper(
 			
 			if (A_trans->value < B_trans->value)
 			{
+				TODO;
+				#if 0
 				dpv(A_trans->value);
 				
 				if (B->default_transition_to)
@@ -119,6 +123,7 @@ static struct regex* helper(
 					struct regex* substate = helper(A_trans->to, B->default_transition_to, mappings, arena);
 					regex_add_transition(state, arena, A_trans->value, substate);
 				}
+				#endif
 				
 				a.i++;
 			}
@@ -135,6 +140,8 @@ static struct regex* helper(
 			}
 			else
 			{
+				TODO;
+				#if 0
 				dpv(A_trans->value);
 				
 				struct regex* substate = helper(A_trans->to, B_trans->to, mappings, arena);
@@ -142,6 +149,7 @@ static struct regex* helper(
 				regex_add_transition(state, arena, A_trans->value, substate);
 				
 				a.i++, b.i++;
+				#endif
 			}
 		}
 		
@@ -155,7 +163,7 @@ static struct regex* helper(
 				/* mappings: */ mappings,
 				/* arena: */ arena);
 			
-			regex_add_transition(state, arena, A_trans->value, substate);
+			regex_add_transition(state, A_trans->value, substate);
 		}
 		
 		while (A->default_transition_to && b.i < b.n)
@@ -174,7 +182,6 @@ static struct regex* helper(
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 struct regex* regex_intersect_dfas(
@@ -184,9 +191,7 @@ struct regex* regex_intersect_dfas(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* mappings = new_avl_tree(compare_mappings, free_mapping);
+	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	
 	struct regex* start = helper(A, B, mappings, arena);
 	
@@ -198,7 +203,6 @@ struct regex* regex_intersect_dfas(
 	
 	EXIT;
 	return start;
-	#endif
 }
 
 

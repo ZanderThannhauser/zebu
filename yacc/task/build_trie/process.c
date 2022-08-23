@@ -3,7 +3,7 @@
 
 #include <debug.h>
 
-/*#include <memory/arena/strdup.h>*/
+#include <arena/strdup.h>
 
 #include <avl/search.h>
 /*#include <avl/safe_insert.h>*/
@@ -33,14 +33,13 @@
 static struct gegex* process_to(
 	struct build_trie_task* this,
 	struct yacc_shared* shared,
-	struct memory_arena* scratchpad,
 	struct gegex* mirrorme_to)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct gegex* building_to = new_gegex(scratchpad);
+	struct memory_arena* const arena = shared->arena;
+	
+	struct gegex* building_to = new_gegex(arena);
 		
 	assert(mirrorme_to->refcount);
 	
@@ -53,6 +52,7 @@ static struct gegex* process_to(
 	if (mirrorme_to->refcount == 1)
 	{
 		heap_push(shared->todo, new_build_trie_task(
+			arena,
 			this->name,
 			this->start,
 			mirrorme_to,
@@ -62,25 +62,25 @@ static struct gegex* process_to(
 	else if (mirrorme_to->transitions.n || mirrorme_to->grammar_transitions.n)
 	{
 		struct avl_node_t* node = avl_search(shared->gegex_to_trie, &mirrorme_to);
+		
 		assert(node);
 		
 		const struct gegex_to_trie* gtot = node->item;
 		
 		dpvs(gtot->trie);
 		
-		struct gegex* reduction = new_gegex(scratchpad);
+		struct gegex* reduction = new_gegex(arena);
 		
 		reduction->is_reduction_point = true;
 		reduction->popcount = this->popcount + 2;
 		
-		char* dup = arena_strdup(scratchpad, gtot->trie);
+		char* dup = arena_strdup(arena, gtot->trie);
 		
-		gegex_add_grammar_transition(building_to, scratchpad, dup, reduction);
+		gegex_add_grammar_transition(building_to, dup, reduction);
 	}
 	
 	EXIT;
 	return building_to;
-	#endif
 }
 
 void build_trie_task_process(struct task* super, struct yacc_shared* shared)
@@ -90,7 +90,6 @@ void build_trie_task_process(struct task* super, struct yacc_shared* shared)
 	
 	dpvs(this->name);
 	
-	struct memory_arena* const scratchpad = shared->scratchpad;
 	struct gegex* const mirrorme = this->mirrorme;
 	struct gegex* const building = this->building;
 	
@@ -99,9 +98,9 @@ void build_trie_task_process(struct task* super, struct yacc_shared* shared)
 		unsigned token = mirrorme->transitions.data[i]->token;
 		
 		struct gegex* mirrorme_to = mirrorme->transitions.data[i]->to;
-		struct gegex* building_to = process_to(this, shared, scratchpad, mirrorme_to);
+		struct gegex* building_to = process_to(this, shared, mirrorme_to);
 		
-		gegex_add_transition(building, scratchpad, token, building_to);
+		gegex_add_transition(building, token, building_to);
 	}
 	
 	for (unsigned i = 0, n = mirrorme->grammar_transitions.n; i < n; i++)
@@ -109,9 +108,9 @@ void build_trie_task_process(struct task* super, struct yacc_shared* shared)
 		char* grammar = mirrorme->grammar_transitions.data[i]->grammar;
 		
 		struct gegex* mirrorme_to = mirrorme->grammar_transitions.data[i]->to;
-		struct gegex* building_to = process_to(this, shared, scratchpad, mirrorme_to);
+		struct gegex* building_to = process_to(this, shared, mirrorme_to);
 		
-		gegex_add_grammar_transition(building, scratchpad, grammar, building_to);
+		gegex_add_grammar_transition(building, grammar, building_to);
 	}
 	
 	EXIT;

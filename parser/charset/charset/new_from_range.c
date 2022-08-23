@@ -3,38 +3,40 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
 #include "struct.h"
 #include "new.h"
 
 struct charset* new_charset_from_range(
-	char low, char high)
+	struct memory_arena* arena,
+	unsigned char low, unsigned char high)
 {
 	ENTER;
 	
 	dpvc(low);
 	dpvc(high);
 	
-	TODO;
-	#if 0
-	struct charset* this = smalloc(sizeof(*this));
+	struct charset* this = arena_malloc(arena, sizeof(*this));
 	
-	assert(high >= low);
+	assert(high > low);
 	
 	this->len = (high - low) + 1;
 	
 	dpv(this->len);
 	
-	char* chars = this->chars = smalloc(this->len);
+	unsigned char* chars = this->chars = arena_malloc(arena, this->len);
 	
-	while (low <= high) *chars++ = low++;
+	for (unsigned char moving = low; moving <= high; ) *chars++ = moving++;
+	
+	dpvsn(this->chars, this->len);
 	
 	this->is_complement = false;
 	
-	this->refcount = 1;
+	this->arena = arena;
 	
 	EXIT;
 	return this;
-	#endif
 }
 
 

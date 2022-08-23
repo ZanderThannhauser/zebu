@@ -3,15 +3,21 @@
 
 #include <debug.h>
 
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "free.h"
 
 void free_charset(struct charset* this)
 {
-	if (this && !--this->refcount)
+	ENTER;
+	
+	if (this)
 	{
-		free(this->chars);
-		free(this);
+		arena_dealloc(this->arena, this->chars);
+		arena_dealloc(this->arena, this);
 	}
+	
+	EXIT;
 }
 

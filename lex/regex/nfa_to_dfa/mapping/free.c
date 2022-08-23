@@ -5,6 +5,8 @@
 
 #include <set/of_regexes/free.h>
 
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -15,7 +17,7 @@ void free_regex_mapping(void* a)
 	
 	free_regexset(this->original_states);
 	
-	free(this);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

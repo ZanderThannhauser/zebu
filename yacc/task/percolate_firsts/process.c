@@ -31,7 +31,7 @@ void percolate_firsts_task_process(struct task* super, struct yacc_shared* share
 	
 	bool changed = false;
 	
-	struct strset* deps = get_firsts_deps(shared->firsts.dependant_on, this->name);
+	struct strset* deps = get_firsts_deps(shared, shared->firsts.dependant_on, this->name);
 	
 	strset_foreach(deps, ({
 		void runme(const char* dep) {
@@ -47,11 +47,11 @@ void percolate_firsts_task_process(struct task* super, struct yacc_shared* share
 	
 	if (changed)
 	{
-		struct strset* of = get_firsts_deps(shared->firsts.dependant_of, this->name);
+		struct strset* of = get_firsts_deps(shared, shared->firsts.dependant_of, this->name);
 		
 		strset_foreach(of, ({
 			void runme(const char* dep) {
-				heap_push(shared->todo, new_percolate_firsts_task(dep));
+				heap_push(shared->todo, new_percolate_firsts_task(shared->arena, dep));
 			}
 			runme;
 		}));

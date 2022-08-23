@@ -12,25 +12,27 @@
 #include "or.h"
 
 struct gbundle read_or_production(
+	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle retval = read_concat_production(tokenizer, scratchpad, options, scope, lex);
+	struct gbundle retval = read_concat_production(
+		grammar_arena, token_arena, tokenizer, options, scope, lex);
 	
 	while (tokenizer->token == t_vertical_bar)
 	{
 		read_token(tokenizer, production_inside_or_machine);
 		
-		struct gbundle sub = read_concat_production(tokenizer, scratchpad, options, scope, lex);
+		struct gbundle sub = read_concat_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
 		
-		gegex_add_lambda_transition(retval.start, scratchpad, sub.start);
+		gegex_add_lambda_transition(retval.start, sub.start);
 		
-		gegex_add_lambda_transition(sub.end, scratchpad, retval.end);
+		gegex_add_lambda_transition(sub.end, retval.end);
 		
 		#ifdef DEBUGGING
 		gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);

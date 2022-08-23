@@ -5,6 +5,8 @@
 struct pair
 {
 	struct regex *a, *b;
+	
+	struct memory_arena* arena;
 };
 
 #endif

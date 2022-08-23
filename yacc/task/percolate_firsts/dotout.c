@@ -65,7 +65,7 @@ void percolate_firsts_task_dotout(struct task* super, struct yacc_shared* shared
 				"];" "\n"
 			"", ng->name, ng->name, str);
 			
-			strset_foreach(get_firsts_deps(shared->firsts.dependant_on, ng->name), ({
+			strset_foreach(get_firsts_deps(shared, shared->firsts.dependant_on, ng->name), ({
 				void runme(const char* dep) {
 					fprintf(out, ""
 						"\"%s\" -> \"%s\"" "\n"

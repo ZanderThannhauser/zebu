@@ -4,6 +4,10 @@
 
 #include <avl/search.h>
 
+#include <arena/malloc.h>
+
+#include <avl/insert.h>
+
 #include "struct.h"
 #include "tokenset_to_id.h"
 
@@ -14,8 +18,8 @@ unsigned tokenset_to_id(
 	unsigned retval;
 	ENTER;
 	
-	TODO;
-	#if 0
+	dpv(this->arena);
+	
 	struct avl_node_t* node = avl_search(this->tree, &(struct tokenset_to_id_node){
 		.is_tokenset = true,
 		.tokenset = tokenset
@@ -29,19 +33,18 @@ unsigned tokenset_to_id(
 	}
 	else
 	{
-		struct tokenset_to_id_node* new = smalloc(sizeof(*new));
+		struct tokenset_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
 		
 		new->is_tokenset = true;
 		new->tokenset = tokenset;
 		new->id = retval = this->next++;
 		
-		safe_avl_insert(this->tree, new);
+		avl_insert(this->tree, new);
 	}
 	
 	dpv(retval);
 	
 	EXIT;
 	return retval;
-	#endif
 }
 

@@ -1,111 +1,117 @@
 
-(int): ['-', '+']? ['0'-'9']+;
+(digit): ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9');
 
-(float): ['0'-'9']+ '.' ['0'-'9']+;
+(int): ('-' | '+')? digit+;
 
-(string): '\"' ([~ '\\' '\"' ] | '\\' ['0' - '7']+)* '\"';
+(float): digit+ '.' digit+;
 
-(register): "%" "v" "r" ['0'-'9']+;
+(alpha): ('a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z');
 
-(label): '.' ['a'-'z', 'A'-'Z', '_']+ ['a'-'z', 'A'-'Z', '_', '0'-'9']*;
+(ALPHA): ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z');
 
-%skip: [' ', '\t', '\n'] | "#" [~'\n']* "\n";
+(string): '\"' ('%' | '.' | alpha | ALPHA | '\\' ('0' | '1' | '2' | '3' | '4' | '5' | '6' | '7')+)* '\"';
+
+(register): '%' 'v' 'r' digit+;
+
+(label): '.' (alpha | ALPHA | '_' ) (alpha | ALPHA | '_' | digit)*;
+
+(skip): (' ' | '\t' | '\n' | '#' (alpha | '=' | ':' | ' ')* '\n')*;
 
 %start:
-	"." "d" "a" "t" "a" (
-		  "." "s" "t" "r" "i" "n" "g" label "," string
-		| "." "f" "l" "o" "a" "t"     label "," float
-		| "." "g" "l" "o" "b" "a" "l" label "," int "," int
+	skip '.' 'd' 'a' 't' 'a' skip (
+		  '.' 's' 't' 'r' 'i' 'n' 'g' skip label skip ',' skip string skip
+		| '.' 'f' 'l' 'o' 'a' 't'     skip label skip ',' skip float skip
+		| '.' 'g' 'l' 'o' 'b' 'a' 'l' skip label skip ',' skip int skip ',' skip int skip
 	)*
-// 	"." "t" "e" "x" "t" (
-// 		".f" "r" "a" "m" "e" ['a' - 'z']+ "," int (
-// 			(label ":")? // optional label
-// 			(
-// 				// Integer Arithmetic Instructions:
-// 				  "i" "2" "i"                 register              "=" ">" register
-// 				| "a" "d" "d"                 register "," register "=" ">" register
-// 				| "s" "u" "b"                 register "," register "=" ">" register
-// 				| "m" "u" "l" "t"             register "," register "=" ">" register
-// 				| "l" "s" "h" "i" "f" "t"     register "," register "=" ">" register
-// 				| "r" "s" "h" "i" "f" "t"     register "," register "=" ">" register
-// 				| "m" "o" "d"                 register "," register "=" ">" register
-// 				| "a" "n" "d"                 register "," register "=" ">" register
-// 				| "o" "r"                     register "," register "=" ">" register
-// 				| "n" "o" "t"                 register              "=" ">" register
-// 				| "a" "d" "d" "I"             register "," int      "=" ">" register
-// 				| "s" "u" "b" "I"             register "," int      "=" ">" register
-// 				| "m" "u" "l" "t" "I"         register "," int      "=" ">" register
-// 				| "l" "s" "h" "i" "f" "t" "I" register "," int      "=" ">" register
-// 				| "r" "s" "h" "i" "f" "t" "I" register "," int      "=" ">" register
-// 				
-// 				// Integer Memory Operations:
-// 				| "l" "o" "a" "d" "I"         int                   "=" ">" register
-// 				| "l" "o" "a" "d"             register              "=" ">" register
-// 				| "l" "o" "a" "d" "A" "I"     register "," int      "=" ">" register
-// 				| "l" "o" "a" "d" "A" "O"     register "," register "=" ">" register
-// 				| "s" "t" "o" "r" "e"         register              "=" ">" register
-// 				| "s" "t" "o" "r" "e" "A" "I" register              "=" ">" register "," int
-// 				| "s" "t" "o" "r" "e" "A" "O" register              "=" ">" register "," register
-// 				
-// 				// Compare Instructions:
-// 				| "c" "m" "p" "_" "L" "T"     register "," register "=" ">" register
-// 				| "c" "m" "p" "_" "L" "R"     register "," register "=" ">" register
-// 				| "c" "m" "p" "_" "G" "T"     register "," register "=" ">" register
-// 				| "c" "m" "p" "_" "G" "E"     register "," register "=" ">" register
-// 				| "c" "m" "p" "_" "E" "Q"     register "," register "=" ">" register
-// 				| "c" "m" "p" "_" "N" "E"     register "," register "=" ">" register
-// 				| "c" "o" "m" "p"             register "," register "=" ">" register
-// 				| "t" "e" "s" "t" "e" "q"     register              "=" ">" register
-// 				| "t" "e" "s" "t" "n" "e"     register              "=" ">" register
-// 				| "t" "e" "s" "t" "g" "t"     register              "=" ">" register
-// 				| "t" "e" "s" "t" "g" "e"     register              "=" ">" register
-// 				| "t" "e" "s" "t" "l" "t"     register              "=" ">" register
-// 				| "t" "e" "s" "t" "l" "e"     register              "=" ">" register
-// 				
-// 				// Floating-point Operations:
-// 				| "f" "2" "i"                     register              "=" ">" register
-// 				| "i" "2" "f"                     register              "=" ">" register
-// 				| "f" "2" "f"                     register              "=" ">" register
-// 				| "f" "a" "d" "d"                 register "," register "=" ">" register
-// 				| "f" "s" "u" "b"                 register "," register "=" ">" register
-// 				| "f" "m" "u" "l" "t"             register "," register "=" ">" register
-// 				| "f" "d" "i" "v"                 register "," register "=" ">" register
-// 				| "f" "c" "o" "m" "p"             register "," register "=" ">" register
-// 				| "f" "l" "o" "a" "d"             register              "=" ">" register
-// 				| "f" "l" "o" "a" "d" "A" "I"     register "," int      "=" ">" register
-// 				| "f" "l" "o" "a" "d" "A" "O"     register "," register "=" ">" register
-// 				| "f" "s" "t" "o" "r" "e"         register              "=" ">" register
-// 				| "f" "s" "t" "o" "r" "e" "A" "I" register              "=" ">" register "," int
-// 				| "f" "s" "t" "o" "r" "e" "A" "O" register              "=" ">" register "," register
-// 				
-// 				// I/O Instructions:
-// 				| "f" "r" "e" "a" "d"     register
-// 				| "i" "r" "e" "a" "d"     register
-// 				| "f" "w" "r" "i" "t" "e" register
-// 				| "i" "w" "r" "i" "t" "e" register
-// 				| "s" "w" "r" "i" "t" "e" register
-// 				
-// 				// Branch Instructions:
-// 				| "j" "u" "m" "p" "I"                           "-" ">" label
-// 				| "j" "u" "m" "p"                               "-" ">" register
-// 				| "r" "e" "t"
-// 				| "c" "b" "r"             register              "-" ">" label
-// 				| "c" "b" "r" "n" "e"     register              "-" ">" label
-// 				| "c" "b" "r" "_" "L" "T" register "," register "-" ">" label
-// 				| "c" "b" "r" "_" "L" "E" register "," register "-" ">" label
-// 				| "c" "b" "r" "_" "G" "T" register "," register "-" ">" label
-// 				| "c" "b" "r" "_" "G" "E" register "," register "-" ">" label
-// 				| "c" "b" "r" "_" "E" "Q" register "," register "-" ">" label
-// 				| "c" "b" "r" "_" "N" "E" register "," register "-" ">" label
-// 				
-// 				// Undocumented Instructions:
-// 				| "n" "o" "p"
-// 				| "c" "a" "l" "l"     label ("," register)*
-// 				| "i" "c" "a" "l" "l" label ("," register)* "=" ">" register
-// 				| "i" "r" "e" "t"                                   register
-// 			)
-// 		)*
-// 	)*
+	skip '.' 't' 'e' 'x' 't' skip (
+		'.' 'f' 'r' 'a' 'm' 'e' skip alpha+ skip ',' skip int skip (
+			(label skip ':' skip)? // optional label
+			(
+				// Integer Arithmetic Instructions:
+				  'i' '2' 'i'                 skip register skip     skip          skip '=' '>' skip register skip
+				| 'a' 'd' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 's' 'u' 'b'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'm' 'u' 'l' 't'             skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'l' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'r' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'm' 'o' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'a' 'n' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'o' 'r'                     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'n' 'o' 't'                 skip register skip     skip          skip '=' '>' skip register skip
+				| 'a' 'd' 'd' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 's' 'u' 'b' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'm' 'u' 'l' 't' 'I'         skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'l' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'r' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
+				
+				// Integer Memory Operations:
+				| 'l' 'o' 'a' 'd' 'I'         skip int      skip     skip          skip '=' '>' skip register skip
+				| 'l' 'o' 'a' 'd'             skip register skip     skip          skip '=' '>' skip register skip
+				| 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 's' 't' 'o' 'r' 'e'         skip register skip     skip          skip '=' '>' skip register skip
+				| 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
+				| 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
+				
+				// Compare Instructions:
+				| 'c' 'm' 'p' '_' 'L' 'T' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'm' 'p' '_' 'L' 'R' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'm' 'p' '_' 'G' 'T' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'm' 'p' '_' 'G' 'E' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'm' 'p' '_' 'E' 'Q' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'm' 'p' '_' 'N' 'E' skip register skip ',' skip register skip '=' '>' register skip
+				| 'c' 'o' 'm' 'p'         skip register skip ',' skip register skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'e' 'q' skip register skip     skip          skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'n' 'e' skip register skip     skip          skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'g' 't' skip register skip     skip          skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'g' 'e' skip register skip     skip          skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'l' 't' skip register skip     skip          skip '=' '>' register skip
+				| 't' 'e' 's' 't' 'l' 'e' skip register skip     skip          skip '=' '>' register skip
+				
+				// Floating-point Operations:
+				| 'f' '2' 'i'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'i' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 'a' 'd' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 's' 'u' 'b'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'm' 'u' 'l' 't'             skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'd' 'i' 'v'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'c' 'o' 'm' 'p'             skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd'             skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 's' 't' 'o' 'r' 'e'         skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
+				| 'f' 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
+				
+				// I/O Instructions:
+				| 'f' 'r' 'e' 'a' 'd'     skip register skip
+				| 'i' 'r' 'e' 'a' 'd'     skip register skip
+				| 'f' 'w' 'r' 'i' 't' 'e' skip register skip
+				| 'i' 'w' 'r' 'i' 't' 'e' skip register skip
+				| 's' 'w' 'r' 'i' 't' 'e' skip register skip
+				
+				// Branch Instructions:
+				| 'j' 'u' 'm' 'p' 'I'     skip          skip     skip          skip '-' '>' skip label    skip
+				| 'j' 'u' 'm' 'p'         skip          skip     skip          skip '-' '>' skip register skip
+				| 'r' 'e' 't'             skip          skip     skip          skip         skip          skip
+				| 'c' 'b' 'r'             skip register skip     skip          skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' 'n' 'e'     skip register skip     skip          skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'L' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'L' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'G' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'G' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'E' 'Q' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'N' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				
+				// Undocumented Instructions:
+				| 'n' 'o' 'p'         skip
+				| 'c' 'a' 'l' 'l'     skip label skip (',' skip register)* skip
+				| 'i' 'c' 'a' 'l' 'l' skip label skip (',' skip register)* skip '=' '>' skip register skip
+				| 'i' 'r' 'e' 't'     skip                                              skip register skip
+			)
+		)*
+	)*
 ;
 
 

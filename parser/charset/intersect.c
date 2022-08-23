@@ -8,7 +8,6 @@
 #include "../tokenizer/machines/charset/inside_intersect.h"
 
 #include "charset/struct.h"
-#include "charset/inc.h"
 #include "charset/union.h"
 #include "charset/difference.h"
 #include "charset/free.h"
@@ -17,25 +16,29 @@
 #include "intersect.h"
 
 struct charset* read_intersect_charset(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
-	struct charset* retval;
 	ENTER;
 	
-	struct charset* left = read_range_charset(tokenizer, scope);
-	struct charset* right = NULL;
+	struct charset* retval;
+	struct charset* inner = read_range_charset(arena, tokenizer, scope);
 	
 	if (tokenizer->token == t_ampersand)
 	{
+		#define left (inner)
+		
 		read_token(tokenizer, charset_inside_intersect_machine);
 		
-		right = read_range_charset(tokenizer, scope);
+		struct charset* right = read_range_charset(arena, tokenizer, scope);
 		
 		if (left->is_complement)
 		{
 			if (right->is_complement)
-				retval = charset_union(left, right, true);
+			{
+				retval = charset_union(arena, left, right, true);
+			}
 			else
 			{
 				TODO;
@@ -44,31 +47,27 @@ struct charset* read_intersect_charset(
 		else
 		{
 			if (right->is_complement)
-				retval = charset_difference(left, right, false);
+			{
+				retval = charset_difference(arena, left, right, false);
+			}
 			else
 			{
 				TODO;
 			}
 		}
+		
+		free_charset(left), free_charset(right);
+		
+		#undef left
 	}
 	else
 	{
-		retval = inc_charset(left);
+		retval = inner;
 	}
-	
-	free_charset(left), free_charset(right);
 	
 	EXIT;
 	return retval;
 }
-
-
-
-
-
-
-
-
 
 
 

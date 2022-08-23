@@ -1,39 +1,56 @@
 
+#include <string.h>
+
 #include <debug.h>
 
 #include <named/grammar/new.h>
 
-/*#include <named/name/new.h>*/
+#include <avl/insert.h>
+
+#include <arena/strdup.h>
+#include <arena/malloc.h>
 
 #include "../struct.h"
-
-#include "../private/append_prefix.h"
 
 #include "grammar.h"
 
 void scope_declare_grammar(
 	struct scope* this,
-	char* name,
+	const char* name,
 	struct gegex* grammar)
 {
 	ENTER;
 	
 	dpvs(name);
 	
-	TODO;
-	#if 0
-	size_t old_len = this->prefix.n;
+	char* full;
 	
-	private_scope_append_prefix(this, name);
+	size_t len = strlen(name);
 	
-	char* full_name = sstrndup(this->prefix.chars, this->prefix.n);
+	if (this->prefix.n)
+	{
+		full = arena_malloc(
+			this->grammar_arena,
+			this->prefix.n + 1 + len + 1);
+		
+		char* moving = full;
+		
+		memcpy(moving, this->prefix.chars, this->prefix.n), moving += this->prefix.n;
+		
+		*moving++ = '.';
+		
+		memcpy(moving, name, len), moving += len;
+		
+		*moving++ = '\0';
+	}
+	else
+	{
+		full = arena_strdup(this->grammar_arena, name);
+	}
 	
-	dpvs(full_name);
+	dpvs(full);
 	
-	safe_avl_insert(this->grammar, new_named_grammar(full_name, grammar));
-	
-	this->prefix.n = old_len;
-	#endif
+	avl_insert(this->grammar, new_named_grammar(this->grammar_arena, full, grammar));
 	
 	EXIT;
 }

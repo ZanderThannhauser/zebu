@@ -20,6 +20,7 @@
 
 struct scope* new_scope(
 	struct memory_arena* arena,
+	struct memory_arena* grammar_arena,
 	struct avl_tree_t* grammar)
 {
 	ENTER;
@@ -27,6 +28,7 @@ struct scope* new_scope(
 	struct scope* this = arena_malloc(arena, sizeof(*this));
 	
 	this->grammar = grammar;
+	this->grammar_arena = grammar_arena;
 	
 	this->prefix.chars = NULL;
 	this->prefix.n = 0;

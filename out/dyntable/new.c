@@ -3,6 +3,10 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+
+#include <avl/alloc_tree.h>
+
 #include "struct.h"
 #include "new.h"
 
@@ -35,22 +39,23 @@ static void free_dyntable_node(void* ptr)
 	EXIT;
 }
 
-struct dyntable* new_dyntable(const char* name)
+struct dyntable* new_dyntable(
+	struct memory_arena* arena,
+	const char* name)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct dyntable* this = smalloc(sizeof(*this));
+	struct dyntable* this = arena_malloc(arena, sizeof(*this));
 	
-	this->tree = new_avl_tree(compare_dyntable_nodes, free_dyntable_node);
+	this->tree = avl_alloc_tree(arena, compare_dyntable_nodes, free_dyntable_node);
 	this->name = name;
 	this->width = 0;
 	this->height = 0;
 	
+	this->arena = arena;
+	
 	EXIT;
 	return this;
-	#endif
 }
 
 

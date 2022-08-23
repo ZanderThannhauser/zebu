@@ -5,6 +5,8 @@
 
 #include <avl/free_tree.h>
 
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -15,7 +17,7 @@ void free_lookahead_deps(struct lookahead_deps* this)
 	avl_free_tree(this->dependant_of);
 	avl_free_tree(this->dependant_on);
 	
-	free(this);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

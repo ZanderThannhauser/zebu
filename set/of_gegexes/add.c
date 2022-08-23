@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <arena/realloc.h>
+
 #include "struct.h"
 #include "add.h"
 
@@ -10,8 +12,6 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpv(ptr);
 	
 	if (this->n + 1 > this->cap)
@@ -20,7 +20,7 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 		
 		dpv(this->cap);
 		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	unsigned i, n;
@@ -45,7 +45,6 @@ void gegexset_add(struct gegexset* this, struct gegex* ptr)
 	}
 	
 	this->data[this->n++] = ptr;
-	#endif
 	
 	EXIT;
 }

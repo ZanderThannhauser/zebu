@@ -1,4 +1,6 @@
 
+#include <sys/mman.h>
+
 #include <debug.h>
 
 #include "resize.h"

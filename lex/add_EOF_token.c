@@ -23,13 +23,11 @@ void lex_add_EOF_token(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct memory_arena* const scratchpad = this->scratchpad;
+	struct memory_arena* const arena = this->arena;
 	
-	struct regex* start = new_regex(scratchpad);
+	struct regex* start = new_regex(arena);
 	
-	struct regex* end = new_regex(scratchpad);
+	struct regex* end = new_regex(arena);
 	
 	regex_set_EOF_transition(start, end);
 	
@@ -41,25 +39,15 @@ void lex_add_EOF_token(
 	
 	if (skip)
 	{
-		struct regex* clone = regex_clone(skip, scratchpad);
+		struct regex* clone = regex_clone(skip, this->arena);
 		
-		regex_add_lambda_transition(clone, scratchpad, start);
+		regex_add_lambda_transition(clone, start);
 		
-		#ifdef DEBUGGING
-		regex_dotout(clone, __PRETTY_FUNCTION__);
-		#endif
+		struct regex* dfa = regex_nfa_to_dfa(clone, this->arena);
 		
-		struct regex* dfa = regex_nfa_to_dfa(clone, scratchpad);
+		start = regex_simplify_dfa(dfa, this->arena);
 		
-		struct regex* simp = regex_simplify_dfa(dfa, scratchpad);
-		
-		free_regex(clone, scratchpad), free_regex(dfa, scratchpad);
-		
-		#ifdef DEBUGGING
-		regex_dotout(simp, __PRETTY_FUNCTION__);
-		#endif
-		
-		start = simp;
+		free_regex(clone), free_regex(dfa);
 	}
 	
 	unsigned tid = lex_add_token(this, start, /* is_literal: */ true);
@@ -67,7 +55,6 @@ void lex_add_EOF_token(
 	this->EOF_token_id = tid;
 	
 	dpv(this->EOF_token_id);
-	#endif
 	
 	EXIT;
 }

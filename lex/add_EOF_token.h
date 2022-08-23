@@ -1,4 +1,5 @@
 
+struct lex;
 struct memory_arena;
 struct regex;
 

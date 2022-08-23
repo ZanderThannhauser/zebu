@@ -9,7 +9,10 @@ void free_dfa_to_id_node(void* this)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	free(this);
+	#endif
 	
 	EXIT;
 }

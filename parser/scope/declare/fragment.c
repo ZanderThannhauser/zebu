@@ -1,15 +1,18 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 /*#include <memory/sstrndup.h>*/
-
-#include "../struct.h"
+#include <avl/insert.h>
 
 /*#include "../private/append_prefix.h"*/
 
 #include <named/token/new.h>
 
 /*#include <named/name/new.h>*/
+
+#include "../struct.h"
 
 #include "fragment.h"
 
@@ -20,15 +23,12 @@ void scope_declare_fragment(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpvs(name);
 	dpv(token);
 	
 	assert(this->layer);
 	
-	safe_avl_insert(this->layer->fragments, new_named_token(name, token));
-	#endif
+	avl_insert(this->layer->fragments, new_named_token(this->layer->arena, name, token));
 	
 	EXIT;
 }

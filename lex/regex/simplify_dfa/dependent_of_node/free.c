@@ -5,17 +5,19 @@
 
 #include <avl/free_tree.h>
 
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "free.h"
 
 void free_dependent_of_node(void* ptr)
 {
-	struct dependent_of_node* node = ptr;
+	struct dependent_of_node* this = ptr;
 	ENTER;
 	
-	avl_free_tree(node->dependent_of);
+	avl_free_tree(this->dependent_of);
 	
-	free(node);
+	arena_dealloc(this->arena, this);
 	
 	EXIT;
 }

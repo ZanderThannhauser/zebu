@@ -46,7 +46,7 @@ void* arena_realloc(
 		
 		arena_dealloc(this, old);
 		
-		return new;
+		retval = new;
 	}
 	
 	EXIT;

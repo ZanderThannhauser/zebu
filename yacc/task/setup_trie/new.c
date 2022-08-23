@@ -8,12 +8,14 @@
 #include "new.h"
 
 struct setup_trie_task* new_setup_trie_task(
+	struct memory_arena* arena,
 	struct gegex* node,
 	const char* name)
 {
 	ENTER;
 	
 	struct setup_trie_task* this = (void*) new_task(
+		arena,
 		tk_setup_trie,
 		&setup_trie_task_inheritance,
 		sizeof(*this));

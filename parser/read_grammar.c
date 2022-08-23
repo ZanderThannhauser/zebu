@@ -1,12 +1,13 @@
 
 #include <assert.h>
 #include <stdbool.h>
-
 #include <stdlib.h>
 
-#include <enums/error.h>
-
 #include <debug.h>
+
+#include <arena/memdup.h>
+
+#include <enums/error.h>
 
 #include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
@@ -27,19 +28,18 @@
 #include "read_grammar.h"
 
 void read_grammar(
+	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	assert(tokenizer->token == t_identifier);
 	
-	char* name = sstrdup(tokenizer->tokenchars.chars);
+	char* name = arena_memdup(grammar_arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	
 	dpvs(name);
 	
@@ -51,27 +51,27 @@ void read_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
-		/* tokenizer:  */ tokenizer,
-		/* scratchpad: */ scratchpad,
-		/* options:    */ options,
-		/* scope:      */ scope,
-		/* lex:        */ lex);
+		/* grammar_arena: */ grammar_arena,
+		/* token_arena:   */ token_arena,
+		/* tokenizer:     */ tokenizer,
+		/* options:       */ options,
+		/* scope:         */ scope,
+		/* lex:           */ lex);
 	
 	bundle.end->is_reduction_point = true;
 	
 	struct gegex* nfa_start = bundle.start;
 	
 	// nfa to dfa
-	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, scratchpad);
+	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, grammar_arena);
 	
 	// simplify
-	struct gegex* simp_start = gegex_simplify_dfa(dfa_start, scratchpad);
+	struct gegex* simp_start = gegex_simplify_dfa(dfa_start, grammar_arena);
 	
 	// add grammar rule to scope
 	scope_declare_grammar(scope, name, simp_start);
 	
-	free_gegex(nfa_start, scratchpad);
-	free_gegex(dfa_start, scratchpad);
+	free_gegex(nfa_start), free_gegex(dfa_start);
 	
 	if (true
 		&& tokenizer->token != t_semicolon
@@ -80,7 +80,6 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
-	#endif
 	
 	EXIT;
 }

@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 
+#include <avl/insert.h>
 #include <avl/search.h>
 /*#include <avl/safe_insert.h>*/
 
@@ -38,16 +39,13 @@
 #include "build_tokenizer.h"
 
 struct tokensetset* lex_build_tokenzer(
+	struct memory_arena* arena,
 	struct lex_state** outgoing,
 	struct lex* this,
 	struct tokenset* token_ids)
 {
 	struct tokensetset* retval;
 	ENTER;
-	
-	TODO;
-	#if 0
-	struct memory_arena* const scratchpad = this->scratchpad;
 	
 	// check cache
 	struct avl_node_t* cache_node = avl_search(this->tokenizer.cache, &token_ids);
@@ -66,9 +64,9 @@ struct tokensetset* lex_build_tokenzer(
 	else
 	{
 		// build dfa of all tokens' dfas
-		struct regexset* starts = new_regexset();
+		struct regexset* starts = new_regexset(arena);
 		
-		retval = new_tokensetset();
+		retval = new_tokensetset(arena);
 		
 		tokenset_foreach(token_ids, ({
 			void runme(unsigned token) {
@@ -77,20 +75,19 @@ struct tokensetset* lex_build_tokenzer(
 			runme;
 		}));
 		
-		struct lex_state* new_state = dfas_to_dfa(retval, scratchpad, starts);
+		struct lex_state* new_state = dfas_to_dfa(arena, retval, starts);
 		
 		dpv(new_state);
 		dpv(retval->n);
 		
-		safe_avl_insert(this->tokenizer.cache,
-			new_build_tokenizer_node(token_ids, retval, new_state));
+		avl_insert(this->tokenizer.cache,
+			new_build_tokenizer_node(arena, token_ids, retval, new_state));
 		
 		*outgoing = new_state;
 	}
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 

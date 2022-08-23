@@ -9,4 +9,6 @@ struct lstate_to_id
 {
 	struct avl_tree_t* tree;
 	unsigned next;
+	
+	struct memory_arena* arena;
 };

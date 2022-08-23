@@ -1,18 +1,18 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
 
-struct heap* new_heap(int (*cmp)(const void*, const void*))
+struct heap* new_heap(
+	struct memory_arena* arena,
+	int (*cmp)(const void*, const void*))
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct heap* this = smalloc(sizeof(*this));
+	struct heap* this = arena_malloc(arena, sizeof(*this));
 	
 	this->cmp = cmp;
 	
@@ -20,8 +20,9 @@ struct heap* new_heap(int (*cmp)(const void*, const void*))
 	this->n = 0;
 	this->cap = 0;
 	
+	this->arena = arena;
+	
 	EXIT;
 	return this;
-	#endif
 }
 

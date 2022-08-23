@@ -8,11 +8,13 @@
 #include "new.h"
 
 struct free_lookahead_deps_task* new_free_lookahead_deps_task(
+	struct memory_arena* arena,
 	struct lookahead_deps* ldeps)
 {
 	ENTER;
 	
 	struct free_lookahead_deps_task* this = (void*) new_task(
+		arena,
 		tk_free_lookahead_deps,
 		&free_lookahead_deps_task_inheritance,
 		sizeof(*this));

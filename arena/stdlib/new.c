@@ -5,7 +5,6 @@
 
 #include "malloc.h"
 #include "realloc.h"
-#include "resize.h"
 #include "free.h"
 #include "new.h"
 
@@ -24,7 +23,7 @@ struct memory_arena* new_stdlib_arena()
 	
 	this->malloc = stdlib_malloc;
 	this->realloc = stdlib_realloc;
-	this->resize = stdlib_resize;
+	this->resize = NULL;
 	this->free = stdlib_free;
 	
 	EXIT;

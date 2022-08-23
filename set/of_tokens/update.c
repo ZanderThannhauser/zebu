@@ -3,13 +3,16 @@
 
 #include <debug.h>
 
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
+
 #include "struct.h"
 #include "update.h"
 
 bool tokenset_update(struct tokenset* this, struct tokenset* them)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
 	bool changed = false;
 	
 	unsigned i = 0, n = this->n;
@@ -17,7 +20,7 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	
 	unsigned  new_cap = this->n + them->n;
 	unsigned  new_n = 0;
-	unsigned* new_data = smalloc(sizeof(*new_data) * new_cap);
+	unsigned* new_data = arena_malloc(this->arena, sizeof(*new_data) * new_cap);
 	
 	while (i < n && j < m)
 	{
@@ -41,7 +44,7 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	
 	if (changed)
 	{
-		free(this->data);
+		arena_dealloc(this->arena, this->data);
 		
 		this->data = new_data;
 		this->n = new_n;
@@ -49,11 +52,11 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	}
 	else
 	{
-		free(new_data);
+		arena_dealloc(this->arena, new_data);
 	}
 	
+	EXIT;
 	return changed;
-	#endif
 }
 
 

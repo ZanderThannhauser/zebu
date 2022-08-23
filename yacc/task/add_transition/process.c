@@ -2,6 +2,7 @@
 #include <debug.h>
 
 #include <avl/search.h>
+#include <avl/insert.h>
 
 /*#include <yacc/gegex/state/struct.h>*/
 
@@ -45,8 +46,6 @@ void add_transition_task_process(struct task* super, struct yacc_shared* shared)
 	struct add_transition_task* const this = (void*) super;
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(shared->stateinfo_to_state, &this->stateinfo);
 	
 	if (node)
@@ -59,20 +58,19 @@ void add_transition_task_process(struct task* super, struct yacc_shared* shared)
 	}
 	else
 	{
-		struct yacc_state* state = new_yacc_state(shared->scratchpad);
+		struct yacc_state* state = new_yacc_state(shared->parser_arena);
 		
 		*this->write_to_me = state;
 		
 		// add state to mapping:
 		{
-			struct stateinfo_to_state* tos = new_stateinfo_to_state(this->stateinfo, state);
-			safe_avl_insert(shared->stateinfo_to_state, tos);
+			struct stateinfo_to_state* tos = new_stateinfo_to_state(shared->arena, this->stateinfo, state);
+			avl_insert(shared->stateinfo_to_state, tos);
 		}
 		
 		// submit task to consider transitions from new state
-		heap_push(shared->todo, new_build_ystate_task(state, this->stateinfo));
+		heap_push(shared->todo, new_build_ystate_task(shared->arena, state, this->stateinfo));
 	}
-	#endif
 	
 	EXIT;
 }

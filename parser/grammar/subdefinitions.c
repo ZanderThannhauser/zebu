@@ -22,8 +22,9 @@
 #include "subdefinitions.h"
 
 struct gbundle read_subdefinitions_production(
+	struct memory_arena* grammar_arena,
+	struct memory_arena* token_arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
@@ -42,20 +43,28 @@ struct gbundle read_subdefinitions_production(
 			switch (tokenizer->token)
 			{
 				case t_bracketed_identifier:
+				{
 					read_charset(tokenizer, scope);
 					break;
+				}
 				
 				case t_gravemarked_identifier:
+				{
 					read_fragment(tokenizer, scope, options->token_skip);
 					break;
+				}
 				
 				case t_parenthesised_identifier:
-					read_inline_grammar(tokenizer, scratchpad, options, scope, lex);
+				{
+					read_inline_grammar(token_arena, tokenizer, options, scope, lex);
 					break;
+				}
 				
 				case t_identifier:
-					read_grammar(tokenizer, scratchpad, options, scope, lex);
+				{
+					read_grammar(grammar_arena, token_arena, tokenizer, options, scope, lex);
 					break;
+				}
 				
 				default:
 					TODO;
@@ -63,24 +72,35 @@ struct gbundle read_subdefinitions_production(
 			}
 			
 			if (tokenizer->token == t_semicolon)
+			{
 				read_token(tokenizer, subroot_machine);
+			}
 		}
 		
 		// read production rule:
 		read_token(tokenizer, production_inside_subdefinitions_machine);
 		
-		retval = read_suffixes_production(tokenizer, scratchpad, options, scope, lex);
+		retval = read_suffixes_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
 		
 		scope_pop(scope);
 	}
 	else
 	{
-		retval = read_suffixes_production(tokenizer, scratchpad, options, scope, lex);
+		retval = read_suffixes_production(grammar_arena, token_arena, tokenizer, options, scope, lex);
 	}
 	
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
+
 
 
 

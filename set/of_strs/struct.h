@@ -6,6 +6,8 @@ struct strset
 {
 	const char** data;
 	unsigned cap, n;
+	
+	struct memory_arena* arena;
 };
 
 #endif

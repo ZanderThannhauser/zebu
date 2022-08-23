@@ -1,9 +1,15 @@
 
+#include <sys/stat.h>
+
 #include <stdlib.h>
 
 #include <stdio.h>
 
 #include <debug.h>
+
+#include <defines/argv0.h>
+
+#include <enums/error.h>
 
 #include <avl/search.h>
 #include <avl/insert.h>

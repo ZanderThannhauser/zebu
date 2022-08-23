@@ -1,35 +1,42 @@
 
 #include <string.h>
-/*#include <memory/srealloc.h>*/
 
 #include <debug.h>
+
+#include <arena/realloc.h>
 
 #include "strfandr.h"
 
 char* strfandr(
+	struct memory_arena* arena,
 	const char* original,
 	const char* findme,
 	const char* replacewith)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct {
 		char* data; unsigned n, cap;
 	} buffer = {};
 	
 	void concat(const char* start, unsigned length) {
 		ENTER;
+		
 		dpvsn(start, length);
+		
 		while (buffer.n + length >= buffer.cap) {
 			buffer.cap = buffer.cap << 1 ?: 1;
+			
 			dpv(buffer.cap);
-			buffer.data = srealloc(buffer.data, buffer.cap);
+			
+			buffer.data = arena_realloc(arena, buffer.data, buffer.cap);
 		}
+		
 		memcpy(buffer.data + buffer.n, start, length);
 		buffer.n += length;
+		
 		dpv(buffer.n);
+		
 		EXIT;
 	}
 	
@@ -42,7 +49,9 @@ char* strfandr(
 	for (const char* f; (f = strstr(l, findme));)
 	{
 		concat(l, f - l);
+		
 		concat(replacewith, strlen_replacewith);
+		
 		f += strlen_findme, l = f;
 	}
 	
@@ -52,7 +61,6 @@ char* strfandr(
 	
 	EXIT;
 	return buffer.data;
-	#endif
 }
 
 

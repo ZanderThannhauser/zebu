@@ -9,25 +9,34 @@
 #include <named/strset/struct.h>
 #include <named/strset/new.h>
 
+#include "struct.h"
 #include "get_firsts_deps.h"
 
-struct strset* get_firsts_deps(struct avl_tree_t* tree, const char* name)
+struct strset* get_firsts_deps(
+	struct yacc_shared* shared,
+	struct avl_tree_t* tree, const char* name)
 {
 	struct strset* retval;
+	ENTER;
 	
 	struct avl_node_t* node;
+	
 	if ((node = avl_search(tree, &name)))
 	{
 		struct named_strset* ns = node->item;
+		
 		retval = ns->strset;
 	}
 	else
 	{
-		retval = new_strset();
-		struct named_strset* ns = new_named_strset(name, retval);
+		retval = new_strset(shared->arena);
+		
+		struct named_strset* ns = new_named_strset(shared->arena, name, retval);
+		
 		avl_insert(tree, ns);
 	}
 	
+	EXIT;
 	return retval;
 }
 

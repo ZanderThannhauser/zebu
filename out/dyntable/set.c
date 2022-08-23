@@ -2,6 +2,10 @@
 
 #include <debug.h>
 
+#include <avl/insert.h>
+
+#include <arena/malloc.h>
+
 #include "struct.h"
 #include "set.h"
 
@@ -10,8 +14,8 @@ void dyntable_set(
 	unsigned x, unsigned y,
 	unsigned value)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
 	if (x > this->width)
 	{
 		this->width = x;
@@ -24,7 +28,7 @@ void dyntable_set(
 		dpv(this->height);
 	}
 	
-	struct dyntable_node* node = smalloc(sizeof(*node));
+	struct dyntable_node* node = arena_malloc(this->arena, sizeof(*node));
 	
 	node->x = x;
 	node->y = y;
@@ -32,8 +36,9 @@ void dyntable_set(
 	
 	ddprintf("%s[%u][%u] = %u\n", this->name, x, y, value);
 	
-	safe_avl_insert(this->tree, node);
-	#endif
+	avl_insert(this->tree, node);
+	
+	EXIT;
 }
 
 

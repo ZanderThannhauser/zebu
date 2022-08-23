@@ -1,30 +1,35 @@
 
 #include <assert.h>
-
 #include <string.h>
-
-#include <avl/foreach.h>
 
 #include <linux/limits.h>
 
+#include <stdlib.h>
+
 #include <debug.h>
 
-#include <stdlib.h>
+#include <arena/malloc.h>
+#include <arena/dealloc.h>
 
 #include <defines/argv0.h>
 
+/*#include <defines/argv0.h>*/
+
 #include <misc/strfandr.h>
 
-#include <set/of_tokens/foreach.h>
-#include <set/of_tokens/is_disjoint.h>
+/*#include <set/of_tokens/foreach.h>*/
+/*#include <set/of_tokens/is_disjoint.h>*/
 
-#include <set/of_strs/foreach.h>
+/*#include <set/of_strs/foreach.h>*/
 
-#include <named/grammar/struct.h>
+/*#include <named/grammar/struct.h>*/
 
-#include <yacc/shared/struct.h>
+/*#include <yacc/shared/struct.h>*/
 /*#include <yacc/get_deps.h>*/
 /*#include <yacc/lookup_tokenset.h>*/
+
+#include <arena/mmap/new.h>
+#include <arena/free.h>
 
 #include <misc/phase_counters.h>
 
@@ -94,28 +99,28 @@ void out(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
+	struct memory_arena* out_arena = new_mmap_arena();
+	
 	char path[PATH_MAX];
 	
 	FILE* source = NULL;
 	FILE* header = NULL;
 	
-	struct out_shared* shared = smalloc(sizeof(*shared));
+	struct out_shared* shared = arena_malloc(out_arena, sizeof(*shared));
 	
-	shared->ytoi = new_ystate_to_id();
-	shared->ltoi = new_lstate_to_id();
-	shared->ttoi = new_tokenset_to_id();
+	shared->ytoi = new_ystate_to_id(out_arena);
+	shared->ltoi = new_lstate_to_id(out_arena);
+	shared->ttoi = new_tokenset_to_id(out_arena);
 	
-	shared->shifts = new_dyntable("shifts");
-	shared->reduces = new_dyntable("reduces");
-	shared->popcounts = new_dyntable("popcounts");
-	shared->lexer = new_dyntable("lexer");
+	shared->shifts = new_dyntable(out_arena, "shifts");
+	shared->reduces = new_dyntable(out_arena, "reduces");
+	shared->popcounts = new_dyntable(out_arena, "popcounts");
+	shared->lexer = new_dyntable(out_arena, "lexer");
 	
-	shared->starts = new_dynvector("starts");
-	shared->defaults = new_dynvector("defaults");
-	shared->EOFs = new_dynvector("EOFs");
-	shared->accepts = new_dynvector("accepts");
+	shared->starts = new_dynvector(out_arena, "starts");
+	shared->defaults = new_dynvector(out_arena, "defaults");
+	shared->EOFs = new_dynvector(out_arena, "EOFs");
+	shared->accepts = new_dynvector(out_arena, "accepts");
 	
 	yacc_phase_counter++;
 	lex_phase_counter++;
@@ -150,6 +155,7 @@ void out(
 	
 	{
 		unsigned sid = grammar_to_id(shared->ttoi, "(start)");
+		
 		fprintf(source, "const unsigned start_grammar_id = %u;\n", sid);
 		fprintf(header, "extern const unsigned start_grammar_id;\n");
 	}
@@ -163,34 +169,20 @@ void out(
 		const char* template_source = *lookup[parser_template].source;
 		const char* template_header = *lookup[parser_template].header;
 		
-		char* specialized_source = strfandr(template_source, "<PREFIX>", output_prefix);
-		char* specialized_header = strfandr(template_header, "<PREFIX>", output_prefix);
+		char* specialized_source = strfandr(out_arena, template_source, "<PREFIX>", output_prefix);
+		char* specialized_header = strfandr(out_arena, template_header, "<PREFIX>", output_prefix);
 		
 		fputs(specialized_source, source);
 		fputs(specialized_header, header);
 		
-		free(specialized_source);
-		free(specialized_header);
+		arena_dealloc(out_arena, specialized_source);
+		arena_dealloc(out_arena, specialized_header);
 	}
 	
-	free_ystate_to_id(shared->ytoi);
-	free_lstate_to_id(shared->ltoi);
-	free_tokenset_to_id(shared->ttoi);
-	
-	free_dyntable(shared->shifts);
-	free_dyntable(shared->reduces);
-	free_dyntable(shared->lexer);
-	
-	free_dynvector(shared->starts);
-	free_dynvector(shared->defaults);
-	free_dynvector(shared->EOFs);
-	free_dynvector(shared->accepts);
-	
-	free(shared);
+	free_memory_arena(out_arena);
 	
 	fclose(source);
 	fclose(header);
-	#endif
 	
 	EXIT;
 }

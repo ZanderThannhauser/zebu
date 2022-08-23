@@ -1,20 +1,20 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <arena/malloc.h>
 
 #include "../../state/struct.h"
 
 #include "struct.h"
 #include "new.h"
 
-struct iterator* new_iterator(struct regex* state)
+struct iterator* new_iterator(
+	struct memory_arena* arena,
+	struct regex* state)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct iterator* this = smalloc(sizeof(*this));
+	struct iterator* this = arena_malloc(arena, sizeof(*this));
 	
 	this->moving = state->transitions.data;
 	
@@ -26,6 +26,5 @@ struct iterator* new_iterator(struct regex* state)
 	
 	EXIT;
 	return this;
-	#endif
 }
 

@@ -23,24 +23,26 @@
 #include "suffixes.h"
 
 struct rbundle read_suffixes_token_expression(
+	struct memory_arena* arena,
 	struct tokenizer* tokenizer,
-	struct memory_arena* scratchpad,
 	struct scope* scope,
 	struct regex* token_skip)
 {
 	ENTER;
 	
-	struct rbundle retval = read_prefixes_token_expression(tokenizer, scratchpad, scope, token_skip);
+	struct rbundle retval = read_prefixes_token_expression(arena, tokenizer, scope, token_skip);
 	
 	switch (tokenizer->token)
 	{
 		case t_qmark:
 		{
+			TODO;
+			#if 0
 			// convert into nfa:
 			if (!retval.is_nfa)
-				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+				retval = regex_dfa_to_nfa(retval.dfa, arena);
 			
-			regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+			regex_add_lambda_transition(retval.nfa.start, arena, retval.nfa.end);
 			
 			read_token(
 				/* tokenizer: */ tokenizer,
@@ -49,7 +51,7 @@ struct rbundle read_suffixes_token_expression(
 			#ifdef DEBUGGING
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
-			
+			#endif
 			break;
 		}
 		
@@ -57,20 +59,20 @@ struct rbundle read_suffixes_token_expression(
 		{
 			// convert into nfa:
 			if (!retval.is_nfa)
-				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+				retval = regex_dfa_to_nfa(retval.dfa, arena);
 			
 			if (token_skip)
 			{
-				struct regex* cloned = regex_clone(token_skip, scratchpad);
+				struct regex* cloned = regex_clone(token_skip, arena);
 				
-				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
-				regex_add_lambda_transition(cloned, scratchpad, retval.nfa.start);
-				regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+				regex_add_lambda_transition(retval.nfa.end, cloned);
+				regex_add_lambda_transition(cloned, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
 			}
 			else
 			{
-				regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
-				regex_add_lambda_transition(retval.nfa.start, scratchpad, retval.nfa.end);
+				regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
 			}
 			
 			read_token(
@@ -87,18 +89,18 @@ struct rbundle read_suffixes_token_expression(
 		{
 			// convert into nfa:
 			if (!retval.is_nfa)
-				retval = regex_dfa_to_nfa(retval.dfa, scratchpad);
+				retval = regex_dfa_to_nfa(retval.dfa, arena);
 			
 			if (token_skip)
 			{
-				struct regex* cloned = regex_clone(token_skip, scratchpad);
+				struct regex* cloned = regex_clone(token_skip, arena);
 				
-				regex_add_lambda_transition(retval.nfa.end, scratchpad, cloned);
-				regex_add_lambda_transition(cloned, scratchpad, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.end, cloned);
+				regex_add_lambda_transition(cloned, retval.nfa.start);
 			}
 			else
 			{
-				regex_add_lambda_transition(retval.nfa.end, scratchpad, retval.nfa.start);
+				regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
 			}
 			
 			read_token(
@@ -113,13 +115,15 @@ struct rbundle read_suffixes_token_expression(
 		
 		case t_ocurly:
 		{
+			TODO;
+			#if 0
 			struct rbundle original;
 			
 			// convert into nfa:
 			if (retval.is_nfa)
 				original = retval;
 			else
-				original = regex_dfa_to_nfa(retval.dfa, scratchpad);
+				original = regex_dfa_to_nfa(retval.dfa, arena);
 			
 			if (token_skip)
 			{
@@ -141,7 +145,7 @@ struct rbundle read_suffixes_token_expression(
 			
 			read_token(tokenizer, ccurly_machine);
 			
-			struct regex* start = new_regex(scratchpad);
+			struct regex* start = new_regex(arena);
 			
 			struct regex* moving = start;
 			
@@ -156,24 +160,24 @@ struct rbundle read_suffixes_token_expression(
 				TODO;
 			}
 			
-			struct regex* end = new_regex(scratchpad);
+			struct regex* end = new_regex(arena);
 			
-			regex_add_lambda_transition(moving, scratchpad, end);
+			regex_add_lambda_transition(moving, arena, end);
 			
 			for (; i < max; i++)
 			{
 				// new_start, new_end = clone();
-				struct clone_nfa_bundle clone = regex_clone_nfa(scratchpad,
+				struct clone_nfa_bundle clone = regex_clone_nfa(arena,
 					original.nfa.start, original.nfa.end);
 				
 				// moving -> new_start
-				regex_add_lambda_transition(moving, scratchpad, clone.start);
+				regex_add_lambda_transition(moving, arena, clone.start);
 				
 				// moving = new_end
 				moving = clone.end;
 				
 				// moving -> end
-				regex_add_lambda_transition(moving, scratchpad, end);
+				regex_add_lambda_transition(moving, arena, end);
 			}
 			
 			retval.is_nfa = true;
@@ -188,8 +192,8 @@ struct rbundle read_suffixes_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_after_suffix_machine);
 			
-			free_regex(original.nfa.start, scratchpad);
-			
+			free_regex(original.nfa.start, arena);
+			#endif
 			break;
 		}
 		
