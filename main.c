@@ -39,12 +39,7 @@
 #include <out/out.h>
 
 #ifdef VERBOSE
-/*#include <signal.h>*/
-/*#include <sys/time.h>*/
-
-/*#include <cmdln/verbose.h>*/
-
-/*#include <misc/default_sighandler.h>*/
+#include <stdio.h>
 #endif
 
 int main(int argc, char* argv[])
@@ -128,6 +123,11 @@ int main(int argc, char* argv[])
 	#endif
 	
 	out(parser, flags->output_path, flags->output_prefix, flags->parser_template);
+	
+	#ifdef VERBOSE
+	if (verbose)
+		fputs("\e[K", stdout);
+	#endif
 	
 	#ifdef WITH_ARENAS
 	free_memory_arena(tokenizer_arena);

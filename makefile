@@ -83,7 +83,7 @@ ARGS += -v
 
 #ARGS += --simplify=tokenizer
 
-#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math

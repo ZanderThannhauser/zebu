@@ -7,7 +7,9 @@ struct dyntable_node
 struct dyntable
 {
 	struct avl_tree_t* tree;
+	
 	const char* name;
+	
 	unsigned width, height;
 	
 	#ifdef WITH_ARENAS

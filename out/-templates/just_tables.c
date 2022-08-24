@@ -41,7 +41,7 @@
 	// input strings into the parser. Bewteen each line the parser is reset.
 	// variables internal to the parser are printed, along with the stack used.
 
-// --yacc=fileio-parsetree
+// --yacc=fileio-graphviz
 	// creates a program that parses the contents of the file refered to by
 	// the first parameter, and builds a parser tree that it outputs as a
 	// DOT graphviz input file named by the second parameter.

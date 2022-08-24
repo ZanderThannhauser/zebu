@@ -114,9 +114,9 @@ struct gegex* gegex_simplify_dfa(
 	
 	void handler1(int _)
 	{
-		char ptr[100] = {};
+		char ptr[1000] = {};
 		
-		size_t len = snprintf(ptr, 100,
+		size_t len = snprintf(ptr, sizeof(ptr),
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
 			argv0, "simplify (build deps)",
 			count, n, (((double) count * 100) / n));
@@ -246,6 +246,29 @@ struct gegex* gegex_simplify_dfa(
 		runme;
 	}));
 	
+	#ifdef VERBOSE
+	void handler12(int _)
+	{
+		char ptr[1000] = {};
+		
+		size_t len = snprintf(ptr, sizeof(ptr),
+			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
+			argv0, "simplify (allocating dep-trees)",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	if (verbose)
+	{
+		count = 0, n = universe->n;
+		signal(SIGALRM, handler12);
+	}
+	#endif
+	
 	#ifdef WITH_ARENAS
 	struct avl_tree_t* connections = avl_alloc_tree(arena, compare_gegex_same_as_nodes, free_gegex_same_as_node);
 	#else
@@ -270,6 +293,10 @@ struct gegex* gegex_simplify_dfa(
 			
 			avl_insert(connections, sa);
 			
+			#ifdef VERBOSE
+			count++;
+			#endif
+			
 			EXIT;
 		}
 		runme;
@@ -279,7 +306,7 @@ struct gegex* gegex_simplify_dfa(
 	
 	void handler2(int _)
 	{
-		char ptr[300] = {};
+		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr), "\e[K" "%s: %s:", argv0, "simplify (percolate)");
 		

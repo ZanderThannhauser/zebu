@@ -32,83 +32,83 @@
 				| 'a' 'd' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
 				| 's' 'u' 'b'                 skip register skip ',' skip register skip '=' '>' skip register skip
 				| 'm' 'u' 'l' 't'             skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'l' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'r' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'm' 'o' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'a' 'n' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'o' 'r'                     skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'n' 'o' 't'                 skip register skip     skip          skip '=' '>' skip register skip
-				// | 'a' 'd' 'd' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 's' 'u' 'b' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 'm' 'u' 'l' 't' 'I'         skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 'l' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 'r' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'l' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'r' 's' 'h' 'i' 'f' 't'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'm' 'o' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'a' 'n' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'o' 'r'                     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'n' 'o' 't'                 skip register skip     skip          skip '=' '>' skip register skip
+				| 'a' 'd' 'd' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 's' 'u' 'b' 'I'             skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'm' 'u' 'l' 't' 'I'         skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'l' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'r' 's' 'h' 'i' 'f' 't' 'I' skip register skip ',' skip int      skip '=' '>' skip register skip
 				
 				// Integer Memory Operations:
 				| 'l' 'o' 'a' 'd' 'I'         skip int      skip     skip          skip '=' '>' skip register skip
 				| 'l' 'o' 'a' 'd'             skip register skip     skip          skip '=' '>' skip register skip
-				// | 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
 				| 's' 't' 'o' 'r' 'e'         skip register skip     skip          skip '=' '>' skip register skip
-				// | 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
-				// | 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
+				| 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
+				| 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
 				
 				// Compare Instructions:
-				// | 'c' 'm' 'p' '_' 'L' 'T' skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'c' 'm' 'p' '_' 'L' 'R' skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'c' 'm' 'p' '_' 'G' 'T' skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'c' 'm' 'p' '_' 'G' 'E' skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'c' 'm' 'p' '_' 'E' 'Q' skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'c' 'm' 'p' '_' 'N' 'E' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'L' 'T' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'L' 'R' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'G' 'T' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'G' 'E' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'E' 'Q' skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'c' 'm' 'p' '_' 'N' 'E' skip register skip ',' skip register skip '=' '>' skip register skip
 				| 'c' 'o' 'm' 'p'         skip register skip ',' skip register skip '=' '>' skip register skip
 				| 't' 'e' 's' 't' 'e' 'q' skip register skip     skip          skip '=' '>' skip register skip
 				| 't' 'e' 's' 't' 'n' 'e' skip register skip     skip          skip '=' '>' skip register skip
 				| 't' 'e' 's' 't' 'g' 't' skip register skip     skip          skip '=' '>' skip register skip
-				// | 't' 'e' 's' 't' 'g' 'e' skip register skip     skip          skip '=' '>' skip register skip
+				| 't' 'e' 's' 't' 'g' 'e' skip register skip     skip          skip '=' '>' skip register skip
 				| 't' 'e' 's' 't' 'l' 't' skip register skip     skip          skip '=' '>' skip register skip
 				| 't' 'e' 's' 't' 'l' 'e' skip register skip     skip          skip '=' '>' skip register skip
 				
 				// Floating-point Operations:
-				// | 'f' '2' 'i'                     skip register skip     skip          skip '=' '>' skip register skip
-				// | 'i' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
-				// | 'f' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
-				// | 'f' 'a' 'd' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 's' 'u' 'b'                 skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 'm' 'u' 'l' 't'             skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 'd' 'i' 'v'                 skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 'c' 'o' 'm' 'p'             skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 'l' 'o' 'a' 'd'             skip register skip     skip          skip '=' '>' skip register skip
-				// | 'f' 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
-				// | 'f' 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
-				// | 'f' 's' 't' 'o' 'r' 'e'         skip register skip     skip          skip '=' '>' skip register skip
-				// | 'f' 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
-				// | 'f' 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
+				| 'f' '2' 'i'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'i' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' '2' 'f'                     skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 'a' 'd' 'd'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 's' 'u' 'b'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'm' 'u' 'l' 't'             skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'd' 'i' 'v'                 skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'c' 'o' 'm' 'p'             skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd'             skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd' 'A' 'I'     skip register skip ',' skip int      skip '=' '>' skip register skip
+				| 'f' 'l' 'o' 'a' 'd' 'A' 'O'     skip register skip ',' skip register skip '=' '>' skip register skip
+				| 'f' 's' 't' 'o' 'r' 'e'         skip register skip     skip          skip '=' '>' skip register skip
+				| 'f' 's' 't' 'o' 'r' 'e' 'A' 'I' skip register skip     skip          skip '=' '>' skip register skip ',' skip int skip
+				| 'f' 's' 't' 'o' 'r' 'e' 'A' 'O' skip register skip     skip          skip '=' '>' skip register skip ',' skip register skip
 				
 				// I/O Instructions:
-				// | 'f' 'r' 'e' 'a' 'd'     skip register skip
-				// | 'i' 'r' 'e' 'a' 'd'     skip register skip
-				// | 'f' 'w' 'r' 'i' 't' 'e' skip register skip
+				| 'f' 'r' 'e' 'a' 'd'     skip register skip
+				| 'i' 'r' 'e' 'a' 'd'     skip register skip
+				| 'f' 'w' 'r' 'i' 't' 'e' skip register skip
 				| 'i' 'w' 'r' 'i' 't' 'e' skip register skip
-				// | 's' 'w' 'r' 'i' 't' 'e' skip register skip
+				| 's' 'w' 'r' 'i' 't' 'e' skip register skip
 				
 				// Branch Instructions:
-				// | 'j' 'u' 'm' 'p' 'I'     skip          skip     skip          skip '-' '>' skip label    skip
-				// | 'j' 'u' 'm' 'p'         skip          skip     skip          skip '-' '>' skip register skip
+				| 'j' 'u' 'm' 'p' 'I'     skip          skip     skip          skip '-' '>' skip label    skip
+				| 'j' 'u' 'm' 'p'         skip          skip     skip          skip '-' '>' skip register skip
 				| 'r' 'e' 't'             skip          skip     skip          skip         skip          skip
 				| 'c' 'b' 'r'             skip register skip     skip          skip '-' '>' skip label    skip
 				| 'c' 'b' 'r' 'n' 'e'     skip register skip     skip          skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'L' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'L' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'G' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'G' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'E' 'Q' skip register skip ',' skip register skip '-' '>' skip label    skip
-				// | 'c' 'b' 'r' '_' 'N' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'L' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'L' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'G' 'T' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'G' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'E' 'Q' skip register skip ',' skip register skip '-' '>' skip label    skip
+				| 'c' 'b' 'r' '_' 'N' 'E' skip register skip ',' skip register skip '-' '>' skip label    skip
 				
 				// Undocumented Instructions:
 				| 'n' 'o' 'p'         skip
-				// | 'c' 'a' 'l' 'l'     skip label skip (',' skip register)* skip
-				// | 'i' 'c' 'a' 'l' 'l' skip label skip (',' skip register)* skip '=' '>' skip register skip
-				// | 'i' 'r' 'e' 't'     skip                                              skip register skip
+				| 'c' 'a' 'l' 'l'     skip label skip (',' skip register)* skip
+				| 'i' 'c' 'a' 'l' 'l' skip label skip (',' skip register)* skip '=' '>' skip register skip
+				| 'i' 'r' 'e' 't'     skip                                              skip register skip
 			)
 		)*
 	)*

@@ -38,6 +38,7 @@ void tokenset_to_id_print_source(
 	fprintf(header, "extern const char* %s_token_names[%u];\n",
 		prefix, this->next + 1);
 	
+	#if 0
 	fprintf(source, "const char* %s_token_names[%u] = {\n",
 		prefix, this->next + 1);
 	
@@ -56,6 +57,7 @@ void tokenset_to_id_print_source(
 	}
 	
 	fprintf(source, "};\n");
+	#endif
 	
 	EXIT;
 }
