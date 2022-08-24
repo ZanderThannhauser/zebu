@@ -1,4 +1,6 @@
 
+#ifdef WITHOUT_ARENAS
+
 #include <stdlib.h>
 #include <debug.h>
 
@@ -13,16 +15,19 @@ void free_lex(struct lex* this)
 {
 	ENTER;
 	
+	free_tokenset(this->disambiguations.literal_ids);
+	
+	free_tokenset(this->disambiguations.regex_ids);
+	
 	avl_free_tree(this->dfa_to_id);
+	
 	avl_free_tree(this->dfa_from_id);
 	
 	avl_free_tree(this->tokenizer.cache);
-	
-	free_tokenset(this->disambiguations.literal_ids);
-	free_tokenset(this->disambiguations.regex_ids);
 	
 	free(this);
 	
 	EXIT;
 }
 
+#endif

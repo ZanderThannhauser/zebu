@@ -18,7 +18,7 @@ struct named_gbundle* new_named_gbundle(
 {
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct named_gbundle* this = arena_malloc(arena, sizeof(*this));
 	#else
 	struct named_gbundle* this = malloc(sizeof(*this));

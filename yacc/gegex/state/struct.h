@@ -41,8 +41,6 @@ struct gegex
 	struct memory_arena* arena;
 	#endif
 	
-	bool is_freeing;
-	
 	bool is_reduction_point;
 	
 	unsigned popcount;

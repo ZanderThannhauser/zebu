@@ -16,7 +16,7 @@
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 static void helper(FILE* out, struct yacc_state* state)
 {

@@ -1,5 +1,6 @@
 
 struct gegex;
+struct memory_arena;
 
 struct named_grammar* new_named_grammar(
 	#ifdef WITH_ARENAS

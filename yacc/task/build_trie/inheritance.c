@@ -8,7 +8,7 @@
 struct task_inheritance build_trie_task_inheritance = {
 	.compare = compare_build_trie_tasks,
 	.process = build_trie_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = build_trie_task_dotout,
 	#endif
 	.free = free_build_trie_task,

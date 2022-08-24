@@ -1,10 +1,14 @@
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 #include <stdio.h>
 #include <linux/limits.h>
+#include <stdlib.h>
+#include <assert.h>
 
 #include <debug.h>
+
+#include <defines/argv0.h>
 
 #include <misc/frame_counter.h>
 

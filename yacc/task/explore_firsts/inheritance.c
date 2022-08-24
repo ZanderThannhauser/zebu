@@ -8,7 +8,7 @@
 struct task_inheritance explore_firsts_task_inheritance = {
 	.compare = compare_explore_firsts_tasks,
 	.process = explore_firsts_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = explore_firsts_task_dotout,
 	#endif
 	.free = free_explore_firsts_task,

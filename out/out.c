@@ -207,11 +207,16 @@ void out(
 		#ifdef WITH_ARENAS
 		arena_dealloc(out_arena, specialized_source);
 		arena_dealloc(out_arena, specialized_header);
+		#else
+		free(specialized_source);
+		free(specialized_header);
 		#endif
 	}
 	
 	#ifdef WITH_ARENAS
+	
 	free_memory_arena(out_arena);
+	
 	#else
 
 	free_ystate_to_id(shared->ytoi);

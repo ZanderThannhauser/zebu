@@ -42,8 +42,6 @@ struct gegex* new_gegex(
 	
 	this->is_reduction_point = false;
 	
-	this->is_freeing = false;
-	
 	this->popcount = 0;
 	
 	this->refcount = 0;

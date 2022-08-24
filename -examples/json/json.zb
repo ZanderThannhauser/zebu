@@ -1,5 +1,5 @@
 
-%start value;
+%start: value;
 
 %skip: ' ';
 

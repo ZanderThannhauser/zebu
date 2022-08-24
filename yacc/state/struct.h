@@ -39,8 +39,6 @@ struct yacc_state
 	struct lex_state* tokenizer_start;
 	
 	unsigned phase;
-	
-	bool is_freeing;
 };
 
 #endif

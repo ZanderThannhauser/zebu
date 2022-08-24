@@ -566,7 +566,7 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 								
 								dpv(token);
 								
-								#ifdef WTIH_ARENAS
+								#ifdef WITH_ARENAS
 								struct tokenset* duped = tokenset_clone(arena, sublookaheads);
 								#else
 								struct tokenset* duped = tokenset_clone(sublookaheads);
@@ -691,7 +691,7 @@ void build_ystate_task_process(struct task* super, struct yacc_shared* shared)
 			runme;
 		}));
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		heap_push(shared->todo, new_free_lookahead_deps_task(arena, subldeps));
 		#else
 		heap_push(shared->todo, new_free_lookahead_deps_task(subldeps));

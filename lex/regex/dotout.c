@@ -1,10 +1,18 @@
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
+
+#include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
 
 #include <debug.h>
 
+#include <defines/argv0.h>
+
 #include <misc/frame_counter.h>
+
 #include <misc/phase_counters.h>
+
 #include <misc/escape.h>
 
 #include <set/of_regexes/foreach.h>

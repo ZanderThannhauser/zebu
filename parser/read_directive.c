@@ -11,6 +11,8 @@
 
 /*#include <enums/error.h>*/
 
+#include <arena/malloc.h>
+
 #include <misc/break_path.h>
 
 #include "options/struct.h"
@@ -88,14 +90,14 @@ void read_directive(
 		
 		// nfa to dfa
 		#ifdef WITH_ARENAS
-		struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start, grammar_arena);
+		struct gegex* dfa_start = gegex_nfa_to_dfa(grammar_arena, nfa_start);
 		#else
 		struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
 		#endif
 		
 		// simplify
 		#ifdef WITH_ARENAS
-		struct gegex* simp_start = gegex_simplify_dfa(dfa_start, grammar_arena);
+		struct gegex* simp_start = gegex_simplify_dfa(grammar_arena, dfa_start);
 		#else
 		struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
 		#endif
@@ -122,7 +124,7 @@ void read_directive(
 		if (!bun.is_nfa)
 		{
 			#ifdef WITH_ARENAS
-			bun = regex_dfa_to_nfa(bun.dfa, parser_arena);
+			bun = regex_dfa_to_nfa(parser_arena, bun.dfa);
 			#else
 			bun = regex_dfa_to_nfa(bun.dfa);
 			#endif
@@ -222,7 +224,7 @@ void read_directive(
 		struct dop right = read_dop();
 		
 		#ifdef WITH_ARENAS
-		TODO;
+		struct dlink* dlink = arena_malloc(options->arena, sizeof(*dlink));
 		#else
 		struct dlink* dlink = malloc(sizeof(*dlink));
 		#endif

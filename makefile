@@ -41,18 +41,32 @@ else
 $(error "invalid buildtype!");
 endif
 
-using_arenas ?= with
+verbose ?= yes
+ifeq ($(verbose), yes)
+CPPFLAGS += -D VERBOSE
+else ifeq ($(verbose), no)
+else
+$(error "invalid verbose!");
+endif
 
-ifeq ($(using_arenas), with)
+arenas ?= without
+ifeq ($(arenas), with)
 CPPFLAGS += -D WITH_ARENAS
-else ifeq ($(using_arenas), without)
+else ifeq ($(arenas), without)
 CPPFLAGS += -D WITHOUT_ARENAS
 else
-$(error "invalid using_arenas!");
+$(error "invalid arenas!");
+endif
+
+dotout ?= no
+ifeq ($(dotout), yes)
+CPPFLAGS += -D DOTOUT
+else ifeq ($(dotout), no)
+else
+$(error "invalid dotout!");
 endif
 
 on_error ?= do_nothing
-
 ifeq ($(on_error), do_nothing)
 ON_ERROR =
 else ifeq ($(on_error), open_editor)
@@ -61,7 +75,7 @@ else
 $(error "invalid on_error option!");
 endif
 
-buildprefix = gen/$(buildtype)-build/$(using_arenas)-arenas
+buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(arenas)-arenas/$(dotout)-dotout
 
 default: $(buildprefix)/zebu
 
@@ -72,7 +86,7 @@ ARGS += -v
 #ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
@@ -80,12 +94,11 @@ ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/ma
 #ARGS += --yacc=readline-debug -i ./-examples/C-expressions/C.zb -o ./-examples/C-expressions/output
 #ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
 #ARGS += --yacc=readline-debug -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
-#ARGS += --yacc=readline-debug -i ./-examples/includes/main.zb -o ./-examples/includes/output
 #ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-# ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
+#ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
 #ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
-# ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+#ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
@@ -94,11 +107,13 @@ ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/ma
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
 #ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
 
+#ARGS += --yacc=readline-debug -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+
 run: $(buildprefix)/zebu
 	$< $(ARGS)
 
 valrun: $(buildprefix)/zebu
-	valgrind --suppressions=./suppressions.txt $< $(ARGS)
+	valgrind $< $(ARGS)
 
 valrun-stop: $(buildprefix)/zebu
 	valgrind --gen-suppressions=yes -- $< ${ARGS}

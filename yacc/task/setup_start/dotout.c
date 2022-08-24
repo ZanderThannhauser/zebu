@@ -17,11 +17,11 @@
 /*#include "struct.h"*/
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 void setup_start_task_dotout(struct task* super, struct yacc_shared* shared)
 {
-	struct setup_start_task* const this = (void*) super;
+	// struct setup_start_task* const this = (void*) super;
 	ENTER;
 	
 	EXIT;

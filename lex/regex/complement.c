@@ -73,7 +73,7 @@ static void helper(
 }
 
 void regex_complement(
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
 	#endif
 	struct regex* start)
@@ -88,7 +88,7 @@ void regex_complement(
 	helper(start);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	

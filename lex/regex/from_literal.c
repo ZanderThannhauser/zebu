@@ -44,7 +44,7 @@ struct regex* regex_from_literal(
 	
 	accept->is_accepting = true;
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	

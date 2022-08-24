@@ -18,7 +18,7 @@ struct task* new_task(
 {
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct task* this = arena_malloc(arena, alloc_size);
 	#else
 	struct task* this = malloc(alloc_size);

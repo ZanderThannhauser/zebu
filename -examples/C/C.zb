@@ -3,7 +3,7 @@
 
 %disambiguate: literal > regex;
 
-%skip: [' ', '\t', '\n'] | "#" [~'\n'] '\n';
+%skip: [' ', '\t', '\n'] | "//" [~'\n'] '\n';
 
 `D`:  ['0' - '9'];
 `L`:  ['a' - 'z', 'A' - 'Z', '_'];
@@ -384,8 +384,6 @@ expression_statement
 	: ';'
 	| expression ';'
 	;
-
-// %right: "else";
 
 selection_statement
 	: "if" '(' expression ')' statement

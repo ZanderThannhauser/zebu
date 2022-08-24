@@ -24,7 +24,7 @@ void gegex_add_lambda_transition(
 		
 		#ifdef WITH_ARENAS
 		from->lambda_transitions.data = arena_realloc(
-			arena, from->lambda_transitions.data,
+			from->arena, from->lambda_transitions.data,
 			sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
 		#else
 		from->lambda_transitions.data = realloc(from->lambda_transitions.data,

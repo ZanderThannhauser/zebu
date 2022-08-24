@@ -136,8 +136,8 @@ unsigned read_token(struct lexer* lexer, FILE* stream, unsigned state)
 			printf("c = %s (0x%X)\n", escaped, c);
 			
 			next = 0
-				?: (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N( <PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
+				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
+				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
 		}
 		else if ((c = getc(stream)) != EOF)
 		{
@@ -150,8 +150,8 @@ unsigned read_token(struct lexer* lexer, FILE* stream, unsigned state)
 			printf("c = %s (0x%X)\n", escaped, c);
 			
 			next = 0
-				?: (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N( <PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
+				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
+				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
 		}
 		else
 		{
@@ -215,10 +215,13 @@ void parse(FILE* stream)
 	
 	unsigned g = 0, t = read_token(&lexer, stream, 1);
 	
+	printf("t = %u (%s)\n", t, <PREFIX>_token_names[t]);
+	
 	while (stack.n)
 	{
 		unsigned y = stack.data[stack.n - 1], s, r;
 		
+		#if 0
 		{
 			for (unsigned i = 0, n = stack.n; i < n; i++)
 			{
@@ -229,12 +232,17 @@ void parse(FILE* stream)
 			}
 			puts("");
 		}
+		#endif
 		
 		if (y < N(<PREFIX>_shifts) && t < N(*<PREFIX>_shifts) && (s = <PREFIX>_shifts[y][g ?: t]))
 		{
 			push(s);
 			if (g) g = 0;
-			else t = read_token(&lexer, stream, <PREFIX>_starts[s]);
+			else
+			{
+				t = read_token(&lexer, stream, <PREFIX>_starts[s]);
+				printf("t = %u (%s)\n", t, <PREFIX>_token_names[t]);
+			}
 		}
 		else if (y < N(<PREFIX>_reduces) && t < N(*<PREFIX>_reduces) && (r = <PREFIX>_reduces[y][t]))
 		{

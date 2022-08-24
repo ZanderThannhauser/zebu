@@ -142,16 +142,18 @@ static struct regex* helper(
 			
 			if (A_trans->value < B_trans->value)
 			{
-				TODO;
-				#if 0
 				dpv(A_trans->value);
 				
 				if (B->default_transition_to)
 				{
-					struct regex* substate = helper(A_trans->to, B->default_transition_to, mappings, arena);
-					regex_add_transition(state, arena, A_trans->value, substate);
+					#ifdef WITH_ARENAS
+					struct regex* substate = helper(arena, mappings, A_trans->to, B->default_transition_to);
+					#else
+					struct regex* substate = helper(mappings, A_trans->to, B->default_transition_to);
+					#endif
+					
+					regex_add_transition(state, A_trans->value, substate);
 				}
-				#endif
 				
 				a.i++;
 			}
@@ -168,16 +170,17 @@ static struct regex* helper(
 			}
 			else
 			{
-				TODO;
-				#if 0
 				dpv(A_trans->value);
 				
-				struct regex* substate = helper(A_trans->to, B_trans->to, mappings, arena);
+				#ifdef WITH_ARENAS
+				struct regex* substate = helper(arena, mappings, A_trans->to, B_trans->to);
+				#else
+				struct regex* substate = helper(mappings, A_trans->to, B_trans->to);
+				#endif
 				
-				regex_add_transition(state, arena, A_trans->value, substate);
+				regex_add_transition(state, A_trans->value, substate);
 				
 				a.i++, b.i++;
-				#endif
 			}
 		}
 		
@@ -223,7 +226,7 @@ struct regex* regex_intersect_dfas(
 {
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	#else
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
@@ -235,7 +238,7 @@ struct regex* regex_intersect_dfas(
 	struct regex* start = helper(mappings, A, B);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	

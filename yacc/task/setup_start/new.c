@@ -15,7 +15,7 @@ struct setup_start_task* new_setup_start_task(
 	ENTER;
 	
 	struct setup_start_task* this = (void*) new_task(
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		arena,
 		#endif
 		tk_setup_start,

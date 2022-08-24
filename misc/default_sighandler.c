@@ -1,5 +1,5 @@
 
-#ifdef RELEASE
+#ifdef VERBOSE
 
 #include <stddef.h>
 #include <stdio.h>

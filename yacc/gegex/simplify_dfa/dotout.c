@@ -1,5 +1,5 @@
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 #include <stdio.h>
 #include <linux/limits.h>

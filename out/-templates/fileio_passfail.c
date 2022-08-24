@@ -81,16 +81,16 @@ unsigned read_token(struct lexer* lexer, FILE* stream, unsigned state)
 			c = lexer->data[i];
 			
 			next = 0
-				?: (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N( <PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
+				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
+				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
 		}
 		else if ((c = getc(stream)) != EOF)
 		{
 			append(c);
 			
 			next = 0
-				?: (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N( <PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
+				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
+				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
 		}
 		else
 		{

@@ -308,6 +308,17 @@ const char* zebu_grammar_names[18] = {
 	[14] = "mul",
 	[12] = "root",
 };
+const char* zebu_token_names[18] = {
+	[1] = "0",
+	[3] = "1",
+	[2] = "2",
+	[10] = "3",
+	[4] = "4",
+	[7] = "5",
+	[5] = "6",
+	[6] = "7",
+	[8] = "8",
+};
 
 #include <assert.h>
 #include <stdarg.h>

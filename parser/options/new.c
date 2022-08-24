@@ -27,6 +27,10 @@ struct options* new_options(
 	this->disambiguatations.head = NULL;
 	this->disambiguatations.tail = NULL;
 	
+	#ifdef WITH_ARENAS
+	this->arena = arena;
+	#endif
+	
 	EXIT;
 	return this;
 }

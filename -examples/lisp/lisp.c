@@ -442,6 +442,15 @@ const char* zebu_grammar_names[12] = {
 	[9] = "(trie #1)",
 	[7] = "value",
 };
+const char* zebu_token_names[12] = {
+	[1] = "0",
+	[3] = "1",
+	[4] = "2",
+	[5] = "3",
+	[2] = "4",
+	[8] = "5",
+	[6] = "6",
+};
 
 #include <assert.h>
 #include <stdarg.h>
@@ -576,22 +585,31 @@ static void escape(char *out, unsigned char in)
 		case '^':
 		case '&':
 		case '*':
-		case '(':
-		case ')':
 		case '-':
 		case '+':
 		case '=':
 		case '|':
+		case '<': case '>':
+		case '(': case ')':
 		case '{': case '}':
 		case '[': case ']':
 		case ':': case ';':
 		case ',': case '.':
+		case '_':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':
 			*out++ = in;
 			*out = 0;
 			break;
+		
+		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
+		
+		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
+		
+		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
 		
 		default:
 			sprintf(out, "\\x%02X", in);

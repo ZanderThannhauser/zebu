@@ -30,11 +30,11 @@ static void free_dynvector_node(void* ptr)
 {
 	ENTER;
 	
-	struct dynvector_node* node = ptr;
 	
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
+	struct dynvector_node* node = ptr;
 	free(node);
 	#endif
 	

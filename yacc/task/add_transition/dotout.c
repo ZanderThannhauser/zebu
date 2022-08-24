@@ -1,6 +1,9 @@
 
 #include <stdio.h>
 #include <debug.h>
+#include <limits.h>
+#include <assert.h>
+#include <stdlib.h>
 
 #include <avl/tree_t.h>
 
@@ -22,7 +25,7 @@
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 void add_transition_task_dotout(struct task* super, struct yacc_shared* shared)
 {

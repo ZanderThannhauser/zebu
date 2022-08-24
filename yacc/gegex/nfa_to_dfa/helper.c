@@ -9,6 +9,7 @@
 
 #include <arena/malloc.h>
 #include <arena/dealloc.h>
+#include <arena/strdup.h>
 
 #include <avl/insert.h>
 #include <avl/search.h>
@@ -35,7 +36,7 @@
 #include "helper.h"
 
 struct gegex* gegex_nfa_to_dfa_helper(
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	unsigned *node_count,
 	#endif
 	#ifdef WITH_ARENAS
@@ -56,7 +57,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 	}
 	else
 	{
-		#ifdef RELEASE
+		#ifdef VERBOSE
 		(*node_count)++;
 		#endif
 		
@@ -100,7 +101,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 		
 		memset(*indexes, 0, sizeof(*indexes));
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		struct gegextree* subset = new_gegextree(arena);
 		#else
 		struct gegextree* subset = new_gegextree();
@@ -135,7 +136,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 			dpv(len(subset));
 			
 			struct gegex* to = gegex_nfa_to_dfa_helper(
-				#ifdef RELEASE
+				#ifdef VERBOSE
 				node_count,
 				#endif
 				#ifdef WITH_ARENAS
@@ -187,7 +188,7 @@ struct gegex* gegex_nfa_to_dfa_helper(
 			dpv(len(subset));
 			
 			struct gegex* to = gegex_nfa_to_dfa_helper(
-				#ifdef RELEASE
+				#ifdef VERBOSE
 				node_count,
 				#endif
 				#ifdef WITH_ARENAS

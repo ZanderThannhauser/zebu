@@ -15,6 +15,7 @@
 #include <avl/free_tree.h>
 
 #include <arena/malloc.h>
+#include <arena/strdup.h>
 #include <arena/dealloc.h>
 
 #include "../state/struct.h"
@@ -140,7 +141,7 @@ static struct gegex* clone_helper(
 				/* from: */ new,
 				/* value: */ ele->token,
 				/* to: */ clone_helper(
-					#ifdef WTIH_ARENAS
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
 					#endif
 					/* mappings: */ mappings,
@@ -186,7 +187,7 @@ struct gegex* gegex_simplify_dfa_clone(
 	
 	dpv(original_start);
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	#else
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);

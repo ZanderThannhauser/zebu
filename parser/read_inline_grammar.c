@@ -10,11 +10,12 @@
 
 #include <arena/memdup.h>
 
-/*#include <yacc/gegex/state/struct.h>*/
+#include <yacc/gegex/state/struct.h>
 /*#include <yacc/gegex/state/new.h>*/
-/*#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>*/
-/*#include <yacc/gegex/simplify_dfa/simplify_dfa.h>*/
-/*#include <yacc/gegex/state/free.h>*/
+#include <yacc/gegex/dfa_to_nfa.h>
+#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
+#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
+#include <yacc/gegex/state/free.h>
 
 #include "grammar/root.h"
 #include "grammar/gbundle.h"
@@ -45,6 +46,7 @@ void read_inline_grammar(
 	
 	#if WITH_ARENAS
 	struct memory_arena* const arena = scope_get_arena(scope);
+	
 	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
 	#else
 	char* name = strdup(tokenizer->tokenchars.chars);
@@ -69,7 +71,27 @@ void read_inline_grammar(
 		/* scope:      */ scope,
 		/* lex:        */ lex);
 	
-	scope_declare_inline_grammar(scope, name, bundle.start, bundle.end);
+	bundle.end->is_reduction_point = true;
+	
+	struct gegex* nfa_start = bundle.start;
+	
+	#ifdef WITH_ARENAS
+	struct gegex* dfa_start = gegex_nfa_to_dfa(arena, nfa_start);
+	struct gegex* simp_start = gegex_simplify_dfa(arena, dfa_start);
+	#else
+	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
+	#endif
+	
+	struct gbundle bundle2 = gegex_dfa_to_nfa(
+		#ifdef WITH_ARENAS
+		arena,
+		#endif
+		simp_start);
+	
+	scope_declare_inline_grammar(scope, name, bundle2.start, bundle2.end);
+	
+	free_gegex(nfa_start), free_gegex(dfa_start);
 	
 	if (true
 		&& tokenizer->token != t_semicolon

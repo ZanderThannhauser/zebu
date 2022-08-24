@@ -9,7 +9,7 @@ struct task_inheritance
 	
 	void (*process)(struct task*, struct yacc_shared*);
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	void (*dotout)(struct task*, struct yacc_shared*);
 	#endif
 	

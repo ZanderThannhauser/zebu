@@ -23,6 +23,8 @@ enum task_kind
 	tk_add_transition,
 	
 	tk_build_ystate,
+	
+	number_of_task_kinds,
 };
 
 #endif

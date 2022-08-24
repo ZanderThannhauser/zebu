@@ -1,5 +1,5 @@
 
-%start hard;
+%start: hard;
 
 hard: "!" | hard "," hard ".";
 

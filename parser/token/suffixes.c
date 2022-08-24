@@ -58,7 +58,7 @@ struct rbundle read_suffixes_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_after_suffix_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -70,7 +70,7 @@ struct rbundle read_suffixes_token_expression(
 			if (!retval.is_nfa)
 			{
 				#ifdef WITH_ARENAS
-				retval = regex_dfa_to_nfa(retval.dfa, arena);
+				retval = regex_dfa_to_nfa(arena, retval.dfa);
 				#else
 				retval = regex_dfa_to_nfa(retval.dfa);
 				#endif
@@ -79,7 +79,7 @@ struct rbundle read_suffixes_token_expression(
 			if (token_skip)
 			{
 				#ifdef WITH_ARENAS
-				struct regex* cloned = regex_clone(token_skip, arena);
+				struct regex* cloned = regex_clone(arena, token_skip);
 				#else
 				struct regex* cloned = regex_clone(token_skip);
 				#endif
@@ -98,7 +98,7 @@ struct rbundle read_suffixes_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_after_suffix_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -110,7 +110,7 @@ struct rbundle read_suffixes_token_expression(
 			if (!retval.is_nfa)
 			{
 				#ifdef WITH_ARENAS
-				retval = regex_dfa_to_nfa(retval.dfa, arena);
+				retval = regex_dfa_to_nfa(arena, retval.dfa);
 				#else
 				retval = regex_dfa_to_nfa(retval.dfa);
 				#endif
@@ -119,7 +119,7 @@ struct rbundle read_suffixes_token_expression(
 			if (token_skip)
 			{
 				#ifdef WITH_ARENAS
-				struct regex* cloned = regex_clone(token_skip, arena);
+				struct regex* cloned = regex_clone(arena, token_skip);
 				#else
 				struct regex* cloned = regex_clone(token_skip);
 				#endif
@@ -136,7 +136,7 @@ struct rbundle read_suffixes_token_expression(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ regex_after_suffix_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -228,7 +228,7 @@ struct rbundle read_suffixes_token_expression(
 			retval.nfa.start = start;
 			retval.nfa.end = end;
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			

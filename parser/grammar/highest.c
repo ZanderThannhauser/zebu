@@ -110,8 +110,8 @@ struct gbundle read_highest_production(
 			if (options->skip)
 			{
 				#ifdef WITH_ARENAS
-				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				struct regex* clone = regex_clone(options->skip, token_arena);
+				struct rbundle nfa = regex_dfa_to_nfa(token_arena, start);
+				struct regex* clone = regex_clone(token_arena, options->skip);
 				#else
 				struct rbundle nfa = regex_dfa_to_nfa(start);
 				struct regex* clone = regex_clone(options->skip);
@@ -119,21 +119,21 @@ struct gbundle read_highest_production(
 				
 				regex_add_lambda_transition(clone, start);
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
 				
 				#ifdef WITH_ARENAS
-				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				start = regex_simplify_dfa(dfa, token_arena);
+				struct regex* dfa = regex_nfa_to_dfa(token_arena, clone);
+				start = regex_simplify_dfa(token_arena, dfa);
 				#else
 				struct regex* dfa = regex_nfa_to_dfa(clone);
 				start = regex_simplify_dfa(dfa);
 				#endif
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 				
@@ -154,7 +154,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -174,8 +174,8 @@ struct gbundle read_highest_production(
 			if (options->skip)
 			{
 				#ifdef WITH_ARENAS
-				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				struct regex* clone = regex_clone(options->skip, token_arena);
+				struct rbundle nfa = regex_dfa_to_nfa(token_arena, start);
+				struct regex* clone = regex_clone(token_arena, options->skip);
 				#else
 				struct rbundle nfa = regex_dfa_to_nfa(start);
 				struct regex* clone = regex_clone(options->skip);
@@ -183,21 +183,21 @@ struct gbundle read_highest_production(
 				
 				regex_add_lambda_transition(clone, start);
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
 				
 				#ifdef WITH_ARENAS
-				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				start = regex_simplify_dfa(dfa, token_arena);
+				struct regex* dfa = regex_nfa_to_dfa(token_arena, clone);
+				start = regex_simplify_dfa(token_arena, dfa);
 				#else
 				struct regex* dfa = regex_nfa_to_dfa(clone);
 				start = regex_simplify_dfa(dfa);
 				#endif
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 				
@@ -218,7 +218,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -245,7 +245,7 @@ struct gbundle read_highest_production(
 			}
 			
 			#ifdef WITH_ARENAS
-			struct regex* start = regex_from_charset(charset, token_arena);
+			struct regex* start = regex_from_charset(token_arena, charset);
 			#else
 			struct regex* start = regex_from_charset(charset);
 			#endif
@@ -253,8 +253,8 @@ struct gbundle read_highest_production(
 			if (options->skip)
 			{
 				#ifdef WITH_ARENAS
-				struct rbundle nfa = regex_dfa_to_nfa(start, token_arena);
-				struct regex* clone = regex_clone(options->skip, token_arena);
+				struct rbundle nfa = regex_dfa_to_nfa(token_arena, start);
+				struct regex* clone = regex_clone(token_arena, options->skip);
 				#else
 				struct rbundle nfa = regex_dfa_to_nfa(start);
 				struct regex* clone = regex_clone(options->skip);
@@ -262,21 +262,21 @@ struct gbundle read_highest_production(
 				
 				regex_add_lambda_transition(clone, start);
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(clone, __PRETTY_FUNCTION__);
 				#endif
 				
 				nfa.nfa.end->is_accepting = true;
 				
 				#ifdef WITH_ARENAS
-				struct regex* dfa = regex_nfa_to_dfa(clone, token_arena);
-				start = regex_simplify_dfa(dfa, token_arena);
+				struct regex* dfa = regex_nfa_to_dfa(token_arena, clone);
+				start = regex_simplify_dfa(token_arena, dfa);
 				#else
 				struct regex* dfa = regex_nfa_to_dfa(clone);
 				start = regex_simplify_dfa(dfa);
 				#endif
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(start, __PRETTY_FUNCTION__);
 				#endif
 				
@@ -297,7 +297,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			
@@ -330,14 +330,14 @@ struct gbundle read_highest_production(
 				if (!regex.is_nfa)
 				{
 					#ifdef WITH_ARENAS
-					regex = regex_dfa_to_nfa(regex.dfa, token_arena);
+					regex = regex_dfa_to_nfa(token_arena, regex.dfa);
 					#else
 					regex = regex_dfa_to_nfa(regex.dfa);
 					#endif
 				}
 				
 				#ifdef WITH_ARENAS
-				struct regex* clone = regex_clone(options->skip, token_arena);
+				struct regex* clone = regex_clone(token_arena, options->skip);
 				#else
 				struct regex* clone = regex_clone(options->skip);
 				#endif
@@ -346,7 +346,7 @@ struct gbundle read_highest_production(
 				
 				regex.nfa.start = clone;
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				regex_dotout(regex.nfa.start, __PRETTY_FUNCTION__);
 				#endif
 			}
@@ -358,8 +358,8 @@ struct gbundle read_highest_production(
 				struct regex* nfa = regex.nfa.start;
 				
 				#ifdef WITH_ARENAS
-				struct regex* dfa = regex_nfa_to_dfa(nfa, token_arena);
-				start = regex_simplify_dfa(dfa, token_arena);
+				struct regex* dfa = regex_nfa_to_dfa(token_arena, nfa);
+				start = regex_simplify_dfa(token_arena, dfa);
 				#else
 				struct regex* dfa = regex_nfa_to_dfa(nfa);
 				start = regex_simplify_dfa(dfa);
@@ -387,7 +387,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -426,7 +426,7 @@ struct gbundle read_highest_production(
 				/* tokenizer: */ tokenizer,
 				/* machine:   */ production_after_highest_machine);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			break;

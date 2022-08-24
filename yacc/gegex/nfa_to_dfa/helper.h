@@ -1,5 +1,5 @@
 struct gegex* gegex_nfa_to_dfa_helper(
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	unsigned *node_count,
 	#endif
 	#ifdef WITH_ARENAS

@@ -13,7 +13,7 @@ void free_gegex_pair(void* ptr)
 	struct gegex_pair* this = ptr;
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	arena_dealloc(this->arena, this);
 	#else
 	free(this);

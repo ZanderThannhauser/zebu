@@ -84,7 +84,7 @@ struct rbundle read_concat_token_expression(
 				.nfa.end = next.nfa.end,
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			break;

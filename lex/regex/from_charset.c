@@ -49,7 +49,7 @@ struct regex* regex_from_charset(
 	else
 		inside->is_accepting = true;
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	

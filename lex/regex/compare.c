@@ -24,6 +24,10 @@ struct node
 	const struct regex* regex; // must be the first
 	
 	unsigned number;
+	
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena;
+	#endif
 };
 
 static void insert_number(
@@ -38,6 +42,7 @@ static void insert_number(
 	
 	#ifdef WITH_ARENAS
 	struct node* new = arena_malloc(arena, sizeof(*new));
+	new->arena = arena;
 	#else
 	struct node* new = malloc(sizeof(*new));
 	#endif
@@ -66,7 +71,7 @@ static void free_node(void* ptr)
 	ENTER;
 	
 	#ifdef WITH_ARENAS
-	TODO;
+	arena_dealloc(node->arena, node);
 	#else
 	free(node);
 	#endif
@@ -146,73 +151,92 @@ int compare_regexes(
 			
 			next_number++;
 			
-			if (a != b)
+			// compare acceptance?
+			if (!!a->is_accepting > !!b->is_accepting)
+				cmp = +1;
+			else if (!!a->is_accepting < !!b->is_accepting)
+				cmp = -1;
+			
+			unsigned a_i = 0, a_n = a->transitions.n,
+				     b_i = 0, b_n = b->transitions.n;
+			
+			// compare transition values and destinations
+			while (!cmp && a_i < a_n && b_i < b_n)
 			{
-				// compare acceptance?
-				if (!!a->is_accepting > !!b->is_accepting)
-					cmp = +1;
-				else if (!!a->is_accepting < !!b->is_accepting)
-					cmp = -1;
+				const struct transition* const at = a->transitions.data[a_i];
+				const struct transition* const bt = b->transitions.data[b_i];
 				
-				unsigned a_i = 0, a_n = a->transitions.n,
-					     b_i = 0, b_n = b->transitions.n;
+				dpvc(at->value);
+				dpvc(bt->value);
 				
-				// compare transition values and destinations
-				while (!cmp && a_i < a_n && b_i < b_n)
+				if (at->value < bt->value)
 				{
-					const struct transition* const at = a->transitions.data[a_i];
-					const struct transition* const bt = b->transitions.data[b_i];
-					
-					dpvc(at->value);
-					dpvc(bt->value);
-					
-					if (at->value < bt->value)
-						cmp = -1, a_i++;
-					else if (bt->value < at->value)
-						cmp = +1, b_i++;
+					if (b->default_transition_to)
+					{
+						TODO;
+					}
 					else
-						cmp = helper(at->to, bt->to), a_i++, b_i++;
+						cmp = -1, a_i++;
 				}
-				
-				while (!cmp && a_i < a_n && b->default_transition_to)
+				else if (bt->value < at->value)
 				{
-					TODO;
+					if (a->default_transition_to)
+					{
+						TODO;
+					}
+					else
+						cmp = +1, b_i++;
 				}
+				else
+					cmp = helper(at->to, bt->to), a_i++, b_i++;
+			}
+			
+			while (!cmp && a_i < a_n && b->default_transition_to)
+			{
+				TODO;
+			}
+			
+			while (!cmp && a->default_transition_to && b_i < b_n)
+			{
+				TODO;
+			}
+			
+			if (!cmp)
+			{
+				if (a_i < a_n)
+					cmp = +1;
+				else if (b_i < b_n)
+					cmp = -1;
+			}
+			
+			// possibly compare default states
+			if (!cmp)
+			{
+				const struct regex* const at = a->default_transition_to;
+				const struct regex* const bt = b->default_transition_to;
 				
-				while (!cmp && b_i < b_n && a->default_transition_to)
-				{
-					TODO;
-				}
+				if (at)
+					if (bt)
+						cmp = helper(at, bt);
+					else
+						cmp = +1;
+				else if (bt)
+					cmp = -1;
+			}
+			
+			// possibly compare EOF states
+			if (!cmp)
+			{
+				const struct regex* const at = a->EOF_transition_to;
+				const struct regex* const bt = b->EOF_transition_to;
 				
-				// possibly compare default states
-				if (!cmp)
-				{
-					const struct regex* const at = a->default_transition_to;
-					const struct regex* const bt = b->default_transition_to;
-					
-					if (at)
-						if (bt)
-							cmp = helper(at, bt);
-						else
-							cmp = +1;
-					else if (bt)
-						cmp = -1;
-				}
-				
-				// possibly compare EOF states
-				if (!cmp)
-				{
-					const struct regex* const at = a->EOF_transition_to;
-					const struct regex* const bt = b->EOF_transition_to;
-					
-					if (at)
-						if (bt)
-							cmp = helper(at, bt);
-						else
-							cmp = +1;
-					else if (bt)
-						cmp = -1;
-				}
+				if (at)
+					if (bt)
+						cmp = helper(at, bt);
+					else
+						cmp = +1;
+				else if (bt)
+					cmp = -1;
 			}
 		}
 		

@@ -8,7 +8,7 @@
 struct task_inheritance add_transition_task_inheritance = {
 	.compare = compare_add_transition_tasks,
 	.process = add_transition_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = add_transition_task_dotout,
 	#endif
 	.free = free_add_transition_task,

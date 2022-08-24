@@ -39,14 +39,12 @@ struct regex* new_regex(
 	
 	this->phase = 0;
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	this->dotout_phase = 0;
 	#endif
 	
 	this->is_accepting = 0;
 	this->priority = 0;
-	
-	this->is_freeing = false;
 	
 	EXIT;
 	return this;

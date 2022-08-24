@@ -20,7 +20,7 @@ bool tokenset_update(struct tokenset* this, struct tokenset* them)
 	
 	unsigned  new_cap = this->n + them->n;
 	unsigned  new_n = 0;
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	unsigned* new_data = arena_malloc(this->arena, sizeof(*new_data) * new_cap);
 	#else
 	unsigned* new_data = malloc(sizeof(*new_data) * new_cap);

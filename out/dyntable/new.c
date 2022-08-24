@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
@@ -32,11 +33,13 @@ static void free_dyntable_node(void* ptr)
 {
 	ENTER;
 	
-	struct dyntable_node* node = ptr;
 	
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
+	
+	struct dyntable_node* node = ptr;
+	
 	free(node);
 	#endif
 	

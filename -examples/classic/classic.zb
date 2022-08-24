@@ -31,7 +31,7 @@
 // to parser state machine.
 
 // %disambiguate: error;
-// %disambiguate: literal > regex;
+%disambiguate: literal > regex;
 // %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
 
 %skip: [' ', 'g'];

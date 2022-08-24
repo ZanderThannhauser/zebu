@@ -23,7 +23,7 @@ void free_named_charset(void* ptr)
 	
 	free_charset(this->charset);
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	TODO;
 	#else
 	free(this);

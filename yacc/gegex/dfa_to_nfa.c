@@ -1,5 +1,4 @@
 
-#if 0
 #include <debug.h>
 
 #include <misc/phase_counters.h>
@@ -12,7 +11,6 @@
 
 static void helper(
 	struct gegex* state,
-	struct memory_arena* scratchpad,
 	struct gegex* end)
 {
 	unsigned i, n;
@@ -24,23 +22,23 @@ static void helper(
 		
 		if (state->is_reduction_point)
 		{
-			gegex_add_lambda_transition(state, scratchpad, end);
+			gegex_add_lambda_transition(state, end);
 			state->is_reduction_point = false;
 		}
 		
 		for (i = 0, n = state->transitions.n; i < n; i++)
 		{
-			helper(state->transitions.data[i]->to, scratchpad, end);
+			helper(state->transitions.data[i]->to, end);
 		}
 		
 		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
-			helper(state->grammar_transitions.data[i]->to, scratchpad, end);
+			helper(state->grammar_transitions.data[i]->to, end);
 		}
 		
 		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
-			helper(state->lambda_transitions.data[i], scratchpad, end);
+			helper(state->lambda_transitions.data[i], end);
 		}
 	}
 	
@@ -48,16 +46,22 @@ static void helper(
 }
 
 struct gbundle gegex_dfa_to_nfa(
-	struct gegex* dfa,
-	struct memory_arena* scratchpad)
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
+	struct gegex* dfa)
 {
 	ENTER;
 	
-	struct gegex* end = new_gegex(scratchpad);
+	#ifdef WITH_ARENAS
+	struct gegex* end = new_gegex(arena);
+	#else
+	struct gegex* end = new_gegex();
+	#endif
 	
 	yacc_phase_counter++;
 	
-	helper(dfa, scratchpad, end);
+	helper(dfa, end);
 	
 	EXIT;
 	return (struct gbundle) {dfa, end};
@@ -72,4 +76,3 @@ struct gbundle gegex_dfa_to_nfa(
 
 
 
-#endif

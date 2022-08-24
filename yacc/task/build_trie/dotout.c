@@ -1,4 +1,6 @@
 
+#include <assert.h>
+#include <limits.h>
 #include <stdio.h>
 #include <debug.h>
 
@@ -15,7 +17,7 @@
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 static void helper(FILE* out, struct gegex* state)
 {

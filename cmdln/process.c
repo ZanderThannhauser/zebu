@@ -101,7 +101,9 @@ struct cmdln* cmdln_process(
 				break;
 			
 			case 'v':
+				#ifdef VERBOSE
 				verbose = true;
+				#endif
 				break;
 			
 			case 'h':
@@ -140,7 +142,9 @@ struct cmdln* cmdln_process(
 	
 	dpv(flags->parser_template);
 	
+	#ifdef VERBOSE
 	dpvb(verbose);
+	#endif
 	
 	EXIT;
 	return flags;

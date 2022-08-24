@@ -60,7 +60,7 @@ static struct gegex* process_to(
 	if (mirrorme_to->refcount == 1)
 	{
 		heap_push(shared->todo, new_build_trie_task(
-			#ifdef WTIH_ARENAS
+			#ifdef WITH_ARENAS
 			arena,
 			#endif
 			this->name,
@@ -79,7 +79,7 @@ static struct gegex* process_to(
 		
 		dpvs(gtot->trie);
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		struct gegex* reduction = new_gegex(arena);
 		#else
 		struct gegex* reduction = new_gegex();
@@ -88,7 +88,7 @@ static struct gegex* process_to(
 		reduction->is_reduction_point = true;
 		reduction->popcount = this->popcount + 2;
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		char* dup = arena_strdup(arena, gtot->trie);
 		#else
 		char* dup = strdup(gtot->trie);
@@ -125,10 +125,16 @@ void build_trie_task_process(struct task* super, struct yacc_shared* shared)
 	{
 		char* grammar = mirrorme->grammar_transitions.data[i]->grammar;
 		
+		#ifdef WITH_ARENAS
+		char* dup = arena_strdup(shared->arena, grammar);
+		#else
+		char* dup = strdup(grammar);
+		#endif
+		
 		struct gegex* mirrorme_to = mirrorme->grammar_transitions.data[i]->to;
 		struct gegex* building_to = process_to(this, shared, mirrorme_to);
 		
-		gegex_add_grammar_transition(building, grammar, building_to);
+		gegex_add_grammar_transition(building, dup, building_to);
 	}
 	
 	EXIT;

@@ -47,7 +47,7 @@ struct gbundle read_concat_production(
 			
 			gegex_add_lambda_transition(inner.end, right.start);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(inner.start, right.end, __PRETTY_FUNCTION__);
 			#endif
 			

@@ -11,7 +11,7 @@
 
 #include "struct.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 static void helper(FILE* out, struct lex_state* state)
 {

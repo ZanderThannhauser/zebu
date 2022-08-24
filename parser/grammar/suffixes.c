@@ -40,7 +40,7 @@ struct gbundle read_suffixes_production(
 		{
 			gegex_add_lambda_transition(retval.end, retval.start);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			
@@ -53,7 +53,7 @@ struct gbundle read_suffixes_production(
 			gegex_add_lambda_transition(retval.end,retval.start);
 			gegex_add_lambda_transition(retval.start, retval.end);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			
@@ -65,7 +65,7 @@ struct gbundle read_suffixes_production(
 		{
 			gegex_add_lambda_transition(retval.start, retval.end);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
 			#endif
 			

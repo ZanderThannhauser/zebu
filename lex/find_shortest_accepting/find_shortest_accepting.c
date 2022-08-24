@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -25,7 +26,6 @@
 
 #include <misc/phase_counters.h>
 
-#ifdef DEBUGGING
 
 #include <misc/escape.h>
 #include <misc/frame_counter.h>
@@ -149,6 +149,7 @@ static struct lex_state* get_prev(
 	}
 }
 
+#ifdef DOTOUT
 static void helper(FILE* out, struct lex_state* state,
 	struct avl_tree_t* dist,
 	unsigned max_dist)
@@ -502,3 +503,4 @@ struct lfsa_rettype lex_find_shortest_accepting(
 
 
 
+#endif

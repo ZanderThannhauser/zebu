@@ -19,8 +19,12 @@ void free_yacc_shared(struct yacc_shared* this)
 	avl_free_tree(this->new_grammar);
 	
 	avl_free_tree(this->firsts.sets);
+	
 	avl_free_tree(this->firsts.dependant_of);
+	
 	avl_free_tree(this->firsts.dependant_on);
+	
+	avl_free_tree(this->gegex_to_trie);
 	
 	avl_free_tree(this->stateinfo_to_state);
 	

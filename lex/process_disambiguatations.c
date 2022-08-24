@@ -4,8 +4,9 @@
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
-/*#include <memory/srealloc.h>*/
+#include <arena/malloc.h>
+#include <arena/realloc.h>
+#include <arena/dealloc.h>
 
 #include <set/of_tokens/struct.h>
 #include <set/of_tokens/new.h>
@@ -34,65 +35,111 @@ struct tokenset_array
 {
 	struct tokenset** data;
 	unsigned n, cap;
+	
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena;
+	#endif
 };
 
-static struct tokenset_array* new_tokenset_array()
-{
-	TODO;
-	#if 0
-	struct tokenset_array* this = smalloc(sizeof(*this));
+static struct tokenset_array* new_tokenset_array(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena
+	#endif
+) {
+	ENTER;
+	
+	#ifdef WITH_ARENAS
+	struct tokenset_array* this = arena_malloc(arena, sizeof(*this));
+	this->arena = arena;
+	#else
+	struct tokenset_array* this = malloc(sizeof(*this));
+	#endif
+	
 	this->data = NULL;
 	this->n = 0, this->cap = 0;
+	
+	EXIT;
 	return this;
-	#endif
 }
 
-#if 0
 static void tokenset_array_append(struct tokenset_array* this, struct tokenset* ele)
 {
-	TODO;
-	#if 0
+	ENTER;
+	
 	if (this->n + 1 >= this->cap)
 	{
 		this->cap = this->cap << 1 ?: 1;
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
+		
+		dpv(this->cap);
+		
+		#ifdef WITH_ARENAS
+		this->data = arena_realloc(this->arena, this->data, sizeof(*this->data) * this->cap);
+		#else
+		this->data = realloc(this->data, sizeof(*this->data) * this->cap);
+		#endif
 	}
 	
 	this->data[this->n++] = ele;
-	#endif
+	
+	EXIT;
 }
-#endif
 
 static void free_tokenset_array(struct tokenset_array* this)
 {
+	ENTER;
+	
 	for (unsigned i = 0, n = this->n; i < n; i++)
+	{
 		free_tokenset(this->data[i]);
+	}
+	
+	#ifdef WITH_ARENAS
+	arena_dealloc(this->arena, this);
+	#else
 	free(this);
+	#endif
+	
+	EXIT;
 }
 
 static struct tokenset_array* msort(
+	#ifdef WITH_ARENAS
+	struct memory_arena* arena,
+	#endif
 	struct tokenset** unsorted, unsigned n,
 	int (*compare)(unsigned, unsigned))
 {
-	struct tokenset_array* retval = new_tokenset_array();
 	ENTER;
 	
 	dpv(n);
 	
-	TODO;
-	#if 0
+	#ifdef WITH_ARENAS
+	struct tokenset_array* retval = new_tokenset_array(arena);
+	#else
+	struct tokenset_array* retval = new_tokenset_array();
+	#endif
+	
 	if (n < 2)
 	{
 		assert(n == 1);
 		
+		#ifdef WITH_ARENAS
+		tokenset_array_append(retval, tokenset_clone(arena, unsorted[0]));
+		#else
 		tokenset_array_append(retval, tokenset_clone(unsorted[0]));
+		#endif
 	}
 	else
 	{
 		unsigned m = n / 2;
 		
+		#ifdef WITH_ARENAS
+		struct tokenset_array* left = msort(arena, unsorted, m, compare);
+		struct tokenset_array* right = msort(arena, unsorted + m, n - m, compare);
+		#else
 		struct tokenset_array* left = msort(unsorted, m, compare);
 		struct tokenset_array* right = msort(unsorted + m, n - m, compare);
+		#endif
 		
 		struct { unsigned i, n; } l = {0, left->n}, r = {0, right->n};
 		
@@ -108,7 +155,11 @@ static struct tokenset_array* msort(
 			
 			dpv(cmp);
 			
+			#ifdef WITH_ARENAS
+			struct tokenset* new = new_tokenset(arena);
+			#else
 			struct tokenset* new = new_tokenset();
+			#endif
 			
 			if (cmp > 0)
 				tokenset_update(new, rele), r.i++;
@@ -124,15 +175,26 @@ static struct tokenset_array* msort(
 		}
 		
 		while (l.i < l.n)
+		{
+			#ifdef WITH_ARENAS
+			tokenset_array_append(retval, tokenset_clone(arena, left->data[l.i++]));
+			#else
 			tokenset_array_append(retval, tokenset_clone(left->data[l.i++]));
+			#endif
+		}
 		
 		while (r.i < r.n)
+		{
+			#ifdef WITH_ARENAS
+			tokenset_array_append(retval, tokenset_clone(arena, right->data[r.i++]));
+			#else
 			tokenset_array_append(retval, tokenset_clone(right->data[r.i++]));
+			#endif
+		}
 		
 		free_tokenset_array(left);
 		free_tokenset_array(right);
 	}
-	#endif
 	
 	EXIT;
 	return retval;
@@ -144,8 +206,6 @@ void lex_process_disambiguatations(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	int compare(unsigned lid, unsigned rid)
 	{
 		struct dlink* moving = head;
@@ -207,19 +267,30 @@ void lex_process_disambiguatations(
 	
 	dpv(this->next_id);
 	
+	#ifdef WITH_ARENAS
+	struct memory_arena* const arena = this->arena;
+	struct tokenset_array* original = new_tokenset_array(arena);
+	#else
 	struct tokenset_array* original = new_tokenset_array();
+	#endif
 	
-	TODO;
-	#if 0
 	for (unsigned i = 1, n = this->next_id; i < n; i++)
 	{
+		#ifdef WITH_ARENAS
+		struct tokenset* ts = new_tokenset(arena);
+		#else
 		struct tokenset* ts = new_tokenset();
+		#endif
+		
 		tokenset_add(ts, i);
 		tokenset_array_append(original, ts);
 	}
-	#endif
 	
+	#ifdef WITH_ARENAS
+	struct tokenset_array* sorted = msort(arena, original->data, original->n, compare);
+	#else
 	struct tokenset_array* sorted = msort(original->data, original->n, compare);
+	#endif
 	
 	dpv(original->n);
 	
@@ -264,7 +335,6 @@ void lex_process_disambiguatations(
 	
 	free_tokenset_array(original);
 	free_tokenset_array(sorted);
-	#endif
 	
 	EXIT;
 }

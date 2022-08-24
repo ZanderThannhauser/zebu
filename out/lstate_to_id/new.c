@@ -1,5 +1,5 @@
 
-
+#include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
@@ -31,11 +31,11 @@ static void free_lstate_to_id_node(void* ptr)
 {
 	ENTER;
 	
-	struct lstate_to_id_node* node = ptr;
-	
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
+	struct lstate_to_id_node* node = ptr;
+	
 	free(node);
 	#endif
 	

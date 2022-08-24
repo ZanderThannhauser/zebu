@@ -1,4 +1,7 @@
 
+#include <stdlib.h>
+#include <assert.h>
+#include <limits.h>
 #include <stdio.h>
 #include <debug.h>
 
@@ -21,7 +24,7 @@
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 void build_ystate_task_dotout(struct task* super, struct yacc_shared* shared)
 {

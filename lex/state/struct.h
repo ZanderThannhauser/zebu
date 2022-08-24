@@ -22,8 +22,6 @@ struct lex_state
 	struct memory_arena* arena;
 	#endif
 	
-	bool is_freeing;
-	
 	unsigned phase;
 };
 

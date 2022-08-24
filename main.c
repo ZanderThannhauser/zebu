@@ -38,7 +38,7 @@
 
 #include <out/out.h>
 
-#ifdef RELEASE
+#ifdef VERBOSE
 /*#include <signal.h>*/
 /*#include <sys/time.h>*/
 
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
 	struct cmdln* flags = cmdln_process(argc, argv);
 	#endif
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	if (verbose)
 	{
 		signal(SIGALRM, default_sighandler);
@@ -103,15 +103,11 @@ int main(int argc, char* argv[])
 	#endif
 	
 	if (options->disambiguatations.head)
-	{
 		lex_process_disambiguatations(lex, options->disambiguatations.head);
-	}
 	
 	#ifdef WITH_ARENAS
-	
 	struct memory_arena* tokenizer_arena = new_mmap_arena();
 	struct memory_arena* parser_arena = new_mmap_arena();
-	
 	#endif
 	
 	struct yacc_state* parser = yacc(
@@ -126,23 +122,19 @@ int main(int argc, char* argv[])
 	free_memory_arena(token_arena);
 	free_memory_arena(grammar_arena);
 	#else
-	free_lex(lex);
+	free_options(options);
 	avl_free_tree(grammar);
+	free_lex(lex);
 	#endif
 	
-	out(parser,
-		flags->output_path,
-		flags->output_prefix,
-		flags->parser_template);
+	out(parser, flags->output_path, flags->output_prefix, flags->parser_template);
 	
 	#ifdef WITH_ARENAS
 	free_memory_arena(tokenizer_arena);
 	free_memory_arena(parser_arena);
 	free_memory_arena(stdlib_arena);
-	
 	#else
 	free_yacc_state(parser);
-	free_options(options);
 	free_cmdln(flags);
 	#endif
 	

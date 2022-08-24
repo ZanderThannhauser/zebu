@@ -357,7 +357,7 @@ struct lex_state* dfas_to_dfa(
 {
 	ENTER;
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout_set(starts);
 	#endif
 	
@@ -373,7 +373,7 @@ struct lex_state* dfas_to_dfa(
 	struct lex_state* new = helper(accepting, cache, starts);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	lex_state_dotout(new);
 	#endif
 	

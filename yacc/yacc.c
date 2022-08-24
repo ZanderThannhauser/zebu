@@ -48,6 +48,36 @@
 /*#include "nfa_to_dfa.h"*/
 #include "yacc.h"
 
+#ifdef VERBOSE
+#include <stddef.h>
+#include <stdio.h>
+#include <defines/argv0.h>
+#include <signal.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <cmdln/verbose.h>
+#include <misc/default_sighandler.h>
+#include <heap/struct.h>
+#include "task/kind.h"
+#include "task/struct.h"
+#endif
+
+#ifdef VERBOSE
+static const char* colors[number_of_task_kinds] = {
+	[tk_refcount]             = "\e[48;2;200;000;000m",
+	[tk_setup_trie]           = "\e[48;2;150;050;000m",
+	[tk_build_trie]           = "\e[48;2;100;100;000m",
+	[tk_explore_firsts]       = "\e[48;2;050;150;000m",
+	[tk_percolate_firsts]     = "\e[48;2;000;200;000m",
+	[tk_setup_start]          = "\e[48;2;000;150;050m",
+	[tk_expand_tree]          = "\e[48;2;000;100;100m",
+	[tk_percolate_lookaheads] = "\e[48;2;000;050;150m",
+	[tk_free_lookahead_deps]  = "\e[48;2;000;000;200m",
+	[tk_add_transition]       = "\e[48;2;050;000;150m",
+	[tk_build_ystate]         = "\e[48;2;100;000;100m",
+};
+#endif
+
 struct yacc_state* yacc(
 	#ifdef WITH_ARENAS
 	struct memory_arena* grammar_arena,
@@ -61,7 +91,7 @@ struct yacc_state* yacc(
 {
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct memory_arena* yacc_arena = new_mmap_arena();
 	#endif
 	
@@ -72,6 +102,34 @@ struct yacc_state* yacc(
 		lex, grammar, lex->EOF_token_id);
 	
 	struct heap* const todo = shared->todo;
+	
+	#ifdef VERBOSE
+	void handler1(int _)
+	{
+		char ptr[1000] = {};
+		
+		unsigned counts[number_of_task_kinds] = {};
+		
+		for (unsigned i = 0, n = todo->n; i < n; i++)
+			counts[((struct task*) todo->data[i])->kind]++;
+		
+		size_t len = snprintf(ptr, sizeof(ptr), "\e[K" "%s: %s:", argv0, "yacc");
+		
+		for (unsigned i = 0, n = number_of_task_kinds; i < n; i++)
+			if (counts[i])
+				len += sprintf(ptr + len, " %s%u%s", colors[i], counts[i], "\e[0m");
+		
+		ptr[len++] = '\r';
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	if (verbose)
+		signal(SIGALRM, handler1);
+	#endif
 	
 	avl_tree_foreach(shared->grammar, ({
 		void runme(const void* item) {
@@ -112,7 +170,7 @@ struct yacc_state* yacc(
 		
 		task_process(task, shared);
 		
-		#ifdef DEBUGGING
+		#ifdef DOTOUT
 		task_dotout(task, shared);
 		#endif
 		
@@ -123,11 +181,16 @@ struct yacc_state* yacc(
 		#endif
 	}
 	
+	#ifdef VERBOSE
+	if (verbose)
+		signal(SIGALRM, default_sighandler);
+	#endif
+	
 	struct yacc_state* start = shared->yacc_start;
 	
 	assert(start);
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	yacc_state_dotout(start);
 	#endif
 	
@@ -139,7 +202,7 @@ struct yacc_state* yacc(
 		lex_simplify_tokenizer(lex, start);
 		#endif
 		
-		#ifdef DEBUGGING
+		#ifdef DOTOUT
 		yacc_state_dotout(start);
 		#endif
 	}

@@ -1,4 +1,5 @@
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <assert.h>
 
@@ -40,7 +41,7 @@
 #include "task/compare.h"
 #include "task/free.h"
 
-#ifdef RELEASE
+#ifdef VERBOSE
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
@@ -60,14 +61,15 @@
 #include "build_universe.h"
 #include "simplify_dfa.h"
 
-#ifdef RELEASE
+#ifdef VERBOSE
 static const char* colors[] = {
-	"\e[38;2;200;0;0m",
-	"\e[38;2;100;100;0m",
-	"\e[38;2;0;200;0m",
-	"\e[38;2;0;100;100m",
-	"\e[38;2;0;0;200m",
-	"\e[38;2;100;0;100m",
+	"\e[38;2;255;000;000m",
+	"\e[38;2;255;165;000m",
+	"\e[38;2;255;255;000m",
+	"\e[38;2;000;128;100m",
+	"\e[38;2;000;000;255m",
+	"\e[38;2;075;000;130m",
+	"\e[38;2;238;120;238m",
 };
 #endif
 
@@ -99,15 +101,15 @@ struct regex* regex_simplify_dfa(
 	struct heap* todo = new_heap(compare_simplify_tasks);
 	#endif
 	
-	#ifdef RELEASE
-	unsigned count = 0, n;
+	#ifdef VERBOSE
+	uintmax_t count = 0, n;
 	
 	void handler1(int _)
 	{
-		char ptr[100] = {};
+		char ptr[200] = {};
 		
-		size_t len = snprintf(ptr, 100,
-			"\e[K" "%s: %s: %4u of %4u (%.2f%%)\r",
+		size_t len = snprintf(ptr, 200,
+			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
 			argv0, "simplify (build deps)",
 			count, n, (((double) count * 100) / n));
 		
@@ -119,7 +121,7 @@ struct regex* regex_simplify_dfa(
 	
 	if (verbose)
 	{
-		n = universe->n * universe->n / 2;
+		n = (universe->n * universe->n) / 2;
 		
 		signal(SIGALRM, handler1);
 	}
@@ -143,7 +145,7 @@ struct regex* regex_simplify_dfa(
 						unsigned a_i = 0, a_n = a->transitions.n;
 						unsigned b_i = 0, b_n = b->transitions.n;
 						
-						while (a_i < a_n && b_i < b_n)
+						while (!unequal && a_i < a_n && b_i < b_n)
 						{
 							const struct transition* const at = a->transitions.data[a_i];
 							const struct transition* const bt = b->transitions.data[b_i];
@@ -193,7 +195,7 @@ struct regex* regex_simplify_dfa(
 							}
 						}
 						
-						while (a_i < a_n && b->default_transition_to)
+						while (!unequal && a_i < a_n && b->default_transition_to)
 						{
 							const struct transition* const at = a->transitions.data[a_i++];
 							
@@ -204,7 +206,7 @@ struct regex* regex_simplify_dfa(
 							#endif
 						}
 						
-						while (a->default_transition_to && b_i < b_n)
+						while (!unequal && a->default_transition_to && b_i < b_n)
 						{
 							const struct transition* const bt = b->transitions.data[b_i++];
 							
@@ -225,7 +227,7 @@ struct regex* regex_simplify_dfa(
 							unequal = true;
 						}
 						
-						if (a->default_transition_to && b->default_transition_to)
+						if (!unequal && a->default_transition_to && b->default_transition_to)
 						{
 							#ifdef WITH_ARENAS
 							simplify_dfa_add_dep(arena, dependent_of, a, b,
@@ -245,7 +247,7 @@ struct regex* regex_simplify_dfa(
 							#endif
 						}
 						
-						#ifdef RELEASE
+						#ifdef VERBOSE
 						count++;
 						#endif
 						
@@ -257,6 +259,29 @@ struct regex* regex_simplify_dfa(
 		}
 		runme;
 	}));
+	
+	#ifdef VERBOSE
+	void handler12(int _)
+	{
+		char ptr[200] = {};
+		
+		size_t len = snprintf(ptr, 200,
+			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
+			argv0, "simplify (allocating dep-trees)",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	if (verbose)
+	{
+		count = 0, n = universe->n;
+		signal(SIGALRM, handler12);
+	}
+	#endif
 	
 	#ifdef WITH_ARENAS
 	struct avl_tree_t* connections = avl_alloc_tree(arena, compare_same_as_nodes, free_same_as_node);
@@ -282,18 +307,22 @@ struct regex* regex_simplify_dfa(
 			
 			avl_insert(connections, sa);
 			
+			#ifdef VERBOSE
+			count++;
+			#endif
+			
 			EXIT;
 		}
 		runme;
 	}));
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	
 /*	count = 0;*/
 	
 	void handler2(int _)
 	{
-		char ptr[300] = {};
+		char ptr[400] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr), "\e[K" "%s: %s:", argv0, "simplify (percolate)");
 		
@@ -349,11 +378,13 @@ struct regex* regex_simplify_dfa(
 	}
 	#endif
 	
-	#ifdef DEBUGGING
+	#if 0
+	#ifdef DOTOUT
 	#ifdef WITH_ARENAS
 	simplify_dfa_dotout(arena, universe, connections, 0);
 	#else
 	simplify_dfa_dotout(universe, connections, 0);
+	#endif
 	#endif
 	#endif
 	
@@ -385,11 +416,13 @@ struct regex* regex_simplify_dfa(
 				}));
 			}
 			
-			#ifdef DEBUGGING
+			#if 0
+			#ifdef DOTOUT
 			#ifdef WITH_ARENAS
 			simplify_dfa_dotout(arena, universe, connections, task->hopcount);
 			#else
 			simplify_dfa_dotout(universe, connections, task->hopcount);
+			#endif
 			#endif
 			#endif
 		}
@@ -397,11 +430,9 @@ struct regex* regex_simplify_dfa(
 		free_simplify_task(task);
 	}
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	if (verbose)
-	{
 		signal(SIGALRM, default_sighandler);
-	}
 	#endif
 	
 	#ifdef WITH_ARENAS
@@ -410,7 +441,7 @@ struct regex* regex_simplify_dfa(
 	struct regex* new_start = regex_simplify_dfa_clone(connections, original_start);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(new_start, __PRETTY_FUNCTION__);
 	#endif
 	

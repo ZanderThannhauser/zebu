@@ -8,7 +8,7 @@
 struct task_inheritance percolate_firsts_task_inheritance = {
 	.compare = compare_percolate_firsts_tasks,
 	.process = percolate_firsts_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = percolate_firsts_task_dotout,
 	#endif
 	.free = free_percolate_firsts_task,

@@ -40,11 +40,11 @@ static void free_tokenset_to_id_node(void* ptr)
 {
 	ENTER;
 	
-	struct tokenset_to_id_node* node = ptr;
 	
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
+	struct tokenset_to_id_node* node = ptr;
 	free(node);
 	#endif
 	

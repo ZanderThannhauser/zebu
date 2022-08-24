@@ -10,14 +10,16 @@
 
 void free_named_token(void* ptr)
 {
-	struct named_token* this = ptr;
 	ENTER;
 	
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
+	
+	struct named_token* this = ptr;
 	free(this->name);
 	free(this);
+	
 	#endif
 	
 	EXIT;

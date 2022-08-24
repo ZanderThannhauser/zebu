@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <linux/limits.h>
 
 #include <debug.h>
@@ -22,7 +23,7 @@
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 void percolate_lookaheads_task_dotout(struct task* super, struct yacc_shared* shared)
 {

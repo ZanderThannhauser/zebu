@@ -70,12 +70,13 @@ void read_fragment(
 		bun.nfa.end->is_accepting = true;
 		
 		#ifdef WITH_ARENAS
-		struct regex* dfa = regex_nfa_to_dfa(nfa, arena);
-		struct regex* simp = regex_simplify_dfa(dfa, arena);
+		struct regex* dfa = regex_nfa_to_dfa(arena, nfa);
+		struct regex* simp = regex_simplify_dfa(arena, dfa);
 		#else
 		struct regex* dfa = regex_nfa_to_dfa(nfa);
 		struct regex* simp = regex_simplify_dfa(dfa);
 		#endif
+		
 		scope_declare_fragment(scope, name, simp);
 		
 		free_regex(nfa), free_regex(dfa);

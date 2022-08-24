@@ -184,7 +184,7 @@ struct clone_nfa_bundle regex_clone_nfa(
 	ENTER;
 	
 	#ifdef WITH_ARENAS
-	TODO;
+	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
 	#else
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
 	#endif

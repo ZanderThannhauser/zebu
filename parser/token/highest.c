@@ -54,7 +54,7 @@ struct rbundle read_highest_token_expression(
 				.dfa = dfa,
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.dfa, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -77,7 +77,7 @@ struct rbundle read_highest_token_expression(
 				.dfa = dfa,
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.dfa, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -100,7 +100,7 @@ struct rbundle read_highest_token_expression(
 				.dfa = start,
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.dfa, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -135,7 +135,7 @@ struct rbundle read_highest_token_expression(
 				#endif
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.dfa, __PRETTY_FUNCTION__);
 			#endif
 			break;
@@ -173,7 +173,7 @@ struct rbundle read_highest_token_expression(
 				#endif
 			};
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.dfa, __PRETTY_FUNCTION__);
 			#endif
 			break;

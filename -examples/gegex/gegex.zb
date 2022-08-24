@@ -1,13 +1,11 @@
 
-%start gegex;
-
 %skip: ", ";
 
 b: "b";
 
 B: "B";
 
-gegex:
+%start:
 	(("a"  b  "c")*
 	 ("a" "b" "C")*
 	 ("a" "B" "c")*

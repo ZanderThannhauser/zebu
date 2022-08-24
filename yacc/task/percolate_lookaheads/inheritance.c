@@ -10,7 +10,7 @@
 struct task_inheritance percolate_lookaheads_task_inheritance = {
 	.compare = compare_percolate_lookaheads_tasks,
 	.process = percolate_lookaheads_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = percolate_lookaheads_task_dotout,
 	#endif
 	.free = free_percolate_lookaheads_task,

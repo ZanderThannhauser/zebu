@@ -39,7 +39,7 @@ void lex_add_EOF_token(
 	
 	end->is_accepting = true;
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	

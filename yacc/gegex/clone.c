@@ -79,7 +79,7 @@ static struct gegex* clone_helper(
 	}
 	else
 	{
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		struct gegex* new = new_gegex(arena);
 		#else
 		struct gegex* new = new_gegex();
@@ -87,7 +87,7 @@ static struct gegex* clone_helper(
 		
 		new->is_reduction_point = old->is_reduction_point;
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		struct mapping* mapping = arena_malloc(arena, sizeof(*mapping));
 		#else
 		struct mapping* mapping = malloc(sizeof(*mapping));
@@ -148,7 +148,7 @@ static struct gegex* clone_helper(
 			gegex_add_lambda_transition(
 				/* from: */ new,
 				/* to */ clone_helper(
-					#ifdef WTIH_ARENAS
+					#ifdef WITH_ARENAS
 					/* arena: */ arena,
 					#endif
 					/* mappings: */ mappings,

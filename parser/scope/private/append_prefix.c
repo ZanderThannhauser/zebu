@@ -25,7 +25,7 @@ static void append_prefix(struct scope* this, const char* appendme)
 		
 		dpv(this->prefix.cap);
 		
-		#ifdef WTIH_ARENAS
+		#ifdef WITH_ARENAS
 		this->prefix.chars = arena_realloc(this->arena, this->prefix.chars, this->prefix.cap);
 		#else
 		this->prefix.chars = realloc(this->prefix.chars, this->prefix.cap);

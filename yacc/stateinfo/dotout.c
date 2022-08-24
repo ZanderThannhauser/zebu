@@ -1,5 +1,8 @@
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
+
+#include <assert.h>
+#include <stdlib.h>
 
 #include <debug.h>
 

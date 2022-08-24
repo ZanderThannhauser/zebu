@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <assert.h>
@@ -46,7 +47,7 @@
 #include "task/compare.h"
 #include "task/free.h"
 
-#ifdef RELEASE
+#ifdef VERBOSE
 /*#include <unistd.h>*/
 #include <signal.h>
 #include <string.h>
@@ -66,14 +67,15 @@
 #include "build_universe.h"
 #include "simplify_dfa.h"
 
-#ifdef RELEASE
+#ifdef VERBOSE
 static const char* colors[] = {
-	"\e[38;2;200;0;0m",
-	"\e[38;2;100;100;0m",
-	"\e[38;2;0;200;0m",
-	"\e[38;2;0;100;100m",
-	"\e[38;2;0;0;200m",
-	"\e[38;2;100;0;100m",
+	"\e[38;2;255;000;000m",
+	"\e[38;2;255;165;000m",
+	"\e[38;2;255;255;000m",
+	"\e[38;2;000;128;100m",
+	"\e[38;2;000;000;255m",
+	"\e[38;2;075;000;130m",
+	"\e[38;2;238;120;238m",
 };
 #endif
 
@@ -107,7 +109,7 @@ struct gegex* gegex_simplify_dfa(
 	struct heap* todo = new_heap(compare_gegex_simplify_tasks);
 	#endif
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	uintmax_t count = 0, n;
 	
 	void handler1(int _)
@@ -231,7 +233,7 @@ struct gegex* gegex_simplify_dfa(
 							#endif
 						}
 						
-						#ifdef RELEASE
+						#ifdef VERBOSE
 						count++;
 						#endif
 						
@@ -273,9 +275,7 @@ struct gegex* gegex_simplify_dfa(
 		runme;
 	}));
 	
-	#ifdef RELEASE
-	
-/*	count = 0;*/
+	#ifdef VERBOSE
 	
 	void handler2(int _)
 	{
@@ -335,7 +335,7 @@ struct gegex* gegex_simplify_dfa(
 	}
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	#ifdef WITH_ARENAS
 	gegex_simplify_dfa_dotout(arena, universe, connections, 0);
 	#else
@@ -371,7 +371,7 @@ struct gegex* gegex_simplify_dfa(
 				}));
 			}
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			#ifdef WITH_ARENAS
 			gegex_simplify_dfa_dotout(arena, universe, connections, task->hopcount);
 			#else
@@ -381,13 +381,9 @@ struct gegex* gegex_simplify_dfa(
 		}
 		
 		free_gegex_simplify_task(task);
-		
-		#ifdef RELEASE
-/*		count++;*/
-		#endif
 	}
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	if (verbose)
 	{
 		signal(SIGALRM, default_sighandler);
@@ -400,7 +396,7 @@ struct gegex* gegex_simplify_dfa(
 	struct gegex* new_start = gegex_simplify_dfa_clone(connections, original_start);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
 	#endif
 	

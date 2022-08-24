@@ -9,7 +9,7 @@
 #include <tree/of_gegexes/new.h>
 #include <tree/of_gegexes/free.h>
 
-#ifdef RELEASE
+#ifdef VERBOSE
 #include <stddef.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -38,7 +38,7 @@ struct gegex* gegex_nfa_to_dfa(
 ) {
 	ENTER;
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	unsigned node_count = 0;
 	
 	if (verbose)
@@ -59,13 +59,13 @@ struct gegex* gegex_nfa_to_dfa(
 	}
 	#endif
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_gegex_mappings, free_gegex_mapping);
 	#else
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_gegex_mappings, free_gegex_mapping);
 	#endif
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct gegextree* start_set = new_gegextree(arena);
 	#else
 	struct gegextree* start_set = new_gegextree();
@@ -74,7 +74,7 @@ struct gegex* gegex_nfa_to_dfa(
 	gegex_add_lamda_states(start_set, start);
 	
 	struct gegex* new_start = gegex_nfa_to_dfa_helper(
-		#ifdef RELEASE
+		#ifdef VERBOSE
 		&node_count,
 		#endif
 		#ifdef WITH_ARENAS
@@ -86,11 +86,11 @@ struct gegex* gegex_nfa_to_dfa(
 	
 	avl_free_tree(mappings);
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	gegex_dotout(new_start, /* optional_end: */ NULL, __PRETTY_FUNCTION__);
 	#endif
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	if (verbose)
 	{
 		signal(SIGALRM, default_sighandler);

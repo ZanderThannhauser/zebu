@@ -17,17 +17,15 @@
 /*#include "struct.h"*/
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
 
 void free_lookahead_deps_task_dotout(struct task* super, struct yacc_shared* shared)
 {
-	struct free_lookahead_deps_task* const this = (void*) super;
+	// struct free_lookahead_deps_task* const this = (void*) super;
 	ENTER;
 	
 	EXIT;
 }
-
-
 
 
 #endif

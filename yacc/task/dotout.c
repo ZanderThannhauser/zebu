@@ -7,7 +7,8 @@
 #include "inheritance.h"
 #include "dotout.h"
 
-#ifdef DEBUGGING
+#ifdef DOTOUT
+
 void task_dotout(struct task* this, struct yacc_shared* shared)
 {
 	ENTER;

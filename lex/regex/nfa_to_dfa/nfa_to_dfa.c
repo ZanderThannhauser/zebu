@@ -25,7 +25,7 @@
 
 #include "../dotout.h"
 
-#ifdef RELEASE
+#ifdef VERBOSE
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ struct regex* regex_nfa_to_dfa(
 ) {
 	ENTER;
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	unsigned count = 0;
 	
 	if (verbose)
@@ -89,15 +89,13 @@ struct regex* regex_nfa_to_dfa(
 	struct regex* new_start = regex_nfa_to_dfa_helper(start_set, mappings);
 	#endif
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	regex_dotout(new_start, __PRETTY_FUNCTION__);
 	#endif
 	
-	#ifdef RELEASE
+	#ifdef VERBOSE
 	if (verbose)
-	{
 		signal(SIGALRM, default_sighandler);
-	}
 	#endif
 	
 	free_regexset(start_set);

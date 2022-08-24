@@ -55,6 +55,8 @@
 	struct tokensetset;
 	struct dyntable;
 	struct dynvector;
+	struct lstatetree;
+	struct ystatetree;
 	struct oldavl_tree_t;
 	struct oldregextree;
 	struct pragma_once;

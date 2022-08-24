@@ -33,8 +33,6 @@ struct lex_state* new_lex_state(
 	
 	this->accepting = NULL;
 	
-	this->is_freeing = false;
-	
 	#ifdef WITH_ARENAS
 	this->arena = arena;
 	#endif

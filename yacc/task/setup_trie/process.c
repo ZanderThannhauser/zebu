@@ -36,9 +36,6 @@
 
 #include "../explore_firsts/new.h"
 #include "../percolate_firsts/new.h"
-/*#include "../explore_lookaheads/new.h"*/
-/*#include "../percolate_lookaheads/new.h"*/
-#include "../add_reductions/new.h"
 
 #include "struct.h"
 #include "process.h"

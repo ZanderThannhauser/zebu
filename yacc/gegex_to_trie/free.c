@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
@@ -7,6 +8,11 @@
 
 void free_gegex_to_trie(void* ptr)
 {
-	TODO;
+	struct gegex_to_trie* this = ptr;
+	ENTER;
+	
+	free(this);
+	
+	EXIT;
 }
 

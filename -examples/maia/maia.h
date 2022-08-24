@@ -8,5 +8,4 @@ extern const unsigned zebu_EOFs[49];
 extern const unsigned zebu_accepts[82];
 extern const unsigned start_grammar_id;
 extern const char* zebu_grammar_names[24];
-
-int main();
+extern const char* zebu_token_names[24];

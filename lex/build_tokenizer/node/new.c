@@ -20,7 +20,7 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 {
 	ENTER;
 	
-	#ifdef WTIH_ARENAS
+	#ifdef WITH_ARENAS
 	struct build_tokenizer_node* this = arena_malloc(arena, sizeof(*this));
 	#else
 	struct build_tokenizer_node* this = malloc(sizeof(*this));

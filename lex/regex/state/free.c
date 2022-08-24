@@ -7,17 +7,21 @@
 
 #include <set/of_tokens/free.h>
 
+#include <tree/of_regexes/new.h>
+#include <tree/of_regexes/add.h>
+#include <tree/of_regexes/free.h>
+
 #include "struct.h"
 #include "free.h"
 
-void free_regex(struct regex* this)
+static void helper(
+	struct regextree* freed,
+	struct regex* this)
 {
 	ENTER;
 	
-	if (this && !this->is_freeing)
+	if (regextree_add(freed, this))
 	{
-		this->is_freeing = true;
-		
 		#ifdef WITH_ARENAS
 		struct memory_arena* const arena = this->arena;
 		#endif
@@ -26,7 +30,7 @@ void free_regex(struct regex* this)
 		{
 			struct transition* ele = this->transitions.data[i];
 			
-			free_regex(ele->to);
+			helper(freed, ele->to);
 			
 			#ifdef WITH_ARENAS
 			arena_dealloc(arena, ele);
@@ -39,7 +43,12 @@ void free_regex(struct regex* this)
 		{
 			struct regex* ele = this->lambda_transitions.data[i];
 			
-			free_regex(ele);
+			helper(freed, ele);
+		}
+		
+		if (this->default_transition_to)
+		{
+			helper(freed, this->default_transition_to);
 		}
 		
 		#ifdef WITH_ARENAS
@@ -54,13 +63,33 @@ void free_regex(struct regex* this)
 		free(this->lambda_transitions.data);
 		#endif
 		
-		free_regex(this->default_transition_to);
-		
 		#ifdef WITH_ARENAS
 		arena_dealloc(arena, this);
 		#else
 		free(this);
 		#endif
+	}
+	
+	EXIT;
+}
+
+
+
+void free_regex(struct regex* this)
+{
+	ENTER;
+	
+	if (this)
+	{
+		#ifdef WITH_ARENAS
+		struct regextree* freed = new_regextree(this->arena);
+		#else
+		struct regextree* freed = new_regextree();
+		#endif
+		
+		helper(freed, this);
+		
+		free_regextree(freed);
 	}
 	
 	EXIT;

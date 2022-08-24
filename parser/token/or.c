@@ -63,7 +63,7 @@ struct rbundle read_or_token_expression(
 			regex_add_lambda_transition(retval.nfa.start, sub.nfa.start);
 			regex_add_lambda_transition(sub.nfa.end, retval.nfa.end);
 			
-			#ifdef DEBUGGING
+			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 		}

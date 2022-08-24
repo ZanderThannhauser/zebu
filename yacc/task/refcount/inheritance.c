@@ -8,7 +8,7 @@
 struct task_inheritance refcount_task_inheritance = {
 	.compare = compare_refcount_tasks,
 	.process = refcount_task_process,
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	.dotout = refcount_task_dotout,
 	#endif
 	.free = free_refcount_task,
