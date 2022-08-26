@@ -7,5 +7,4 @@ struct yacc_state* yacc(
 	struct memory_arena* parser_arena,
 	#endif
 	struct lex* lex,
-	struct avl_tree_t* grammar,
-	bool simplify_tokenizer);
+	struct avl_tree_t* grammar);

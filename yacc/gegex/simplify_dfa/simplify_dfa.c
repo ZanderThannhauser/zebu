@@ -118,7 +118,7 @@ struct gegex* gegex_simplify_dfa(
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "simplify (build deps)",
+			argv0, "grammar-simplify (build deps)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -253,7 +253,7 @@ struct gegex* gegex_simplify_dfa(
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "simplify (allocating dep-trees)",
+			argv0, "grammar-simplify (allocating dep-trees)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)

@@ -17,6 +17,7 @@
 
 #include "struct.h"
 #include "usage.h"
+#include "minimize_lexer.h"
 #include "verbose.h"
 #include "process.h"
 
@@ -35,21 +36,19 @@ struct cmdln* cmdln_process(
 	
 	enum parser_template parser_template = pt_just_tables;
 	
-	bool simplify_tokenizer = false;
-	
 	int opt, option_index;
 	const struct option long_options[] = {
 		{"input",    required_argument, 0, 'i'},
 		{"output",         no_argument, 0, 'o'},
 		{"prefix",   required_argument, 0, 'p'},
 		{"yacc",     required_argument, 0, 'y'},
-		{"simplify", required_argument, 0, 's'},
+		{"minimize-lexer", no_argument, 0, 'l'},
 		{"verbose",        no_argument, 0, 'v'},
 		{"help",           no_argument, 0, 'h'},
 		{ 0,                            0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "y" "s" "M" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "y" "l" "M" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -92,12 +91,8 @@ struct cmdln* cmdln_process(
 				}
 				break;
 			
-			case 's':
-				if (strequals(optarg, "tokenizer")) {
-					simplify_tokenizer = true;
-				} else {
-					usage(e_bad_cmdline_args);
-				}
+			case 'l':
+				minimize_lexer = true;
 				break;
 			
 			case 'v':
@@ -116,7 +111,7 @@ struct cmdln* cmdln_process(
 		}
 	}
 	
-	if (!input_path || !output_prefix)
+	if (!input_path || !output_path)
 	{
 		fprintf(stderr, "%s: missing arguments!\n", argv0);
 		usage(e_bad_cmdline_args);
@@ -134,13 +129,13 @@ struct cmdln* cmdln_process(
 	
 	flags->parser_template = parser_template;
 	
-	flags->simplify_tokenizer = simplify_tokenizer;
-	
 	dpvs(flags->input_path);
 	dpvs(flags->output_path);
 	dpvs(flags->output_prefix);
 	
 	dpv(flags->parser_template);
+	
+	dpvb(minimize_lexer);
 	
 	#ifdef VERBOSE
 	dpvb(verbose);

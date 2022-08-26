@@ -7,6 +7,8 @@
 
 #include <heap/push.h>
 
+#include <cmdln/minimize_lexer.h>
+
 #include <lex/struct.h>
 
 /*#include <yacc/state/dotout.h>*/
@@ -24,7 +26,7 @@
 #include <arena/mmap/new.h>
 #include <arena/free.h>
 
-#include <lex/simplify_tokenizer/simplify_tokenizer.h>
+#include <lex/minimize_lexer/minimize_lexer.h>
 
 #include "task/refcount/new.h"
 #include "task/setup_trie/new.h"
@@ -86,8 +88,7 @@ struct yacc_state* yacc(
 	struct memory_arena* parser_arena,
 	#endif
 	struct lex* lex,
-	struct avl_tree_t* grammar,
-	bool simplify_tokenizer)
+	struct avl_tree_t* grammar)
 {
 	ENTER;
 	
@@ -194,12 +195,12 @@ struct yacc_state* yacc(
 	yacc_state_dotout(start);
 	#endif
 	
-	if (simplify_tokenizer)
+	if (minimize_lexer)
 	{
 		#ifdef WITH_ARENAS
-		lex_simplify_tokenizer(tokenizer_arena, lex, start);
+		lex_minimize_lexer(tokenizer_arena, lex, start);
 		#else
-		lex_simplify_tokenizer(lex, start);
+		lex_minimize_lexer(lex, start);
 		#endif
 		
 		#ifdef DOTOUT

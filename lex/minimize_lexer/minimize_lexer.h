@@ -3,7 +3,7 @@ struct yacc_state;
 struct lex;
 struct memory_arena;
 
-void lex_simplify_tokenizer(
+void lex_minimize_lexer(
 	#ifdef WITH_ARENAS
 	struct memory_arena* arena,
 	#endif

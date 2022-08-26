@@ -178,20 +178,19 @@ int main()
 {
 	struct <PREFIX>_state this = {};
 	
-	this->lstate = 1, this->t = 0;
-	
-	push(this, 1);
-	
 	for (char* line; (line = readline(">>> "));)
 	{
-		this->y.n = 0;
-		this->l.n = 0;
-		this->lstate = 1;
-		push(this, 1);
+		this.lstate = 1, this.t = 0;
 		
-		zebu_parse(new, (unsigned char*) line, strlen(line));
+		this.y.n = 0;
+		this.l.n = 0;
+		this.lstate = 1;
 		
-		zebu_parse_EOF(new);
+		push(&this, 1);
+		
+		zebu_parse(&this, (unsigned char*) line, strlen(line));
+		
+		zebu_parse_EOF(&this);
 		
 		puts("accepted!");
 		
@@ -202,7 +201,6 @@ int main()
 	
 	free(this.y.data);
 	free(this.l.data);
-	free(this);
 	
 	return 0;
 }

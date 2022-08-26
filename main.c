@@ -110,8 +110,7 @@ int main(int argc, char* argv[])
 		grammar_arena, token_arena,
 		tokenizer_arena, parser_arena,
 		#endif
-		lex, grammar,
-		flags->simplify_tokenizer);
+		lex, grammar);
 	
 	#ifdef WITH_ARENAS
 	free_memory_arena(token_arena);

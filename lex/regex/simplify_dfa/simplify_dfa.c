@@ -52,6 +52,7 @@
 #include <macros/max.h>
 #include <defines/argv0.h>
 #include <misc/default_sighandler.h>
+#include <misc/colors.h>
 #endif
 
 #include "mark_as_unequal.h"
@@ -60,18 +61,6 @@
 #include "clone.h"
 #include "build_universe.h"
 #include "simplify_dfa.h"
-
-#ifdef VERBOSE
-static const char* colors[] = {
-	"\e[38;2;255;000;000m",
-	"\e[38;2;255;165;000m",
-	"\e[38;2;255;255;000m",
-	"\e[38;2;000;128;100m",
-	"\e[38;2;000;000;255m",
-	"\e[38;2;075;000;130m",
-	"\e[38;2;238;120;238m",
-};
-#endif
 
 struct regex* regex_simplify_dfa(
 	#ifdef WITH_ARENAS
@@ -106,11 +95,11 @@ struct regex* regex_simplify_dfa(
 	
 	void handler1(int _)
 	{
-		char ptr[200] = {};
+		char ptr[1000] = {};
 		
-		size_t len = snprintf(ptr, 200,
+		size_t len = snprintf(ptr, 1000,
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "simplify (build deps)",
+			argv0, "regex-simplify (build deps)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -121,7 +110,7 @@ struct regex* regex_simplify_dfa(
 	
 	if (verbose)
 	{
-		n = (universe->n * universe->n) / 2;
+		n = (universe->n * (universe->n - 1)) / 2;
 		
 		signal(SIGALRM, handler1);
 	}
@@ -267,7 +256,7 @@ struct regex* regex_simplify_dfa(
 		
 		size_t len = snprintf(ptr, 200,
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "simplify (allocating dep-trees)",
+			argv0, "regex-simplify (allocating dep-trees)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
