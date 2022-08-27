@@ -18,26 +18,36 @@
 	|                D+ IS? // decimal
 	;
 
-`string_literal`:
-	'\"' ( "\\" . | [~('\"', '\\')] )* '\"'
-;
+`string_literal`: '\"' ( "\\" . | [~('\"', '\\')] )* '\"' ;
+
+// struct primary_expression {
+	// char *variable, *literal, *string;
+	// union expression* subexpression;
+// }
 
 primary_expression
-	: `identifier & !"sizeof"`
-	| `constant`
-	| `string_literal`
-	| "(" expression ")"
+	: `identifier & !"sizeof"` #variable
+	| `constant` #literal
+	| `string_literal` #string
+	| "(" expression #subexpression ")"
 	;
 
+// struct postfix_expression {
+	// union expression* expression;
+	// union expression* index_expression;
+	// char* dir_field_name;
+	// char* def_field_name;
+// }
+
 postfix_expression
-	: primary_expression
-	| postfix_expression "[" expression "]"
-	| postfix_expression "(" ")"
-	| postfix_expression "(" argument_expression_list ")"
-	| postfix_expression "."  `identifier`
-	| postfix_expression "->" `identifier`
-	| postfix_expression "++"
-	| postfix_expression "--"
+	: primary_expression #expression
+	| postfix_expression #expression "[" expression #index_expression "]"
+	| postfix_expression #expression "(" ")"
+	| postfix_expression #expression "(" argument_expression_list ")"
+	| postfix_expression #expression "."  `identifier` #dir_field_name
+	| postfix_expression #expression "->" `identifier` #def_field_name
+	| postfix_expression #expression "++"
+	| postfix_expression #expression "--"
 	;
 
 argument_expression_list
@@ -45,11 +55,17 @@ argument_expression_list
 	| argument_expression_list ',' conditional_expression
 	;
 
+// struct unary_expression {
+	// union expression* expression;
+	// union expression* decrement_expression;
+	// union expression* address_of_expression;
+// }
+
 unary_expression
-	: postfix_expression
+	: postfix_expression #expression
 	| "++" unary_expression
-	| "--" unary_expression
-	| "&" unary_expression
+	| "--" unary_expression #decrement_expression
+	| "&" unary_expression #address_of_expression
 	| "*" unary_expression
 	| "+" unary_expression
 	| "-" unary_expression

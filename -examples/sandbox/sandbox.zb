@@ -1,0 +1,12 @@
+
+// struct token {
+	// unsigned char* data; unsigned n;
+// };
+
+// struct %start {
+	// struct token* a;
+	// struct { struct token** data; unsigned n; }* b;
+// }
+
+%start: ("a" #a | "b" #b)+;
+

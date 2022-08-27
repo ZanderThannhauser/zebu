@@ -79,14 +79,16 @@ buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(arenas)-arenas/$(dotou
 
 default: $(buildprefix)/zebu
 
-ARGS += -v
+#ARGS += -v
+ARGS += --verbose
 
-#ARGS += --simplify=tokenizer
+#ARGS += -l
+ARGS += --minimize-lexer
 
-ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
@@ -123,6 +125,10 @@ valrun-leak: $(buildprefix)/zebu
 
 tracerun: $(buildprefix)/zebu
 	strace $< $(ARGS)
+
+install: $(buildprefix)/zebu
+	@ mkdir -vp ~/bin/
+	@ cp -vau $(buildprefix)/zebu ~/bin/zebu
 
 .PRECIOUS: %/
 

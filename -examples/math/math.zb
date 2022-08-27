@@ -4,11 +4,18 @@
 
 %skip: ' ';
 
-lit: `['0'-'9']+` | '(' root ')';
+highest: `['0'-'9']+` #literal | '(' root #subexpression ')' ;
 
-mul: lit (('*' | '/') mul)?;
+multiply: highest #term[] (('*' | '/') highest #term[])*;
 
-add: mul (('+' | '-') add)?;
+addition: multiply #term[] (('+' | '-') multiply #term[])*;
 
-root: add;
+// addition: multiply #term[0] (('+' #ops[] | '-' #ops[]) multiply #term[])*;
+
+// addition: multiply #start ('+' multiply #addmes[] | '-' multiply #submes[])*;
+
+root: addition;
+
+
+
 
