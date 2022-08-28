@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -45,4 +46,4 @@ unsigned ystate_to_id(
 	EXIT;
 	return retval;
 }
-
+#endif

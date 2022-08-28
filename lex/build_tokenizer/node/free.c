@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <assert.h>
@@ -22,3 +23,4 @@ void free_build_tokenizer_node(void *ptr)
 	free(node);
 }
 
+#endif

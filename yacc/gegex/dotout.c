@@ -1,4 +1,5 @@
 
+#if 0
 #ifdef DOTOUT
 
 #include <stdio.h>
@@ -150,4 +151,4 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 
 
 
-
+#endif

@@ -1,2 +1,2 @@
 
-void free_pair(void* ptr);
+void free_regex_pair(void* ptr);

@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <tree/of_gegexes/compare.h>
@@ -12,4 +13,4 @@ int compare_gegex_mappings(const void* a, const void* b)
 	
 	return compare_gegextrees(A->original_states, B->original_states);
 }
-
+#endif

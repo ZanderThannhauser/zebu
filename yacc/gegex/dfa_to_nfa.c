@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <misc/phase_counters.h>
@@ -75,4 +76,4 @@ struct gbundle gegex_dfa_to_nfa(
 
 
 
-
+#endif

@@ -6,7 +6,7 @@
 
 #include <debug.h>
 
-#include <misc/sopenat.h>
+/*#include <misc/sopenat.h>*/
 
 #include "options/struct.h"
 
@@ -19,27 +19,22 @@
 
 #include "pragma_once/lookup.h"
 
-#include "read_directive.h"
+#include "read_directive/read_directive.h"
 #include "read_charset.h"
 #include "read_fragment.h"
-#include "read_grammar.h"
-#include "read_inline_grammar.h"
+/*#include "read_grammar.h"*/
+/*#include "read_inline_grammar.h"*/
 
 #include "recursive_parse.h"
 
 void recursive_parse(
-	#ifdef WITH_ARENAS
-	struct memory_arena* parser_arena,
-	struct memory_arena* grammar_arena,
-	struct memory_arena* token_arena,
-	#endif
+	struct pragma_once* pragma_once,
 	struct options* options,
 	struct scope* scope,
-	struct pragma_once* pragma_once,
+	struct lex* lex,
 	int absolute_dirfd,
 	int relative_dirfd,
-	int fd,
-	struct lex* lex)
+	int fd)
 {
 	ENTER;
 	
@@ -62,18 +57,13 @@ void recursive_parse(
 				case t_directive:
 				{
 					read_directive(
-						#ifdef WITH_ARENAS
-						/* parser_arena:   */ parser_arena,
-						/* grammar_arena:  */ grammar_arena,
-						/* token_arena:    */ token_arena,
-						#endif
+						/* pragma_once:    */ pragma_once,
 						/* tokenizer:      */ tokenizer,
 						/* options:        */ options,
 						/* scope:          */ scope,
-						/* pragma_once:    */ pragma_once,
+						/* lex:            */ lex,
 						/* absolute_dirfd: */ absolute_dirfd,
-						/* relative_dirfd: */ relative_dirfd,
-						/* lex:            */ lex);
+						/* relative_dirfd: */ relative_dirfd);
 					break;
 				}
 				
@@ -90,12 +80,15 @@ void recursive_parse(
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
 						/* scope       */ scope,
-						/* token_skip: */ options->token_skip);
+						/* token_skip: */ options->token_skip
+					);
 					break;
 				}
 				
 				case t_parenthesised_identifier:
 				{
+					TODO;
+					#if 0
 					read_inline_grammar(
 						#ifdef WITH_ARENAS
 						/* token_arena: */ token_arena,
@@ -104,11 +97,14 @@ void recursive_parse(
 						/* options: */ options,
 						/* scope: */ scope,
 						/* lex: */ lex);
+					#endif
 					break;
 				}
 				
 				case t_identifier:
 				{
+					TODO;
+					#if 0
 					read_grammar(
 						#ifdef WITH_ARENAS
 						/* grammar_arena:  */ grammar_arena,
@@ -118,6 +114,7 @@ void recursive_parse(
 						/* options:     */ options,
 						/* scope        */ scope,
 						/* lex:         */ lex);
+					#endif
 					break;
 				}
 				
@@ -135,7 +132,6 @@ void recursive_parse(
 	
 	EXIT;
 }
-
 
 
 

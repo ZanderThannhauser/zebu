@@ -4,8 +4,6 @@
 
 #include <debug.h>
 
-#include <arena/dealloc.h>
-
 #include "unlink_node.h"
 #include "delete_node.h"
 

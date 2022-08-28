@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 #include <stdlib.h>
 
@@ -90,4 +91,4 @@ struct dynvector* new_dynvector(
 
 
 
-
+#endif

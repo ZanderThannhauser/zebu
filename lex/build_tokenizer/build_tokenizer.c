@@ -7,24 +7,23 @@
 
 #include <avl/insert.h>
 #include <avl/search.h>
-/*#include <avl/safe_insert.h>*/
 
-#include <set/of_regexes/new.h>
-#include <set/of_regexes/add.h>
+/*#include <set/of_regexes/new.h>*/
+/*#include <set/of_regexes/add.h>*/
 
-#include <set/of_tokens/struct.h>
-#include <set/of_tokens/new.h>
-#include <set/of_tokens/foreach.h>
-#include <set/of_tokens/add.h>
+/*#include <set/of_tokens/struct.h>*/
+/*#include <set/of_tokens/new.h>*/
+/*#include <set/of_tokens/foreach.h>*/
+/*#include <set/of_tokens/add.h>*/
 
-#include <set/of_tokensets/add.h>
+/*#include <set/of_tokensets/add.h>*/
 
 #ifdef DEBUGGING
-#include <set/of_tokensets/struct.h>
-#include <set/of_tokens/to_string.h>
+/*#include <set/of_tokensets/struct.h>*/
+/*#include <set/of_tokens/to_string.h>*/
 #endif
 
-#include <set/of_tokensets/new.h>
+/*#include <set/of_tokensets/new.h>*/
 
 #include "../state/free.h"
 
@@ -39,9 +38,6 @@
 #include "build_tokenizer.h"
 
 struct tokensetset* lex_build_tokenzer(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct lex_state** outgoing,
 	struct lex* this,
 	struct tokenset* token_ids)
@@ -49,6 +45,8 @@ struct tokensetset* lex_build_tokenzer(
 	struct tokensetset* retval;
 	ENTER;
 	
+	TODO;
+	#if 0
 	// check cache
 	struct avl_node_t* cache_node = avl_search(this->tokenizer.cache, &token_ids);
 	
@@ -105,6 +103,7 @@ struct tokensetset* lex_build_tokenzer(
 	
 	EXIT;
 	return retval;
+	#endif
 }
 
 

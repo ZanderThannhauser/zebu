@@ -15,4 +15,3 @@ void regex_set_default_transition(
 	from->default_transition_to = to;
 }
 
-

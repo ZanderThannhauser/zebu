@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <yacc/state/struct.h>
@@ -107,4 +108,4 @@ void fill_yacc_tables(
 
 
 
-
+#endif

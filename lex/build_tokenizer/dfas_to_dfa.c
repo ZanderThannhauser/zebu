@@ -1,12 +1,9 @@
 
+#if 0
 #include <debug.h>
 
 #include <assert.h>
 #include <stdlib.h>
-
-#include <arena/malloc.h>
-#include <arena/dealloc.h>
-#include <arena/calloc.h>
 
 #include <avl/alloc_tree.h>
 #include <avl/search.h>
@@ -22,22 +19,20 @@
 #include <lex/state/set_default_transition.h>
 #include <lex/state/set_EOF_transition.h>
 
-#include <set/of_regexes/struct.h>
-#include <set/of_regexes/new.h>
-#include <set/of_regexes/add.h>
-#include <set/of_regexes/clear.h>
-#include <set/of_regexes/clone.h>
-#include <set/of_regexes/free.h>
-#include <set/of_regexes/foreach.h>
-#include <set/of_regexes/compare.h>
+/*#include <set/of_regexes/struct.h>*/
+/*#include <set/of_regexes/new.h>*/
+/*#include <set/of_regexes/add.h>*/
+/*#include <set/of_regexes/clear.h>*/
+/*#include <set/of_regexes/clone.h>*/
+/*#include <set/of_regexes/free.h>*/
+/*#include <set/of_regexes/foreach.h>*/
+/*#include <set/of_regexes/compare.h>*/
 
-#include <set/of_tokens/struct.h>
-#include <set/of_tokens/new.h>
-#include <set/of_tokens/add.h>
-#include <set/of_tokens/clear.h>
-#include <set/of_tokens/free.h>
-
-#include <set/of_tokensets/add.h>
+/*#include <set/of_tokens/struct.h>*/
+/*#include <set/of_tokens/new.h>*/
+/*#include <set/of_tokens/add.h>*/
+/*#include <set/of_tokens/clear.h>*/
+/*#include <set/of_tokens/free.h>*/
 
 #include "../state/new.h"
 
@@ -63,6 +58,8 @@ static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	#ifdef WITH_ARENAS
 	struct dfas_to_dfa_node* node = arena_malloc(arena, sizeof(*node));
 	#else
@@ -83,21 +80,27 @@ static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
 	
 	EXIT;
 	return node;
+	#endif
 }
 
 static int compare_dfas_to_dfa_nodes(
 	const void* a, const void* b)
 {
+	TODO;
+	#if 0
 	int cmp = 0;
 	const struct dfas_to_dfa_node* A = a, *B = b;
 	
 	cmp = compare_regexsets(A->states, B->states);
 	
 	return cmp;
+	#endif
 }
 
 static void free_dfas_to_dfa_node(void* ptr)
 {
+	TODO;
+	#if 0
 	struct dfas_to_dfa_node* const this = ptr;
 	ENTER;
 	
@@ -110,6 +113,7 @@ static void free_dfas_to_dfa_node(void* ptr)
 	#endif
 	
 	EXIT;
+	#endif
 }
 
 static struct lex_state* helper(
@@ -120,6 +124,8 @@ static struct lex_state* helper(
 	struct avl_tree_t* cache,
 	struct regexset* states)
 {
+	TODO;
+	#if 0
 	struct lex_state* state;
 	ENTER;
 	
@@ -346,15 +352,15 @@ static struct lex_state* helper(
 	
 	EXIT;
 	return state;
+	#endif
 }
 
 struct lex_state* dfas_to_dfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct tokensetset* accepting,
 	struct regexset* starts)
 {
+	TODO;
+	#if 0
 	ENTER;
 	
 	#ifdef DOTOUT
@@ -381,6 +387,7 @@ struct lex_state* dfas_to_dfa(
 	
 	EXIT;
 	return new;
+	#endif
 }
 
 
@@ -399,3 +406,4 @@ struct lex_state* dfas_to_dfa(
 
 
 
+#endif

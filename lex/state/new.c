@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -40,4 +41,4 @@ struct lex_state* new_lex_state(
 	EXIT;
 	return this;
 }
-
+#endif

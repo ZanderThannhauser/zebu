@@ -1,4 +1,5 @@
 
+#if 0
 #include "../ANY.h"
 
 #include "after_highest.h"
@@ -8,12 +9,12 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 	#include "../fragments/skip_whitespace.h"
 	
 	// skip comments:
-	[ts_start]['/'] = ts_after_slash,
-		[ts_after_slash]['/'] = ts_skipping_comment,
-			[ts_skipping_comment][ANY] = ts_skipping_comment,
-			[ts_skipping_comment]['\n'] = ts_start,
+	#include "../fragments/skip_comments.h"
 	
 	// highest:
+		// hashtag:
+		#include "../fragments/hashtag.h"
+		
 		// charset expression:
 		[ts_start]['['] = ts_after_osquare,
 			[ts_after_osquare][ANY] = ts_osquare,
@@ -27,30 +28,13 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 			[ts_after_oparen][ANY] = ts_oparen,
 		
 		// grammar name:
-		[ts_start]['a' ... 'z'] = ts_reading_identifier,
-		[ts_start]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier][ANY] = ts_identifier,
-			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
-			[ts_reading_identifier]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier]['_'] = ts_reading_identifier,
+		#include "../fragments/identifier.h"
 		
 		// string literal:
-		[ts_start]['\"'] = ts_reading_string_literal,
-			[ts_reading_string_literal][ANY] = ts_reading_string_literal,
-			[ts_reading_string_literal]['\"'] = ts_read_string_literal,
-				[ts_read_string_literal][ANY] = ts_string_literal,
+		#include "../fragments/string_literal.h"
 		
 		// character literal:
-		[ts_start]['\''] = ts_read_character_literal1,
-			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
-			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
-				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
-				[ts_read_character_escape]['n'] = ts_read_character_literal2,
-				[ts_read_character_escape]['t'] = ts_read_character_literal2,
-				[ts_read_character_escape]['\''] = ts_read_character_literal2,
-				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
-			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
-			[ts_read_character_literal3][ANY] = ts_character_literal,
+		#include "../fragments/character_literal.h"
 	
 	// suffixes:
 		// plus:
@@ -107,4 +91,4 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 
 
 
-
+#endif

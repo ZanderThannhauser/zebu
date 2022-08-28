@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -58,4 +59,4 @@ void lex_state_add_transition(
 	
 	EXIT;
 }
-
+#endif

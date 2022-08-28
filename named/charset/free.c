@@ -5,8 +5,6 @@
 
 #include <debug.h>
 
-#include <parser/charset/charset/free.h>
-
 #include "struct.h"
 #include "free.h"
 
@@ -15,6 +13,8 @@ void free_named_charset(void* ptr)
 	struct named_charset* this = ptr;
 	ENTER;
 	
+	TODO;
+	#if 0
 	#ifdef WITH_ARENAS
 	TODO;
 	#else
@@ -28,7 +28,7 @@ void free_named_charset(void* ptr)
 	#else
 	free(this);
 	#endif
+	#endif
 	
 	EXIT;
 }
-

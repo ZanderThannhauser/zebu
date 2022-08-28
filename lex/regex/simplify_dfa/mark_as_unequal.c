@@ -5,8 +5,8 @@
 
 #include <avl/search.h>
 
-#include <tree/of_regexes/contains.h>
-#include <tree/of_regexes/discard.h>
+#include <set/regex/contains.h>
+#include <set/regex/discard.h>
 
 #include "pair/struct.h"
 
@@ -14,9 +14,9 @@
 
 #include "mark_as_unequal.h"
 
-bool simplify_dfa_mark_as_unequal(
+bool regex_simplify_dfa_mark_as_unequal(
 	struct avl_tree_t* connections,
-	struct pair* pair)
+	struct regex_pair* pair)
 {
 	ENTER;
 	
@@ -25,16 +25,16 @@ bool simplify_dfa_mark_as_unequal(
 	
 	assert(a_node && b_node);
 	
-	struct same_as_node* a_sa = a_node->item, *b_sa = b_node->item;
+	struct regex_same_as_node* a_sa = a_node->item, *b_sa = b_node->item;
 	
 	bool removed = false;
 	
-	if (regextree_contains(a_sa->set, pair->b))
+	if (regexset_contains(a_sa->set, pair->b))
 	{
-		assert(regextree_contains(b_sa->set, pair->a));
+		assert(regexset_contains(b_sa->set, pair->a));
 		
-		regextree_discard(a_sa->set, pair->b);
-		regextree_discard(b_sa->set, pair->a);
+		regexset_discard(a_sa->set, pair->b);
+		regexset_discard(b_sa->set, pair->a);
 		
 		removed = true;
 	}
@@ -44,7 +44,6 @@ bool simplify_dfa_mark_as_unequal(
 	EXIT;
 	return removed;
 }
-
 
 
 

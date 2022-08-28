@@ -1,4 +1,4 @@
 
-struct simplify_task;
+struct regex_simplify_task;
 
-void free_simplify_task(struct simplify_task* this);
+void free_regex_simplify_task(struct regex_simplify_task* this);

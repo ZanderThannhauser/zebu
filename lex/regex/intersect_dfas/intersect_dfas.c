@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <assert.h>
 
@@ -259,4 +260,4 @@ struct regex* regex_intersect_dfas(
 
 
 
-
+#endif

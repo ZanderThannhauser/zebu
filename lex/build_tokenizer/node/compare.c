@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <set/of_tokens/compare.h>
@@ -15,3 +16,4 @@ int compare_build_tokenizer_nodes(const void* a, const void* b)
 	return cmp;
 }
 
+#endif

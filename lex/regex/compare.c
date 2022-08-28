@@ -1,4 +1,5 @@
 
+#if 0
 
 #include <stdlib.h>
 #include <assert.h>
@@ -289,4 +290,4 @@ int compare_regexes(
 
 
 
-
+#endif

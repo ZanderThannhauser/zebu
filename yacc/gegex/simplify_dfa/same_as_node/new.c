@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <debug.h>
 
@@ -32,4 +33,4 @@ struct gegex_same_as_node* new_gegex_same_as_node(
 	EXIT;
 	return this;
 }
-
+#endif

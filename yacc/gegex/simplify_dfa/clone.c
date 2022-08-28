@@ -1,4 +1,5 @@
 
+#if 0
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -225,4 +226,4 @@ struct gegex* gegex_simplify_dfa_clone(
 
 
 
-
+#endif

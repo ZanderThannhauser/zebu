@@ -1,4 +1,5 @@
 
+#if 0
 #include "../ANY.h"
 
 #include "semicolon.h"
@@ -12,4 +13,4 @@ enum tokenizer_state semicolon_machine[number_of_tokenizer_states][256] = {
 		[ts_after_semicolon][ANY] = ts_semicolon,
 	
 };
-
+#endif

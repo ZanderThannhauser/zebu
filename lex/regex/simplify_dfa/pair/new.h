@@ -1,6 +1,3 @@
 
-struct pair* new_pair(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+struct regex_pair* new_regex_pair(
 	struct regex* a, struct regex* b);

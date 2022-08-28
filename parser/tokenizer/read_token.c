@@ -100,9 +100,9 @@ enum token read_token(
 			
 			dpvsn(this->tokenchars.chars, this->tokenchars.n);
 			
-			char* s = this->tokenchars.chars;
+			unsigned char* s = this->tokenchars.chars;
 			
-			char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
+			unsigned char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
 			
 			while (r < n)
 			{

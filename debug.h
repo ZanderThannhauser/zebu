@@ -32,64 +32,35 @@
 	
 	#include <macros/strequals.h>
 	
-	#include <arena/memdup.h>
-	#include <arena/malloc.h>
-	#include <arena/calloc.h>
-	#include <arena/realloc.h>
-	#include <arena/dealloc.h>
-	#include <arena/strdup.h>
-	#include <arena/asprintf.h>
-	#include <arena/free.h>
+	#include <memory/smalloc.h>
+	#include <memory/srealloc.h>
 	
 	#include <avl/alloc_tree.h>
 	#include <avl/insert.h>
 	#include <avl/search.h>
+	#include <avl/delete.h>
+	#include <avl/free_nodes.h>
 	#include <avl/free_tree.h>
 	
-	struct task;
-	struct heap;
-	struct options;
-	struct ptrset;
-	struct strset;
-	struct lex_state_ll;
-	struct tokensetset;
-	struct dyntable;
-	struct dynvector;
-	struct lstatetree;
-	struct ystatetree;
-	struct oldavl_tree_t;
-	struct oldregextree;
-	struct pragma_once;
-	struct charset;
-	struct ystate_to_id;
-	struct tokenset;
-	struct scope;
-	struct gegexset;
-	struct regexset;
-	struct lex_state;
+	struct quack;
+	
+	#include <quack/new.h>
+	#include <quack/len.h>
+	#include <quack/append.h>
+	#include <quack/pop.h>
+	#include <quack/foreach.h>
+	#include <quack/free.h>
+	
 	struct lex;
-	struct gegextree;
-	struct tokenset_to_id;
-	struct grammar_to_id;
-	struct out_shared;
-	struct lstate_to_id;
-	struct tokenizer;
-	struct yacc_shared;
 	struct regex;
-	struct memory_arena;
-	struct avl_node_t;
-	struct avl_tree_t;
-	struct regex_ll;
 	struct gegex;
-	struct lookahead_deps;
-	struct yacc_stateinfo;
-	struct yacc_state;
-	struct pair;
-	struct memory_arena;
-	struct simplify_task;
-	struct set;
-	struct mmap_memory_arena;
-	struct regextree;
+	struct options;
+	struct scope;
+	struct pragma_once;
+	struct tokenizer;
+	struct regex_transition;
+	struct regexset;
+	struct charset;
 	
 #endif
 

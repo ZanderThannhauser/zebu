@@ -31,7 +31,7 @@
 // to parser state machine.
 
 // %disambiguate: error;
-%disambiguate: literal > regex;
+// %disambiguate: literal > regex;
 // %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
 
 %skip: [' ', 'g'];
@@ -47,9 +47,11 @@
 // ABCCBA
 
 %start
-	: "abc"                                                      "?"?
-	| `abc & (..)*`   ":"        [wy]*                           "."
-	| `abc & (...)*` (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')]  "!"
+	: "abc"                #abc                                            "?"?
+	
+	| `abc & (..)*`  # even_abc  ":"        [wy]*                          "."
+	
+	| `abc & (...)*` #three_abc (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')] "!"
 	
 	| %[b]: 'b';
 	   `b`: [b,          'B'];
@@ -58,10 +60,10 @@
 	    c : 'c' (a | b)? 'c' :
 	    (b a | b c | a c | c a)+
 	
-	| % a : 'A' (b | c)? 'A' ;
-	    b : 'B' (a | c)? 'B' ;
-	    c : 'C' (a | b)? 'C' :
-	          (a | b | c)+   ;
+	| % a : 'A' #A (b #subB | c #subC)? 'A' ;
+	    b : 'B' #B (a #subA | c #subC)? 'B' ;
+	    c : 'C' #C (a #subA | b #subB)? 'C' :
+	          (a #A | b #B | c #C)+   ;
 
 %skip: ['h']+;
 

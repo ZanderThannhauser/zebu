@@ -2,34 +2,17 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-struct tokenset;
-
 struct regex
 {
-	struct {
-		struct transition {
-			unsigned char value; // must be the first
-			struct regex* to;
-		}** data;
-		size_t n, cap;
-	} transitions;
+	struct avl_tree_t* transitions; // struct regex_transition*
 	
-	struct {
-		struct regex** data;
-		size_t n, cap;
-	} lambda_transitions;
+	struct regexset* lambda_transitions;
 	
 	struct regex* default_transition_to;
 	
 	struct regex* EOF_transition_to;
 	
-	struct memory_arena* arena;
-	
 	unsigned phase;
-	
-	#ifdef DOTOUT
-	unsigned dotout_phase;
-	#endif
 	
 	unsigned is_accepting, priority;
 };

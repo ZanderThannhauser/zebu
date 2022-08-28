@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 #include <stdlib.h>
 
@@ -224,4 +225,4 @@ struct clone_nfa_bundle regex_clone_nfa(
 
 
 
-
+#endif

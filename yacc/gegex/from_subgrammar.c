@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "state/new.h"
@@ -27,4 +28,4 @@ struct gbundle gegex_from_subgrammar(
 	EXIT;
 	return (struct gbundle) {start, end};
 }
-
+#endif

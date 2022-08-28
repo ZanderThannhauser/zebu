@@ -1,4 +1,5 @@
 
+#if 0
 struct dlink
 {
 	struct dop {
@@ -20,3 +21,4 @@ struct dlink
 	
 	struct dlink* next;
 };
+#endif

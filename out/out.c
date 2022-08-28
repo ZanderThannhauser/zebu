@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 #include <string.h>
 
@@ -253,4 +254,4 @@ void out(
 
 
 
-
+#endif

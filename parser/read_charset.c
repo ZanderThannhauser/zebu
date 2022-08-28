@@ -8,17 +8,14 @@
 
 #include <enums/error.h>
 
-#include <arena/memdup.h>
-
 #include "charset/root.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/root.h"
+/*#include "tokenizer/machines/root.h"*/
 #include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/charset/root.h"
 
-#include "scope/get_arena.h"
 #include "scope/declare/charset.h"
 
 #include "read_charset.h"
@@ -33,12 +30,7 @@ void read_charset(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena = scope_get_arena(scope);
-	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
-	#else
-	char* name = strdup(tokenizer->tokenchars.chars);
-	#endif
+	char* name = strdup((void*) tokenizer->tokenchars.chars);
 	
 	dpvs(name);
 	
@@ -46,11 +38,7 @@ void read_charset(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	#ifdef WITH_ARENAS
-	struct charset* charset = read_root_charset(arena, tokenizer, scope);
-	#else
 	struct charset* charset = read_root_charset(tokenizer, scope);
-	#endif
 	
 	scope_declare_charset(scope, name, charset);
 	
@@ -64,7 +52,6 @@ void read_charset(
 	
 	EXIT;
 }
-
 
 
 

@@ -3,34 +3,20 @@
 
 #include <debug.h>
 
-#include <arena/malloc.h>
-
 #include "struct.h"
 #include "new.h"
 
-struct same_as_node* new_same_as_node(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct regex* state, struct regextree* set)
+struct regex_same_as_node* new_regex_same_as_node(
+	struct regex* state, struct regexset* set)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct same_as_node* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct same_as_node* this = malloc(sizeof(*this));
-	#endif
+	struct regex_same_as_node* this = smalloc(sizeof(*this));
 	
 	this->state = state;
 	
 	this->set = set;
 	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
-	
 	EXIT;
 	return this;
 }
-

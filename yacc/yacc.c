@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -67,8 +68,10 @@ static const char* colors[number_of_task_kinds] = {
 	[tk_refcount]             = "\e[48;2;200;000;000m",
 	[tk_setup_trie]           = "\e[48;2;150;050;000m",
 	[tk_build_trie]           = "\e[48;2;100;100;000m",
+	
 	[tk_explore_firsts]       = "\e[48;2;050;150;000m",
 	[tk_percolate_firsts]     = "\e[48;2;000;200;000m",
+	
 	[tk_setup_start]          = "\e[48;2;000;150;050m",
 	[tk_expand_tree]          = "\e[48;2;000;100;100m",
 	[tk_percolate_lookaheads] = "\e[48;2;000;050;150m",
@@ -91,6 +94,28 @@ struct yacc_state* yacc(
 {
 	ENTER;
 	
+	// declare set of trie starts
+	
+	// for each named_grammar:
+		// iterate through, doing refcounts, adding to trie starts
+	
+	// declare firsts, firsts-dependencies
+	
+	// for each trie-start:
+		// iterate through, building trie
+	
+	// for each trie-start:
+		// look at first transitions
+	
+	// percolate first-dependencies
+	
+	// call generator
+	
+	
+	
+	
+	TODO;
+	#if 0
 	#ifdef WITH_ARENAS
 	struct memory_arena* yacc_arena = new_mmap_arena();
 	#endif
@@ -219,6 +244,7 @@ struct yacc_state* yacc(
 	
 	EXIT;
 	return start;
+	#endif
 }
 
 
@@ -242,3 +268,4 @@ struct yacc_state* yacc(
 
 
 
+#endif

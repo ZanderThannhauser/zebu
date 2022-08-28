@@ -7,10 +7,6 @@
 #include "node_t.h"
 
 typedef struct avl_tree_t {
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
-	
 	avl_node_t *head;
 	avl_node_t *tail;
 	avl_node_t *top;

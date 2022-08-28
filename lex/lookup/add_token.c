@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -113,3 +114,4 @@ unsigned lex_add_token(
 
 
 
+#endif

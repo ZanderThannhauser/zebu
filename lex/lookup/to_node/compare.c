@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <lex/regex/compare.h>
@@ -21,4 +22,4 @@ int compare_dfa_to_id_nodes(const void* a, const void* b)
 	return cmp;
 }
 
-
+#endif

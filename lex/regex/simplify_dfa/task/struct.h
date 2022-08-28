@@ -1,9 +1,9 @@
 
 #include "../pair/struct.h"
 
-struct simplify_task
+struct regex_simplify_task
 {
-	struct pair pair;
+	struct regex_pair pair;
 	
 	unsigned hopcount;
 	

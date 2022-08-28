@@ -16,6 +16,8 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(name);
 	
 	struct avl_node_t* node = NULL;
@@ -44,6 +46,7 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 	
 	EXIT;
 	return ntoken->charset;
+	#endif
 }
 
 

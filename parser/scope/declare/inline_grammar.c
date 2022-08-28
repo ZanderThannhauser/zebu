@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -49,4 +50,4 @@ void scope_declare_inline_grammar(
 
 
 
-
+#endif

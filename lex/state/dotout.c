@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <misc/phase_counters.h>
@@ -176,4 +177,4 @@ void lex_state_dotout(
 
 
 
-
+#endif

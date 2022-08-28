@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <lex/regex/state/struct.h>
@@ -94,4 +95,4 @@ void lex_add_EOF_token(
 
 
 
-
+#endif

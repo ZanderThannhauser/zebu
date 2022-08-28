@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -40,3 +41,4 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 	return this;
 }
 
+#endif

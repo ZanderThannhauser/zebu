@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <assert.h>
 
@@ -35,4 +36,4 @@ struct gegex_pair* new_gegex_pair(
 	EXIT;
 	return this;
 }
-
+#endif

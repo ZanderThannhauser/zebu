@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <avl/search.h>
@@ -62,4 +63,4 @@ struct gbundle scope_lookup_inline_grammar(
 
 
 
-
+#endif

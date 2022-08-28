@@ -1,0 +1,11 @@
+
+		[ts_start]['\''] = ts_read_character_literal1,
+			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
+			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
+				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
+				[ts_read_character_escape]['n'] = ts_read_character_literal2,
+				[ts_read_character_escape]['t'] = ts_read_character_literal2,
+				[ts_read_character_escape]['\''] = ts_read_character_literal2,
+				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
+			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
+			[ts_read_character_literal3][ANY] = ts_character_literal,

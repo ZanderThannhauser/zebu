@@ -1,4 +1,5 @@
 
+#if 0
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -230,4 +231,4 @@ struct gbundle gegex_clone_nfa(
 
 
 
-
+#endif

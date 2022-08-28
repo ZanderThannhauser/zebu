@@ -1,4 +1,5 @@
 
+#if 0
 
 #include <assert.h>
 
@@ -45,4 +46,4 @@ void gegex_simplify_dfa_build_universe(
 
 
 
-
+#endif

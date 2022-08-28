@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <debug.h>
 
@@ -42,4 +43,4 @@ struct gegex_dependent_of_node* new_gegex_dependent_of_node(
 	EXIT;
 	return this;
 }
-
+#endif

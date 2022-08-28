@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <lex/state/struct.h>
@@ -84,4 +85,4 @@ void fill_lex_tables(
 
 
 
-
+#endif

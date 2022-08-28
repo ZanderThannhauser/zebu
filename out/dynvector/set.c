@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -38,4 +39,4 @@ void dynvector_set(
 	
 	EXIT;
 }
-
+#endif

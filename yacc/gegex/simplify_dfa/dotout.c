@@ -1,4 +1,5 @@
 
+#if 0
 #ifdef DOTOUT
 
 #include <stdio.h>
@@ -158,4 +159,5 @@ void gegex_simplify_dfa_dotout(
 
 
 
+#endif
 #endif

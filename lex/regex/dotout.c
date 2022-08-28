@@ -7,28 +7,30 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
+/*#include <defines/argv0.h>*/
 
-#include <misc/frame_counter.h>
-
-#include <misc/phase_counters.h>
-
+#include <misc/counters.h>
 #include <misc/escape.h>
 
-#include <set/of_regexes/foreach.h>
+/*#include <set/of_regexes/foreach.h>*/
 
-#include <set/of_tokens/to_string.h>
+/*#include <set/of_tokens/to_string.h>*/
 
 #include "state/struct.h"
+#include "state/foreach_transition.h"
+#include "state/foreach_lambda_transition.h"
+
 #include "dotout.h"
 
 static void helper(FILE* out, struct regex* state)
 {
-	if (state->dotout_phase != dotout_phase_counter)
+	ENTER;
+	
+	if (state->phase != phase_counter)
 	{
 		size_t i, n;
 		
-		state->dotout_phase = dotout_phase_counter;
+		state->phase = phase_counter;
 		
 		if (state->is_accepting)
 		{
@@ -55,97 +57,73 @@ static void helper(FILE* out, struct regex* state)
 		}
 		
 		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
-		{
-			struct transition* transition = state->transitions.data[i];
-			
-			helper(out, transition->to);
-			
-			unsigned value = transition->value;
-			
-			if (true
-				&& i + 1 < n
-				&& value + 1 == state->transitions.data[i + 1]->value
-				&& transition->to == state->transitions.data[i + 1]->to)
+		regex_foreach_transition(state, ({
+			void runme(unsigned char value, struct regex* to)
 			{
-				do i++; while (true
-					&& i + 1 < n
-					&& state->transitions.data[i]->value + 1 == state->transitions.data[i + 1]->value
-					&& transition->to == state->transitions.data[i + 1]->to);
+				helper(out, to);
 				
-				unsigned value2 = state->transitions.data[i]->value;
-				
-				char low[10], high[10];
-				escape(low, value);
-				escape(high, value2);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s - %s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, low, high);
-			}
-			else
-			{
 				char str[10];
+				
 				escape(str, value);
 				
 				fprintf(out, ""
 					"\"%p\" -> \"%p\" [" "\n"
 						"\t" "label = \"%s\"" "\n"
 					"]" "\n"
-				"", state, transition->to, str);
+				"", state, to, str);
 			}
-		}
+			runme;
+		}));
 		
-		// lambda transitions:
-		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
-		{
-			struct regex* to = state->lambda_transitions.data[i];
-			
-			helper(
-				/* out: */ out,
-				/* state:  */ to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"λ\"" "\n"
-				"]" "\n"
-			"", state, to);
-		}
+		regex_foreach_lambda_transition(state, ({
+			void runme(struct regex* to)
+			{
+				helper(out, to);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"λ\"" "\n"
+					"]" "\n"
+				"", state, to);
+			}
+			runme;
+		}));
 		
-		// default transition?:
 		if (state->default_transition_to)
 		{
-			struct regex* to = state->default_transition_to;
-			
-			helper(
-				/* out: */ out,
-				/* state:  */ to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<default>\"" "\n"
-				"]" "\n"
-			"", state, to);
+				TODO;
+				#if 0
+				helper(
+					/* out: */ out,
+					/* state:  */ to);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"<default>\"" "\n"
+					"]" "\n"
+				"", state, to);
+				#endif
 		}
 		
-		// EOF transition?
 		if (state->EOF_transition_to)
 		{
-			struct regex* to = state->EOF_transition_to;
-			
-			helper(out, to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<EOF>\"" "\n"
-				"]" "\n"
-			"", state, to);
+				TODO;
+				#if 0
+				helper(out, to);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"<EOF>\"" "\n"
+					"]" "\n"
+				"", state, to);
+				#endif
 		}
 	}
+	
+	EXIT;
 }
 
+#if 0
 void regex_dotout_set(struct regexset* set)
 {
 	ENTER;
@@ -188,6 +166,7 @@ void regex_dotout_set(struct regexset* set)
 	
 	EXIT;
 }
+#endif
 
 void regex_dotout(struct regex* state, const char* name)
 {
@@ -213,7 +192,7 @@ void regex_dotout(struct regex* state, const char* name)
 	
 	fprintf(out, "\t" "label = \"%s\";" "\n", name);
 	
-	dotout_phase_counter++;
+	phase_counter++;
 	
 	helper(out, state);
 	
@@ -221,8 +200,7 @@ void regex_dotout(struct regex* state, const char* name)
 	
 	fprintf(out, "}" "\n");
 	
-	if (out)
-		fclose(out);
+	fclose(out);
 	
 	EXIT;
 }
@@ -231,6 +209,8 @@ void regex_dotout_two_nodes(struct regex* a, struct regex* b, const char* name)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	char path[PATH_MAX];
 	
 	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
@@ -264,12 +244,12 @@ void regex_dotout_two_nodes(struct regex* a, struct regex* b, const char* name)
 	
 	if (out)
 		fclose(out);
+	#endif
 	
 	EXIT;
 }
 
 #endif
-
 
 
 

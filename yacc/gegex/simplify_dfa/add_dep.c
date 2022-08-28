@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <avl/search.h>
@@ -72,4 +73,4 @@ void gegex_simplify_dfa_add_dep(
 
 
 
-
+#endif

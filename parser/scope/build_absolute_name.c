@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <string.h>
 
@@ -45,4 +46,4 @@ char* scope_build_absolute_name(
 	EXIT;
 	return full;
 }
-
+#endif

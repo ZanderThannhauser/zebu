@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <debug.h>
 
@@ -34,4 +35,4 @@ struct gegex_simplify_task* new_gegex_simplify_task(
 	EXIT;
 	return this;
 }
-
+#endif

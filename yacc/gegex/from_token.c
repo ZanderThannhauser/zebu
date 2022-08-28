@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <parser/grammar/gbundle.h>
@@ -32,3 +33,4 @@ struct gbundle gegex_from_token(
 	EXIT;
 	return (struct gbundle) {start, end};
 }
+#endif

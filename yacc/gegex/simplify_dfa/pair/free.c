@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -21,4 +22,4 @@ void free_gegex_pair(void* ptr)
 	
 	EXIT;
 }
-
+#endif

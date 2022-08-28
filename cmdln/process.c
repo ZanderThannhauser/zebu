@@ -13,29 +13,18 @@
 
 #include <enums/error.h>
 
-#include <arena/malloc.h>
-
-#include "struct.h"
 #include "usage.h"
 #include "verbose.h"
+#include "input_path.h"
+#include "output_path.h"
+#include "output_prefix.h"
+#include "parser_template.h"
+#include "minimize_lexer.h"
 #include "process.h"
 
-struct cmdln* cmdln_process(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	int argc, char* const* argv)
+void cmdln_process(int argc, char* const* argv)
 {
 	ENTER;
-	
-	const char* input_path = NULL;
-	const char* output_path = NULL;
-	
-	const char* output_prefix = "zebu";
-	
-	enum parser_template parser_template = pt_just_tables;
-	
-	bool simplify_tokenizer = false;
 	
 	int opt, option_index;
 	const struct option long_options[] = {
@@ -43,13 +32,14 @@ struct cmdln* cmdln_process(
 		{"output",         no_argument, 0, 'o'},
 		{"prefix",   required_argument, 0, 'p'},
 		{"yacc",     required_argument, 0, 'y'},
+		{"minimize-lexer", no_argument, 0, 'l'},
 		{"simplify", required_argument, 0, 's'},
 		{"verbose",        no_argument, 0, 'v'},
 		{"help",           no_argument, 0, 'h'},
 		{ 0,                            0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "y" "s" "M" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "y" "l" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -65,10 +55,6 @@ struct cmdln* cmdln_process(
 			case 'p':
 				output_prefix = optarg;
 				break;
-			
-/*			case 'M':*/
-/*				build_depends = true;*/
-/*				break;*/
 			
 			case 'y':
 				if (strequals(optarg, "really-just-tables")) {
@@ -92,12 +78,8 @@ struct cmdln* cmdln_process(
 				}
 				break;
 			
-			case 's':
-				if (strequals(optarg, "tokenizer")) {
-					simplify_tokenizer = true;
-				} else {
-					usage(e_bad_cmdline_args);
-				}
+			case 'l':
+				minimize_lexer = true;
 				break;
 			
 			case 'v':
@@ -116,38 +98,17 @@ struct cmdln* cmdln_process(
 		}
 	}
 	
-	if (!input_path || !output_prefix)
+	if (!input_path || !output_path)
 	{
 		fprintf(stderr, "%s: missing arguments!\n", argv0);
 		usage(e_bad_cmdline_args);
 	}
 	
-	#ifdef WITH_ARENAS
-	struct cmdln* flags = arena_malloc(arena, sizeof(*flags));
-	#else
-	struct cmdln* flags = malloc(sizeof(*flags));
-	#endif
-	
-	flags->input_path = input_path;
-	flags->output_path = output_path;
-	flags->output_prefix = output_prefix;
-	
-	flags->parser_template = parser_template;
-	
-	flags->simplify_tokenizer = simplify_tokenizer;
-	
-	dpvs(flags->input_path);
-	dpvs(flags->output_path);
-	dpvs(flags->output_prefix);
-	
-	dpv(flags->parser_template);
-	
-	#ifdef VERBOSE
-	dpvb(verbose);
-	#endif
+	dpvs(input_path);
+	dpvs(output_path);
+	dpvs(output_prefix);
 	
 	EXIT;
-	return flags;
 }
 
 

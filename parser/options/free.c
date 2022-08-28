@@ -1,4 +1,7 @@
 
+#include <debug.h>
+
+#if 0
 #include <assert.h>
 #include <stdlib.h>
 
@@ -67,11 +70,14 @@ static void free_dlink(
 	
 	EXIT;
 }
+#endif
 
 void free_options(struct options* this)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	#ifdef WITH_ARENAS
 	free_dlink(this->arena, this->disambiguatations.head);
 	#else
@@ -85,6 +91,7 @@ void free_options(struct options* this)
 	arena_dealloc(this->arena, this);
 	#else
 	free(this);
+	#endif
 	#endif
 	
 	EXIT;

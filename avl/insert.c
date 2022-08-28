@@ -4,9 +4,6 @@
 
 #include <debug.h>
 
-#include <arena/malloc.h>
-#include <arena/dealloc.h>
-
 #include "tree_t.h"
 #include "insert.h"
 

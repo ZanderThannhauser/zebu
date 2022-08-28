@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <string.h>
 
@@ -82,4 +83,4 @@ void scope_declare_grammar(
 
 
 
-
+#endif

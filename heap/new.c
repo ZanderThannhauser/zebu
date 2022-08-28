@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <arena/malloc.h>
-
 #include "struct.h"
 #include "new.h"
 

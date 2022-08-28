@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <string.h>
 
@@ -69,4 +70,4 @@ void gegex_add_grammar_transition(
 
 
 
-
+#endif

@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <cmdln/verbose.h>
@@ -110,4 +111,4 @@ struct gegex* gegex_nfa_to_dfa(
 
 
 
-
+#endif

@@ -4,45 +4,46 @@
 
 #include <debug.h>
 
-#include <tree/of_regexes/add.h>
+#include <set/regex/add.h>
 
 #include "../state/struct.h"
+#include "../state/foreach_transition.h"
 
 #include "build_universe.h"
 
-void simplify_dfa_build_universe(
-	struct regextree* universe,
+void regex_simplify_dfa_build_universe(
+	struct regexset* universe,
 	struct regex* node)
 {
 	ENTER;
 	
 	dpv(node);
 	
-	if (regextree_add(universe, node))
+	if (regexset_add(universe, node))
 	{
 		size_t i, n;
 		
-		assert(!node->lambda_transitions.n);
-		
-		for (i = 0, n = node->transitions.n; i < n; i++)
-		{
-			simplify_dfa_build_universe(universe, node->transitions.data[i]->to);
-		}
+		regex_foreach_transition(node, ({
+			void runme(unsigned char _, struct regex* to)
+			{
+				regex_simplify_dfa_build_universe(universe, to);
+			}
+			runme;
+		}));
 		
 		if (node->default_transition_to)
 		{
-			simplify_dfa_build_universe(universe, node->default_transition_to);
+			regex_simplify_dfa_build_universe(universe, node->default_transition_to);
 		}
 		
 		if (node->EOF_transition_to)
 		{
-			simplify_dfa_build_universe(universe, node->EOF_transition_to);
+			regex_simplify_dfa_build_universe(universe, node->EOF_transition_to);
 		}
 	}
 	
 	EXIT;
 }
-
 
 
 

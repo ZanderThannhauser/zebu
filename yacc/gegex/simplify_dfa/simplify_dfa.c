@@ -1,4 +1,5 @@
 
+#if 0
 #include <string.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -461,4 +462,4 @@ struct gegex* gegex_simplify_dfa(
 
 
 
-
+#endif

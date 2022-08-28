@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <arena/dealloc.h>
-
 #include "free_nodes.h"
 #include "free_tree.h"
 

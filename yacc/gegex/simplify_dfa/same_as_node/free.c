@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -25,4 +26,4 @@ void free_gegex_same_as_node(void* ptr)
 	
 	EXIT;
 }
-
+#endif

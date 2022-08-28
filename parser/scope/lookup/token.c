@@ -10,7 +10,7 @@
 
 /*#include <named/name/struct.h>*/
 
-#include <named/token/struct.h>
+/*#include <named/token/struct.h>*/
 
 #include "token.h"
 
@@ -20,6 +20,8 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 	
 	dpvs(name);
 	
+	TODO;
+	#if 0
 	struct avl_node_t* node = NULL;
 	
 	struct scope_layer* layer = this->layer;
@@ -46,6 +48,7 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 	
 	EXIT;
 	return ntoken->token;
+	#endif
 }
 
 

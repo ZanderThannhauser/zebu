@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -57,4 +58,4 @@ bool gegex_simplify_dfa_mark_as_unequal(
 
 
 
-
+#endif

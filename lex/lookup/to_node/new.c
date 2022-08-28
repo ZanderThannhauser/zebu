@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -32,4 +33,4 @@ struct dfa_to_id_node* new_dfa_to_id_node(
 	EXIT;
 	return this;
 }
-
+#endif

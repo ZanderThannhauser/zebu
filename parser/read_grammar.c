@@ -1,4 +1,5 @@
 
+#if 0
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -104,4 +105,4 @@ void read_grammar(
 
 
 
-
+#endif

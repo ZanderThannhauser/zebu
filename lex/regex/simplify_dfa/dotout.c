@@ -10,30 +10,26 @@
 
 #include <defines/argv0.h>
 
-#include <misc/frame_counter.h>
-
 #include <avl/search.h>
 
-#include <misc/frame_counter.h>
+#include <misc/counters.h>
 #include <misc/escape.h>
 
-#include <tree/of_regexes/new.h>
-#include <tree/of_regexes/add.h>
-#include <tree/of_regexes/contains.h>
-#include <tree/of_regexes/foreach.h>
-#include <tree/of_regexes/free.h>
+#include <set/regex/new.h>
+#include <set/regex/add.h>
+#include <set/regex/contains.h>
+#include <set/regex/foreach.h>
+#include <set/regex/free.h>
 
 #include "same_as_node/struct.h"
 
 #include "../state/struct.h"
+#include "../state/foreach_transition.h"
 
 #include "dotout.h"
 
 void simplify_dfa_dotout(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct regextree* universe,
+	struct regexset* universe,
 	struct avl_tree_t* connections,
 	unsigned hopcount)
 {
@@ -59,13 +55,9 @@ void simplify_dfa_dotout(
 	
 	fprintf(out, "\t" "label = \"%s: hopcount: %u\";" "\n", __PRETTY_FUNCTION__, hopcount);
 	
-	#ifdef WITH_ARENAS
-	struct regextree* done = new_regextree(arena);
-	#else
-	struct regextree* done = new_regextree();
-	#endif
+	struct regexset* done = new_regexset();
 	
-	regextree_foreach(universe, ({
+	regexset_foreach(universe, ({
 		void runme(struct regex* state)
 		{
 			unsigned i, n;
@@ -80,7 +72,7 @@ void simplify_dfa_dotout(
 						"\t" "fillcolor = white;" "\n"
 						"\t" "peripheries = %u;" "\n"
 					"]" "\n"
-				"", state, state->is_accepting, 2 + state->priority);
+				"", state, 1, 2 + state->priority);
 			}
 			else
 			{
@@ -95,21 +87,20 @@ void simplify_dfa_dotout(
 			}
 			
 			// normal transitions:
-			for (i = 0, n = state->transitions.n; i < n; i++)
-			{
-				struct transition* transition = state->transitions.data[i];
-				
-				unsigned value = transition->value;
-				
-				char str[10];
-				escape(str, value);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, str);
-			}
+			regex_foreach_transition(state, ({
+				void runme(unsigned char value, struct regex* to)
+				{
+					char str[10];
+					escape(str, value);
+					
+					fprintf(out, ""
+						"\"%p\" -> \"%p\" [" "\n"
+							"\t" "label = \"%s\"" "\n"
+						"]" "\n"
+					"", state, to, str);
+				}
+				runme;
+			}));
 			
 			// default transition?:
 			if (state->default_transition_to)
@@ -121,7 +112,6 @@ void simplify_dfa_dotout(
 				"", state, state->default_transition_to);
 			}
 			
-			// EOF transition?
 			if (state->EOF_transition_to)
 			{
 				fprintf(out, ""
@@ -129,7 +119,6 @@ void simplify_dfa_dotout(
 						"\t" "label = \"<EOF>\"" "\n"
 					"]" "\n"
 				"", state, state->EOF_transition_to);
-				
 			}
 			
 			{
@@ -137,11 +126,11 @@ void simplify_dfa_dotout(
 				
 				assert(node);
 				
-				struct same_as_node* sa = node->item;
+				struct regex_same_as_node* sa = node->item;
 				
-				regextree_foreach(sa->set, ({
+				regexset_foreach(sa->set, ({
 					void runme(struct regex* dep) {
-						if (state != dep && !regextree_contains(done, dep))
+						if (state != dep && !regexset_contains(done, dep))
 						{
 							fprintf(out, ""
 								"\"%p\" -> \"%p\" [" "\n"
@@ -155,13 +144,13 @@ void simplify_dfa_dotout(
 					runme;
 				}));
 				
-				regextree_add(done, state);
+				regexset_add(done, state);
 			}
 		}
 		runme;
 	}));
 	
-	free_regextree(done);
+	free_regexset(done);
 	
 	fprintf(out, "}" "\n");
 	

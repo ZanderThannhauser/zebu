@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 #include <debug.h>
 
@@ -74,4 +75,4 @@ void gegex_add_transition(
 
 
 
-
+#endif

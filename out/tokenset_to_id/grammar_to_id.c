@@ -1,4 +1,5 @@
 
+#if 0
 #include <stdlib.h>
 
 #include <debug.h>
@@ -51,3 +52,4 @@ unsigned grammar_to_id(
 	EXIT;
 	return retval;
 }
+#endif

@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <string.h>
@@ -246,4 +247,4 @@ struct gegex* gegex_nfa_to_dfa_helper(
 
 
 
-
+#endif

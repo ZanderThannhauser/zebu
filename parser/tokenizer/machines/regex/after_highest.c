@@ -6,98 +6,63 @@ const enum tokenizer_state regex_after_highest_machine[number_of_tokenizer_state
 	
 	#include "../fragments/skip_whitespace.h"
 	
-	// skip comments:
-	[ts_start]['/'] = ts_after_slash,
-		[ts_after_slash]['/'] = ts_skipping_comment,
-			[ts_skipping_comment][ANY] = ts_skipping_comment,
-			[ts_skipping_comment]['\n'] = ts_start,
+	#include "../fragments/skip_comments.h"
 	
 	// highest:
 		// open paren:
-		[ts_start]['('] = ts_after_oparen,
-			[ts_after_oparen][ANY] = ts_oparen,
+		#include "../fragments/oparen.h"
 		
 		// open sqaure:
-		[ts_start]['['] = ts_after_osquare,
-			[ts_after_osquare][ANY] = ts_osquare,
+		#include "../fragments/osquare.h"
 		
 		// identifier:
-		[ts_start]['a' ... 'z'] = ts_reading_identifier,
-		[ts_start]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier][ANY] = ts_identifier,
-			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
-			[ts_reading_identifier]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier]['_'] = ts_reading_identifier,
+		#include "../fragments/identifier.h"
 		
 		// string literal:
-		[ts_start]['\"'] = ts_reading_string_literal,
-			[ts_reading_string_literal][ANY] = ts_reading_string_literal,
-			[ts_reading_string_literal]['\"'] = ts_read_string_literal,
-				[ts_read_string_literal][ANY] = ts_string_literal,
+		#include "../fragments/string_literal.h"
 		
 		// character literal:
-		[ts_start]['\''] = ts_read_character_literal1,
-			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
-			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
-				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
-				[ts_read_character_escape]['n'] = ts_read_character_literal2,
-				[ts_read_character_escape]['\''] = ts_read_character_literal2,
-				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
-			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
-			[ts_read_character_literal3][ANY] = ts_character_literal,
+		#include "../fragments/character_literal.h"
 		
 		// dot:
-		[ts_start]['.'] = ts_after_dot,
-			[ts_after_dot][ANY] = ts_dot,
+		#include "../fragments/dot.h"
 		
 	// prefixes:
 		// exclamation mark:
-		[ts_start]['!'] = ts_after_emark,
-			[ts_after_emark][ANY] = ts_emark,
+		#include "../fragments/emark.h"
 	
 	// suffixes:
 		// question mark:
-		[ts_start]['?'] = ts_after_qmark,
-			[ts_after_qmark][ANY] = ts_qmark,
+		#include "../fragments/qmark.h"
 		
 		// plus:
-		[ts_start]['+'] = ts_after_plus,
-			[ts_after_plus][ANY] = ts_plus,
+		#include "../fragments/plus.h"
 		
 		// asterisk:
-		[ts_start]['*'] = ts_after_asterisk,
-			[ts_after_asterisk][ANY] = ts_asterisk,
+		#include "../fragments/asterisk.h"
 		
 		// ocurly:
-		[ts_start]['{'] = ts_after_ocurly,
-			[ts_after_ocurly][ANY] = ts_ocurly,
+		#include "../fragments/ocurly.h"
 	
 	// and operator:
-	[ts_start]['&'] = ts_after_ampersand,
-		[ts_after_ampersand][ANY] = ts_ampersand,
+		#include "../fragments/ampersand.h"
 	
 	// or operator:
-	[ts_start]['|'] = ts_after_vertical_bar,
-		[ts_after_vertical_bar][ANY] = ts_vertical_bar,
+		#include "../fragments/vertical_bar.h"
 	
 	// end of expression:
 		// close paren:
-		[ts_start][')'] = ts_after_cparen,
-			[ts_after_cparen][ANY] = ts_cparen,
+		#include "../fragments/cparen.h"
 		
 		// semicolon
-		[ts_start][';'] = ts_after_semicolon,
-			[ts_after_semicolon][ANY] = ts_semicolon,
+		#include "../fragments/semicolon.h"
 		
 		// colon
-		[ts_start][':'] = ts_after_colon,
-			[ts_after_colon][ANY] = ts_colon,
+		#include "../fragments/colon.h"
 		
 		// gravemark
-		[ts_start]['`'] = ts_after_gravemark,
-			[ts_after_gravemark][ANY] = ts_gravemark,
+		#include "../fragments/gravemark.h"
 };
-
 
 
 

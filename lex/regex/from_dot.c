@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include "state/struct.h"
@@ -29,4 +30,4 @@ struct regex* regex_from_dot(
 	EXIT;
 	return start;
 }
-
+#endif

@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 #include <stdlib.h>
 
@@ -27,4 +28,4 @@ void free_scope(struct scope* this)
 	
 	EXIT;
 }
-
+#endif

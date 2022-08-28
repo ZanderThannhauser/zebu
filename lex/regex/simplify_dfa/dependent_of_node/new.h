@@ -1,6 +1,3 @@
 
-struct dependent_of_node* new_dependent_of_node(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+struct regex_dependent_of_node* new_regex_dependent_of_node(
 	struct regex* a, struct regex* b);

@@ -1,4 +1,5 @@
 
+#if 0
 #include <avl/avl.h>
 
 #include <debug.h>
@@ -87,4 +88,4 @@ void resolve_grammar_names(struct scope* scope)
 
 
 
-
+#endif

@@ -4,10 +4,10 @@
 #include "struct.h"
 #include "compare.h"
 
-int compare_pairs(const void* a, const void* b)
+int compare_regex_pairs(const void* a, const void* b)
 {
 	int cmp = 0;
-	const struct pair *A = a, *B = b;
+	const struct regex_pair *A = a, *B = b;
 	ENTER;
 	
 	if (A->a > B->a)

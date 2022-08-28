@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <yacc/gegex/state/struct.h>
@@ -41,4 +42,4 @@ void gegex_add_lamda_states(
 
 
 
-
+#endif
