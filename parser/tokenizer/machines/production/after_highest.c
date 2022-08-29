@@ -1,5 +1,4 @@
 
-#if 0
 #include "../ANY.h"
 
 #include "after_highest.h"
@@ -16,16 +15,13 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 		#include "../fragments/hashtag.h"
 		
 		// charset expression:
-		[ts_start]['['] = ts_after_osquare,
-			[ts_after_osquare][ANY] = ts_osquare,
+		#include "../fragments/osquare.h"
 		
 		// token expression:
-		[ts_start]['`'] = ts_after_gravemark,
-			[ts_after_gravemark][ANY] = ts_gravemark,
+		#include "../fragments/gravemark.h"
 		
 		// open paren:
-		[ts_start]['('] = ts_after_oparen,
-			[ts_after_oparen][ANY] = ts_oparen,
+		#include "../fragments/oparen.h"
 		
 		// grammar name:
 		#include "../fragments/identifier.h"
@@ -38,37 +34,29 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 	
 	// suffixes:
 		// plus:
-		[ts_start]['+'] = ts_after_plus,
-			[ts_after_plus][ANY] = ts_plus,
+		#include "../fragments/plus.h"
 		// asterisk
-		[ts_start]['*'] = ts_after_asterisk,
-			[ts_after_asterisk][ANY] = ts_asterisk,
+		#include "../fragments/asterisk.h"
 		// qmark
-		[ts_start]['?'] = ts_after_qmark,
-			[ts_after_qmark][ANY] = ts_qmark,
+		#include "../fragments/qmark.h"
 	
 	// subroot:
 		// percent:
-		[ts_start]['%'] = ts_after_percent,
-			[ts_after_percent][ANY] = ts_percent,
+		#include "../fragments/percent.h"
 	
 	// or:
 		// vertical bar:
-		[ts_start]['|'] = ts_after_vertical_bar,
-			[ts_after_vertical_bar][ANY] = ts_vertical_bar,
+		#include "../fragments/vertical_bar.h"
 	
 	// end of expression:
 		// close paren:
-		[ts_start][')'] = ts_after_cparen,
-			[ts_after_cparen][ANY] = ts_cparen,
+		#include "../fragments/cparen.h"
 		
 		// colon:
-		[ts_start][':'] = ts_after_colon,
-			[ts_after_colon][ANY] = ts_colon,
+		#include "../fragments/colon.h"
 		
 		// semicolon
-		[ts_start][';'] = ts_after_semicolon,
-			[ts_after_semicolon][ANY] = ts_semicolon,
+		#include "../fragments/semicolon.h"
 		
 };
 
@@ -91,4 +79,3 @@ const enum tokenizer_state production_after_highest_machine[number_of_tokenizer_
 
 
 
-#endif

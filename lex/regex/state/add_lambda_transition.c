@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <set/regex/add.h>
-
 #include "struct.h"
 #include "add_lambda_transition.h"
 
@@ -14,8 +12,15 @@ void regex_add_lambda_transition(
 {
 	ENTER;
 	
-	regexset_add(from->lambda_transitions, to);
+	if (from->lambda_transitions.n + 1 >= from->lambda_transitions.cap)
+	{
+		from->lambda_transitions.cap = from->lambda_transitions.cap * 2 ?: 1;
+		
+		from->lambda_transitions.data = srealloc(from->lambda_transitions.data, sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
+	}
 	
+	from->lambda_transitions.data[from->lambda_transitions.n++] = to;
+
 	EXIT;
 }
 

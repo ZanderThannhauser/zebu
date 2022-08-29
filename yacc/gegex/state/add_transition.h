@@ -1,5 +1,6 @@
 
 void gegex_add_transition(
 	struct gegex* from,
-	unsigned value,
+	unsigned token,
+	struct stringset* tags,
 	struct gegex* to);

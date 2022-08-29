@@ -3,10 +3,6 @@
 
 #include <debug.h>
 
-#include <set/regex/new.h>
-
-#include "transition/compare.h"
-#include "transition/free.h"
 #include "struct.h"
 #include "new.h"
 
@@ -16,9 +12,13 @@ struct regex* new_regex(
 	
 	struct regex* this = smalloc(sizeof(*this));
 	
-	this->transitions = avl_alloc_tree(compare_regex_transitions, free_regex_transition);
+	this->transitions.data = NULL;
+	this->transitions.n = 0;
+	this->transitions.cap = 0;
 	
-	this->lambda_transitions = new_regexset();
+	this->lambda_transitions.data = NULL;
+	this->lambda_transitions.cap = 0;
+	this->lambda_transitions.n = 0;
 	
 	this->default_transition_to = NULL;
 	

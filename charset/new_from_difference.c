@@ -6,10 +6,7 @@
 #include "struct.h"
 #include "new_from_difference.h"
 
-struct charset* charset_difference(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+struct charset* new_charset_from_difference(
 	const struct charset* a,
 	const struct charset* b,
 	bool is_complement)
@@ -18,11 +15,7 @@ struct charset* charset_difference(
 	
 	size_t n = 0;
 	
-	#ifdef WITH_ARENAS
-	unsigned char* chars = arena_malloc(arena, sizeof(*chars) * a->len);
-	#else
 	unsigned char* chars = malloc(sizeof(*chars) * a->len);
-	#endif
 	
 	size_t a_i = 0, a_n = a->len;
 	size_t b_i = 0, b_n = b->len;
@@ -42,20 +35,12 @@ struct charset* charset_difference(
 	while (a_i < a_n)
 		chars[n++] = a->chars[a_i++];
 	
-	#ifdef WITH_ARENAS
-	struct charset* this = arena_malloc(arena, sizeof(*this));
-	#else
 	struct charset* this = malloc(sizeof(*this));
-	#endif
 	
 	this->chars = chars;
 	this->len = n;
 	
 	this->is_complement = is_complement;
-	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
 	
 	EXIT;
 	return this;

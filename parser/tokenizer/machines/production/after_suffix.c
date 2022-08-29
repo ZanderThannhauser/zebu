@@ -1,5 +1,4 @@
 
-#if 0
 #include "../ANY.h"
 
 #include "after_suffix.h"
@@ -9,71 +8,43 @@ const enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_s
 	#include "../fragments/skip_whitespace.h"
 	
 	// skip comments:
-	[ts_start]['/'] = ts_after_slash,
-		[ts_after_slash]['/'] = ts_skipping_comment,
-			[ts_skipping_comment][ANY] = ts_skipping_comment,
-			[ts_skipping_comment]['\n'] = ts_start,
+	#include "../fragments/skip_comments.h"
 	
 	// highest:
 		// charset expression:
-		[ts_start]['['] = ts_after_osquare,
-			[ts_after_osquare][ANY] = ts_osquare,
+		#include "../fragments/osquare.h"
 		
 		// token expression:
-		[ts_start]['`'] = ts_after_gravemark,
-			[ts_after_gravemark][ANY] = ts_gravemark,
+		#include "../fragments/gravemark.h"
 		
 		// open paren:
-		[ts_start]['('] = ts_after_oparen,
-			[ts_after_oparen][ANY] = ts_oparen,
+		#include "../fragments/oparen.h"
 		
 		// grammar name:
-		[ts_start]['a' ... 'z'] = ts_reading_identifier,
-		[ts_start]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier][ANY] = ts_identifier,
-			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
-			[ts_reading_identifier]['A' ... 'Z'] = ts_reading_identifier,
-			[ts_reading_identifier]['_'] = ts_reading_identifier,
+		#include "../fragments/identifier.h"
 		
 		// string literal:
-		[ts_start]['\"'] = ts_reading_string_literal,
-			[ts_reading_string_literal][ANY] = ts_reading_string_literal,
-			[ts_reading_string_literal]['\"'] = ts_read_string_literal,
-				[ts_read_string_literal][ANY] = ts_string_literal,
+		#include "../fragments/string_literal.h"
 		
 		// character literal:
-		[ts_start]['\''] = ts_read_character_literal1,
-			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
-			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
-				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
-				[ts_read_character_escape]['n'] = ts_read_character_literal2,
-				[ts_read_character_escape]['t'] = ts_read_character_literal2,
-				[ts_read_character_escape]['\''] = ts_read_character_literal2,
-				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
-			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
-			[ts_read_character_literal3][ANY] = ts_character_literal,
+		#include "../fragments/character_literal.h"
 	
 	// subroot:
 		// percent:
-		[ts_start]['%'] = ts_after_percent,
-			[ts_after_percent][ANY] = ts_percent,
+		#include "../fragments/percent.h"
 	
 	// or operator:
-	[ts_start]['|'] = ts_after_vertical_bar,
-		[ts_after_vertical_bar][ANY] = ts_vertical_bar,
+	#include "../fragments/vertical_bar.h"
 	
 	// end of expression:
 		// close paren:
-		[ts_start][')'] = ts_after_cparen,
-			[ts_after_cparen][ANY] = ts_cparen,
+		#include "../fragments/cparen.h"
 		
 		// colon:
-		[ts_start][':'] = ts_after_colon,
-			[ts_after_colon][ANY] = ts_colon,
+		#include "../fragments/colon.h"
 		
 		// semicolon
-		[ts_start][';'] = ts_after_semicolon,
-			[ts_after_semicolon][ANY] = ts_semicolon,
+		#include "../fragments/semicolon.h"
 		
 };
 
@@ -96,4 +67,3 @@ const enum tokenizer_state production_after_suffix_machine[number_of_tokenizer_s
 
 
 
-#endif

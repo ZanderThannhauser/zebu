@@ -1,5 +1,4 @@
 
-#if 0
 #ifdef DOTOUT
 
 #include <stdio.h>
@@ -8,24 +7,21 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
+/*#include <defines/argv0.h>*/
 
-#include <misc/phase_counters.h>
-
-#include <misc/frame_counter.h>
+#include <misc/counters.h>
 
 #include "state/struct.h"
+
 #include "dotout.h"
 
 static void helper(FILE* out, struct gegex* state)
 {
 	ENTER;
 	
-	if (state->phase != yacc_phase_counter)
+	if (state->phase != phase_counter)
 	{
-		size_t i, n;
-		
-		state->phase = yacc_phase_counter;
+		state->phase = phase_counter;
 		
 		fprintf(out, ""
 			"\"%p\" [" "\n"
@@ -35,13 +31,11 @@ static void helper(FILE* out, struct gegex* state)
 		"", state, state->is_reduction_point ? "doublecircle" : "circle");
 		
 		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct transition* transition = state->transitions.data[i];
+			struct gegex_transition* transition = state->transitions.data[i];
 			
-			helper(
-				/* out: */ out,
-				/* state:  */ transition->to);
+			helper(out, transition->to);
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
@@ -51,8 +45,10 @@ static void helper(FILE* out, struct gegex* state)
 		}
 		
 		// grammar transitions:
-		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
+			TODO;
+			#if 0
 			struct gtransition* gtransition = state->grammar_transitions.data[i];
 			
 			helper(
@@ -64,18 +60,17 @@ static void helper(FILE* out, struct gegex* state)
 					"\t" "label = \"%s\"" "\n"
 				"]" "\n"
 			"", state, gtransition->to, gtransition->grammar);
+			#endif
 		}
 		
 		// lambda transitions:
-		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
 			dpv(i);
 			
-			struct gegex* to = state->lambda_transitions.data[i];
+			struct gegex* const to = state->lambda_transitions.data[i];
 			
-			helper(
-				/* out: */ out,
-				/* state:  */ to);
+			helper(out, to);
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
@@ -114,7 +109,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", start);
 	
-	yacc_phase_counter++;
+	phase_counter++;
 	
 	helper(out, start);
 	
@@ -129,8 +124,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 	
 	fprintf(out, "}" "\n");
 	
-	if (out)
-		fclose(out);
+	fclose(out);
 	
 	EXIT;
 }
@@ -151,4 +145,3 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 
 
 
-#endif

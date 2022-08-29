@@ -12,11 +12,8 @@ struct gbundle read_root_production(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct gbundle inner = read_or_production(tokenizer, options, scope, lex);
 	
 	EXIT;
 	return inner;
-	#endif
 }

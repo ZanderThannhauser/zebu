@@ -4,8 +4,6 @@
 #include <misc/counters.h>
 
 #include "state/struct.h"
-#include "state/foreach_transition.h"
-#include "state/foreach_lambda_transition.h"
 #include "state/add_lambda_transition.h"
 
 #include "lambda_all_accepting_states.h"
@@ -34,22 +32,17 @@ static void helper(
 		}
 		
 		// normal transitions:
-		regex_foreach_transition(regex, ({
-			void runme(unsigned char _, struct regex* to)
-			{
-				helper(to, dest, new_accepting);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = regex->transitions.n; i < n; i++)
+		{
+			struct regex_transition* ele = regex->transitions.data[i];
+			helper(ele->to, dest, new_accepting);
+		}
 		
 		// lambda transitions:
-		regex_foreach_lambda_transition(regex, ({
-			void runme(struct regex* to)
-			{
-				helper(to, dest, new_accepting);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = regex->lambda_transitions.n; i < n; i++)
+		{
+			helper(regex->lambda_transitions.data[i], dest, new_accepting);
+		}
 		
 		if (regex->default_transition_to)
 		{

@@ -5,7 +5,7 @@
 
 #include <lex/regex/dfa_to_nfa.h>
 #include <lex/regex/dotout.h>
-/*#include <lex/regex/clone.h>*/
+#include <lex/regex/clone.h>
 #include <lex/regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
@@ -45,17 +45,10 @@ struct rbundle read_concat_token_expression(
 			
 			if (token_skip)
 			{
-				TODO;
-				#if 0
-				#ifdef WITH_ARENAS
-				struct regex* cloned = regex_clone(arena, token_skip);
-				#else
 				struct regex* cloned = regex_clone(token_skip);
-				#endif
 				
 				regex_add_lambda_transition(retval.nfa.end, cloned);
 				regex_add_lambda_transition(cloned, next.nfa.start);
-				#endif
 			}
 			else
 			{

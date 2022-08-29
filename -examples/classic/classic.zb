@@ -49,7 +49,7 @@
 %start
 	: "abc"                #abc                                            "?"?
 	
-	| `abc & (..)*`  # even_abc  ":"        [wy]*                          "."
+	| `abc & (..)*`  #even__abc  ":"        [wy]*                          "."
 	
 	| `abc & (...)*` #three_abc (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')] "!"
 	

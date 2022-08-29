@@ -13,8 +13,6 @@ static void append_prefix(struct scope* this, const char* appendme)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpvs(appendme);
 	
 	size_t len = strlen(appendme);
@@ -25,17 +23,12 @@ static void append_prefix(struct scope* this, const char* appendme)
 		
 		dpv(this->prefix.cap);
 		
-		#ifdef WITH_ARENAS
-		this->prefix.chars = arena_realloc(this->arena, this->prefix.chars, this->prefix.cap);
-		#else
-		this->prefix.chars = realloc(this->prefix.chars, this->prefix.cap);
-		#endif
+		this->prefix.chars = srealloc(this->prefix.chars, this->prefix.cap);
 	}
 	
 	memcpy(this->prefix.chars + this->prefix.n, appendme, len);
 	
 	this->prefix.n += len;
-	#endif
 	
 	EXIT;
 }
@@ -44,15 +37,22 @@ void private_scope_append_prefix(struct scope* this, const char* appendme)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (this->prefix.n)
 	{
 		append_prefix(this, ".");
 	}
 	
 	append_prefix(this, appendme);
-	#endif
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+

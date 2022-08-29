@@ -3,15 +3,15 @@
 
 #include <debug.h>
 
-/*#include <lex/regex/state/struct.h>*/
-/*#include <lex/regex/state/free.h>*/
-/*#include <lex/regex/intersect_dfas/intersect_dfas.h>*/
-/*#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>*/
-/*#include <lex/regex/simplify_dfa/simplify_dfa.h>*/
+#include <lex/regex/state/struct.h>
+#include <lex/regex/state/free.h>
+#include <lex/regex/intersect_dfas.h>
+#include <lex/regex/nfa_to_dfa.h>
+#include <lex/regex/simplify_dfa/simplify_dfa.h>
 
 #include "../tokenizer/struct.h"
-/*#include "../tokenizer/read_token.h"*/
-/*#include "../tokenizer/machines/regex/inside_and.h"*/
+#include "../tokenizer/read_token.h"
+#include "../tokenizer/machines/regex/inside_and.h"
 
 #include "3.concat.h"
 #include "4.and.h"
@@ -27,17 +27,11 @@ struct rbundle read_and_token_expression(
 	
 	while (tokenizer->token == t_ampersand)
 	{
-		TODO;
-		#if 0
 		read_token(tokenizer, regex_inside_and_machine);
 		
-		#ifdef WITH_ARENAS
-		struct rbundle right = read_concat_token_expression(arena, tokenizer, scope, token_skip);
-		#else
 		struct rbundle right = read_concat_token_expression(tokenizer, scope, token_skip);
-		#endif
 		
-		struct regex* left_machine;
+		struct regex* left_machine, *right_machine;
 		
 		if (retval.is_nfa)
 		{
@@ -48,21 +42,15 @@ struct rbundle read_and_token_expression(
 			left_machine = retval.dfa;
 		}
 		
-		struct regex* right_machine;
-		
 		if (right.is_nfa)
 		{
 			right.nfa.end->is_accepting = true;
 			
 			struct regex* nfa = right.nfa.start;
 			
-			#ifdef WITH_ARENAS
-			struct regex* dfa = regex_nfa_to_dfa(arena, nfa);
-			right_machine = regex_simplify_dfa(arena, dfa);
-			#else
 			struct regex* dfa = regex_nfa_to_dfa(nfa);
+			
 			right_machine = regex_simplify_dfa(dfa);
-			#endif
 			
 			free_regex(nfa), free_regex(dfa);
 		}
@@ -74,17 +62,9 @@ struct rbundle read_and_token_expression(
 		dpv(left_machine);
 		dpv(right_machine);
 		
-		#ifdef WITH_ARENAS
-		struct regex* intersected = regex_intersect_dfas(arena, left_machine, right_machine);
-		#else
 		struct regex* intersected = regex_intersect_dfas(left_machine, right_machine);
-		#endif
 		
-		#ifdef WITH_ARENAS
-		struct regex* outgoing = regex_simplify_dfa(arena, intersected);
-		#else
 		struct regex* outgoing = regex_simplify_dfa(intersected);
-		#endif
 		
 		free_regex(intersected);
 		
@@ -92,7 +72,6 @@ struct rbundle read_and_token_expression(
 			.is_nfa = false,
 			.dfa = outgoing,
 		};
-		#endif
 	}
 	
 	EXIT;

@@ -1,8 +1,7 @@
 
-#if 0
 #include <debug.h>
 
-#include <lex/regex/compare.h>
+#include <lex/regex/compare_simplified.h>
 
 #include "struct.h"
 #include "compare.h"
@@ -14,7 +13,7 @@ int compare_dfa_to_id_nodes(const void* a, const void* b)
 	
 	const struct dfa_to_id_node* A = a, *B = b;
 	
-	cmp = compare_regexes(A->token, B->token);
+	cmp = compare_simplified_regexes(A->token, B->token);
 	
 	dpv(cmp);
 	
@@ -22,4 +21,3 @@ int compare_dfa_to_id_nodes(const void* a, const void* b)
 	return cmp;
 }
 
-#endif

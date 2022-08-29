@@ -1,22 +1,17 @@
 
-#if 0
 #include <debug.h>
+
+#include <yacc/gegex/state/add_lambda_transition.h>
+#include <yacc/gegex/dotout.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/production/inside_or.h"
 
-#include <yacc/gegex/state/add_lambda_transition.h>
-#include <yacc/gegex/dotout.h>
-
-#include "concat.h"
-#include "or.h"
+#include "3.concat.h"
+#include "4.or.h"
 
 struct gbundle read_or_production(
-	#ifdef WITH_ARENAS
-	struct memory_arena* grammar_arena,
-	struct memory_arena* token_arena,
-	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -24,21 +19,13 @@ struct gbundle read_or_production(
 {
 	ENTER;
 	
-	struct gbundle retval = read_concat_production(
-		#ifdef WITH_ARENAS
-		grammar_arena, token_arena,
-		#endif
-		tokenizer, options, scope, lex);
+	struct gbundle retval = read_concat_production(tokenizer, options, scope, lex);
 	
 	while (tokenizer->token == t_vertical_bar)
 	{
 		read_token(tokenizer, production_inside_or_machine);
 		
-		struct gbundle sub = read_concat_production(
-			#ifdef WITH_ARENAS
-			grammar_arena, token_arena,
-			#endif
-			tokenizer, options, scope, lex);
+		struct gbundle sub = read_concat_production(tokenizer, options, scope, lex);
 		
 		gegex_add_lambda_transition(retval.start, sub.start);
 		
@@ -52,4 +39,13 @@ struct gbundle read_or_production(
 	EXIT;
 	return retval;
 }
-#endif
+
+
+
+
+
+
+
+
+
+

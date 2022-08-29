@@ -24,7 +24,6 @@
 #include "same_as_node/struct.h"
 
 #include "../state/struct.h"
-#include "../state/foreach_transition.h"
 
 #include "dotout.h"
 
@@ -86,21 +85,20 @@ void simplify_dfa_dotout(
 				"", state);
 			}
 			
-			// normal transitions:
-			regex_foreach_transition(state, ({
-				void runme(unsigned char value, struct regex* to)
-				{
-					char str[10];
-					escape(str, value);
-					
-					fprintf(out, ""
-						"\"%p\" -> \"%p\" [" "\n"
-							"\t" "label = \"%s\"" "\n"
-						"]" "\n"
-					"", state, to, str);
-				}
-				runme;
-			}));
+			for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+			{
+				struct regex_transition* const ele = state->transitions.data[i];
+				
+				char str[10];
+				
+				escape(str, ele->value);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"%s\"" "\n"
+					"]" "\n"
+				"", state, ele->to, str);
+			}
 			
 			// default transition?:
 			if (state->default_transition_to)

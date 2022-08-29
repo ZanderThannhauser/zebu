@@ -12,13 +12,11 @@
 #include <misc/counters.h>
 #include <misc/escape.h>
 
-/*#include <set/of_regexes/foreach.h>*/
+#include <set/regex/foreach.h>
 
 /*#include <set/of_tokens/to_string.h>*/
 
 #include "state/struct.h"
-#include "state/foreach_transition.h"
-#include "state/foreach_lambda_transition.h"
 
 #include "dotout.h"
 
@@ -57,52 +55,45 @@ static void helper(FILE* out, struct regex* state)
 		}
 		
 		// normal transitions:
-		regex_foreach_transition(state, ({
-			void runme(unsigned char value, struct regex* to)
-			{
-				helper(out, to);
-				
-				char str[10];
-				
-				escape(str, value);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
-					"]" "\n"
-				"", state, to, str);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			struct regex_transition* ele = state->transitions.data[i];
+			
+			helper(out, ele->to);
+			
+			char str[10];
+			
+			escape(str, ele->value);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"%s\"" "\n"
+				"]" "\n"
+			"", state, ele->to, str);
+		}
 		
-		regex_foreach_lambda_transition(state, ({
-			void runme(struct regex* to)
-			{
-				helper(out, to);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"λ\"" "\n"
-					"]" "\n"
-				"", state, to);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+		{
+			struct regex* const to = state->lambda_transitions.data[i];
+			
+			helper(out, to);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"λ\"" "\n"
+				"]" "\n"
+			"", state, to);
+		}
 		
 		if (state->default_transition_to)
 		{
-				TODO;
-				#if 0
-				helper(
-					/* out: */ out,
-					/* state:  */ to);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"<default>\"" "\n"
-					"]" "\n"
-				"", state, to);
-				#endif
+			helper(out, state->default_transition_to);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"<default>\"" "\n"
+				"]" "\n"
+			"", state, state->default_transition_to);
 		}
 		
 		if (state->EOF_transition_to)

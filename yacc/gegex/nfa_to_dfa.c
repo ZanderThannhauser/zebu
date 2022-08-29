@@ -1,81 +1,147 @@
 
-#if 0
 #include <debug.h>
 
-#include <string.h>
-
-#include <stdlib.h>
-
-#include <macros/strequals.h>
-
-#include <arena/malloc.h>
-#include <arena/dealloc.h>
-#include <arena/strdup.h>
-
-#include <avl/insert.h>
-#include <avl/search.h>
-
-#include <tree/of_gegexes/new.h>
-#include <tree/of_gegexes/foreach.h>
-#include <tree/of_gegexes/enumerate.h>
-#include <tree/of_gegexes/clear.h>
-#include <tree/of_gegexes/add.h>
-#include <tree/of_gegexes/len.h>
-#include <tree/of_gegexes/free.h>
-
-#include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
-#include <yacc/gegex/state/add_transition.h>
-#include <yacc/gegex/state/add_grammar_transition.h>
 
-#include "macros/len.h"
+#ifdef VERBOSE
+#include <quack/struct.h>
+#include <misc/default_sighandler.h>
+#endif
 
-#include "mapping/struct.h"
-#include "mapping/new.h"
+#include "nfa_to_dfa.h"
 
-#include "add_lambda_states.h"
-#include "helper.h"
+struct mapping
+{
+	struct gegexset* stateset; // must be the first
+	
+	struct gegex* combined_state;
+};
 
-struct gegex* gegex_nfa_to_dfa_helper(
-	#ifdef VERBOSE
-	unsigned *node_count,
-	#endif
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegextree* states,
-	struct avl_tree_t* mappings
-) {
-	struct avl_node_t* search_result;
+static struct mapping* new_mapping(
+	struct gegexset* stateset,
+	struct gegex* state)
+{
 	ENTER;
 	
-	if ((search_result = avl_search(mappings, &states)))
+	struct mapping* this = smalloc(sizeof(*this));
+	
+	this->stateset = stateset;
+	
+	this->combined_state = state;
+	
+	EXIT;
+	return this;
+}
+
+static int compare_mappings(const void* a, const void* b)
+{
+	const struct mapping *A = a, *B = b;
+	TODO;
+	#if 0
+	return compare_gegexsets(A->stateset, B->stateset);
+	#endif
+}
+
+static void free_mapping(void* a)
+{
+	struct mapping* this = a;
+	ENTER;
+	
+	TODO;
+	#if 0
+	free_gegexset(this->stateset);
+	#endif
+	
+	free(this);
+	
+	EXIT;
+}
+
+static void add_lambda_states(struct gegexset* set, struct gegex* ele)
+{
+	ENTER;
+	
+	TODO;
+	#if 0
+	if (gegexset_add(set, ele))
 	{
-		struct gegex_mapping* cached = search_result->item;
-		
-		EXIT;
-		return cached->combined_state;
+		for (unsigned i = 0, n = ele->lambda_transitions.n; i < n; i++)
+		{
+			add_lambda_states(set, ele->lambda_transitions.data[i]);
+		}
 	}
-	else
+	#endif
+	
+	EXIT;
+}
+
+struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
+{
+	ENTER;
+	
+	struct quack* todo = new_quack();
+	
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	
+	struct gegex* new_start = new_gegex();
+	
 	{
-		#ifdef VERBOSE
-		(*node_count)++;
-		#endif
+		TODO;
+		#if 0
+		struct gegexset* start_set = new_gegexset();
 		
-		#ifdef WITH_ARENAS
-		struct gegex* state = new_gegex(arena);
-		#else
-		struct gegex* state = new_gegex();
-		#endif
+		add_lambda_states(start_set, original_start);
 		
-		#ifdef WITH_ARENAS
-		struct gegex_mapping* mapping = new_gegex_mapping(arena, states, state);
-		#else
-		struct gegex_mapping* mapping = new_gegex_mapping(states, state);
-		#endif
+		struct mapping* mapping = new_mapping(start_set, new_start);
+		
+		quack_append(todo, mapping);
 		
 		avl_insert(mappings, mapping);
+		#endif
+	}
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler(int _)
+	{
+		char buffer[1000] = {};
 		
+		unsigned total = completed + todo->n;
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[k" "%s: gegex nfa-to-dfa: %u of %u (%.2f%%)\r", argv0,
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler);
+	#endif
+	
+	#ifdef DOTOUT
+	gegex_dotout(new_start, __PRETTY_FUNCTION__);
+	#endif
+	
+	while (quack_len(todo))
+	{
+		dpv(todo->n);
+		
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
+		struct mapping* mapping = quack_pop(todo);
+		
+		struct gegexset* const stateset = mapping->stateset;
+		
+		struct gegex* const state = mapping->combined_state;
+		
+		TODO;
+		#if 0
 		// set this as reduction_point if any states in list are accepting:
 		{
 			bool is_reduction_point = false;
@@ -224,9 +290,23 @@ struct gegex* gegex_nfa_to_dfa_helper(
 		free(indexes);
 		#endif
 		
-		EXIT;
-		return state;
+		#endif
+		
+		#ifdef DOTOUT
+		gegex_dotout(new_start, __PRETTY_FUNCTION__);
+		#endif
 	}
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
+	
+	avl_free_tree(mappings);
+	
+	free_quack(todo);
+	
+	EXIT;
+	return new_start;
 }
 
 
@@ -247,4 +327,6 @@ struct gegex* gegex_nfa_to_dfa_helper(
 
 
 
-#endif
+
+
+

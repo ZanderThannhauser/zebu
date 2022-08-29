@@ -48,6 +48,7 @@
 	#include <quack/len.h>
 	#include <quack/append.h>
 	#include <quack/pop.h>
+	#include <quack/push.h>
 	#include <quack/foreach.h>
 	#include <quack/free.h>
 	
@@ -57,6 +58,8 @@
 	struct options;
 	struct scope;
 	struct pragma_once;
+	struct unsignedset;
+	struct stringset;
 	struct tokenizer;
 	struct regex_transition;
 	struct regexset;

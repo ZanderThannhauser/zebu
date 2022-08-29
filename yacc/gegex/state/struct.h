@@ -8,8 +8,9 @@
 struct gegex
 {
 	struct {
-		struct transition {
+		struct gegex_transition {
 			unsigned token;
+			struct stringset* tags;
 			struct gegex* to;
 		}** data;
 		size_t n, cap;

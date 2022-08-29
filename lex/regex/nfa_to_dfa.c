@@ -41,7 +41,6 @@
 /*#include <signal.h>*/
 /*#include <string.h>*/
 /*#include <defines/argv0.h>*/
-#include <cmdln/verbose.h>
 #include <misc/default_sighandler.h>
 #include <quack/struct.h>
 #endif
@@ -50,18 +49,13 @@
 #include <quack/struct.h>
 #endif
 
-#include "../state/struct.h"
-#include "../state/new.h"
-#include "../state/transition/struct.h"
-#include "../state/add_transition.h"
-/*#include "../state/transition/struct.h"*/
-#include "../state/foreach_transition.h"
-#include "../state/foreach_lambda_transition.h"
-/*#include "../state/set_accepting.h"*/
-/*#include "../state/get_accepting.h"*/
+#include "state/struct.h"
+#include "state/new.h"
+#include "state/add_transition.h"
+#include "state/set_default_transition.h"
 
 #ifdef DOTOUT
-#include "../dotout.h"
+#include "dotout.h"
 #endif
 
 #include "nfa_to_dfa.h"
@@ -114,21 +108,17 @@ static void add_lambda_states(struct regexset* set, struct regex* ele)
 	
 	if (regexset_add(set, ele))
 	{
-		regex_foreach_lambda_transition(ele, ({
-			void runme(struct regex* state)
-			{
-				add_lambda_states(set, state);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = ele->lambda_transitions.n; i < n; i++)
+		{
+			add_lambda_states(set, ele->lambda_transitions.data[i]);
+		}
 	}
 	
 	EXIT;
 }
 
-struct regex* regex_nfa_to_dfa(
-	struct regex* original_start
-) {
+struct regex* regex_nfa_to_dfa(struct regex* original_start)
+{
 	ENTER;
 	
 	struct quack* todo = new_quack();
@@ -143,7 +133,7 @@ struct regex* regex_nfa_to_dfa(
 		unsigned total = completed + todo->n;
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex_nfa_to_dfa: %u of %u (%.2f)\r", argv0,
+			"\e[k" "%s: regex-nfa-to-dfa: %u of %u (%.2f%%)\r", argv0,
 				completed, total,
 				(double) completed * 100 / total);
 		
@@ -153,10 +143,7 @@ struct regex* regex_nfa_to_dfa(
 		}
 	}
 	
-	if (verbose)
-	{
-		signal(SIGALRM, handler);
-	}
+	signal(SIGALRM, handler);
 	#endif
 	
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
@@ -187,7 +174,7 @@ struct regex* regex_nfa_to_dfa(
 		completed++;
 		#endif
 		
-		struct mapping* mapping = pop_quack(todo);
+		struct mapping* mapping = quack_pop(todo);
 		
 		struct regexset* const stateset = mapping->stateset;
 		
@@ -213,7 +200,7 @@ struct regex* regex_nfa_to_dfa(
 		
 		struct iterator
 		{
-			struct avl_node_t* node;
+			struct regex_transition **i, **n;
 			
 			struct regex* default_to;
 			
@@ -226,7 +213,9 @@ struct regex* regex_nfa_to_dfa(
 			
 			struct iterator* this = malloc(sizeof(*this));
 			
-			this->node = state->transitions->head;
+			this->i = state->transitions.data;
+			
+			this->n = state->transitions.data + state->transitions.n;
 			
 			this->default_to = state->default_transition_to;
 			
@@ -240,11 +229,11 @@ struct regex* regex_nfa_to_dfa(
 		{
 			const struct iterator* A = a, *B = b;
 			
-			assert(A->node);
-			assert(B->node);
+			assert(A->i < A->n);
+			assert(B->i < B->n);
 			
-			unsigned char value_a = ((struct regex_transition*) A->node->item)->value;
-			unsigned char value_b = ((struct regex_transition*) B->node->item)->value;
+			unsigned char value_a = A->i[0]->value;
+			unsigned char value_b = B->i[0]->value;
 			
 			if (value_a > value_b)
 				return +1;
@@ -275,7 +264,7 @@ struct regex* regex_nfa_to_dfa(
 				
 				bool needed = false;
 				
-				if (iter->node)
+				if (iter->i < iter->n)
 				{
 					heap_push(heap, iter);
 					needed = true;
@@ -315,27 +304,27 @@ struct regex* regex_nfa_to_dfa(
 		{
 			struct regexset* subregexset = new_regexset();
 			
+			struct regex_transition* transition;
+			
 			struct iterator* iterator = heap->data[0];
 			
-			struct regex_transition* transition = iterator->node->item;
-			
-			unsigned min_value = transition->value;
+			unsigned min_value = iterator->i[0]->value;
 			
 			dpv(min_value);
 			
 			regexset_clear(subregexset);
 			
-			while (heap->n && (transition = (iterator = heap->data[0])->node->item)->value == min_value)
+			while (heap->n && (transition = (iterator = heap->data[0])->i[0])->value == min_value)
 			{
 				heap_pop(heap);
 				
 				add_lambda_states(subregexset, transition->to);
 				
-				iterator->node = iterator->node->next;
+				iterator->i++;
 				
 				iterator->last_used = round;
 				
-				if (iterator->node)
+				if (iterator->i < iterator->n)
 				{
 					heap_push(heap, iterator);
 				}
@@ -369,6 +358,7 @@ struct regex* regex_nfa_to_dfa(
 				regex_add_transition(state, min_value, substate);
 				
 				quack_append(todo, new);
+				
 				avl_insert(mappings, new);
 			}
 			
@@ -377,30 +367,34 @@ struct regex* regex_nfa_to_dfa(
 		
 		if (defaults.n)
 		{
-			TODO;
-			#if 0
 			// create regexset of all defaults
-			#ifdef WITH_ARENAS
-			struct regexset* subregexset = new_regexset(arena);
-			#else
 			struct regexset* subregexset = new_regexset();
-			#endif
 			
 			for (size_t i = 0, n = defaults.n; i < n; i++)
-				regex_add_lamda_states(subregexset, defaults.data[i]->default_to);
+				add_lambda_states(subregexset, defaults.data[i]->default_to);
 			
-			// node.default = call myself
-			struct regex* substate = regex_nfa_to_dfa_helper(
-				#ifdef WITH_ARENAS
-				/* arena: */ arena,
-				#endif
-				/* states: */ subregexset,
-				/* mappings: */ mappings);
+			struct avl_node_t* node = avl_search(mappings, &subregexset);
 			
-			regex_set_default_transition(state, substate);
-			
-			free_regexset(subregexset);
-			#endif
+			if (node)
+			{
+				struct mapping* old = node->item;
+				
+				regex_set_default_transition(state, old->combined_state);
+				
+				free_regexset(subregexset);
+			}
+			else
+			{
+				struct regex* substate = new_regex();
+				
+				struct mapping* new = new_mapping(subregexset, substate);
+				
+				regex_set_default_transition(state, substate);
+				
+				quack_append(todo, new);
+				
+				avl_insert(mappings, new);
+			}
 		}
 		
 		// EOF transitions?
@@ -436,8 +430,7 @@ struct regex* regex_nfa_to_dfa(
 	}
 	
 	#ifdef VERBOSE
-	if (verbose)
-		signal(SIGALRM, default_sighandler);
+	signal(SIGALRM, default_sighandler);
 	#endif
 	
 	avl_free_tree(mappings);

@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	#endif
 	
 	#ifdef DOTOUT
-	if (mkdir("dot", 0644) < 0 && errno != EEXIST)
+	if (mkdir("dot", 0775) < 0 && errno != EEXIST)
 	{
 		TODO;
 	}

@@ -1,25 +1,15 @@
 
-#if 0
 #include <stdlib.h>
 #include <debug.h>
-
-#include <arena/malloc.h>
 
 #include "struct.h"
 #include "new.h"
 
-struct gegex* new_gegex(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena
-	#endif
-) {
+struct gegex* new_gegex()
+{
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct gegex* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct gegex* this = malloc(sizeof(*this));
-	#endif
+	struct gegex* this = smalloc(sizeof(*this));
 	
 	this->transitions.data = NULL;
 	this->transitions.cap = 0;
@@ -29,17 +19,9 @@ struct gegex* new_gegex(
 	this->grammar_transitions.cap = 0;
 	this->grammar_transitions.n = 0;
 	
-	this->reduction_transitions.data = NULL;
-	this->reduction_transitions.cap = 0;
-	this->reduction_transitions.n = 0;
-	
 	this->lambda_transitions.data = NULL;
 	this->lambda_transitions.cap = 0;
 	this->lambda_transitions.n = 0;
-	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
 	
 	this->is_reduction_point = false;
 	
@@ -54,4 +36,3 @@ struct gegex* new_gegex(
 	EXIT;
 	return this;
 }
-#endif

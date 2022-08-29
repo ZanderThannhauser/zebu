@@ -1,5 +1,4 @@
 
-#if 0
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -7,33 +6,27 @@
 
 #include <debug.h>
 
-#include <arena/memdup.h>
+/*#include <enums/error.h>*/
 
-#include <enums/error.h>
+/*#include <yacc/gegex/state/struct.h>*/
+/*#include <yacc/gegex/state/new.h>*/
+/*#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>*/
+/*#include <yacc/gegex/simplify_dfa/simplify_dfa.h>*/
+/*#include <yacc/gegex/state/free.h>*/
 
-#include <yacc/gegex/state/struct.h>
-#include <yacc/gegex/state/new.h>
-#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
-#include <yacc/gegex/state/free.h>
+/*#include "grammar/root.h"*/
+/*#include "grammar/gbundle.h"*/
 
-#include "grammar/root.h"
-#include "grammar/gbundle.h"
+/*#include "scope/declare/grammar.h"*/
 
-#include "scope/declare/grammar.h"
-
-#include "tokenizer/struct.h"
-#include "tokenizer/read_token.h"
-#include "tokenizer/machines/misc/colon.h"
-#include "tokenizer/machines/production/root.h"
+/*#include "tokenizer/struct.h"*/
+/*#include "tokenizer/read_token.h"*/
+/*#include "tokenizer/machines/misc/colon.h"*/
+/*#include "tokenizer/machines/production/root.h"*/
 
 #include "read_grammar.h"
 
 void read_grammar(
-	#ifdef WITH_ARENAS
-	struct memory_arena* grammar_arena,
-	struct memory_arena* token_arena,
-	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -41,6 +34,8 @@ void read_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_identifier);
 	
 	#ifdef WITH_ARENAS
@@ -92,6 +87,7 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -105,4 +101,3 @@ void read_grammar(
 
 
 
-#endif

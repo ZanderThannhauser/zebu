@@ -1,4 +1,6 @@
 
+#include <debug.h>
+
 #if 0
 #include <stdlib.h>
 #include <debug.h>
@@ -28,6 +30,10 @@ static void helper(
 		{
 			struct transition* t = this->transitions.data[i];
 			
+			helper(freed, t->to);
+			
+			// free tags
+			
 			#ifdef WITH_ARENAS
 			arena_dealloc(arena, t);
 			#else
@@ -39,28 +45,15 @@ static void helper(
 		{
 			struct gtransition* t = this->grammar_transitions.data[i];
 			
+			helper(freed, t->to);
+			
 			#ifdef WITH_ARENAS
 			arena_dealloc(arena, t->grammar);
 			#else
 			free(t->grammar);
 			#endif
 			
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, t);
-			#else
-			free(t);
-			#endif
-		}
-		
-		for (unsigned i = 0, n = this->reduction_transitions.n; i < n; i++)
-		{
-			struct rtransition* t = this->reduction_transitions.data[i];
-			
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, t->reduce_as);
-			#else
-			free(t->reduce_as);
-			#endif
+			// free tags
 			
 			#ifdef WITH_ARENAS
 			arena_dealloc(arena, t);
@@ -102,6 +95,7 @@ static void helper(
 	
 	EXIT;
 }
+#endif
 
 void free_gegex(struct gegex* this)
 {
@@ -109,15 +103,14 @@ void free_gegex(struct gegex* this)
 	
 	if (this)
 	{
-		#ifdef WITH_ARENAS
-		struct gegextree* freed = new_gegextree(this->arena);
-		#else
+		TODO;
+		#if 0
 		struct gegextree* freed = new_gegextree();
-		#endif
 		
 		helper(freed, this);
 		
 		free_gegextree(freed);
+		#endif
 	}
 	
 	EXIT;
@@ -141,4 +134,3 @@ void free_gegex(struct gegex* this)
 
 
 
-#endif

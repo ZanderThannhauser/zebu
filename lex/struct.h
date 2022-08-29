@@ -16,8 +16,7 @@ struct lex
 	struct avl_tree_t* tokenizer_cache; // # set(token ids) -> machine id
 	
 	struct {
-		struct tokenset* literal_ids;
-		struct tokenset* regex_ids;
+		struct unsignedset* literal_ids;
+		struct unsignedset* regex_ids;
 	} disambiguations;
-	
 };

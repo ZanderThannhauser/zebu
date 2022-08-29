@@ -1,13 +1,8 @@
 
-#if 0
 #include <stdlib.h>
 #include <string.h>
 
 #include <debug.h>
-
-/*#include <memory/arena/strdup.h>*/
-#include <arena/malloc.h>
-#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_grammar_transition.h"
@@ -19,31 +14,16 @@ void gegex_add_grammar_transition(
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* const arena = from->arena;
-	struct gtransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
-	#else
-	struct gtransition* gtransition = malloc(sizeof(*gtransition));
-	#endif
-	
-	dpv(gtransition);
+	struct gtransition* gtransition = smalloc(sizeof(*gtransition));
 	
 	gtransition->grammar = grammar_name;
-	// gtransition->start = NULL;
 	gtransition->to = to;
 	
 	if (from->grammar_transitions.n + 1 > from->grammar_transitions.cap)
 	{
 		from->grammar_transitions.cap = from->grammar_transitions.cap * 2 ?: 1;
 		
-		#ifdef WITH_ARENAS
-		from->grammar_transitions.data = arena_realloc(
-			arena, from->grammar_transitions.data,
-			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
-		#else
-		from->grammar_transitions.data = realloc(from->grammar_transitions.data,
-			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
-		#endif
+		from->grammar_transitions.data = realloc(from->grammar_transitions.data, sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
 	}
 	
 	size_t i;
@@ -70,4 +50,3 @@ void gegex_add_grammar_transition(
 
 
 
-#endif

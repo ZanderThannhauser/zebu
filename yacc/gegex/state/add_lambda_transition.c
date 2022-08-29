@@ -1,9 +1,6 @@
 
-#if 0
 #include <stdlib.h>
 #include <debug.h>
-
-#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_lambda_transition.h"
@@ -23,14 +20,7 @@ void gegex_add_lambda_transition(
 		
 		dpv(from->lambda_transitions.cap);
 		
-		#ifdef WITH_ARENAS
-		from->lambda_transitions.data = arena_realloc(
-			from->arena, from->lambda_transitions.data,
-			sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
-		#else
-		from->lambda_transitions.data = realloc(from->lambda_transitions.data,
-			sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
-		#endif
+		from->lambda_transitions.data = realloc(from->lambda_transitions.data, sizeof(*from->lambda_transitions.data) * from->lambda_transitions.cap);
 	}
 	
 	from->lambda_transitions.data[from->lambda_transitions.n++] = to;
@@ -52,5 +42,3 @@ void gegex_add_lambda_transition(
 
 
 
-
-#endif

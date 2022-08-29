@@ -8,20 +8,16 @@
 
 #include "../struct.h"
 
-/*#include <named/name/struct.h>*/
+#include <named/regex/struct.h>
 
-/*#include <named/token/struct.h>*/
+#include "fragment.h"
 
-#include "token.h"
-
-struct regex* scope_lookup_token(struct scope* this, const char* name)
+struct regex* scope_lookup_fragment(struct scope* this, const char* name)
 {
 	ENTER;
 	
 	dpvs(name);
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = NULL;
 	
 	struct scope_layer* layer = this->layer;
@@ -44,11 +40,10 @@ struct regex* scope_lookup_token(struct scope* this, const char* name)
 		exit(1);
 	}
 	
-	struct named_token* ntoken = node->item;
+	struct named_regex* ntoken = node->item;
 	
 	EXIT;
-	return ntoken->token;
-	#endif
+	return ntoken->regex;
 }
 
 

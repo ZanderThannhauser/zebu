@@ -1,5 +1,4 @@
 
-#if 0
 #include <string.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -9,85 +8,70 @@
 
 #include <debug.h>
 
-#include <cmdln/verbose.h>
+/*#include <cmdln/verbose.h>*/
 
-#include <defines/argv0.h>
+/*#include <defines/argv0.h>*/
 
-#include <avl/alloc_tree.h>
-#include <avl/foreach.h>
-#include <avl/search.h>
-#include <avl/free_tree.h>
-#include <avl/insert.h>
+/*#include <avl/alloc_tree.h>*/
+/*#include <avl/foreach.h>*/
+/*#include <avl/search.h>*/
+/*#include <avl/free_tree.h>*/
+/*#include <avl/insert.h>*/
 
 /*#include <cmdln/verbose.h>*/
 
-#include <tree/of_gegexes/new.h>
-#include <tree/of_gegexes/clone.h>
-#include <tree/of_gegexes/foreach.h>
-#include <tree/of_gegexes/free.h>
+/*#include <tree/of_gegexes/new.h>*/
+/*#include <tree/of_gegexes/clone.h>*/
+/*#include <tree/of_gegexes/foreach.h>*/
+/*#include <tree/of_gegexes/free.h>*/
 
-#include <heap/new.h>
-#include <heap/pop.h>
-#include <heap/push.h>
-#include <heap/is_nonempty.h>
-#include <heap/free.h>
+/*#include <heap/new.h>*/
+/*#include <heap/pop.h>*/
+/*#include <heap/push.h>*/
+/*#include <heap/is_nonempty.h>*/
+/*#include <heap/free.h>*/
 
-#include <yacc/gegex/state/struct.h>
-#include <yacc/gegex/dotout.h>
+/*#include <yacc/gegex/state/struct.h>*/
+/*#include <yacc/gegex/dotout.h>*/
 
-#include "dependent_of_node/struct.h"
-#include "dependent_of_node/compare.h"
-#include "dependent_of_node/free.h"
+/*#include "dependent_of_node/struct.h"*/
+/*#include "dependent_of_node/compare.h"*/
+/*#include "dependent_of_node/free.h"*/
 
-#include "same_as_node/new.h"
-#include "same_as_node/compare.h"
-#include "same_as_node/free.h"
+/*#include "same_as_node/new.h"*/
+/*#include "same_as_node/compare.h"*/
+/*#include "same_as_node/free.h"*/
 
-#include "task/struct.h"
-#include "task/new.h"
-#include "task/compare.h"
-#include "task/free.h"
+/*#include "task/struct.h"*/
+/*#include "task/new.h"*/
+/*#include "task/compare.h"*/
+/*#include "task/free.h"*/
 
 #ifdef VERBOSE
 /*#include <unistd.h>*/
-#include <signal.h>
-#include <string.h>
+/*#include <signal.h>*/
+/*#include <string.h>*/
 /*#include <stdlib.h>*/
-#include <tree/of_gegexes/struct.h>
-#include <heap/struct.h>
-#include <macros/N.h>
+/*#include <tree/of_gegexes/struct.h>*/
+/*#include <heap/struct.h>*/
+/*#include <macros/N.h>*/
 /*#include <macros/max.h>*/
 /*#include <defines/argv0.h>*/
-#include <misc/default_sighandler.h>
+/*#include <misc/default_sighandler.h>*/
 #endif
 
-#include "mark_as_unequal.h"
-#include "dotout.h"
-#include "add_dep.h"
-#include "clone.h"
-#include "build_universe.h"
+/*#include "mark_as_unequal.h"*/
+/*#include "dotout.h"*/
+/*#include "add_dep.h"*/
+/*#include "clone.h"*/
+/*#include "build_universe.h"*/
 #include "simplify_dfa.h"
 
-#ifdef VERBOSE
-static const char* colors[] = {
-	"\e[38;2;255;000;000m",
-	"\e[38;2;255;165;000m",
-	"\e[38;2;255;255;000m",
-	"\e[38;2;000;128;100m",
-	"\e[38;2;000;000;255m",
-	"\e[38;2;075;000;130m",
-	"\e[38;2;238;120;238m",
-};
-#endif
-
-struct gegex* gegex_simplify_dfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegex* original_start
-) {
+struct gegex* gegex_simplify_dfa(struct gegex* original_start) {
 	ENTER;
 	
+	TODO;
+	#if 0
 	#ifdef WITH_ARENAS
 	struct avl_tree_t* dependent_of = avl_alloc_tree(arena,
 		compare_gegex_dependent_of_nodes, free_gegex_dependent_of_node);
@@ -438,6 +422,7 @@ struct gegex* gegex_simplify_dfa(
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 
@@ -462,4 +447,3 @@ struct gegex* gegex_simplify_dfa(
 
 
 
-#endif

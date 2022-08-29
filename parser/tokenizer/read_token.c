@@ -224,6 +224,20 @@ enum token read_token(
 			dputs("t_identifier");
 			break;
 		
+		case ts_hashtag:
+		{
+			// remove #:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			
+			this->tokenchars.n -= 1;
+			
+			append(this, 0);
+			
+			this->token = t_hashtag;
+			dputs("t_hashtag");
+			break;
+		}
+		
 		case ts_colon:
 			this->token = t_colon;
 			dputs("t_colon");

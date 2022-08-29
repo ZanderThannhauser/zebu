@@ -39,13 +39,11 @@
 /*#include <macros/max.h>*/
 /*#include <defines/argv0.h>*/
 #include <misc/default_sighandler.h>
-#include <cmdln/verbose.h>
 #include <misc/colors.h>
 #endif
 
 #include "../dotout.h"
 #include "../state/struct.h"
-#include "../state/transition/struct.h"
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/compare.h"
@@ -88,7 +86,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "regex-simplify (build deps)",
+			argv0, "regex simplify (build deps)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, buffer, len) != len)
@@ -97,7 +95,6 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		}
 	}
 	
-	if (verbose)
 	{
 		dpv(universe->n);
 		
@@ -122,27 +119,20 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							unequal = true;
 						}
 						
-						struct avl_node_t* a_node = a->transitions->head;
-						struct avl_node_t* b_node = b->transitions->head;
+						unsigned a_i = 0, a_n = a->transitions.n;
+						unsigned b_i = 0, b_n = b->transitions.n;
 						
-						while (!unequal && a_node && b_node)
+						while (!unequal && a_i < a_n && b_i < b_n)
 						{
-							const struct regex_transition* const at = a_node->item;
-							const struct regex_transition* const bt = b_node->item;
+							const struct regex_transition* const at = a->transitions.data[a_i];
+							const struct regex_transition* const bt = b->transitions.data[b_i];
 							
 							if (at->value < bt->value)
 							{
 								if (b->default_transition_to)
 								{
-									TODO;
-									#if 0
-									#ifdef WITH_ARENAS
-									simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, b->default_transition_to);
-									#else
-									simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
-									#endif
-									#endif
-									a_node = a_node->next;
+									regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
+									a_i++;
 								}
 								else
 								{
@@ -151,62 +141,39 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							}
 							else if (at->value > bt->value)
 							{
-								TODO;
-								#if 0
 								if (a->default_transition_to)
 								{
-									#ifdef WITH_ARENAS
-									simplify_dfa_add_dep(arena, dependent_of, a, b, a->default_transition_to, bt->to);
-									#else
-									simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
-									#endif
+									regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
+									b_i++;
 								}
 								else
 								{
 									unequal = true;
 								}
-								
-								b_i++;
-								#endif
 							}
 							else
 							{
 								regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
 								
-								a_node = a_node->next;
-								b_node = b_node->next;
+								a_i++, b_i++;
 							}
 						}
 						
-						while (!unequal && a_node && b->default_transition_to)
+						while (!unequal && a_i < a_n && b->default_transition_to)
 						{
-							TODO;
-							#if 0
-							const struct transition* const at = a->transitions.data[a_i++];
+							const struct regex_transition* const at = a->transitions.data[a_i++];
 							
-							#ifdef WITH_ARENAS
-							simplify_dfa_add_dep(arena, dependent_of, a, b, at->to, b->default_transition_to);
-							#else
-							simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
-							#endif
-							#endif
+							regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
 						}
 						
-						while (!unequal && a->default_transition_to && b_node)
+						while (!unequal && a->default_transition_to && b_i < b_n)
 						{
-							TODO;
-							#if 0
-							const struct transition* const bt = b->transitions.data[b_i++];
+							const struct regex_transition* const bt = b->transitions.data[b_i++];
 							
-							#ifdef WITH_ARENAS
-							simplify_dfa_add_dep(arena, dependent_of, a, b, a->default_transition_to, bt->to);
-							#else
-							simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
-							#endif
-							#endif
+							regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
 						}
 						
-						if (!unequal && (!a_node != !b_node))
+						if (!unequal && ((a_i < a_n) != (b_i < b_n)))
 						{
 							unequal = true;
 						}
@@ -218,16 +185,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 						
 						if (!unequal && a->default_transition_to && b->default_transition_to)
 						{
-							TODO;
-							#if 0
-							#ifdef WITH_ARENAS
-							simplify_dfa_add_dep(arena, dependent_of, a, b,
-								a->default_transition_to, b->default_transition_to);
-							#else
-							simplify_dfa_add_dep(dependent_of, a, b,
-								a->default_transition_to, b->default_transition_to);
-							#endif
-							#endif
+							regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, b->default_transition_to);
 						}
 						
 						if (unequal)
@@ -255,7 +213,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		
 		size_t len = snprintf(ptr, 200,
 			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "simplify (allocating dep-trees)",
+			argv0, "regex simplify (allocating dep-trees)",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -264,7 +222,6 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		}
 	}
 	
-	if (verbose)
 	{
 		count = 0, n = universe->n;
 		signal(SIGALRM, handler12);
@@ -303,7 +260,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		unsigned total = completed + todo->n;
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex-simplify (percolate): %u of %u (%.2f)\r", argv0,
+			"\e[k" "%s: regex simplify (percolate): %u of %u (%.2f%%)\r", argv0,
 				completed, total,
 				(double) completed * 100 / total);
 		
@@ -313,10 +270,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		}
 	}
 	
-	if (verbose)
-	{
-		signal(SIGALRM, handler2);
-	}
+	signal(SIGALRM, handler2);
 	#endif
 	
 	#ifdef DOTOUT
@@ -359,8 +313,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 	}
 	
 	#ifdef VERBOSE
-	if (verbose)
-		signal(SIGALRM, default_sighandler);
+	signal(SIGALRM, default_sighandler);
 	#endif
 	
 	struct regex* new_start = regex_simplify_dfa_clone(connections, original_start);

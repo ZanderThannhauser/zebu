@@ -1,19 +1,18 @@
 
-#if 0
 #include <assert.h>
 
 #include <debug.h>
 
-#include <avl/free_tree.h>
-#include <avl/search.h>
-#include <avl/insert.h>
+/*#include <avl/free_tree.h>*/
+/*#include <avl/search.h>*/
+/*#include <avl/insert.h>*/
 
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 
-#include <misc/phase_counters.h>
+#include <misc/counters.h>
 
-#include <set/of_tokens/add.h>
+#include <set/unsigned/add.h>
 
 #include "../struct.h"
 
@@ -55,14 +54,14 @@ unsigned lex_add_token(
 			unsigned i, n;
 			ENTER;
 			
-			if (state->phase != lex_phase_counter)
+			if (state->phase != phase_counter)
 			{
-				state->phase = lex_phase_counter;
-				
-				assert(!state->lambda_transitions.n);
+				state->phase = phase_counter;
 				
 				if (state->is_accepting)
+				{
 					state->is_accepting = retval;
+				}
 				
 				for (i = 0, n = state->transitions.n; i < n; i++)
 					helper(state->transitions.data[i]->to);
@@ -77,23 +76,18 @@ unsigned lex_add_token(
 			EXIT;
 		}
 		
-		lex_phase_counter++, helper(token);
+		phase_counter++, helper(token);
 		
-		#ifdef WITH_ARENAS
-		struct dfa_to_id_node*   to = new_dfa_to_id_node(this->arena, retval, token);
-		struct dfa_from_id_node* from = new_dfa_from_id_node(this->arena, retval, token);
-		#else
-		struct dfa_to_id_node*   to = new_dfa_to_id_node(retval, token);
+		struct dfa_to_id_node*   to   =   new_dfa_to_id_node(retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);
-		#endif
 		
 		avl_insert(this->dfa_to_id,   to);
 		avl_insert(this->dfa_from_id, from);
 		
 		if (is_literal)
-			tokenset_add(this->disambiguations.literal_ids, retval);
+			unsignedset_add(this->disambiguations.literal_ids, retval);
 		else
-			tokenset_add(this->disambiguations.regex_ids, retval);
+			unsignedset_add(this->disambiguations.regex_ids, retval);
 	}
 	
 	dpv(retval);
@@ -114,4 +108,3 @@ unsigned lex_add_token(
 
 
 
-#endif

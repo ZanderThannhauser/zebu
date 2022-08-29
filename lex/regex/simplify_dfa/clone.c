@@ -16,11 +16,8 @@
 #include "../state/struct.h"
 #include "../state/new.h"
 #include "../state/add_transition.h"
-/*#include "../state/set_accepting.h"*/
-/*#include "../state/get_accepting.h"*/
 #include "../state/set_default_transition.h"
 #include "../state/set_EOF_transition.h"
-#include "../state/foreach_transition.h"
 
 #include "same_as_node/struct.h"
 
@@ -113,29 +110,26 @@ static struct regex* clone_helper(
 					/* in: */ cloneme));
 		}
 		
-		
-		// for each transition:
-		regex_foreach_transition(old, ({
-			void runme(unsigned char value, struct regex* to)
+		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
+		{
+			struct regex_transition* ele = old->transitions.data[i];
+			
+			struct regex* cloneme = find(connections, ele->to);
+			
+			struct regex* cloned_to = clone_helper(
+				/* mappings: */ mappings,
+				/* connections: */ connections,
+				/* in: */ cloneme);
+			
+			// don't add the transition if the default already covers it
+			if (cloned_to != new->default_transition_to)
 			{
-				struct regex* cloneme = find(connections, to);
-				
-				struct regex* cloned_to = clone_helper(
-					/* mappings: */ mappings,
-					/* connections: */ connections,
-					/* in: */ cloneme);
-				
-				// don't add the transition if the default already covers it
-				if (cloned_to != new->default_transition_to)
-				{
-					regex_add_transition(
-						/* from: */ new,
-						/* value: */ value,
-						/* to: */ cloned_to);
-				}
+				regex_add_transition(
+					/* from: */ new,
+					/* value: */ ele->value,
+					/* to: */ cloned_to);
 			}
-			runme;
-		}));
+		}
 		
 		// EOF transitions?
 		if (old->EOF_transition_to)

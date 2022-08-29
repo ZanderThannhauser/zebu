@@ -10,13 +10,27 @@ void quack_append(
 {
 	ENTER;
 	
-	if (this->n + 1 > this->cap)
+	if (this->n == this->cap)
 	{
-		this->cap = this->cap << 1 ?: 1;
+		unsigned old_cap = this->cap, new_cap = old_cap << 1 ?: 1;
 		
+		this->data = srealloc(this->data, sizeof(*this->data) * new_cap);
+		
+		if (this->i)
+		{
+			unsigned new_i = new_cap - old_cap + this->i;
+			
+			memmove(
+				/* dst: */ &this->data[new_i],
+				/* src: */ &this->data[this->i],
+				/* len: */ sizeof(*this->data) * (old_cap - this->i));
+			
+			this->i = new_i;
+			dpv(this->i);
+		}
+		
+		this->cap = new_cap;
 		dpv(this->cap);
-		
-		this->data = srealloc(this->data, sizeof(*this->data) * this->cap);
 	}
 	
 	this->data[(this->i + this->n++) % this->cap] = element;

@@ -4,7 +4,7 @@
 #include "struct.h"
 #include "pop.h"
 
-void* pop_quack(struct quack* this)
+void* quack_pop(struct quack* this)
 {
 	ENTER;
 	

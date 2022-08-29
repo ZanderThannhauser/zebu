@@ -1,12 +1,18 @@
 
-#include <stddef.h>
-#include <stdbool.h>
-
 struct regex
 {
-	struct avl_tree_t* transitions; // struct regex_transition*
+	struct {
+		struct regex_transition {
+			unsigned char value;
+			struct regex* to;
+		}** data;
+		unsigned n, cap;
+	} transitions;
 	
-	struct regexset* lambda_transitions;
+	struct {
+		struct regex** data;
+		size_t n, cap;
+	} lambda_transitions;
 	
 	struct regex* default_transition_to;
 	

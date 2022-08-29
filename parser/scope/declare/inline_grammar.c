@@ -1,5 +1,4 @@
 
-#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -8,9 +7,9 @@
 
 /*#include "../private/append_prefix.h"*/
 
-#include <avl/insert.h>
+/*#include <avl/insert.h>*/
 
-#include <named/gbundle/new.h>
+/*#include <named/gbundle/new.h>*/
 
 /*#include <named/name/new.h>*/
 
@@ -18,24 +17,19 @@
 
 #include "inline_grammar.h"
 
-void scope_declare_inline_grammar(
-	struct scope* this,
-	char* name,
-	struct gegex* start,
-	struct gegex* end)
+void scope_declare_inline_grammar(struct scope* this, char* name, struct gegex* start)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(name);
 	dpv(start);
 	dpv(end);
 	
 	assert(this->layer);
 	
-	#ifdef WITH_ARENAS
-	avl_insert(this->layer->inline_grammar, new_named_gbundle(this->layer->arena, name, start, end));
-	#else
-	avl_insert(this->layer->inline_grammar, new_named_gbundle(name, start, end));
+	avl_insert(this->layer->inline_grammar, new_named_gegex(name, start));
 	#endif
 	
 	EXIT;
@@ -50,4 +44,3 @@ void scope_declare_inline_grammar(
 
 
 
-#endif

@@ -3,15 +3,12 @@
 
 #include <debug.h>
 
-#include <charset/free.h>
-
 #include <set/regex/new.h>
 #include <set/regex/add.h>
 #include <set/regex/foreach.h>
 #include <set/regex/free.h>
 
 #include "struct.h"
-#include "transition/struct.h"
 #include "free.h"
 
 static void helper(
@@ -22,27 +19,29 @@ static void helper(
 	
 	if (regexset_add(freed, this))
 	{
-		for (struct avl_node_t* node = this->transitions->head; node; node = node->next)
+		for (unsigned i = 0, n = this->transitions.n; i < n; i++)
 		{
-			struct regex_transition* ele = node->item;
+			struct regex_transition* ele = this->transitions.data[i];
 			helper(freed, ele->to);
 		}
 		
-		avl_free_tree(this->transitions);
+		free(this->transitions.data);
 		
-		regexset_foreach(this->lambda_transitions, ({
-			void runme(struct regex* substate)
-			{
-				helper(freed, substate);
-			}
-			runme;
-		}));
+		for (unsigned i = 0, n = this->lambda_transitions.n; i < n; i++)
+		{
+			helper(freed, this->lambda_transitions.data[i]);
+		}
 		
-		free_regexset(this->lambda_transitions);
+		free(this->lambda_transitions.data);
 		
 		if (this->default_transition_to)
 		{
 			helper(freed, this->default_transition_to);
+		}
+		
+		if (this->EOF_transition_to)
+		{
+			helper(freed, this->EOF_transition_to);
 		}
 		
 		free(this);

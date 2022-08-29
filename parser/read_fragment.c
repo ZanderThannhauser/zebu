@@ -13,7 +13,7 @@
 /*#include <arena/memdup.h>*/
 
 #include <lex/regex/simplify_dfa/simplify_dfa.h>
-#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
+#include <lex/regex/nfa_to_dfa.h>
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 

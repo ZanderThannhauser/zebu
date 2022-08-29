@@ -1,17 +1,20 @@
 
-#if 0
 #include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
 
-#include <avl/search.h>
-#include <avl/insert.h>
-#include <avl/free_tree.h>
-#include <avl/alloc_tree.h>
+/*#include <avl/search.h>*/
+/*#include <avl/insert.h>*/
+/*#include <avl/free_tree.h>*/
+/*#include <avl/alloc_tree.h>*/
 
-#include <arena/malloc.h>
-#include <arena/dealloc.h>
+#include <set/regex/foreach.h>
+
+#ifdef VERBOSE
+#include <quack/struct.h>
+#include <misc/default_sighandler.h>
+#endif
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -25,11 +28,15 @@ struct mapping
 {
 	struct regex* old; // must be the first
 	struct regex* new;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
 };
+
+static struct mapping* new_mapping(struct regex* old, struct regex* new)
+{
+	struct mapping* this = smalloc(sizeof(*this));
+	this->old = old;
+	this->new = new;
+	return this;
+}
 
 static int compare_mappings(const void* a, const void* b)
 {
@@ -43,167 +50,168 @@ static int compare_mappings(const void* a, const void* b)
 		return  0;
 }
 
-static void free_mapping(void* ptr)
+struct regex* regex_clone(struct regex* original_start)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct mapping* const m = ptr;
-	arena_dealloc(m->arena, m);
-	#else
-	free(ptr);
-	#endif
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
-	EXIT;
-}
-
-struct memory_arena;
-
-static struct regex* clone_helper(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct avl_tree_t* mappings,
-	struct regex* old)
-{
-	struct avl_node_t* node;
-	ENTER;
+	struct quack* todo = new_quack();
 	
-	if ((node = avl_search(mappings, &old)))
+	struct regex* new_start = new_regex();
+	
 	{
-		struct mapping* mapping = node->item;
-		EXIT;
-		return mapping->new;
+		struct mapping* mapping = new_mapping(original_start, new_start);
+		avl_insert(mappings, mapping);
+		quack_append(todo, mapping);
 	}
-	else
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler(int _)
 	{
-		#ifdef WITH_ARENAS
-		struct regex* new = new_regex(arena);
-		#else
-		struct regex* new = new_regex();
+		char buffer[1000] = {};
+		
+		unsigned total = completed + todo->n;
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[k" "%s: regex-clone: %u of %u (%.2f%%)\r", argv0,
+				completed, total,
+				(double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler);
+	#endif
+	
+	while (quack_len(todo))
+	{
+		#ifdef VERBOSE
+		completed++;
 		#endif
+		
+		struct mapping* mapping = quack_pop(todo);
+		
+		struct regex* const old = mapping->old;
+		struct regex* const new = mapping->new;
 		
 		new->is_accepting = old->is_accepting;
 		
-		#ifdef WITH_ARENAS
-		struct mapping* mapping = arena_malloc(arena, sizeof(*mapping));
-		#else
-		struct mapping* mapping = malloc(sizeof(*mapping));
-		#endif
-		
-		mapping->old = old;
-		mapping->new = new;
-		
-		#ifdef WITH_ARENAS
-		mapping->arena = arena;
-		#endif
-		
-		avl_insert(mappings, mapping);
-		
 		// for each transition:
-		size_t i, n;
-		for (i = 0, n = old->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
 		{
-			struct transition* const ele = old->transitions.data[i];
+			struct regex_transition* const ele = old->transitions.data[i];
 			
-			regex_add_transition(
-				/* from: */ new,
-				/* value: */ ele->value,
-				/* to */ clone_helper(
-					#ifdef WITH_ARENAS
-					/* arena: */ arena,
-					#endif
-					/* mappings: */ mappings,
-					/* in: */ ele->to));
+			struct avl_node_t* node = avl_search(mappings, &ele->to);
+			
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				regex_add_transition(new, ele->value, submapping->new);
+			}
+			else
+			{
+				struct regex* subnew = new_regex();
+				
+				struct mapping* submapping = new_mapping(ele->to, subnew);
+				
+				regex_add_transition(new, ele->value, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
 		}
 		
 		// for each lambda transition:
-		for (i = 0, n = old->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->lambda_transitions.n; i < n; i++)
 		{
-			regex_add_lambda_transition(
-				/* from: */ new,
-				/* to */ clone_helper(
-					#ifdef WITH_ARENAS
-					/* arena: */ arena,
-					#endif
-					/* mappings: */ mappings,
-					/* in: */ old->lambda_transitions.data[i]));
+			struct regex* const subold = old->lambda_transitions.data[i];
+			
+			struct avl_node_t* node = avl_search(mappings, &subold);
+			
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				regex_add_lambda_transition(new, submapping->new);
+			}
+			else
+			{
+				struct regex* subnew = new_regex();
+				
+				struct mapping* submapping = new_mapping(subold, subnew);
+				
+				regex_add_lambda_transition(new, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
 		}
 		
 		// for default transition:
 		if (old->default_transition_to)
 		{
-			regex_set_default_transition(
-				/* from: */ new,
-				/* to */ clone_helper(
-					#ifdef WITH_ARENAS
-					/* arena: */ arena,
-					#endif
-					/* mappings: */ mappings,
-					/* in: */ old->default_transition_to));
+			struct avl_node_t* node = avl_search(mappings, &old->default_transition_to);
+			
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				regex_set_default_transition(new, submapping->new);
+			}
+			else
+			{
+				struct regex* subnew = new_regex();
+				
+				struct mapping* submapping = new_mapping(old->default_transition_to, subnew);
+				
+				regex_set_default_transition(new, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
 		}
-		
-		EXIT;
-		return new;
 	}
-}
-
-struct regex* regex_clone(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct regex* in)
-{
-	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
-	#else
-	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
 	#endif
 	
-	#ifdef WITH_ARENAS
-	struct regex* retval = clone_helper(arena, mappings, in);
-	#else
-	struct regex* retval = clone_helper(mappings, in);
-	#endif
+	free_quack(todo);
 	
 	avl_free_tree(mappings);
 	
 	EXIT;
-	return retval;
+	return new_start;
 }
 
 
+#if 0
 struct clone_nfa_bundle regex_clone_nfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct regex* start,
 	struct regex* end)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
-	#else
-	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
-	#endif
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
-	#ifdef WITH_ARENAS
-	struct regex* new_start = clone_helper(arena, mappings, start);
-	struct regex* new_end = clone_helper(arena, mappings, end);
-	#else
 	struct regex* new_start = clone_helper(mappings, start);
 	struct regex* new_end = clone_helper(mappings, end);
-	#endif
 	
 	avl_free_tree(mappings);
 	
 	EXIT;
 	return (struct clone_nfa_bundle) {new_start, new_end};
 }
-
 
 
 
