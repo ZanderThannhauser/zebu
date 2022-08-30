@@ -5,8 +5,6 @@
 struct gegex_pair
 {
 	struct gegex *a, *b;
-	
-	struct memory_arena* arena;
 };
 
 #endif

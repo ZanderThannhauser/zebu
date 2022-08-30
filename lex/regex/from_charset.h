@@ -1,3 +1,4 @@
 
 struct regex* regex_from_charset(
-	struct charset* charset);
+	bool is_complement,
+	struct unsignedcharset* charset);

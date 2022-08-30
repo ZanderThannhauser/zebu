@@ -16,6 +16,7 @@
 
 #include <set/string/new.h>
 #include <set/string/add.h>
+#include <set/string/free.h>
 
 #include <lex/lookup/add_token.h>
 
@@ -114,6 +115,8 @@ struct gbundle read_gravemark_production(
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
+	
+	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

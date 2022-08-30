@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <charset/free.h>
-
 #include <parser/charset/root.h>
 
 #include <parser/tokenizer/struct.h>
@@ -14,6 +12,9 @@
 
 #include <set/string/new.h>
 #include <set/string/add.h>
+#include <set/string/free.h>
+
+#include <set/unsignedchar/free.h>
 
 #include <lex/regex/from_charset.h>
 #include <lex/regex/dfa_to_nfa.h>
@@ -24,6 +25,7 @@
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/add_lambda_transition.h>
 #include <lex/regex/state/free.h>
+
 #include <lex/lookup/add_token.h>
 
 #include <yacc/gegex/state/new.h>
@@ -42,7 +44,7 @@ struct gbundle read_square_production(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	struct charset* charset = read_root_charset(tokenizer, scope);
+	struct cbundle charset = read_root_charset(tokenizer, scope);
 	
 	if (tokenizer->token != t_csquare)
 	{
@@ -50,7 +52,7 @@ struct gbundle read_square_production(
 		exit(1);
 	}
 	
-	struct regex* regex_start = regex_from_charset(charset);
+	struct regex* regex_start = regex_from_charset(charset.is_complement, charset.charset);
 	
 	if (options->skip)
 	{
@@ -102,11 +104,11 @@ struct gbundle read_square_production(
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
-
-	free_charset(charset);
+	
+	free_stringset(tags);
+	free_unsignedcharset(charset.charset);
 	
 	EXIT;
-
 	return (struct gbundle) {start, end};
 }
 

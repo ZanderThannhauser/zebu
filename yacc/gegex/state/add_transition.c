@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <debug.h>
 
+#include <set/string/inc.h>
+
 #include "struct.h"
 #include "add_transition.h"
 
@@ -16,7 +18,7 @@ void gegex_add_transition(
 	struct gegex_transition* transition = smalloc(sizeof(*transition));
 	
 	transition->token = token;
-	transition->tags = tags;
+	transition->tags = inc_stringset(tags);
 	transition->to = to;
 	
 	if (from->transitions.n + 1 > from->transitions.cap)

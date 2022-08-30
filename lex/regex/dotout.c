@@ -7,14 +7,10 @@
 
 #include <debug.h>
 
-/*#include <defines/argv0.h>*/
-
 #include <misc/counters.h>
 #include <misc/escape.h>
 
-#include <set/regex/foreach.h>
-
-/*#include <set/of_tokens/to_string.h>*/
+#include <set/unsignedchar/to_string.h>
 
 #include "state/struct.h"
 
@@ -85,15 +81,17 @@ static void helper(FILE* out, struct regex* state)
 			"", state, to);
 		}
 		
-		if (state->default_transition_to)
+		if (state->default_transition.to)
 		{
-			helper(out, state->default_transition_to);
+			helper(out, state->default_transition.to);
+			
+			char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
 			
 			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<default>\"" "\n"
-				"]" "\n"
-			"", state, state->default_transition_to);
+				"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
+			"", state, state->default_transition.to, label ?: "<default>");
+			
+			free(label);
 		}
 		
 		if (state->EOF_transition_to)

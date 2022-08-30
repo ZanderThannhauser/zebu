@@ -14,7 +14,10 @@ struct regex
 		size_t n, cap;
 	} lambda_transitions;
 	
-	struct regex* default_transition_to;
+	struct {
+		struct regex* to;
+		struct unsignedcharset* exceptions;
+	} default_transition;
 	
 	struct regex* EOF_transition_to;
 	

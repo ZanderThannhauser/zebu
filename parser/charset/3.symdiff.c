@@ -3,34 +3,31 @@
 
 #include <debug.h>
 
-#include "charset/free.h"
-
 #include "../tokenizer/struct.h"
 
 #include "2.intersect.h"
 #include "3.symdiff.h"
 
-struct charset* read_symdiff_charset(
+struct cbundle read_symdiff_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	struct charset* retval;
-	
-	struct charset* inner = read_intersect_charset(tokenizer, scope);
+	struct cbundle inner = read_intersect_charset(tokenizer, scope);
 	
 	if (tokenizer->token == t_caret)
 	{
 		TODO;
+		#if 0
+		TODO;
+		#endif
 	}
 	else
 	{
-		retval = inner;
+		EXIT;
+		return inner;
 	}
-	
-	EXIT;
-	return retval;
 }
 
 

@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <charset/struct.h>
+#include <set/unsignedchar/foreach.h>
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -12,30 +12,31 @@
 #include "from_charset.h"
 
 struct regex* regex_from_charset(
-	struct charset* charset)
+	bool is_complement,
+	struct unsignedcharset* charset)
 {
 	ENTER;
 	
 	struct regex* start = new_regex();
-	struct regex* inside = new_regex();
 	
-	struct regex* outside;
+	struct regex* accepting = new_regex();
 	
-	if (charset->is_complement)
+	accepting->is_accepting = true;
+	
+	if (is_complement)
 	{
-		outside = new_regex();
+		regex_set_default_transition(start, charset, accepting);
 	}
-	
-	for (size_t i = 0, n = charset->len; i < n; i++)
-		regex_add_transition(start, charset->chars[i], inside);
-	
-	if (charset->is_complement)
-		regex_set_default_transition(start, outside);
-	
-	if (charset->is_complement)
-		outside->is_accepting = true;
 	else
-		inside->is_accepting = true;
+	{
+		unsignedcharset_foreach(charset, ({
+			void runme(unsigned char value)
+			{
+				regex_add_transition(start, value, accepting);
+			}
+			runme;
+		}));
+	}
 	
 	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);

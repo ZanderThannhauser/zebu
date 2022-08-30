@@ -1,5 +1,4 @@
 
-#if 0
 #include <debug.h>
 
 #include <avl/search.h>
@@ -14,9 +13,6 @@
 #include "add_dep.h"
 
 void gegex_simplify_dfa_add_dep(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct avl_tree_t* dependent_of,
 	struct gegex* a_on, struct gegex* b_on,
 	struct gegex* a_of, struct gegex* b_of)
@@ -37,28 +33,16 @@ void gegex_simplify_dfa_add_dep(
 		
 		if (!avl_search(old->dependent_of, &(struct gegex_pair){a_on, b_on}))
 		{
-			#ifdef WITH_ARENAS
-			struct gegex_pair* dep = new_gegex_pair(arena, a_on, b_on);
-			#else
 			struct gegex_pair* dep = new_gegex_pair(a_on, b_on);
-			#endif
 			
 			avl_insert(old->dependent_of, dep);
 		}
 	}
 	else
 	{
-		#ifdef WITH_ARENAS
-		struct gegex_dependent_of_node* new = new_gegex_dependent_of_node(arena, a_of, b_of);
-		#else
 		struct gegex_dependent_of_node* new = new_gegex_dependent_of_node(a_of, b_of);
-		#endif
 		
-		#ifdef WITH_ARENAS
-		struct gegex_pair* dep = new_gegex_pair(arena, a_on, b_on);
-		#else
 		struct gegex_pair* dep = new_gegex_pair(a_on, b_on);
-		#endif
 		
 		avl_insert(new->dependent_of, dep);
 		
@@ -73,4 +57,3 @@ void gegex_simplify_dfa_add_dep(
 
 
 
-#endif

@@ -157,23 +157,23 @@ struct regex* regex_clone(struct regex* original_start)
 		}
 		
 		// for default transition:
-		if (old->default_transition_to)
+		if (old->default_transition.to)
 		{
-			struct avl_node_t* node = avl_search(mappings, &old->default_transition_to);
+			struct avl_node_t* node = avl_search(mappings, &old->default_transition.to);
 			
 			if (node)
 			{
 				struct mapping* submapping = node->item;
 				
-				regex_set_default_transition(new, submapping->new);
+				regex_set_default_transition(new, old->default_transition.exceptions, submapping->new);
 			}
 			else
 			{
 				struct regex* subnew = new_regex();
 				
-				struct mapping* submapping = new_mapping(old->default_transition_to, subnew);
+				struct mapping* submapping = new_mapping(old->default_transition.to, subnew);
 				
-				regex_set_default_transition(new, subnew);
+				regex_set_default_transition(new, old->default_transition.exceptions, subnew);
 				
 				avl_insert(mappings, submapping);
 				

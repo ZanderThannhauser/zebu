@@ -5,10 +5,7 @@
 
 #include <debug.h>
 
-/*#include <avl/insert.h>*/
-/*#include <avl/alloc_tree.h>*/
-/*#include <avl/search.h>*/
-/*#include <avl/free_tree.h>*/
+#include <set/unsignedchar/compare.h>
 
 #include "state/struct.h"
 
@@ -131,7 +128,7 @@ int compare_simplified_regexes(
 				
 				if (at->value < bt->value)
 				{
-					if (b->default_transition_to)
+					if (b->default_transition.to)
 					{
 						TODO;
 					}
@@ -140,7 +137,7 @@ int compare_simplified_regexes(
 				}
 				else if (bt->value < at->value)
 				{
-					if (a->default_transition_to)
+					if (a->default_transition.to)
 					{
 						TODO;
 					}
@@ -151,12 +148,12 @@ int compare_simplified_regexes(
 					cmp = helper(at->to, bt->to), a_i++, b_i++;
 			}
 			
-			while (!cmp && a_i < a_n && b->default_transition_to)
+			while (!cmp && a_i < a_n && b->default_transition.to)
 			{
 				TODO;
 			}
 			
-			while (!cmp && a->default_transition_to && b_i < b_n)
+			while (!cmp && a->default_transition.to && b_i < b_n)
 			{
 				TODO;
 			}
@@ -172,12 +169,16 @@ int compare_simplified_regexes(
 			// possibly compare default states
 			if (!cmp)
 			{
-				const struct regex* const at = a->default_transition_to;
-				const struct regex* const bt = b->default_transition_to;
+				const struct regex* const at = a->default_transition.to;
+				const struct regex* const bt = b->default_transition.to;
 				
 				if (at)
 					if (bt)
-						cmp = helper(at, bt);
+						cmp = 0
+							?: compare_unsignedcharsets(
+								a->default_transition.exceptions,
+								b->default_transition.exceptions)
+							?: helper(at, bt);
 					else
 						cmp = +1;
 				else if (bt)

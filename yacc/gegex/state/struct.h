@@ -10,22 +10,23 @@ struct gegex
 	struct {
 		struct gegex_transition {
 			unsigned token;
-			struct stringset* tags;
+			struct stringset* tags; // owned
 			struct gegex* to;
 		}** data;
 		size_t n, cap;
 	} transitions;
 	
 	struct {
-		struct gtransition {
+		struct gegex_grammar_transition {
 			char* grammar; // owned
+			struct stringset* tags; // owned
 			struct gegex* to;
 		}** data;
 		size_t n, cap;
 	} grammar_transitions;
 	
 	struct {
-		struct gegex** data;
+		struct gegex** data; // owned
 		size_t n, cap;
 	} lambda_transitions;
 	

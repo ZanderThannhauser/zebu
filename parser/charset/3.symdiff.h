@@ -1,11 +1,6 @@
 
-struct tokenizer;
-struct avl_tree_t;
-struct scope;
+#include "cbundle.h"
 
-struct charset* read_symdiff_charset(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+struct cbundle read_symdiff_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope);

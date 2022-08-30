@@ -5,19 +5,16 @@
 
 #include <debug.h>
 
-/*#include <avl/alloc_tree.h>*/
 #include <avl/foreach.h>
-/*#include <avl/search.h>*/
-/*#include <avl/free_tree.h>*/
-/*#include <avl/insert.h>*/
-
-/*#include <cmdln/verbose.h>*/
 
 #include <set/regex/new.h>
-#include <set/regex/free.h>
+/*#include <set/regex/free.h>*/
 #include <set/regex/clone.h>
 #include <set/regex/foreach.h>
 #include <set/regex/free.h>
+
+#include <set/unsignedchar/contains.h>
+#include <set/unsignedchar/are_equal.h>
 
 #include <heap/new.h>
 #include <heap/pop.h>
@@ -129,10 +126,13 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							
 							if (at->value < bt->value)
 							{
-								if (b->default_transition_to)
+								if (b->default_transition.to)
 								{
+									TODO;
+									#if 0
 									regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
 									a_i++;
+									#endif
 								}
 								else
 								{
@@ -141,9 +141,9 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							}
 							else if (at->value > bt->value)
 							{
-								if (a->default_transition_to)
+								if (a->default_transition.to && !unsignedcharset_contains(a->default_transition.exceptions, bt->value))
 								{
-									regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
+									regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
 									b_i++;
 								}
 								else
@@ -159,18 +159,28 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							}
 						}
 						
-						while (!unequal && a_i < a_n && b->default_transition_to)
+						while (!unequal && a_i < a_n && b->default_transition.to)
 						{
 							const struct regex_transition* const at = a->transitions.data[a_i++];
 							
-							regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
+							if (!unsignedcharset_contains(b->default_transition.exceptions, at->value))
+							{
+								regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
+							}
+							else
+							{
+								unequal = true;
+							}
 						}
 						
-						while (!unequal && a->default_transition_to && b_i < b_n)
+						while (!unequal && a->default_transition.to && b_i < b_n)
 						{
 							const struct regex_transition* const bt = b->transitions.data[b_i++];
 							
+							TODO;
+							#if 0
 							regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
+							#endif
 						}
 						
 						if (!unequal && ((a_i < a_n) != (b_i < b_n)))
@@ -178,14 +188,23 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							unequal = true;
 						}
 						
-						if (!unequal && (!a->default_transition_to != !b->default_transition_to))
+						if (!unequal && (!a->default_transition.to != !b->default_transition.to))
 						{
 							unequal = true;
 						}
 						
-						if (!unequal && a->default_transition_to && b->default_transition_to)
+						if (!unequal && a->default_transition.to && b->default_transition.to)
 						{
-							regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, b->default_transition_to);
+							// are exception-sets equal?
+							if (unsignedcharset_are_equal(a->default_transition.exceptions, b->default_transition.exceptions))
+							{
+								regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, b->default_transition.to);
+							}
+							else
+							{
+								// unequal = true;
+								TODO;
+							}
 						}
 						
 						if (unequal)
@@ -273,9 +292,9 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 	signal(SIGALRM, handler2);
 	#endif
 	
-	#ifdef DOTOUT
-	simplify_dfa_dotout(universe, connections, 0);
-	#endif
+/*	#ifdef DOTOUT*/
+/*	simplify_dfa_dotout(universe, connections, 0);*/
+/*	#endif*/
 	
 	while (is_heap_nonempty(todo))
 	{
@@ -304,13 +323,17 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 				}));
 			}
 			
-			#ifdef DOTOUT
-			simplify_dfa_dotout(universe, connections, task->hopcount);
-			#endif
+/*			#ifdef DOTOUT*/
+/*			simplify_dfa_dotout(universe, connections, task->hopcount);*/
+/*			#endif*/
 		}
 		
 		free_regex_simplify_task(task);
 	}
+	
+	#ifdef DOTOUT
+	simplify_dfa_dotout(universe, connections, 0);
+	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);

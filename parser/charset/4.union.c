@@ -3,9 +3,8 @@
 
 #include <debug.h>
 
-#include <charset/struct.h>
-#include <charset/new_from_union.h>
-#include <charset/free.h>
+#include <set/unsignedchar/union.h>
+#include <set/unsignedchar/free.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -14,13 +13,13 @@
 #include "3.symdiff.h"
 #include "4.union.h"
 
-struct charset* read_union_charset(
+struct cbundle read_union_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	struct charset* retval = read_symdiff_charset(tokenizer, scope);
+	struct cbundle retval = read_symdiff_charset(tokenizer, scope);
 	
 	while (false
 		|| tokenizer->token == t_oparen
@@ -28,7 +27,7 @@ struct charset* read_union_charset(
 		|| tokenizer->token == t_vertical_bar
 		|| tokenizer->token == t_comma)
 	{
-		struct charset* left = retval;
+		struct cbundle left = retval;
 		
 		if (false
 			|| tokenizer->token == t_vertical_bar
@@ -37,11 +36,11 @@ struct charset* read_union_charset(
 			read_token(tokenizer, charset_inside_union_machine);
 		}
 		
-		struct charset* right = read_symdiff_charset(tokenizer, scope);
+		struct cbundle right = read_symdiff_charset(tokenizer, scope);
 		
-		if (left->is_complement)
+		if (left.is_complement)
 		{
-			if (right->is_complement)
+			if (right.is_complement)
 			{
 				TODO;
 			}
@@ -52,22 +51,34 @@ struct charset* read_union_charset(
 		}
 		else
 		{
-			if (right->is_complement)
+			if (right.is_complement)
 			{
 				TODO;
 			}
 			else
 			{
-				retval = new_charset_from_union(left, right, false);
+				retval = (struct cbundle) {
+					.is_complement = false,
+					.charset = unsignedcharset_union(left.charset, right.charset),
+				};
 			}
 		}
 		
-		free_charset(left), free_charset(right);
+		free_unsignedcharset(left.charset);
+		free_unsignedcharset(right.charset);
 	}
 	
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
 
 
 

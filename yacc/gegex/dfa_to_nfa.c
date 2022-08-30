@@ -1,8 +1,12 @@
 
-#if 0
 #include <debug.h>
 
-#include <misc/phase_counters.h>
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/free.h>
+
+#include <quack/struct.h>
+#include <quack/append.h>
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -10,16 +14,23 @@
 
 #include "dfa_to_nfa.h"
 
-static void helper(
-	struct gegex* state,
-	struct gegex* end)
+struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 {
-	unsigned i, n;
 	ENTER;
 	
-	if (state->phase != yacc_phase_counter)
+	struct gegex* end = new_gegex();
+	
+	struct gegexset* done = new_gegexset();
+	
+	struct quack* todo = new_quack();
+	
+	gegexset_add(done, start);
+	
+	quack_append(todo, start);
+	
+	while (todo->n)
 	{
-		state->phase = yacc_phase_counter;
+		struct gegex* state = quack_pop(todo);
 		
 		if (state->is_reduction_point)
 		{
@@ -27,45 +38,37 @@ static void helper(
 			state->is_reduction_point = false;
 		}
 		
-		for (i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			helper(state->transitions.data[i]->to, end);
+			struct gegex* to = state->transitions.data[i]->to;
+			
+			if (gegexset_add(done, to))
+				quack_append(todo, to);
 		}
 		
-		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
-			helper(state->grammar_transitions.data[i]->to, end);
+			struct gegex* to = state->grammar_transitions.data[i]->to;
+			
+			if (gegexset_add(done, to))
+				quack_append(todo, to);
 		}
 		
-		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
-			helper(state->lambda_transitions.data[i], end);
+			struct gegex* to = state->lambda_transitions.data[i];
+			
+			if (gegexset_add(done, to))
+				quack_append(todo, to);
 		}
 	}
 	
-	EXIT;
-}
-
-struct gbundle gegex_dfa_to_nfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegex* dfa)
-{
-	ENTER;
+	free_quack(todo);
 	
-	#ifdef WITH_ARENAS
-	struct gegex* end = new_gegex(arena);
-	#else
-	struct gegex* end = new_gegex();
-	#endif
-	
-	yacc_phase_counter++;
-	
-	helper(dfa, end);
+	free_gegexset(done);
 	
 	EXIT;
-	return (struct gbundle) {dfa, end};
+	return (struct gbundle) {start, end};
 }
 
 
@@ -76,4 +79,3 @@ struct gbundle gegex_dfa_to_nfa(
 
 
 
-#endif

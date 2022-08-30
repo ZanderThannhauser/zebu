@@ -44,9 +44,9 @@ static void helper(
 			helper(regex->lambda_transitions.data[i], dest, new_accepting);
 		}
 		
-		if (regex->default_transition_to)
+		if (regex->default_transition.to)
 		{
-			helper(regex->default_transition_to, dest, new_accepting);
+			helper(regex->default_transition.to, dest, new_accepting);
 		}
 		
 		if (regex->EOF_transition_to)

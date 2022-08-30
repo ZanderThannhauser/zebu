@@ -10,6 +10,7 @@
 #include <lex/regex/nfa_to_dfa.h>
 #include <lex/regex/dfa_to_nfa.h>
 #include <lex/regex/clone.h>
+#include <lex/regex/dotout.h>
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 #include <lex/regex/state/add_lambda_transition.h>
@@ -18,11 +19,13 @@
 
 #include <lex/lookup/add_token.h>
 
+#include <yacc/gegex/dotout.h>
 #include <yacc/gegex/state/new.h>
 #include <yacc/gegex/state/add_transition.h>
 
 #include <set/string/new.h>
 #include <set/string/add.h>
+#include <set/string/free.h>
 
 #include "character_literal.h"
 
@@ -58,7 +61,7 @@ struct gbundle read_character_literal_production(
 		regex_start = regex_simplify_dfa(dfa);
 		
 		#ifdef DOTOUT
-		regex_dotout(start, __PRETTY_FUNCTION__);
+		regex_dotout(regex_start, __PRETTY_FUNCTION__);
 		#endif
 		
 		free_regex(clone), free_regex(dfa);
@@ -74,7 +77,10 @@ struct gbundle read_character_literal_production(
 	
 	if (tokenizer->token == t_hashtag)
 	{
-		TODO;
+		char* dup = strdup((void*) tokenizer->tokenchars.chars);
+		
+		stringset_add(tags, dup);
+		
 		read_token(tokenizer, production_after_highest_machine);
 	}
 	
@@ -87,8 +93,10 @@ struct gbundle read_character_literal_production(
 	gegex_add_transition(start, token_id, tags, end);
 	
 	#ifdef DOTOUT
-	gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
+	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
+	
+	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

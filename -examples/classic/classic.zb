@@ -36,7 +36,7 @@
 
 %skip: [' ', 'g'];
 
-%token_skip: '-';
+// %token_skip: '-';
 
 [wy]: 'w' - 'y';
 

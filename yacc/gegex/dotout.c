@@ -7,9 +7,9 @@
 
 #include <debug.h>
 
-/*#include <defines/argv0.h>*/
-
 #include <misc/counters.h>
+
+#include <set/string/to_hashtagstring.h>
 
 #include "state/struct.h"
 
@@ -37,30 +37,31 @@ static void helper(FILE* out, struct gegex* state)
 			
 			helper(out, transition->to);
 			
+			char* label = stringset_to_hashtagstring(transition->tags);
+			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"#%u token\"" "\n"
+					"\t" "label = \"#%u token %s\"" "\n"
 				"]" "\n"
-			"", state, transition->to, transition->token);
+			"", state, transition->to, transition->token, label);
+			
+			free(label);
 		}
 		
 		// grammar transitions:
 		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
-			TODO;
-			#if 0
-			struct gtransition* gtransition = state->grammar_transitions.data[i];
+			struct gegex_grammar_transition* gtransition = state->grammar_transitions.data[i];
 			
-			helper(
-				/* out: */ out,
-				/* state:  */ gtransition->to);
+			helper(out, gtransition->to);
+			
+			char* label = stringset_to_hashtagstring(gtransition->tags);
 			
 			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"%s\"" "\n"
-				"]" "\n"
-			"", state, gtransition->to, gtransition->grammar);
-			#endif
+				"\"%p\" -> \"%p\" [ label = \"%s %s\" ]" "\n"
+			"", state, gtransition->to, gtransition->grammar, label);
+			
+			free(label);
 		}
 		
 		// lambda transitions:

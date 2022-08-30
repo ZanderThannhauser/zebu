@@ -3,20 +3,14 @@
 
 #include <debug.h>
 
-#include <avl/alloc_tree.h>
-#include <avl/free_tree.h>
-
-/*#include <avl/insert.h>*/
-
-/*#include <memory/smalloc.h>*/
-/*#include <memory/srealloc.h>*/
+/*#include <avl/alloc_tree.h>*/
+/*#include <avl/free_tree.h>*/
 
 #include <heap/struct.h>
 #include <heap/new.h>
 #include <heap/push.h>
 #include <heap/pop.h>
 #include <heap/free.h>
-#include <heap/is_nonempty.h>
 
 #include <set/regex/new.h>
 #include <set/regex/add.h>
@@ -24,11 +18,16 @@
 #include <set/regex/compare.h>
 #include <set/regex/free.h>
 #include <set/regex/len.h>
-#include <set/regex/clear.h>
-/*#include <set/regex/clone.h>*/
+/*#include <set/regex/clear.h>*/
 
-#include <named/regexset/compare.h>
-#include <named/regexset/free.h>
+#include <set/unsignedchar/new.h>
+#include <set/unsignedchar/add.h>
+#include <set/unsignedchar/contains.h>
+#include <set/unsignedchar/foreach.h>
+#include <set/unsignedchar/free.h>
+
+/*#include <named/regexset/compare.h>*/
+/*#include <named/regexset/free.h>*/
 
 #include <quack/len.h>
 
@@ -201,25 +200,17 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		struct iterator
 		{
 			struct regex_transition **i, **n;
-			
-			struct regex* default_to;
-			
-			unsigned last_used;
 		};
 		
 		struct iterator* new_iterator(struct regex* state)
 		{
 			ENTER;
 			
-			struct iterator* this = malloc(sizeof(*this));
+			struct iterator* this = smalloc(sizeof(*this));
 			
 			this->i = state->transitions.data;
 			
 			this->n = state->transitions.data + state->transitions.n;
-			
-			this->default_to = state->default_transition_to;
-			
-			this->last_used = -1;
 			
 			EXIT;
 			return this;
@@ -228,9 +219,6 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		int compare_iterators(const void* a, const void* b)
 		{
 			const struct iterator* A = a, *B = b;
-			
-			assert(A->i < A->n);
-			assert(B->i < B->n);
 			
 			unsigned char value_a = A->i[0]->value;
 			unsigned char value_b = B->i[0]->value;
@@ -242,35 +230,50 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 			else
 				return 0;
 		}
-
+		
+		int compare_chars(const void* a, const void* b)
+		{
+			const unsigned char *A = a, *B = b;
+			if (*A > *B)
+				return +1;
+			else if (*A < *B)
+				return -1;
+			else
+				return +0;
+		}
+		
 		struct heap* heap = new_heap(compare_iterators);
+		
+		struct heap* exceptions = new_heap(compare_chars);
+		
+		struct unsignedcharset* new_exceptions = new_unsignedcharset();
 		
 		// create default iterator list:
 		struct {
-			struct iterator** data;
+			struct {
+				struct unsignedcharset* exceptions;
+				struct regex* to;
+			}* data;
 			size_t n, cap;
 		} defaults = {
 			.data = NULL,
 			.n = 0, .cap = 0,
 		};
 		
+		struct regexset* default_subregexset = new_regexset();
 		struct regexset* EOF_subregexset = new_regexset();
-			
+		
 		// create iterators for each state:
 		regexset_foreach(stateset, ({
 			void runme(struct regex* ele)
 			{
-				struct iterator* iter = new_iterator(ele);
-				
-				bool needed = false;
-				
-				if (iter->i < iter->n)
+				if (ele->transitions.n)
 				{
+					struct iterator* iter = new_iterator(ele);
 					heap_push(heap, iter);
-					needed = true;
 				}
 				
-				if (iter->default_to)
+				if (ele->default_transition.to)
 				{
 					if (defaults.n + 1 > defaults.cap)
 					{
@@ -281,38 +284,72 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 						defaults.data = srealloc(defaults.data, sizeof(*defaults.data) * defaults.cap);
 					}
 					
-					defaults.data[defaults.n++] = iter;
-					needed = true;
+					defaults.data[defaults.n].to = ele->default_transition.to;
+					
+					defaults.data[defaults.n].exceptions = ele->default_transition.exceptions;
+					
+					defaults.n++;
+					
+					add_lambda_states(default_subregexset, ele->default_transition.to);
+					
+					unsignedcharset_foreach(ele->default_transition.exceptions, ({
+						void runme(unsigned char value)
+						{
+							dpv(value);
+							
+							unsigned char* dup = smalloc(sizeof(*dup));
+							
+							*dup = value;
+							
+							heap_push(exceptions, dup);
+						}
+						runme;
+					}));
 				}
 				
 				if (ele->EOF_transition_to)
 				{
 					regexset_add(EOF_subregexset, ele->EOF_transition_to);
 				}
-				
-				if (!needed)
-				{
-					free(iter);
-				}
 			}
 			runme;
 		}));
 		
-		unsigned round = 0;
-		
-		while (is_heap_nonempty(heap))
+		while (heap->n || exceptions->n)
 		{
-			struct regexset* subregexset = new_regexset();
+			struct iterator* iterator;
 			
 			struct regex_transition* transition;
 			
-			struct iterator* iterator = heap->data[0];
+			unsigned char *except;
 			
-			unsigned min_value = iterator->i[0]->value;
+			unsigned min_value = -1;
+			
+			if (heap->n)
+			{
+				unsigned my_min = (iterator = heap->data[0])->i[0]->value;
+				
+				dpv(my_min);
+				
+				if (my_min < min_value)
+					min_value = my_min;
+			}
+			
+			if (exceptions->n)
+			{
+				unsigned my_min = *(except = exceptions->data[0]);
+				
+				dpv(my_min);
+				
+				if (my_min < min_value)
+					min_value = my_min;
+			}
 			
 			dpv(min_value);
 			
-			regexset_clear(subregexset);
+			unsignedcharset_add(new_exceptions, min_value);
+			
+			struct regexset* subregexset = new_regexset();
 			
 			while (heap->n && (transition = (iterator = heap->data[0])->i[0])->value == min_value)
 			{
@@ -320,76 +357,74 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 				
 				add_lambda_states(subregexset, transition->to);
 				
-				iterator->i++;
-				
-				iterator->last_used = round;
-				
-				if (iterator->i < iterator->n)
-				{
+				if (++iterator->i < iterator->n)
 					heap_push(heap, iterator);
-				}
-				else if (!iterator->default_to)
-				{
+				else
 					free(iterator);
-				}
+			}
+			
+			while (exceptions->n && *(except = exceptions->data[0]) == min_value)
+			{
+				heap_pop(exceptions);
+				
+				free(except);
 			}
 			
 			// for each iterator with defaults:
 			for (size_t i = 0, n = defaults.n; i < n; i++)
-				if (defaults.data[i]->last_used != round)
-					add_lambda_states(subregexset, defaults.data[i]->default_to);
+				if (!unsignedcharset_contains(defaults.data[i].exceptions, min_value))
+					add_lambda_states(subregexset, defaults.data[i].to);
 			
-			struct avl_node_t* node = avl_search(mappings, &subregexset);
-			
-			if (node)
+			if (regexset_len(subregexset))
 			{
-				struct mapping* old = node->item;
+				struct avl_node_t* node = avl_search(mappings, &subregexset);
 				
-				regex_add_transition(state, min_value, old->combined_state);
-				
-				free_regexset(subregexset);
+				if (node)
+				{
+					struct mapping* old = node->item;
+					
+					regex_add_transition(state, min_value, old->combined_state);
+					
+					free_regexset(subregexset);
+				}
+				else
+				{
+					struct regex* substate = new_regex();
+					
+					struct mapping* new = new_mapping(subregexset, substate);
+					
+					regex_add_transition(state, min_value, substate);
+					
+					quack_append(todo, new);
+					
+					avl_insert(mappings, new);
+				}
 			}
 			else
 			{
-				struct regex* substate = new_regex();
-				
-				struct mapping* new = new_mapping(subregexset, substate);
-				
-				regex_add_transition(state, min_value, substate);
-				
-				quack_append(todo, new);
-				
-				avl_insert(mappings, new);
+				free_regexset(subregexset);
 			}
-			
-			round++;
 		}
 		
 		if (defaults.n)
 		{
-			// create regexset of all defaults
-			struct regexset* subregexset = new_regexset();
-			
-			for (size_t i = 0, n = defaults.n; i < n; i++)
-				add_lambda_states(subregexset, defaults.data[i]->default_to);
-			
-			struct avl_node_t* node = avl_search(mappings, &subregexset);
+			struct avl_node_t* node = avl_search(mappings, &default_subregexset);
 			
 			if (node)
 			{
 				struct mapping* old = node->item;
 				
-				regex_set_default_transition(state, old->combined_state);
+				regex_set_default_transition(state, new_exceptions, old->combined_state);
 				
-				free_regexset(subregexset);
+				free_regexset(default_subregexset);
 			}
 			else
 			{
 				struct regex* substate = new_regex();
 				
-				struct mapping* new = new_mapping(subregexset, substate);
+				struct mapping* new = new_mapping(default_subregexset, substate);
 				
-				regex_set_default_transition(state, substate);
+				regex_set_default_transition(state, new_exceptions, substate);
 				
 				quack_append(todo, new);
 				
@@ -411,22 +446,20 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 			
 			regex_set_EOF_transition(state, substate);
 			#endif
+			free_regexset(EOF_subregexset);
 		}
 		
 		#ifdef DOTOUT
 		regex_dotout(new_start, __PRETTY_FUNCTION__);
 		#endif
 		
-		for (size_t i = 0, n = defaults.n; i < n; i++)
-		{
-			free(defaults.data[i]);
-		}
-		
-		free_regexset(EOF_subregexset);
-		
 		free(defaults.data);
 		
+		free_unsignedcharset(new_exceptions);
+		
 		free_heap(heap);
+		
+		free_heap(exceptions);
 	}
 	
 	#ifdef VERBOSE

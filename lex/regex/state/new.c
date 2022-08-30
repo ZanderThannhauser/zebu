@@ -20,7 +20,8 @@ struct regex* new_regex(
 	this->lambda_transitions.cap = 0;
 	this->lambda_transitions.n = 0;
 	
-	this->default_transition_to = NULL;
+	this->default_transition.to = NULL;
+	this->default_transition.exceptions = NULL;
 	
 	this->EOF_transition_to = NULL;
 	

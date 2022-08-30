@@ -3,16 +3,16 @@
 
 #include <stdlib.h>
 
-#include <enums/error.h>
-
 #include <debug.h>
 
 #include <macros/min.h>
 #include <macros/max.h>
 
-#include "charset/struct.h"
-#include "charset/new_from_range.h"
-#include "charset/free.h"
+#include <set/unsignedchar/new.h>
+#include <set/unsignedchar/add.h>
+#include <set/unsignedchar/min.h>
+#include <set/unsignedchar/max.h>
+#include <set/unsignedchar/free.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -21,15 +21,13 @@
 #include "0.highest.h"
 #include "1.range.h"
 
-struct charset* read_range_charset(
+struct cbundle read_range_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	struct charset* retval;
-	
-	struct charset* inner = read_highest_charset(tokenizer, scope);
+	struct cbundle inner = read_highest_charset(tokenizer, scope);
 	
 	if (tokenizer->token == t_hypen)
 	{
@@ -37,32 +35,41 @@ struct charset* read_range_charset(
 		
 		read_token(tokenizer, charset_inside_range_machine);
 		
-		struct charset* right = read_highest_charset(tokenizer, scope);
+		struct cbundle right = read_highest_charset(tokenizer, scope);
 		
-		if (left->is_complement || right->is_complement)
+		if (left.is_complement || right.is_complement)
 		{
 			TODO;
 			exit(e_bad_input_file);
 		}
 		
-		char l = left->chars[0], r = right->chars[right->len - 1];
+		unsigned char l = unsignedcharset_min(left.charset);
+		unsigned char r = unsignedcharset_max(right.charset);
 		
-		dpvc(l);
-		dpvc(r);
+		dpv(l);
+		dpv(r);
 		
-		retval = new_charset_from_range(min(l, r), max(l, r));
+		unsigned char min = min(l, r), max = max(l, r);
 		
-		free_charset(left), free_charset(right);
+		struct unsignedcharset* set = new_unsignedcharset();
+		
+		for (unsigned i = min; i <= max; i++)
+			unsignedcharset_add(set, i);
+		
+		free_unsignedcharset(left.charset), free_unsignedcharset(right.charset);
 		
 		#undef left
+		EXIT;
+		return (struct cbundle) {
+			.is_complement = false,
+			.charset = set,
+		};
 	}
 	else
 	{
-		retval = inner;
+		EXIT;
+		return inner;
 	}
-	
-	EXIT;
-	return retval;
 }
 
 

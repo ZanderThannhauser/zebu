@@ -1,12 +1,70 @@
 
-// struct token {
-	// unsigned char* data; unsigned n;
-// };
 
-// struct %start {
-	// struct token* a;
-	// struct { struct token** data; unsigned n; }* b;
-// }
+%start: `
+	  [ 'a', 'b'] '1'
+	| [ 'a', 'c'] '2'
+	| [~'b', 'a'] '3'
+	| [~'b', 'd'] '4'
+`;
 
-%start: ("a" #a | "b" #b)+;
+// 'a': ['1', '2', '4'];
+// 'b': ['1'];
+// 'c': ['2', '3'];
+
+// default: [~'a','b','c'];
+
+// a = [];
+// b = [];
+// c = [];
+// d = [];
+
+// i = None;
+
+// for s in states:
+	// for t in s.transitions:
+		// a.update(t.charset);
+		// b.update(t.charset);
+		// c.append({'charset': t.charset, 'to': t.to});
+	
+	// if t.default_transition.to:
+		// a.update(t.default_transition.charset);
+		// if i is None:
+			// i = t.default_transition.charset;
+		// else:
+			// i.intersection_update(t.default_transition.charset);
+		// d.add(t.default_transition.to);
+		// c.append({'charset': t.default_transition.charset, 'to': t.default_transition.to});
+
+// for s in states:
+	// if t.default_transition.to:
+		// b.update(set.difference(t.default_transition.charset, i));
+
+// dict = {};
+
+// for chr in b:
+	// subset = [];
+	// for charset, to in c:
+		// if (chr in charset) != charset->is_complement:
+			// subset.add(to);
+	// substate = {{subset}};
+	// if substate in dict:
+		// dict[substate].add(chr);
+	// else:
+		// dict[substate] = charset([chr]);
+
+// if len(d):
+	// state.set_default_transition(d, a);
+
+
+
+
+
+
+
+
+
+
+
+
+
 

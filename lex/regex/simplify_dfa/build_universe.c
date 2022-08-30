@@ -73,9 +73,9 @@ void regex_simplify_dfa_build_universe(
 			}
 		}
 		
-		if (node->default_transition_to)
+		if (node->default_transition.to)
 		{
-			struct regex* to = node->default_transition_to;
+			struct regex* to = node->default_transition.to;
 			
 			if (regexset_add(universe, to))
 			{

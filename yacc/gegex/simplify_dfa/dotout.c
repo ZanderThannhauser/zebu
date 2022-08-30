@@ -1,5 +1,4 @@
 
-#if 0
 #ifdef DOTOUT
 
 #include <stdio.h>
@@ -11,14 +10,16 @@
 
 /*#include <avl/search.h>*/
 
-#include <misc/frame_counter.h>
+#include <misc/counters.h>
 /*#include <misc/escape.h>*/
 
-#include <tree/of_gegexes/new.h>
-#include <tree/of_gegexes/add.h>
-#include <tree/of_gegexes/contains.h>
-#include <tree/of_gegexes/foreach.h>
-#include <tree/of_gegexes/free.h>
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/contains.h>
+#include <set/gegex/foreach.h>
+#include <set/gegex/free.h>
+
+#include <set/string/to_hashtagstring.h>
 
 #include "same_as_node/struct.h"
 
@@ -27,10 +28,7 @@
 #include "dotout.h"
 
 void gegex_simplify_dfa_dotout(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegextree* universe,
+	struct gegexset* universe,
 	struct avl_tree_t* connections,
 	unsigned hopcount)
 {
@@ -56,13 +54,9 @@ void gegex_simplify_dfa_dotout(
 	
 	fprintf(out, "\t" "label = \"%s: hopcount: %u\";" "\n", __PRETTY_FUNCTION__, hopcount);
 	
-	#ifdef WITH_ARENAS
-	struct gegextree* done = new_gegextree(arena);
-	#else
-	struct gegextree* done = new_gegextree();
-	#endif
+	struct gegexset* done = new_gegexset();
 	
-	gegextree_foreach(universe, ({
+	gegexset_foreach(universe, ({
 		void runme(struct gegex* state)
 		{
 			unsigned i, n;
@@ -79,7 +73,7 @@ void gegex_simplify_dfa_dotout(
 			// normal transitions:
 			for (i = 0, n = state->transitions.n; i < n; i++)
 			{
-				struct transition* transition = state->transitions.data[i];
+				struct gegex_transition* transition = state->transitions.data[i];
 				
 				fprintf(out, ""
 					"\"%p\" -> \"%p\" [" "\n"
@@ -91,13 +85,17 @@ void gegex_simplify_dfa_dotout(
 			// grammar_transitions:
 			for (i = 0, n = state->grammar_transitions.n; i < n; i++)
 			{
-				struct gtransition* g = state->grammar_transitions.data[i];
+				struct gegex_grammar_transition* g = state->grammar_transitions.data[i];
+				
+				char* label = stringset_to_hashtagstring(g->tags);
 				
 				fprintf(out, ""
 					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
+						"\t" "label = \"%s%s\"" "\n"
 					"]" "\n"
-				"", state, g->to, g->grammar);
+				"", state, g->to, g->grammar, label);
+				
+				free(label);
 			}
 			
 			{
@@ -107,9 +105,9 @@ void gegex_simplify_dfa_dotout(
 				
 				struct gegex_same_as_node* sa = node->item;
 				
-				gegextree_foreach(sa->set, ({
+				gegexset_foreach(sa->set, ({
 					void runme(struct gegex* dep) {
-						if (state != dep && !gegextree_contains(done, dep))
+						if (state != dep && !gegexset_contains(done, dep))
 						{
 							fprintf(out, ""
 								"\"%p\" -> \"%p\" [" "\n"
@@ -123,13 +121,13 @@ void gegex_simplify_dfa_dotout(
 					runme;
 				}));
 				
-				gegextree_add(done, state);
+				gegexset_add(done, state);
 			}
 		}
 		runme;
 	}));
 	
-	free_gegextree(done);
+	free_gegexset(done);
 	
 	fprintf(out, "}" "\n");
 	
@@ -159,5 +157,4 @@ void gegex_simplify_dfa_dotout(
 
 
 
-#endif
 #endif

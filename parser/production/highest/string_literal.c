@@ -14,6 +14,7 @@
 
 #include <set/string/new.h>
 #include <set/string/add.h>
+#include <set/string/free.h>
 
 #include <lex/regex/clone.h>
 #include <lex/regex/dotout.h>
@@ -97,6 +98,8 @@ struct gbundle read_string_literal_production(
 	#ifdef DOTOUT
 	gegex_dotout(gegex_start, gegex_end, __PRETTY_FUNCTION__);
 	#endif
+	
+	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {gegex_start, gegex_end};

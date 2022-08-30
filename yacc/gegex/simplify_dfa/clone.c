@@ -1,5 +1,4 @@
 
-#if 0
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -8,54 +7,39 @@
 
 /*#include <memory/smalloc.h>*/
 
-#include <tree/of_gegexes/struct.h>
+#include <set/gegex/struct.h>
 
-#include <avl/alloc_tree.h>
-#include <avl/search.h>
-#include <avl/insert.h>
-#include <avl/free_tree.h>
+/*#include <avl/alloc_tree.h>*/
+/*#include <avl/search.h>*/
+/*#include <avl/insert.h>*/
+/*#include <avl/free_tree.h>*/
 
-#include <arena/malloc.h>
-#include <arena/strdup.h>
-#include <arena/dealloc.h>
+#ifdef VERBOSE
+#include <quack/struct.h>
+#include <misc/default_sighandler.h>
+#endif
 
 #include "../state/struct.h"
 #include "../state/new.h"
 #include "../state/add_transition.h"
 #include "../state/add_grammar_transition.h"
+#include "../dotout.h"
 
 #include "same_as_node/struct.h"
 
 #include "clone.h"
 
-static struct mapping {
+struct mapping
+{
 	struct gegex* old; // must be the first
 	struct gegex* new;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
-}* new_mapping(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegex* old, struct gegex* new)
+};
+
+static struct mapping* new_mapping(struct gegex* old, struct gegex* new)
 {
-	ENTER;
-	
-	#ifdef WITH_ARENAS
-	struct mapping* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct mapping* this = malloc(sizeof(*this));
-	#endif
-	
-	this->old = old, this->new = new;
-	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
-	
-	EXIT;
+	struct mapping* this = smalloc(sizeof(*this));
+	this->old = old;
+	this->new = new;
 	return this;
 }
 
@@ -71,20 +55,6 @@ static int compare_mappings(const void* a, const void* b)
 		return  0;
 }
 
-static void free_mapping(void* ptr)
-{
-	struct mapping* this = ptr;
-	ENTER;
-	
-	#ifdef WITH_ARENAS
-	arena_dealloc(this->arena, this);
-	#else
-	free(this);
-	#endif
-	
-	EXIT;
-}
-
 static struct gegex* find(struct avl_tree_t* connections, struct gegex* a)
 {
 	struct avl_node_t* node = avl_search(connections, &a);
@@ -98,111 +68,132 @@ static struct gegex* find(struct avl_tree_t* connections, struct gegex* a)
 	return sa->set->tree->head->item;
 }
 
-static struct gegex* clone_helper(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct avl_tree_t* mappings,
+struct gegex* gegex_simplify_dfa_clone(
 	struct avl_tree_t* connections,
-	struct gegex* old)
+	struct gegex* original_start)
 {
-	struct avl_node_t* node;
-	struct mapping* mapping;
 	ENTER;
 	
-	dpv(old);
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
-	if ((node = avl_search(mappings, &old)))
+	struct quack* todo = new_quack();
+	
+	struct gegex* new_start = new_gegex();
+	
 	{
-		EXIT;
-		return (mapping = node->item)->new;
+		struct gegex* cloneme = find(connections, original_start);
+		
+		struct mapping* mapping = new_mapping(cloneme, new_start);
+		
+		avl_insert(mappings, mapping);
+		
+		quack_append(todo, mapping);
 	}
-	else
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler(int _)
 	{
-		#ifdef WITH_ARENAS
-		struct gegex* new = new_gegex(arena);
-		#else
-		struct gegex* new = new_gegex();
+		char buffer[1000] = {};
+		
+		unsigned total = completed + todo->n;
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[k" "%s: gegex clone: %u of %u (%.2f%%)\r", argv0,
+				completed, total,
+				(double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler);
+	#endif
+	
+	while (quack_len(todo))
+	{
+		#ifdef VERBOSE
+		completed++;
 		#endif
+		
+		struct mapping* mapping = quack_pop(todo);
+		
+		struct gegex* const old = mapping->old;
+		struct gegex* const new = mapping->new;
 		
 		new->is_reduction_point = old->is_reduction_point;
 		
-		#ifdef WITH_ARENAS
-		avl_insert(mappings, new_mapping(arena, old, new));
-		#else
-		avl_insert(mappings, new_mapping(old, new));
-		#endif
-		
-		size_t i, n;
-		for (i = 0, n = old->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
 		{
-			struct transition* const ele = old->transitions.data[i];
+			struct gegex_transition* const ele = old->transitions.data[i];
 			
-			gegex_add_transition(
-				/* from: */ new,
-				/* value: */ ele->token,
-				/* to: */ clone_helper(
-					#ifdef WITH_ARENAS
-					/* arena: */ arena,
-					#endif
-					/* mappings: */ mappings,
-					/* connections: */ connections,
-					/* in: */ find(connections, ele->to)));
+			struct gegex* cloneme = find(connections, ele->to);
+			
+			struct avl_node_t* node = avl_search(mappings, &cloneme);
+			
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				gegex_add_transition(new, ele->token, ele->tags, submapping->new);
+			}
+			else
+			{
+				struct gegex* subnew = new_gegex();
+				
+				struct mapping* submapping = new_mapping(cloneme, subnew);
+				
+				gegex_add_transition(new, ele->token, ele->tags, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
 		}
 		
-		for (i = 0, n = old->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->grammar_transitions.n; i < n; i++)
 		{
-			struct gtransition* const ele = old->grammar_transitions.data[i];
+			struct gegex_grammar_transition* const ele = old->grammar_transitions.data[i];
 			
-			#ifdef WITH_ARENAS
-			char* dup = arena_strdup(arena, ele->grammar);
-			#else
+			struct gegex* cloneme = find(connections, ele->to);
+			
+			struct avl_node_t* node = avl_search(mappings, &cloneme);
+			
 			char* dup = strdup(ele->grammar);
-			#endif
 			
-			gegex_add_grammar_transition(
-				/* from: */ new,
-				/* value: */ dup,
-				/* to: */ clone_helper(
-					#ifdef WITH_ARENAS
-					/* arena: */ arena,
-					#endif
-					/* mappings: */ mappings,
-					/* connections: */ connections,
-					/* in: */ find(connections, ele->to)));
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				gegex_add_grammar_transition(new, dup, ele->tags, submapping->new);
+			}
+			else
+			{
+				struct gegex* subnew = new_gegex();
+				
+				struct mapping* submapping = new_mapping(cloneme, subnew);
+				
+				gegex_add_grammar_transition(new, dup, ele->tags, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
 		}
 		
-		EXIT;
-		return new;
-	}
-}
-
-struct gegex* gegex_simplify_dfa_clone(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct avl_tree_t* connections,
-	struct gegex* original_start
-) {
-	ENTER;
-	
-	dpv(original_start);
-	
-	#ifdef WITH_ARENAS
-	struct avl_tree_t* mappings = avl_alloc_tree(arena, compare_mappings, free_mapping);
-	#else
-	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
-	#endif
-	
-	struct gegex* cloneme = find(connections, original_start);
-	
-	dpv(cloneme);
-	
-	struct gegex* new_start = clone_helper(
-		#ifdef WITH_ARENAS
-		arena,
+		#ifdef DOTOUT
+		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
 		#endif
-		mappings, connections, cloneme);
+	}
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
+	
+	free_quack(todo);
 	
 	avl_free_tree(mappings);
 	
@@ -226,4 +217,4 @@ struct gegex* gegex_simplify_dfa_clone(
 
 
 
-#endif
+

@@ -4,19 +4,23 @@
 
 #include <debug.h>
 
+#include <set/string/inc.h>
+
 #include "struct.h"
 #include "add_grammar_transition.h"
 
 void gegex_add_grammar_transition(
 	struct gegex* from,
 	char* grammar_name,
+	struct stringset* tags,
 	struct gegex* to)
 {
 	ENTER;
 	
-	struct gtransition* gtransition = smalloc(sizeof(*gtransition));
+	struct gegex_grammar_transition* gtransition = smalloc(sizeof(*gtransition));
 	
 	gtransition->grammar = grammar_name;
+	gtransition->tags = inc_stringset(tags);
 	gtransition->to = to;
 	
 	if (from->grammar_transitions.n + 1 > from->grammar_transitions.cap)
@@ -27,7 +31,7 @@ void gegex_add_grammar_transition(
 	}
 	
 	size_t i;
-	struct gtransition** const gdata = from->grammar_transitions.data;
+	struct gegex_grammar_transition** const gdata = from->grammar_transitions.data;
 	
 	for (i = from->grammar_transitions.n++ - 1;
 		0 + 1 <= i + 1 && strcmp(grammar_name, gdata[i]->grammar) < 0; i--)

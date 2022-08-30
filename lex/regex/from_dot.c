@@ -1,6 +1,9 @@
 
 #include <debug.h>
 
+#include <set/unsignedchar/new.h>
+#include <set/unsignedchar/free.h>
+
 #include "state/struct.h"
 #include "state/new.h"
 #include "state/set_default_transition.h"
@@ -14,7 +17,11 @@ struct regex* regex_from_dot()
 	struct regex* start = new_regex();
 	struct regex* end = new_regex();
 	
-	regex_set_default_transition(start, end);
+	struct unsignedcharset* empty = new_unsignedcharset();
+	
+	regex_set_default_transition(start, empty, end);
+	
+	free_unsignedcharset(empty);
 	
 	end->is_accepting = true;
 	

@@ -1,18 +1,15 @@
 
-#if 0
 #include <assert.h>
 
 #include <debug.h>
 
 #include <avl/search.h>
 
-#include <tree/of_gegexes/contains.h>
-#include <tree/of_gegexes/discard.h>
+#include <set/gegex/contains.h>
+#include <set/gegex/discard.h>
 
 #include "pair/struct.h"
-
 #include "same_as_node/struct.h"
-
 #include "mark_as_unequal.h"
 
 bool gegex_simplify_dfa_mark_as_unequal(
@@ -30,12 +27,12 @@ bool gegex_simplify_dfa_mark_as_unequal(
 	
 	bool removed = false;
 	
-	if (gegextree_contains(a_sa->set, pair->b))
+	if (gegexset_contains(a_sa->set, pair->b))
 	{
-		assert(gegextree_contains(b_sa->set, pair->a));
+		assert(gegexset_contains(b_sa->set, pair->a));
 		
-		gegextree_discard(a_sa->set, pair->b);
-		gegextree_discard(b_sa->set, pair->a);
+		gegexset_discard(a_sa->set, pair->b);
+		gegexset_discard(b_sa->set, pair->a);
 		
 		removed = true;
 	}
@@ -58,4 +55,3 @@ bool gegex_simplify_dfa_mark_as_unequal(
 
 
 
-#endif

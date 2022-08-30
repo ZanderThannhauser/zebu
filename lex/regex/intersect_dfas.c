@@ -9,6 +9,8 @@
 /*#include <avl/alloc_tree.h>*/
 /*#include <avl/insert.h>*/
 
+#include <set/unsignedchar/contains.h>
+
 #ifdef VERBOSE
 #include <quack/struct.h>
 #include <misc/default_sighandler.h>
@@ -150,7 +152,7 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 			{
 				dpv(B_trans->value);
 				
-				if (A->default_transition_to)
+				if (A->default_transition.to)
 				{
 					TODO;
 				}
@@ -176,53 +178,57 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 			}
 		}
 		
-		while (a.i < a.n && B->default_transition_to)
+		while (a.i < a.n && B->default_transition.to)
 		{
 			struct regex_transition* const A_trans = A->transitions.data[a.i++];
 			
-			struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A_trans->to, B->default_transition_to});
-			
-			if (node)
+			if (!unsignedcharset_contains(B->default_transition.exceptions, A_trans->value))
 			{
-				struct mapping* submapping = node->item;
+				struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A_trans->to, B->default_transition.to});
 				
-				regex_add_transition(state, A_trans->value, submapping->new);
-			}
-			else
-			{
-				struct regex* substate = new_regex();
-				
-				struct mapping* submapping = new_mapping(A_trans->to, B->default_transition_to, substate);
-				
-				regex_add_transition(state, A_trans->value, substate);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(todo, submapping);
+				if (node)
+				{
+					struct mapping* submapping = node->item;
+					
+					regex_add_transition(state, A_trans->value, submapping->new);
+				}
+				else
+				{
+					struct regex* substate = new_regex();
+					
+					struct mapping* submapping = new_mapping(A_trans->to, B->default_transition.to, substate);
+					
+					regex_add_transition(state, A_trans->value, substate);
+					
+					avl_insert(mappings, submapping);
+					
+					quack_append(todo, submapping);
+				}
 			}
 		}
 		
-		while (A->default_transition_to && b.i < b.n)
+		while (A->default_transition.to && b.i < b.n)
 		{
 			// const struct transition* const B_trans = B->transitions.data[b.i++];
 			TODO;
 		}
 		
-		if (A->default_transition_to && B->default_transition_to)
+		if (A->default_transition.to && B->default_transition.to)
 		{
 			TODO;
 		}
+		
+		#ifdef DOTOUT
+		regex_dotout(new_start, __PRETTY_FUNCTION__);
+		#endif
 	}
-	
-	#ifdef DOTOUT
-	regex_dotout(new_start, __PRETTY_FUNCTION__);
-	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);
 	#endif
 	
 	avl_free_tree(mappings);
+	
 	free_quack(todo);
 	
 	EXIT;

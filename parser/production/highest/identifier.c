@@ -9,6 +9,9 @@
 #include <parser/scope/build_absolute_name.h>
 
 #include <yacc/gegex/state/new.h>
+#include <yacc/gegex/dotout.h>
+#include <yacc/gegex/clone.h>
+#include <yacc/gegex/dfa_to_nfa.h>
 #include <yacc/gegex/state/add_grammar_transition.h>
 
 #include <set/string/new.h>
@@ -31,14 +34,7 @@ struct gbundle read_identifier_production(
 	
 	if ((inlined = scope_lookup_inline_grammar(scope, (void*) tokenizer->tokenchars.chars)))
 	{
-		TODO;
-		#if 0
-		#ifdef WITH_ARENAS
-		retval = gegex_clone_nfa(grammar_arena, inlined.start, inlined.end);
-		#else
-		retval = gegex_clone_nfa(inlined.start, inlined.end);
-		#endif
-		#endif
+		retval = gegex_dfa_to_nfa(gegex_clone(inlined));
 		
 		read_token(tokenizer, production_after_highest_machine);
 	}
@@ -62,7 +58,7 @@ struct gbundle read_identifier_production(
 		struct gegex* start = new_gegex();
 		struct gegex* end = new_gegex();
 		
-		gegex_add_grammar_transition(start, full_name, end);
+		gegex_add_grammar_transition(start, full_name, tags, end);
 		
 		retval = (struct gbundle) {start, end};
 	}

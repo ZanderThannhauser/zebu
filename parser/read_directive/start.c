@@ -5,7 +5,14 @@
 #include <parser/tokenizer/machines/misc/colon.h>
 #include <parser/tokenizer/machines/production/root.h>
 
+#include <yacc/gegex/state/struct.h>
+#include <yacc/gegex/state/free.h>
+#include <yacc/gegex/nfa_to_dfa.h>
+#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
+
 #include "../production/root.h"
+
+#include "../scope/declare/grammar.h"
 
 #include "start.h"
 
@@ -32,32 +39,31 @@ void read_start_directive(
 		/*         scope: */ scope,
 		/*           lex: */ lex);
 	
-	TODO;
-	#if 0
 	bundle.end->is_reduction_point = true;
 	
 	struct gegex* nfa_start = bundle.start;
 	
-	// nfa to dfa
-	#ifdef WITH_ARENAS
-	struct gegex* dfa_start = gegex_nfa_to_dfa(grammar_arena, nfa_start);
-	#else
 	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
-	#endif
 	
 	// simplify
-	#ifdef WITH_ARENAS
-	struct gegex* simp_start = gegex_simplify_dfa(grammar_arena, dfa_start);
-	#else
 	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
-	#endif
 	
 	// add grammar rule to scope
 	scope_declare_grammar(scope, "(start)", simp_start);
 	
 	free_gegex(nfa_start), free_gegex(dfa_start);
-	#endif
+	
 	EXIT;
 }
 
-		
+
+
+
+
+
+
+
+
+
+
+

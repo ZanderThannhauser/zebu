@@ -1,4 +1,6 @@
 
+#include <debug.h>
+
 #if 0
 #include <avl/avl.h>
 
@@ -61,11 +63,14 @@ static void resolve(
 	
 	EXIT;
 }
+#endif
 
 void resolve_grammar_names(struct scope* scope)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	yacc_phase_counter++;
 	
 	for (struct avl_node_t* i = scope->grammar->head; i; i = i->next)
@@ -76,6 +81,7 @@ void resolve_grammar_names(struct scope* scope)
 		
 		resolve(ele->grammar, scope);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -88,4 +94,3 @@ void resolve_grammar_names(struct scope* scope)
 
 
 
-#endif

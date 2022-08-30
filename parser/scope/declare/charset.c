@@ -14,7 +14,8 @@
 void scope_declare_charset(
 	struct scope* this,
 	char* name,
-	struct charset* charset)
+	bool is_complement,
+	struct unsignedcharset* charset)
 {
 	ENTER;
 	
@@ -24,7 +25,7 @@ void scope_declare_charset(
 	
 	assert(this->layer);
 	
-	avl_insert(this->layer->charsets, new_named_charset(name, charset));
+	avl_insert(this->layer->charsets, new_named_charset(name, is_complement, charset));
 	
 	EXIT;
 }

@@ -1,7 +1,27 @@
 
 #include <debug.h>
 
+#include <yacc/gegex/state/struct.h>
 #include <yacc/gegex/state/new.h>
+#include <yacc/gegex/state/add_transition.h>
+#include <yacc/gegex/state/add_grammar_transition.h>
+#include <yacc/gegex/dotout.h>
+
+#include <set/string/new.h>
+#include <set/string/add.h>
+#include <set/string/foreach.h>
+
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/foreach.h>
+#include <set/gegex/compare.h>
+#include <set/gegex/free.h>
+
+#include <heap/struct.h>
+#include <heap/new.h>
+#include <heap/push.h>
+#include <heap/pop.h>
+#include <heap/free.h>
 
 #ifdef VERBOSE
 #include <quack/struct.h>
@@ -13,7 +33,6 @@
 struct mapping
 {
 	struct gegexset* stateset; // must be the first
-	
 	struct gegex* combined_state;
 };
 
@@ -36,10 +55,7 @@ static struct mapping* new_mapping(
 static int compare_mappings(const void* a, const void* b)
 {
 	const struct mapping *A = a, *B = b;
-	TODO;
-	#if 0
 	return compare_gegexsets(A->stateset, B->stateset);
-	#endif
 }
 
 static void free_mapping(void* a)
@@ -47,11 +63,7 @@ static void free_mapping(void* a)
 	struct mapping* this = a;
 	ENTER;
 	
-	TODO;
-	#if 0
 	free_gegexset(this->stateset);
-	#endif
-	
 	free(this);
 	
 	EXIT;
@@ -61,8 +73,6 @@ static void add_lambda_states(struct gegexset* set, struct gegex* ele)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	if (gegexset_add(set, ele))
 	{
 		for (unsigned i = 0, n = ele->lambda_transitions.n; i < n; i++)
@@ -70,7 +80,6 @@ static void add_lambda_states(struct gegexset* set, struct gegex* ele)
 			add_lambda_states(set, ele->lambda_transitions.data[i]);
 		}
 	}
-	#endif
 	
 	EXIT;
 }
@@ -86,8 +95,6 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 	struct gegex* new_start = new_gegex();
 	
 	{
-		TODO;
-		#if 0
 		struct gegexset* start_set = new_gegexset();
 		
 		add_lambda_states(start_set, original_start);
@@ -97,7 +104,6 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 		quack_append(todo, mapping);
 		
 		avl_insert(mappings, mapping);
-		#endif
 	}
 	
 	#ifdef VERBOSE
@@ -123,7 +129,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 	#endif
 	
 	#ifdef DOTOUT
-	gegex_dotout(new_start, __PRETTY_FUNCTION__);
+	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
 	#endif
 	
 	while (quack_len(todo))
@@ -140,13 +146,11 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 		
 		struct gegex* const state = mapping->combined_state;
 		
-		TODO;
-		#if 0
 		// set this as reduction_point if any states in list are accepting:
 		{
 			bool is_reduction_point = false;
 			
-			gegextree_foreach(states, ({
+			gegexset_foreach(stateset, ({
 				void runme(struct gegex* ele) {
 					if (ele->is_reduction_point) {
 						is_reduction_point = true;
@@ -160,140 +164,225 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 			dpvb(state->is_reduction_point);
 		}
 		
-		#ifdef WITH_ARENAS
-		unsigned (*indexes)[len(states)] = arena_malloc(arena, sizeof(*indexes));
-		#else
-		unsigned (*indexes)[len(states)] = malloc(sizeof(*indexes));
-		#endif
-		
-		memset(*indexes, 0, sizeof(*indexes));
-		
-		#ifdef WITH_ARENAS
-		struct gegextree* subset = new_gegextree(arena);
-		#else
-		struct gegextree* subset = new_gegextree();
-		#endif
-		
-		bool assigned;
-		unsigned token;
-		
-		while (({
-			assigned = false;
-			gegextree_enumerate(states, ({
-				void runme(unsigned i, struct gegex* state) {
-					unsigned index = (*indexes)[i];
-					if (index < state->transitions.n) {
-						struct gegex* const to = state->transitions.data[index]->to;
-						unsigned ele_token = state->transitions.data[index]->token;
-						if (!assigned || ele_token < token) {
-							gegextree_clear(subset);
-							gegex_add_lamda_states(subset, to);
-							token = ele_token;
-							assigned = true;
-						} else if (token == ele_token) {
-							gegex_add_lamda_states(subset, to);
+		{
+			struct iterator
+			{
+				struct gegex_transition **i, **n;
+			};
+			
+			struct iterator* new_iterator(struct gegex* state)
+			{
+				ENTER;
+				
+				struct iterator* this = smalloc(sizeof(*this));
+				
+				this->i = state->transitions.data;
+				
+				this->n = state->transitions.data + state->transitions.n;
+				
+				EXIT;
+				return this;
+			}
+			
+			int compare_iterators(const void* a, const void* b)
+			{
+				const struct iterator* A = a, *B = b;
+				
+				unsigned token_a = A->i[0]->token;
+				unsigned token_b = B->i[0]->token;
+				
+				if (token_a > token_b)
+					return +1;
+				else if (token_a < token_b)
+					return -1;
+				else
+					return 0;
+			}
+			
+			struct heap* heap = new_heap(compare_iterators);
+			
+			// create iterators for each state:
+			gegexset_foreach(stateset, ({
+				void runme(struct gegex* ele)
+				{
+					if (ele->transitions.n)
+					{
+						struct iterator* iter = new_iterator(ele);
+						heap_push(heap, iter);
+					}
+				}
+				runme;
+			}));
+			
+			while (heap->n)
+			{
+				struct iterator* iterator;
+				
+				struct gegex_transition* transition;
+				
+				unsigned min_token = (transition = (iterator = heap->data[0])->i[0])->token;
+				
+				dpv(min_token);
+				
+				struct gegexset* subgegexset = new_gegexset();
+				
+				struct stringset* tags = new_stringset();
+				
+				while (heap->n && (transition = (iterator = heap->data[0])->i[0])->token == min_token)
+				{
+					heap_pop(heap);
+					
+					add_lambda_states(subgegexset, transition->to);
+					
+					stringset_foreach(transition->tags, ({
+						void runme(char* tag) {
+							stringset_add(tags, strdup(tag));
 						}
-					}
+						runme;
+					}));
+					
+					if (++iterator->i < iterator->n)
+						heap_push(heap, iterator);
+					else
+						free(iterator);
 				}
-				runme;
-			}));
-			assigned;
-		})) {
-			dpv(token);
-			dpv(len(subset));
-			
-			struct gegex* to = gegex_nfa_to_dfa_helper(
-				#ifdef VERBOSE
-				node_count,
-				#endif
-				#ifdef WITH_ARENAS
-				arena,
-				#endif
-				subset, mappings);
-			
-			gegex_add_transition(state, token, to);
-			
-			// move forward all indexes that whose ele_token == token
-			gegextree_enumerate(states, ({
-				void runme(unsigned i, struct gegex* state) {
-					unsigned index = (*indexes)[i];
-					if (index < state->transitions.n && token == state->transitions.data[index]->token) {
-						(*indexes)[i]++;
-					}
+				
+				struct avl_node_t* node = avl_search(mappings, &subgegexset);
+				
+				if (node)
+				{
+					struct mapping* old = node->item;
+					
+					gegex_add_transition(state, min_token, tags, old->combined_state);
+					
+					free_gegexset(subgegexset);
 				}
-				runme;
-			}));
+				else
+				{
+					struct gegex* substate = new_gegex();
+					
+					struct mapping* new = new_mapping(subgegexset, substate);
+					
+					gegex_add_transition(state, min_token, tags, substate);
+					
+					quack_append(todo, new);
+					
+					avl_insert(mappings, new);
+				}
+			}
+			
+			free_heap(heap);
 		}
 		
-		memset(*indexes, 0, sizeof(*indexes));
-		
-		char* grammar;
-		while (({
-			assigned = false;
-			gegextree_enumerate(states, ({
-				void runme(unsigned i, struct gegex* state) {
-					unsigned index = (*indexes)[i];
-					if (index < state->grammar_transitions.n) {
-						struct gegex* const to = state->grammar_transitions.data[index]->to;
-						char* ele_grammar = state->grammar_transitions.data[index]->grammar;
-						int cmp;
-						if (!assigned || (cmp = strcmp(ele_grammar, grammar)) < 0) {
-							gegextree_clear(subset);
-							gegex_add_lamda_states(subset, to);
-							grammar = ele_grammar;
-							assigned = true;
-						} else if (!cmp) {
-							gegex_add_lamda_states(subset, to);
-						}
+		{
+			struct iterator
+			{
+				struct gegex_grammar_transition **i, **n;
+			};
+			
+			struct iterator* new_iterator(struct gegex* state)
+			{
+				ENTER;
+				
+				struct iterator* this = smalloc(sizeof(*this));
+				
+				this->i = state->grammar_transitions.data;
+				
+				this->n = state->grammar_transitions.data + state->grammar_transitions.n;
+				
+				EXIT;
+				return this;
+			}
+			
+			int compare_iterators(const void* a, const void* b)
+			{
+				const struct iterator* A = a, *B = b;
+				
+				const char* grammar_a = A->i[0]->grammar;
+				const char* grammar_b = B->i[0]->grammar;
+				
+				return strcmp(grammar_a, grammar_b);
+			}
+			
+			struct heap* heap = new_heap(compare_iterators);
+			
+			// create iterators for each state:
+			gegexset_foreach(stateset, ({
+				void runme(struct gegex* ele)
+				{
+					if (ele->grammar_transitions.n)
+					{
+						struct iterator* iter = new_iterator(ele);
+						heap_push(heap, iter);
 					}
 				}
 				runme;
 			}));
-			assigned;
-		})) {
-			dpvs(grammar);
-			dpv(len(subset));
 			
-			struct gegex* to = gegex_nfa_to_dfa_helper(
-				#ifdef VERBOSE
-				node_count,
-				#endif
-				#ifdef WITH_ARENAS
-				arena,
-				#endif
-				subset, mappings);
-			
-			#ifdef WITH_ARENAS
-			char* dup = arena_strdup(arena, grammar);
-			#else
-			char* dup = strdup(grammar);
-			#endif
-			
-			gegex_add_grammar_transition(state, dup, to);
-			
-			// move forward all indexes that whose ele_token == token
-			gegextree_enumerate(states, ({
-				void runme(unsigned i, struct gegex* state) {
-					unsigned index = (*indexes)[i];
-					if (index < state->grammar_transitions.n && strequals(grammar, state->grammar_transitions.data[index]->grammar))
-						(*indexes)[i]++;
+			while (heap->n)
+			{
+				struct iterator* iterator;
+				
+				struct gegex_grammar_transition* transition;
+				
+				const char* min_grammar = (transition = (iterator = heap->data[0])->i[0])->grammar;
+				
+				dpv(min_grammar);
+				
+				struct gegexset* subgegexset = new_gegexset();
+				
+				struct stringset* tags = new_stringset();
+				
+				while (heap->n && strequals((transition = (iterator = heap->data[0])->i[0])->grammar, min_grammar))
+				{
+					heap_pop(heap);
+					
+					add_lambda_states(subgegexset, transition->to);
+					
+					stringset_foreach(transition->tags, ({
+						void runme(char* tag) {
+							stringset_add(tags, strdup(tag));
+						}
+						runme;
+					}));
+					
+					if (++iterator->i < iterator->n)
+						heap_push(heap, iterator);
+					else
+						free(iterator);
 				}
-				runme;
-			}));
+				
+				struct avl_node_t* node = avl_search(mappings, &subgegexset);
+				
+				char* dup = strdup(min_grammar);
+				
+				if (node)
+				{
+					struct mapping* old = node->item;
+					
+					gegex_add_grammar_transition(state, dup, tags, old->combined_state);
+					
+					free_gegexset(subgegexset);
+				}
+				else
+				{
+					struct gegex* substate = new_gegex();
+					
+					struct mapping* new = new_mapping(subgegexset, substate);
+					
+					gegex_add_grammar_transition(state, dup, tags, substate);
+					
+					quack_append(todo, new);
+					
+					avl_insert(mappings, new);
+				}
+			}
+			
+			free_heap(heap);
 		}
-		
-		free_gegextree(subset);
-		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, indexes);
-		#else
-		free(indexes);
-		#endif
-		
-		#endif
 		
 		#ifdef DOTOUT
-		gegex_dotout(new_start, __PRETTY_FUNCTION__);
+		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
 		#endif
 	}
 	

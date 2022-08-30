@@ -4,6 +4,10 @@
 
 #include <debug.h>
 
+#include <set/unsignedchar/new.h>
+#include <set/unsignedchar/add.h>
+#include <set/unsignedchar/inc.h>
+
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/after_highest.h"
@@ -11,17 +15,13 @@
 
 #include "../scope/lookup/charset.h"
 
-#include <charset/new.h>
-#include <charset/clone.h>
-
 #include "root.h"
 #include "0.highest.h"
 
-struct charset* read_highest_charset(
+struct cbundle read_highest_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
-	struct charset* retval;
 	ENTER;
 	
 	switch (tokenizer->token)
@@ -32,24 +32,37 @@ struct charset* read_highest_charset(
 			
 			dpvc(first);
 			
-			retval = new_charset(&first, 1, false);
+			struct unsignedcharset* set = new_unsignedcharset();
 			
-			break;
+			unsignedcharset_add(set, first);
+			
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return (struct cbundle) {
+				.is_complement = false,
+				.charset = set,
+			};
 		}
 		
 		case t_identifier:
 		{
-			struct charset* copyme = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
+			struct cbundle inner = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
 			
-			retval = clone_charset(copyme);
-			break;
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return (struct cbundle) {
+				.is_complement = inner.is_complement,
+				.charset = inc_unsignedcharset(inner.charset),
+			};
 		}
 		
 		case t_oparen:
 		{
 			read_token(tokenizer, charset_root_machine);
 			
-			retval = read_root_charset(tokenizer, scope);
+			struct cbundle retval = read_root_charset(tokenizer, scope);
 			
 			if (tokenizer->token != t_cparen)
 			{
@@ -57,18 +70,16 @@ struct charset* read_highest_charset(
 				exit(1);
 			}
 			
-			break;
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return retval;
 		}
 		
 		default:
 			TODO;
 			break;
 	}
-	
-	read_token(tokenizer, charset_after_highest_machine);
-	
-	EXIT;
-	return retval;
 }
 
 

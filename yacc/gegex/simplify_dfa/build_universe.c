@@ -1,40 +1,87 @@
 
-#if 0
-
 #include <assert.h>
 
 #include <debug.h>
 
-#include <tree/of_gegexes/add.h>
+#include <set/gegex/add.h>
+
+#ifdef VERBOSE
+#include <misc/default_sighandler.h>
+#include <quack/struct.h>
+#endif
 
 #include "../state/struct.h"
 
 #include "build_universe.h"
 
 void gegex_simplify_dfa_build_universe(
-	struct gegextree* universe,
-	struct gegex* node)
+	struct gegexset* universe,
+	struct gegex* start)
 {
 	ENTER;
 	
-	dpv(node);
+	struct quack* todo = new_quack();
 	
-	if (gegextree_add(universe, node))
+	quack_append(todo, start);
+	
+	gegexset_add(universe, start);
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler(int _)
 	{
-		size_t i, n;
+		char buffer[1000] = {};
 		
-		assert(!node->lambda_transitions.n);
+		unsigned total = completed + todo->n;
 		
-		for (i = 0, n = node->transitions.n; i < n; i++)
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[k" "%s: gegex simplify (build universe): %u of %u (%.2f%%)\r", argv0,
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
 		{
-			gegex_simplify_dfa_build_universe(universe, node->transitions.data[i]->to);
-		}
-		
-		for (i = 0, n = node->grammar_transitions.n; i < n; i++)
-		{
-			gegex_simplify_dfa_build_universe(universe, node->grammar_transitions.data[i]->to);
+			abort();
 		}
 	}
+	
+	signal(SIGALRM, handler);
+	#endif
+	
+	while (quack_len(todo))
+	{
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
+		struct gegex* node = quack_pop(todo);
+		
+		for (unsigned i = 0, n = node->transitions.n; i < n; i++)
+		{
+			struct gegex* to = node->transitions.data[i]->to;
+			
+			if (gegexset_add(universe, to))
+			{
+				quack_append(todo, to);
+			}
+		}
+		
+		for (unsigned i = 0, n = node->grammar_transitions.n; i < n; i++)
+		{
+			struct gegex* to = node->grammar_transitions.data[i]->to;
+			
+			if (gegexset_add(universe, to))
+			{
+				quack_append(todo, to);
+			}
+		}
+	}
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
+	
+	free_quack(todo);
 	
 	EXIT;
 }
@@ -46,4 +93,3 @@ void gegex_simplify_dfa_build_universe(
 
 
 
-#endif

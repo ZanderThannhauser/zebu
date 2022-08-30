@@ -12,6 +12,8 @@ struct stringset* new_stringset()
 	
 	this->tree = avl_alloc_tree((void*) strcmp, free);
 	
+	this->refcount = 1;
+	
 	EXIT;
 	return this;
 }

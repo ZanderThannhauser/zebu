@@ -1,4 +1,6 @@
 
+#include <debug.h>
+
 #if 0
 #include <assert.h>
 #include <stdlib.h>
@@ -200,13 +202,14 @@ static struct tokenset_array* msort(
 	EXIT;
 	return retval;
 }
+#endif
 
-void lex_process_disambiguatations(
-	struct lex* this,
-	struct dlink* head)
+void lex_process_disambiguatations(struct lex* this, struct dlink* head)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	int compare(unsigned lid, unsigned rid)
 	{
 		struct dlink* moving = head;
@@ -336,6 +339,7 @@ void lex_process_disambiguatations(
 	
 	free_tokenset_array(original);
 	free_tokenset_array(sorted);
+	#endif
 	
 	EXIT;
 }
@@ -358,4 +362,3 @@ void lex_process_disambiguatations(
 
 
 
-#endif

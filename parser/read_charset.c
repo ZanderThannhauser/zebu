@@ -8,6 +8,8 @@
 
 #include <enums/error.h>
 
+#include <set/unsignedchar/free.h>
+
 #include "charset/root.h"
 
 #include "tokenizer/struct.h"
@@ -38,9 +40,9 @@ void read_charset(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	struct charset* charset = read_root_charset(tokenizer, scope);
+	struct cbundle charset = read_root_charset(tokenizer, scope);
 	
-	scope_declare_charset(scope, name, charset);
+	scope_declare_charset(scope, name, charset.is_complement, charset.charset);
 	
 	if (true
 		&& tokenizer->token != t_semicolon
@@ -49,6 +51,8 @@ void read_charset(
 		TODO;
 		exit(e_syntax_error);
 	}
+	
+	free_unsignedcharset(charset.charset);
 	
 	EXIT;
 }

@@ -1,4 +1,4 @@
 
-struct scope;
+#include <parser/charset/cbundle.h>
 
-struct charset* scope_lookup_charset(struct scope* this, const char* name);
+struct cbundle scope_lookup_charset(struct scope* this, const char* name);

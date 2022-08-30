@@ -8,9 +8,11 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
+#include <set/unsignedchar/to_string.h>
 
-#include <avl/search.h>
+/*#include <defines/argv0.h>*/
+
+/*#include <avl/search.h>*/
 
 #include <misc/counters.h>
 #include <misc/escape.h>
@@ -100,14 +102,15 @@ void simplify_dfa_dotout(
 				"", state, ele->to, str);
 			}
 			
-			// default transition?:
-			if (state->default_transition_to)
+			if (state->default_transition.to)
 			{
+				char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
+				
 				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"<default>\"" "\n"
-					"]" "\n"
-				"", state, state->default_transition_to);
+					"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
+				"", state, state->default_transition.to, label ?: "<default>");
+				
+				free(label);
 			}
 			
 			if (state->EOF_transition_to)

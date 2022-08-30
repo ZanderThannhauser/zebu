@@ -66,9 +66,9 @@ unsigned lex_add_token(
 				for (i = 0, n = state->transitions.n; i < n; i++)
 					helper(state->transitions.data[i]->to);
 				
-				if (state->default_transition_to)
-					helper(state->default_transition_to);
-					
+				if (state->default_transition.to)
+					helper(state->default_transition.to);
+				
 				if (state->EOF_transition_to)
 					helper(state->EOF_transition_to);
 			}

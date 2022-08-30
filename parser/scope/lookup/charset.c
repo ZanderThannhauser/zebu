@@ -12,7 +12,7 @@
 
 #include "charset.h"
 
-struct charset* scope_lookup_charset(struct scope* this, const char* name)
+struct cbundle scope_lookup_charset(struct scope* this, const char* name)
 {
 	ENTER;
 	
@@ -40,10 +40,10 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 		exit(1);
 	}
 	
-	struct named_charset* ntoken = node->item;
+	struct named_charset* ncs = node->item;
 	
 	EXIT;
-	return ntoken->charset;
+	return (struct cbundle) {ncs->is_complement, ncs->charset};
 }
 
 

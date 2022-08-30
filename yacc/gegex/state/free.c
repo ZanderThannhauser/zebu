@@ -1,116 +1,84 @@
 
 #include <debug.h>
 
-#if 0
-#include <stdlib.h>
-#include <debug.h>
+#include <quack/struct.h>
 
-#include <arena/dealloc.h>
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/free.h>
 
-#include <tree/of_gegexes/new.h>
-#include <tree/of_gegexes/add.h>
-#include <tree/of_gegexes/free.h>
+#include <set/string/free.h>
 
 #include "struct.h"
-#include "free.h"
 
-static void helper(
-	struct gegextree* freed,
-	struct gegex* this)
+void free_gegex(struct gegex* start)
 {
 	ENTER;
 	
-	if (gegextree_add(freed, this))
+	if (start)
 	{
-		#ifdef WITH_ARENAS
-		struct memory_arena* const arena = this->arena;
-		#endif
+		struct quack* todo = new_quack();
 		
-		for (unsigned i = 0, n = this->transitions.n; i < n; i++)
+		struct gegexset* freed = new_gegexset();
+		
+		quack_append(todo, start);
+		
+		while (todo->n)
 		{
-			struct transition* t = this->transitions.data[i];
+			struct gegex* state = quack_pop(todo);
 			
-			helper(freed, t->to);
+			for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+			{
+				struct gegex_transition* t = state->transitions.data[i];
+				
+				if (gegexset_add(freed, t->to))
+				{
+					quack_append(todo, t->to);
+				}
+				
+				free_stringset(t->tags);
+				
+				free(t);
+			}
 			
-			// free tags
+			for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+			{
+				struct gegex_grammar_transition* t = state->grammar_transitions.data[i];
+				
+				if (gegexset_add(freed, t->to))
+				{
+					quack_append(todo, t->to);
+				}
+				
+				free(t->grammar);
+				
+				free_stringset(t->tags);
+				
+				free(t);
+			}
 			
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, t);
-			#else
-			free(t);
-			#endif
+			for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+			{
+				struct gegex* to = state->lambda_transitions.data[i];
+				
+				if (gegexset_add(freed, to))
+				{
+					quack_append(todo, to);
+				}
+			}
+			
+			free(state->transitions.data);
+			
+			free(state->grammar_transitions.data);
+			
+			free(state->lambda_transitions.data);
+			
+			free(state);
 		}
 		
-		for (unsigned i = 0, n = this->grammar_transitions.n; i < n; i++)
-		{
-			struct gtransition* t = this->grammar_transitions.data[i];
-			
-			helper(freed, t->to);
-			
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, t->grammar);
-			#else
-			free(t->grammar);
-			#endif
-			
-			// free tags
-			
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, t);
-			#else
-			free(t);
-			#endif
-		}
+		free_gegexset(freed);
 		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, this->transitions.data);
-		#else
-		free(this->transitions.data);
-		#endif
-		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, this->grammar_transitions.data);
-		#else
-		free(this->grammar_transitions.data);
-		#endif
-		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, this->reduction_transitions.data);
-		#else
-		free(this->reduction_transitions.data);
-		#endif
-		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, this->lambda_transitions.data);
-		#else
-		free(this->lambda_transitions.data);
-		#endif
-		
-		#ifdef WITH_ARENAS
-		arena_dealloc(arena, this);
-		#else
-		free(this);
-		#endif
-	}
-	
-	EXIT;
-}
-#endif
-
-void free_gegex(struct gegex* this)
-{
-	ENTER;
-	
-	if (this)
-	{
-		TODO;
-		#if 0
-		struct gegextree* freed = new_gegextree();
-		
-		helper(freed, this);
-		
-		free_gegextree(freed);
-		#endif
+		free_quack(todo);
 	}
 	
 	EXIT;

@@ -63,7 +63,10 @@
 	struct tokenizer;
 	struct regex_transition;
 	struct regexset;
+	struct dlink;
 	struct charset;
+	struct unsignedcharset;
+	struct gegexset;
 	
 #endif
 
