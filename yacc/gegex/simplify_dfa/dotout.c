@@ -10,9 +10,6 @@
 
 /*#include <avl/search.h>*/
 
-#include <misc/counters.h>
-/*#include <misc/escape.h>*/
-
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/contains.h>
@@ -34,6 +31,8 @@ void gegex_simplify_dfa_dotout(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	char path[PATH_MAX];
 	
 	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
@@ -133,6 +132,7 @@ void gegex_simplify_dfa_dotout(
 	
 	if (out)
 		fclose(out);
+	#endif
 	
 	EXIT;
 }

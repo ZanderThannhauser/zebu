@@ -10,8 +10,6 @@
 #include <lex/regex/state/struct.h>
 #include <lex/regex/state/free.h>
 
-#include <misc/counters.h>
-
 #include <set/unsigned/add.h>
 
 #include "../struct.h"
@@ -49,6 +47,8 @@ unsigned lex_add_token(
 	{
 		retval = this->next_id++;
 		
+		TODO;
+		#if 0
 		void helper(struct regex* state)
 		{
 			unsigned i, n;
@@ -77,6 +77,7 @@ unsigned lex_add_token(
 		}
 		
 		phase_counter++, helper(token);
+		#endif
 		
 		struct dfa_to_id_node*   to   =   new_dfa_to_id_node(retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);

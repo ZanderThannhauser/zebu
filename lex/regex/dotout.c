@@ -7,8 +7,15 @@
 
 #include <debug.h>
 
-#include <misc/counters.h>
+#include <misc/frame_counter.h>
+
 #include <misc/escape.h>
+
+#include <quack/struct.h>
+
+#include <set/regex/new.h>
+#include <set/regex/add.h>
+#include <set/regex/free.h>
 
 #include <set/unsignedchar/to_string.h>
 
@@ -16,27 +23,31 @@
 
 #include "dotout.h"
 
-static void helper(FILE* out, struct regex* state)
+static void helper(FILE* out, struct regex* start)
 {
 	ENTER;
 	
-	if (state->phase != phase_counter)
+	struct regexset* done = new_regexset();
+	
+	struct quack* todo = new_quack();
+	
+	quack_append(todo, start);
+	
+	while (todo->n)
 	{
-		size_t i, n;
-		
-		state->phase = phase_counter;
+		struct regex* state = quack_pop(todo);
 		
 		if (state->is_accepting)
 		{
 			fprintf(out, ""
 				"\"%p\" [" "\n"
 					"\t" "shape = doublecircle;" "\n"
-					"\t" "label = \"%u\";" "\n"
+					"\t" "label = \"\";" "\n"
 					"\t" "style = filled;" "\n"
 					"\t" "fillcolor = white;" "\n"
 					"\t" "peripheries = %u;" "\n"
 				"]" "\n"
-			"", state, state->is_accepting, 2 + state->priority);
+			"", state, 2 + state->priority);
 		}
 		else
 		{
@@ -53,36 +64,32 @@ static void helper(FILE* out, struct regex* state)
 		// normal transitions:
 		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct regex_transition* ele = state->transitions.data[i];
-			
-			helper(out, ele->to);
-			
 			char str[10];
+			
+			struct regex_transition* ele = state->transitions.data[i];
 			
 			escape(str, ele->value);
 			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"%s\"" "\n"
-				"]" "\n"
-			"", state, ele->to, str);
+			fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, ele->to, str);
+			
+			if (regexset_add(done, ele->to))
+				quack_append(todo, ele->to);
 		}
 		
 		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
 			struct regex* const to = state->lambda_transitions.data[i];
 			
-			helper(out, to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"λ\"" "\n"
-				"]" "\n"
-			"", state, to);
+			fprintf(out, "\"%p\" -> \"%p\" [ label = \"λ\" ]" "\n", state, to);
+		
+			if (regexset_add(done, to))
+				quack_append(todo, to);
 		}
 		
 		if (state->default_transition.to)
 		{
+			TODO;
+			#if 0
 			helper(out, state->default_transition.to);
 			
 			char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
@@ -92,22 +99,27 @@ static void helper(FILE* out, struct regex* state)
 			"", state, state->default_transition.to, label ?: "<default>");
 			
 			free(label);
+			#endif
 		}
 		
 		if (state->EOF_transition_to)
 		{
-				TODO;
-				#if 0
-				helper(out, to);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"<EOF>\"" "\n"
-					"]" "\n"
-				"", state, to);
-				#endif
+			TODO;
+			#if 0
+			helper(out, to);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"<EOF>\"" "\n"
+				"]" "\n"
+			"", state, to);
+			#endif
 		}
 	}
+	
+	free_regexset(done);
+	
+	free_quack(todo);
 	
 	EXIT;
 }
@@ -180,8 +192,6 @@ void regex_dotout(struct regex* state, const char* name)
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
 	fprintf(out, "\t" "label = \"%s\";" "\n", name);
-	
-	phase_counter++;
 	
 	helper(out, state);
 	

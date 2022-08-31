@@ -1,78 +1,95 @@
 
 #include <debug.h>
 
-#include <misc/counters.h>
+#include <quack/struct.h>
+
+#include <set/regex/new.h>
+#include <set/regex/add.h>
+#include <set/regex/free.h>
 
 #include "state/struct.h"
 #include "state/add_lambda_transition.h"
 
 #include "lambda_all_accepting_states.h"
 
-static void helper(
-	struct regex* regex,
+void regex_lambda_all_accepting_states(
+	struct regex* start,
 	struct regex* dest,
 	bool new_accepting)
 {
 	ENTER;
 	
-	if (regex->phase != phase_counter)
+	struct regexset* done = new_regexset();
+	
+	struct quack* todo = new_quack();
+	
+	quack_append(todo, start);
+	
+	while (todo->n)
 	{
-		size_t i, n;
+		struct regex* state = quack_pop(todo);
 		
-		regex->phase = phase_counter;
-		
-		if (regex->is_accepting)
+		if (state->is_accepting)
 		{
-			if (regex != dest)
+			if (state != dest)
 			{
-				regex_add_lambda_transition(regex, dest);
+				regex_add_lambda_transition(state, dest);
 			}
 			
-			regex->is_accepting = new_accepting;
+			state->is_accepting = new_accepting;
 		}
 		
 		// normal transitions:
-		for (unsigned i = 0, n = regex->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct regex_transition* ele = regex->transitions.data[i];
-			helper(ele->to, dest, new_accepting);
+			struct regex* to = state->transitions.data[i]->to;
+			
+			if (regexset_add(done, to))
+				quack_append(todo, to);
 		}
 		
 		// lambda transitions:
-		for (unsigned i = 0, n = regex->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
 		{
-			helper(regex->lambda_transitions.data[i], dest, new_accepting);
+			struct regex* to = state->lambda_transitions.data[i];
+			
+			if (regexset_add(done, to))
+				quack_append(todo, to);
+			
 		}
 		
-		if (regex->default_transition.to)
+		if (state->default_transition.to)
 		{
+			TODO;
+			#if 0
 			helper(regex->default_transition.to, dest, new_accepting);
+			#endif
 		}
 		
-		if (regex->EOF_transition_to)
+		if (state->EOF_transition_to)
 		{
+			TODO;
+			#if 0
 			helper(regex->EOF_transition_to, dest, new_accepting);
+			#endif
 		}
 	}
+	
+	free_regexset(done);
+	
+	free_quack(todo);
 	
 	EXIT;
 }
 
-void regex_lambda_all_accepting_states(
-	struct regex* regex,
-	struct regex* dest,
-	bool new_accepting)
-{
-	ENTER;
-	
-	phase_counter++;
-	
-	dpv(phase_counter);
-	
-	helper(regex, dest, new_accepting);
-	
-	EXIT;
-}
+
+
+
+
+
+
+
+
 
 
 

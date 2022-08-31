@@ -10,12 +10,11 @@
 
 #include <set/unsignedchar/to_string.h>
 
-/*#include <defines/argv0.h>*/
+#include <misc/frame_counter.h>
 
-/*#include <avl/search.h>*/
-
-#include <misc/counters.h>
 #include <misc/escape.h>
+
+#include <quack/struct.h>
 
 #include <set/regex/new.h>
 #include <set/regex/add.h>
@@ -56,102 +55,107 @@ void simplify_dfa_dotout(
 	
 	fprintf(out, "\t" "label = \"%s: hopcount: %u\";" "\n", __PRETTY_FUNCTION__, hopcount);
 	
-	struct regexset* done = new_regexset();
+	struct regexset* drawn = new_regexset();
+	struct regexset* queued = new_regexset();
+	
+	struct quack* todo = new_quack();
 	
 	regexset_foreach(universe, ({
 		void runme(struct regex* state)
 		{
-			unsigned i, n;
-			
-			if (state->is_accepting)
-			{
-				fprintf(out, ""
-					"\"%p\" [" "\n"
-						"\t" "shape = doublecircle;" "\n"
-						"\t" "label = \"%u\";" "\n"
-						"\t" "style = filled;" "\n"
-						"\t" "fillcolor = white;" "\n"
-						"\t" "peripheries = %u;" "\n"
-					"]" "\n"
-				"", state, 1, 2 + state->priority);
-			}
-			else
-			{
-				fprintf(out, ""
-					"\"%p\" [" "\n"
-						"\t" "shape = circle;" "\n"
-						"\t" "style = filled;" "\n"
-						"\t" "fillcolor = white;" "\n"
-						"\t" "label = \"\";" "\n"
-					"]" "\n"
-				"", state);
-			}
-			
-			for (unsigned i = 0, n = state->transitions.n; i < n; i++)
-			{
-				struct regex_transition* const ele = state->transitions.data[i];
-				
-				char str[10];
-				
-				escape(str, ele->value);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
-					"]" "\n"
-				"", state, ele->to, str);
-			}
-			
-			if (state->default_transition.to)
-			{
-				char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
-				"", state, state->default_transition.to, label ?: "<default>");
-				
-				free(label);
-			}
-			
-			if (state->EOF_transition_to)
-			{
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"<EOF>\"" "\n"
-					"]" "\n"
-				"", state, state->EOF_transition_to);
-			}
-			
-			{
-				struct avl_node_t* node = avl_search(connections, &state);
-				
-				assert(node);
-				
-				struct regex_same_as_node* sa = node->item;
-				
-				regexset_foreach(sa->set, ({
-					void runme(struct regex* dep) {
-						if (state != dep && !regexset_contains(done, dep))
-						{
-							fprintf(out, ""
-								"\"%p\" -> \"%p\" [" "\n"
-									"\t" "style = dashed" "\n"
-									"\t" "constraint = false" "\n"
-									"\t" "dir = none" "\n"
-								"]" "\n"
-							"", state, dep);
-						}
-					}
-					runme;
-				}));
-				
-				regexset_add(done, state);
-			}
+			regexset_add(queued, state);
+			quack_append(todo, state);
 		}
 		runme;
 	}));
 	
-	free_regexset(done);
+	while (todo->n)
+	{
+		struct regex* state = quack_pop(todo);
+		
+		fprintf(out, ""
+			"\"%p\" [" "\n"
+				"\t" "shape = %s;" "\n"
+				"\t" "label = \"\";" "\n"
+				"\t" "style = filled;" "\n"
+				"\t" "fillcolor = white;" "\n"
+				"\t" "peripheries = %u;" "\n"
+			"]" "\n"
+		"", state, state->is_accepting ? "doublecircle" : "circle",
+		           state->is_accepting ? 0 : 2 + state->priority);
+		
+		regexset_add(drawn, state);
+		
+		{
+			struct avl_node_t* node = avl_search(connections, &state);
+			
+			assert(node);
+			
+			struct regex_same_as_node* sa = node->item;
+			
+			regexset_foreach(sa->set, ({
+				void runme(struct regex* dep) {
+					if (!regexset_contains(drawn, dep))
+					{
+						fprintf(out, ""
+							"\"%p\" -> \"%p\" [" "\n"
+								"\t" "style = dashed" "\n"
+								"\t" "constraint = false" "\n"
+								"\t" "dir = none" "\n"
+							"]" "\n"
+						"", state, dep);
+					}
+				}
+				runme;
+			}));
+		}
+		
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			char str[10];
+			
+			struct regex_transition* const ele = state->transitions.data[i];
+			
+			escape(str, ele->value);
+			
+			fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, ele->to, str);
+			
+			if (regexset_add(queued, ele->to))
+				quack_append(todo, ele->to);
+		}
+		
+		if (state->default_transition.to)
+		{
+			TODO;
+			#if 0
+			char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
+			"", state, state->default_transition.to, label ?: "<default>");
+			
+			free(label);
+			#endif
+		}
+		
+		if (state->EOF_transition_to)
+		{
+			TODO;
+			#if 0
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"<EOF>\"" "\n"
+				"]" "\n"
+			"", state, state->EOF_transition_to);
+			#endif
+		}
+	}
+	
+	free_quack(todo);
+	
+	free_regexset(drawn);
+	
+	free_regexset(queued);
 	
 	fprintf(out, "}" "\n");
 	

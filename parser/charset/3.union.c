@@ -10,8 +10,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_union.h"
 
-#include "3.symdiff.h"
-#include "4.union.h"
+#include "2.intersect.h"
+#include "3.union.h"
 
 struct cbundle read_union_charset(
 	struct tokenizer* tokenizer,
@@ -19,7 +19,7 @@ struct cbundle read_union_charset(
 {
 	ENTER;
 	
-	struct cbundle retval = read_symdiff_charset(tokenizer, scope);
+	struct cbundle retval = read_intersect_charset(tokenizer, scope);
 	
 	while (false
 		|| tokenizer->token == t_oparen
@@ -36,7 +36,7 @@ struct cbundle read_union_charset(
 			read_token(tokenizer, charset_inside_union_machine);
 		}
 		
-		struct cbundle right = read_symdiff_charset(tokenizer, scope);
+		struct cbundle right = read_intersect_charset(tokenizer, scope);
 		
 		if (left.is_complement)
 		{

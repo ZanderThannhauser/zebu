@@ -7,8 +7,6 @@
 
 #include <debug.h>
 
-#include <misc/counters.h>
-
 #include <set/string/to_hashtagstring.h>
 
 #include "state/struct.h"
@@ -19,6 +17,8 @@ static void helper(FILE* out, struct gegex* state)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	if (state->phase != phase_counter)
 	{
 		state->phase = phase_counter;
@@ -80,6 +80,7 @@ static void helper(FILE* out, struct gegex* state)
 			"", state, to);
 		}
 	}
+	#endif
 	
 	EXIT;
 }
@@ -88,6 +89,8 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	char path[PATH_MAX];
 	
 	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
@@ -126,6 +129,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 	fprintf(out, "}" "\n");
 	
 	fclose(out);
+	#endif
 	
 	EXIT;
 }
