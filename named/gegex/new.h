@@ -1,2 +1,4 @@
 
-struct named_gegex* new_named_gegex(char* name, struct gegex* gegex);
+struct named_gegex* new_named_gegex(
+	struct string* name,
+	struct gegex* gegex);

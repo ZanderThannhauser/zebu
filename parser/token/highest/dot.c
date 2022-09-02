@@ -1,15 +1,14 @@
 
 #include <debug.h>
 
-#include <lex/regex/from_dot.h>
-#include <lex/regex/dotout.h>
+#include <regex/from_dot.h>
+#include <regex/dotout.h>
 
 #include "dot.h"
 
 struct rbundle read_dot_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	

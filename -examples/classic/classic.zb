@@ -55,10 +55,10 @@
 	
 	| %[b]: 'b';
 	   `b`: [b,          'B'];
-	   (a): 'a' (b | c)? 'a' ;
-	    b : `b` (a | c)? `b` ;
-	    c : 'c' (a | b)? 'c' :
-	    (b a | b c | a c | c a)+
+	   (a): 'a' #a (b #subb | c #subc)? 'a' ;
+	    b : `b` #b (a | c #subc)? `b` ;
+	    c : 'c' #c (a | b #subb)? 'c' :
+	    (b #b a | b #b c #c | a c #c | c #c a)+
 	
 	| % a : 'A' #A (b #subB | c #subC)? 'A' ;
 	    b : 'B' #B (a #subA | c #subC)? 'B' ;

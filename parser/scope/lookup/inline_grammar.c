@@ -23,7 +23,7 @@ struct gegex* scope_lookup_inline_grammar(struct scope* this, const char* name)
 	{
 		dpv(layer);
 		
-		node = avl_search(layer->inline_grammar, &name);
+		node = avl_search(layer->inline_grammar, &(const char**){&name});
 		
 		if (!node)
 			layer = layer->prev;

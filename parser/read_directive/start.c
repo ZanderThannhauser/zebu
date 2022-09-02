@@ -5,10 +5,10 @@
 #include <parser/tokenizer/machines/misc/colon.h>
 #include <parser/tokenizer/machines/production/root.h>
 
-#include <yacc/gegex/state/struct.h>
-#include <yacc/gegex/state/free.h>
-#include <yacc/gegex/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
+#include <gegex/state/struct.h>
+#include <gegex/state/free.h>
+#include <gegex/nfa_to_dfa.h>
+#include <gegex/simplify_dfa/simplify_dfa.h>
 
 #include "../production/root.h"
 
@@ -32,6 +32,8 @@ void read_start_directive(
 	// prep production-rule reader:
 	read_token(tokenizer, production_root_machine);
 	
+	struct string* name = new_string("(start)");
+	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
 		/*     tokenizer: */ tokenizer,
@@ -45,16 +47,19 @@ void read_start_directive(
 	
 	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
 	
-	// simplify
 	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
 	
-	// add grammar rule to scope
-	scope_declare_grammar(scope, "(start)", simp_start);
+	scope_declare_grammar(scope, name, simp_start);
 	
 	free_gegex(nfa_start), free_gegex(dfa_start);
 	
+	free_string(name);
+	
 	EXIT;
 }
+
+
+
 
 
 

@@ -14,39 +14,31 @@
 
 void scope_declare_grammar(
 	struct scope* this,
-	const char* name,
+	struct string* name,
 	struct gegex* grammar)
 {
 	ENTER;
 	
-	dpvs(name);
-	
-	char* full;
-	
-	size_t len = strlen(name);
-	
 	if (this->prefix.n)
 	{
-		full = malloc(this->prefix.n + 1 + len + 1);
+		char* full = malloc(this->prefix.n + 1 + name->len + 1), *m = full;
 		
-		char* moving = full;
+		memcpy(full, this->prefix.chars, this->prefix.n), m += this->prefix.n;
 		
-		memcpy(moving, this->prefix.chars, this->prefix.n), moving += this->prefix.n;
+		*m++ = '.';
 		
-		*moving++ = '.';
+		memcpy(m, name->chars, name->len), m += name->len;
 		
-		memcpy(moving, name, len), moving += len;
+		*m = '\0';
 		
-		*moving++ = '\0';
+		dpvs(full);
+		
+		avl_insert(this->grammar, new_named_gegex(new_string_without_copy(full), grammar));
 	}
 	else
 	{
-		full = strdup(name);
+		avl_insert(this->grammar, new_named_gegex(name, grammar));
 	}
-	
-	dpvs(full);
-	
-	avl_insert(this->grammar, new_named_gegex(full, grammar));
 	
 	EXIT;
 }

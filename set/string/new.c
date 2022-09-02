@@ -10,7 +10,9 @@ struct stringset* new_stringset()
 	
 	struct stringset* this = smalloc(sizeof(*this));
 	
-	this->tree = avl_alloc_tree((void*) strcmp, free);
+	this->tree = avl_alloc_tree(compare_strings, free_string);
+	
+	this->n = 0;
 	
 	this->refcount = 1;
 	

@@ -6,16 +6,20 @@
 
 void stringset_add(
 	struct stringset* this,
-	char* string)
+	struct string* string)
 {
 	ENTER;
 	
 	struct avl_node_t* node = avl_insert(this->tree, string);
 	
-	if (!node)
+	if (node)
+	{
+		inc_string(string);
+		this->n++;
+	}
+	else
 	{
 		TODO;
-		free(string);
 	}
 	
 	EXIT;

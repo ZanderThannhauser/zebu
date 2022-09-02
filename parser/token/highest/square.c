@@ -9,15 +9,14 @@
 
 #include <set/unsignedchar/free.h>
 
-#include <lex/regex/from_charset.h>
-#include <lex/regex/dotout.h>
+#include <regex/from_charset.h>
+#include <regex/dotout.h>
 
 #include "square.h"
 
 struct rbundle read_square_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	
@@ -31,14 +30,18 @@ struct rbundle read_square_token_expression(
 		exit(1);
 	}
 	
-	struct regex* dfa = regex_from_charset(cbundle.is_complement, cbundle.charset);
+	struct regex* start = regex_from_charset(cbundle.is_complement, cbundle.charset);
 	
 	free_unsignedcharset(cbundle.charset);
+	
+	#ifdef DOTOUT
+	regex_dotout(start, __PRETTY_FUNCTION__);
+	#endif
 	
 	EXIT;
 	return (struct rbundle) {
 		.is_nfa = false,
-		.dfa = dfa,
+		.dfa = start,
 	};
 }
 

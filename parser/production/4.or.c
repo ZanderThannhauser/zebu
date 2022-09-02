@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-#include <yacc/gegex/state/add_lambda_transition.h>
-#include <yacc/gegex/dotout.h>
+#include <gegex/state/add_lambda_transition.h>
+#include <gegex/dotout.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"

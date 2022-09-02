@@ -1,4 +1,4 @@
 
 void stringset_add(
 	struct stringset* this,
-	char* string);
+	struct string* string);

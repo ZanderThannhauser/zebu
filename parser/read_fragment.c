@@ -12,10 +12,10 @@
 
 /*#include <arena/memdup.h>*/
 
-#include <lex/regex/simplify_dfa/simplify_dfa.h>
-#include <lex/regex/nfa_to_dfa.h>
-#include <lex/regex/state/struct.h>
-#include <lex/regex/state/free.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/state/struct.h>
+#include <regex/state/free.h>
 
 /*#include "scope/get_arena.h"*/
 
@@ -33,8 +33,7 @@
 
 void read_fragment(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	
@@ -42,15 +41,13 @@ void read_fragment(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	char* name = strdup((void*) tokenizer->tokenchars.chars);
-	
-	dpvs(name);
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	read_token(tokenizer, colon_machine);
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	struct rbundle bun = read_root_token_expression(tokenizer, scope, token_skip);
+	struct rbundle bun = read_root_token_expression(tokenizer, scope);
 	
 	if (bun.is_nfa)
 	{
@@ -78,6 +75,8 @@ void read_fragment(
 		TODO;
 		exit(e_syntax_error);
 	}
+	
+	free_string(name);
 	
 	EXIT;
 }

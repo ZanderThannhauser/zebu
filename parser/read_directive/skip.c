@@ -1,9 +1,9 @@
 
 #include <debug.h>
 
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/state/add_lambda_transition.h>
-#include <lex/regex/state/free.h>
+#include <regex/dfa_to_nfa.h>
+#include <regex/state/add_lambda_transition.h>
+#include <regex/state/free.h>
 
 #include <parser/options/struct.h>
 
@@ -32,7 +32,7 @@ void read_skip_directive(
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	struct rbundle bun = read_root_token_expression(tokenizer, scope, options->token_skip);
+	struct rbundle bun = read_root_token_expression(tokenizer, scope);
 	
 	if (!bun.is_nfa)
 	{

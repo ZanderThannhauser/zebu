@@ -79,8 +79,7 @@ void recursive_parse(
 				{
 					read_fragment(
 						/* tokenizer:  */ tokenizer,
-						/* scope       */ scope,
-						/* token_skip: */ options->token_skip
+						/* scope       */ scope
 					);
 					break;
 				}

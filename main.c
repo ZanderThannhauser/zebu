@@ -27,14 +27,8 @@
 /*#include <arena/mmap/new.h>*/
 /*#include <arena/free.h>*/
 
-/*#include <yacc/yacc.h>*/
-/*#include <yacc/state/free.h>*/
-
-/*#include <out/out.h>*/
-
-/*#ifdef VERBOSE*/
-/*#include <stdio.h>*/
-/*#endif*/
+#include <yacc/yacc.h>
+#include <yacc/state/free.h>
 
 int main(int argc, char* argv[])
 {
@@ -57,7 +51,8 @@ int main(int argc, char* argv[])
 	#ifdef DOTOUT
 	if (mkdir("dot", 0775) < 0 && errno != EEXIST)
 	{
-		TODO;
+		fprintf(stderr, "%s: mkdir(\"dot\"): %m\n", argv0);
+		exit(e_syscall_failed);
 	}
 	#endif
 	
@@ -67,22 +62,26 @@ int main(int argc, char* argv[])
 	
 	main_parse(grammar, lex);
 	
+	struct yacc_state* parser = yacc(grammar);
+	
 	TODO;
 	#if 0
-	struct yacc_state* parser = yacc(lex, grammar);
-	
 	out(parser);
+	#endif
+	
+	TODO;
+	#if 0
+	free_yacc_state(parser);
+	#endif
+	
+	avl_free_tree(grammar);
+	
+	free_lex(lex);
 	
 	#ifdef VERBOSE
 	if (verbose && write(1, "\e[K", 3) < 3)
 		abort();
 	#endif
-	
-	free_yacc_state(parser);
-	#endif
-	
-	avl_free_tree(grammar);
-	free_lex(lex);
 	
 	EXIT;
 	return 0;

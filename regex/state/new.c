@@ -1,0 +1,34 @@
+
+#include <stdlib.h>
+
+#include <debug.h>
+
+#include "struct.h"
+#include "new.h"
+
+struct regex* new_regex(
+) {
+	ENTER;
+	
+	struct regex* this = smalloc(sizeof(*this));
+	
+	this->transitions.data = NULL;
+	this->transitions.n = 0;
+	this->transitions.cap = 0;
+	
+	this->lambda_transitions.data = NULL;
+	this->lambda_transitions.cap = 0;
+	this->lambda_transitions.n = 0;
+	
+	this->default_transition.to = NULL;
+	this->default_transition.exceptions = NULL;
+	
+	this->EOF_transition_to = NULL;
+	
+	this->is_accepting = 0;
+	
+	this->is_literal = false;
+	
+	EXIT;
+	return this;
+}

@@ -11,7 +11,10 @@
 
 #include "fragment.h"
 
-void scope_declare_fragment(struct scope* this, char* name, struct regex* token)
+void scope_declare_fragment(
+	struct scope* this,
+	struct string* name,
+	struct regex* token)
 {
 	ENTER;
 	

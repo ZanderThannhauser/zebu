@@ -15,14 +15,15 @@
 
 /*#include "../charset/root.h"*/
 
-/*#include <lex/regex/dotout.h>*/
-/*#include <lex/regex/clone.h>*/
-/*#include <lex/regex/from_dot.h>*/
-/*#include <lex/regex/from_charset.h>*/
-/*#include <lex/regex/from_literal.h>*/
+/*#include <regex/dotout.h>*/
+/*#include <regex/clone.h>*/
+/*#include <regex/from_dot.h>*/
+/*#include <regex/from_charset.h>*/
+/*#include <regex/from_literal.h>*/
 
 #include "highest/character_literal.h"
 #include "highest/string_literal.h"
+#include "highest/parenthesis.h"
 #include "highest/identifier.h"
 #include "highest/square.h"
 #include "highest/dot.h"
@@ -32,8 +33,7 @@
 
 struct rbundle read_highest_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	struct rbundle retval;
 	ENTER;
@@ -41,47 +41,35 @@ struct rbundle read_highest_token_expression(
 	switch (tokenizer->token)
 	{
 		case t_character_literal:
-			retval = read_character_literal_token_expression(tokenizer, scope, token_skip);
+			retval = read_character_literal_token_expression(tokenizer, scope);
 			break;
 		
 		case t_string_literal:
-			retval = read_string_literal_token_expression(tokenizer, scope, token_skip);
+			retval = read_string_literal_token_expression(tokenizer, scope);
 			break;
 		
 		case t_identifier:
-			retval = read_identifier_token_expression(tokenizer, scope, token_skip);
+			retval = read_identifier_token_expression(tokenizer, scope);
 			break;
 		
 		case t_osquare:
-			retval = read_square_token_expression(tokenizer, scope, token_skip);
+			retval = read_square_token_expression(tokenizer, scope);
 			break;
 		
 		case t_dot:
-			retval = read_dot_token_expression(tokenizer, scope, token_skip);
+			retval = read_dot_token_expression(tokenizer, scope);
 			break;
 		
 		case t_oparen:
-		{
-			read_token(tokenizer, regex_root_machine);
-			
-			retval = read_root_token_expression(tokenizer, scope, token_skip);
-			
-			if (tokenizer->token != t_cparen)
-			{
-				TODO;
-				exit(1);
-			}
+			retval = read_parenthesis_token_expression(tokenizer, scope);
 			break;
-		}
 		
 		default:
 			TODO;
 			break;
 	}
 	
-	read_token(
-		/* tokenizer: */ tokenizer,
-		/* machine:   */ regex_after_highest_machine);
+	read_token(tokenizer, regex_after_highest_machine);
 	
 	EXIT;
 	return retval;

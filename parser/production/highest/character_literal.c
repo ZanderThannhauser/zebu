@@ -7,21 +7,21 @@
 
 #include <parser/options/struct.h>
 
-#include <lex/regex/nfa_to_dfa.h>
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/clone.h>
-#include <lex/regex/dotout.h>
-#include <lex/regex/state/struct.h>
-#include <lex/regex/state/free.h>
-#include <lex/regex/state/add_lambda_transition.h>
-#include <lex/regex/simplify_dfa/simplify_dfa.h>
-#include <lex/regex/from_literal.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/dfa_to_nfa.h>
+#include <regex/clone.h>
+#include <regex/dotout.h>
+#include <regex/state/struct.h>
+#include <regex/state/free.h>
+#include <regex/state/add_lambda_transition.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/from_literal.h>
 
 #include <lex/lookup/add_token.h>
 
-#include <yacc/gegex/dotout.h>
-#include <yacc/gegex/state/new.h>
-#include <yacc/gegex/state/add_transition.h>
+#include <gegex/dotout.h>
+#include <gegex/state/new.h>
+#include <gegex/state/add_transition.h>
 
 #include <set/string/new.h>
 #include <set/string/add.h>
@@ -75,13 +75,15 @@ struct gbundle read_character_literal_production(
 	
 	read_token(tokenizer, production_after_highest_machine);
 	
-	if (tokenizer->token == t_hashtag)
+	while (tokenizer->token == t_hashtag)
 	{
-		char* dup = strdup((void*) tokenizer->tokenchars.chars);
+		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
-		stringset_add(tags, dup);
+		stringset_add(tags, tag);
 		
 		read_token(tokenizer, production_after_highest_machine);
+		
+		free_string(tag);
 	}
 	
 	struct gegex* start = new_gegex();

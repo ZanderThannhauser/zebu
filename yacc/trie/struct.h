@@ -1,4 +1,14 @@
 
+struct trie
+{
+	struct {
+		struct reductioninfo* info;
+		unsigned popcount;
+		const char* as;
+	} reduce;
+};
+
+#if 0
 struct yacc_trie
 {
 	
@@ -30,3 +40,4 @@ struct yacc_trie
 	unsigned phase, refcount;
 };
 
+#endif

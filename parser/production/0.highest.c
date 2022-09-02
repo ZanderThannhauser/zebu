@@ -9,24 +9,24 @@
 
 /*#include <memory/arena/malloc.h>*/
 
-/*#include <lex/regex/from_literal.h>*/
-/*#include <lex/regex/from_charset.h>*/
-/*#include <lex/regex/clone.h>*/
-/*#include <lex/regex/dotout.h>*/
-/*#include <lex/regex/state/add_lambda_transition.h>*/
-/*#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>*/
-/*#include <lex/regex/dfa_to_nfa.h>*/
-/*#include <lex/regex/simplify_dfa/simplify_dfa.h>*/
-/*#include <lex/regex/state/struct.h>*/
-/*#include <lex/regex/state/free.h>*/
+/*#include <regex/from_literal.h>*/
+/*#include <regex/from_charset.h>*/
+/*#include <regex/clone.h>*/
+/*#include <regex/dotout.h>*/
+/*#include <regex/state/add_lambda_transition.h>*/
+/*#include <regex/nfa_to_dfa/nfa_to_dfa.h>*/
+/*#include <regex/dfa_to_nfa.h>*/
+/*#include <regex/simplify_dfa/simplify_dfa.h>*/
+/*#include <regex/state/struct.h>*/
+/*#include <regex/state/free.h>*/
 /*#include "../token/root.h"*/
 
-/*#include <yacc/gegex/from_token.h>*/
+/*#include <gegex/from_token.h>*/
 /*#include "gegex/from_empty.h"*/
-/*#include <yacc/gegex/from_subgrammar.h>*/
-/*#include <yacc/gegex/dotout.h>*/
-/*#include <yacc/gegex/clone.h>*/
-/*#include <yacc/gegex/dfa_to_nfa.h>*/
+/*#include <gegex/from_subgrammar.h>*/
+/*#include <gegex/dotout.h>*/
+/*#include <gegex/clone.h>*/
+/*#include <gegex/dfa_to_nfa.h>*/
 
 /*#include "../charset/charset/free.h"*/
 /*#include "../charset/root.h"*/

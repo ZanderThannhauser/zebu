@@ -33,10 +33,6 @@ struct lex* new_lex()
 	
 	this->tokenizer_cache = avl_alloc_tree(compare_build_tokenizer_nodes, free_build_tokenizer_node);
 	
-	this->disambiguations.literal_ids = new_unsignedset();
-	
-	this->disambiguations.regex_ids = new_unsignedset();
-	
 	this->next_id = 1; // because token 0 is for error
 	
 	this->EOF_token_id = 0;

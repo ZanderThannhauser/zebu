@@ -3,9 +3,9 @@
 
 #include <debug.h>
 
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/dotout.h>
-#include <lex/regex/state/add_lambda_transition.h>
+#include <regex/dfa_to_nfa.h>
+#include <regex/dotout.h>
+#include <regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -16,12 +16,11 @@
 
 struct rbundle read_or_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	
-	struct rbundle retval = read_and_token_expression(tokenizer, scope, token_skip);
+	struct rbundle retval = read_and_token_expression(tokenizer, scope);
 	
 	if (tokenizer->token == t_vertical_bar)
 	{
@@ -34,7 +33,7 @@ struct rbundle read_or_token_expression(
 		{
 			read_token(tokenizer, regex_inside_or_machine);
 			
-			struct rbundle sub = read_and_token_expression(tokenizer, scope, token_skip);
+			struct rbundle sub = read_and_token_expression(tokenizer, scope);
 			
 			if (!sub.is_nfa)
 			{

@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <lex/regex/compare_simplified.h>
+#include <regex/compare_simplified.h>
 
 #include "struct.h"
 #include "compare.h"

@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <string/struct.h>
+
 #include "struct.h"
 #include "to_hashtagstring.h"
 
@@ -30,9 +32,9 @@ char* stringset_to_hashtagstring(const struct stringset* this)
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
 	{
-		char* element = node->item;
+		struct string* element = node->item;
 		
-		append("#"), append(element);
+		append("#"), append(element->chars);
 		
 		if (node->next)
 		{

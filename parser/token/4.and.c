@@ -3,11 +3,11 @@
 
 #include <debug.h>
 
-#include <lex/regex/state/struct.h>
-#include <lex/regex/state/free.h>
-#include <lex/regex/intersect_dfas.h>
-#include <lex/regex/nfa_to_dfa.h>
-#include <lex/regex/simplify_dfa/simplify_dfa.h>
+#include <regex/state/struct.h>
+#include <regex/state/free.h>
+#include <regex/intersect_dfas.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -18,18 +18,17 @@
 
 struct rbundle read_and_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	
-	struct rbundle retval = read_concat_token_expression(tokenizer, scope, token_skip);
+	struct rbundle retval = read_concat_token_expression(tokenizer, scope);
 	
 	while (tokenizer->token == t_ampersand)
 	{
 		read_token(tokenizer, regex_inside_and_machine);
 		
-		struct rbundle right = read_concat_token_expression(tokenizer, scope, token_skip);
+		struct rbundle right = read_concat_token_expression(tokenizer, scope);
 		
 		struct regex* left_machine, *right_machine;
 		

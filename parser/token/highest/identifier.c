@@ -5,15 +5,14 @@
 
 #include <parser/scope/lookup/fragment.h>
 
-#include <lex/regex/clone.h>
-#include <lex/regex/dotout.h>
+#include <regex/clone.h>
+#include <regex/dotout.h>
 
 #include "identifier.h"
 
 struct rbundle read_identifier_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	

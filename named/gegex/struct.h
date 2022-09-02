@@ -1,7 +1,7 @@
 
 struct named_gegex
 {
-	char* name;
+	struct string* name;
 	struct gegex* gegex;
 };
 

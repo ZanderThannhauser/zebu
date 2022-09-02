@@ -1,7 +1,7 @@
 
 struct named_regex
 {
-	char* name;
+	struct string* name;
 	struct regex* regex;
 };
 

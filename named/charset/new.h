@@ -1,5 +1,5 @@
 
 struct named_charset* new_named_charset(
-	char* name,
+	struct string* name,
 	bool is_complement,
 	struct unsignedcharset* charset);

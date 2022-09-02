@@ -7,24 +7,24 @@
 
 #include <parser/options/struct.h>
 
-#include <yacc/gegex/from_token.h>
-#include <yacc/gegex/dotout.h>
-#include <yacc/gegex/state/new.h>
-#include <yacc/gegex/state/add_transition.h>
+#include <gegex/from_token.h>
+#include <gegex/dotout.h>
+#include <gegex/state/new.h>
+#include <gegex/state/add_transition.h>
 
 #include <set/string/new.h>
 #include <set/string/add.h>
 #include <set/string/free.h>
 
-#include <lex/regex/clone.h>
-#include <lex/regex/dotout.h>
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/from_literal.h>
-#include <lex/regex/state/free.h>
-#include <lex/regex/state/struct.h>
-#include <lex/regex/state/add_lambda_transition.h>
-#include <lex/regex/nfa_to_dfa.h>
-#include <lex/regex/simplify_dfa/simplify_dfa.h>
+#include <regex/clone.h>
+#include <regex/dotout.h>
+#include <regex/dfa_to_nfa.h>
+#include <regex/from_literal.h>
+#include <regex/state/free.h>
+#include <regex/state/struct.h>
+#include <regex/state/add_lambda_transition.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
 
 #include <lex/lookup/add_token.h>
 
@@ -82,11 +82,13 @@ struct gbundle read_string_literal_production(
 	{
 		dpvs(tokenizer->tokenchars.chars);
 		
-		char* tag = strdup((void*) tokenizer->tokenchars.chars);
+		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
 		stringset_add(tags, tag);
 		
 		read_token(tokenizer, production_after_highest_machine);
+		
+		free_string(tag);
 	}
 	
 	struct gegex* gegex_start = new_gegex();

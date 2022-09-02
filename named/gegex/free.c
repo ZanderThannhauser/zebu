@@ -6,10 +6,14 @@
 
 void free_named_gegex(void* ptr)
 {
+	ENTER;
+	
 	struct named_gegex* this = ptr;
 	
-	free(this->name);
+	free_string(this->name);
 	
 	free(this);
+	
+	EXIT;
 }
 

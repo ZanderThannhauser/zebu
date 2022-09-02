@@ -32,9 +32,7 @@ void read_charset(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	char* name = strdup((void*) tokenizer->tokenchars.chars);
-	
-	dpvs(name);
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	read_token(tokenizer, colon_machine);
 	
@@ -51,6 +49,8 @@ void read_charset(
 		TODO;
 		exit(e_syntax_error);
 	}
+	
+	free_string(name);
 	
 	free_unsignedcharset(charset.charset);
 	

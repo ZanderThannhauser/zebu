@@ -7,7 +7,7 @@
 #include "new.h"
 
 struct named_charset* new_named_charset(
-	char* name,
+	struct string* name,
 	bool is_complement,
 	struct unsignedcharset* charset)
 {
@@ -15,7 +15,7 @@ struct named_charset* new_named_charset(
 	
 	struct named_charset* this = smalloc(sizeof(*this));
 	
-	this->name = name;
+	this->name = inc_string(name);
 	this->is_complement = is_complement;
 	this->charset = inc_unsignedcharset(charset);
 	

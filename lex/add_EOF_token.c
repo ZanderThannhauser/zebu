@@ -1,16 +1,16 @@
 
 #include <debug.h>
 
-/*#include <lex/regex/state/struct.h>*/
-#include <lex/regex/state/new.h>
-/*#include <lex/regex/clone.h>*/
-/*#include <lex/regex/state/free.h>*/
-/*#include <lex/regex/nfa_to_dfa.h>*/
-/*#include <lex/regex/simplify_dfa/simplify_dfa.h>*/
-/*#include <lex/regex/state/add_lambda_transition.h>*/
-#include <lex/regex/state/set_EOF_transition.h>
+#include <regex/state/struct.h>
+#include <regex/state/new.h>
+#include <regex/clone.h>
+#include <regex/state/free.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/state/add_lambda_transition.h>
+#include <regex/state/set_EOF_transition.h>
 
-#include <lex/regex/dotout.h>
+#include <regex/dotout.h>
 
 #include "lookup/add_token.h"
 
@@ -29,8 +29,6 @@ void lex_add_EOF_token(
 	
 	regex_set_EOF_transition(start, end);
 	
-	TODO;
-	#if 0
 	end->is_accepting = true;
 	
 	#ifdef DOTOUT
@@ -47,6 +45,10 @@ void lex_add_EOF_token(
 		
 		start = regex_simplify_dfa(dfa);
 		
+		#ifdef DOTOUT
+		regex_dotout(start, __PRETTY_FUNCTION__);
+		#endif
+		
 		free_regex(clone), free_regex(dfa);
 	}
 	
@@ -55,7 +57,6 @@ void lex_add_EOF_token(
 	this->EOF_token_id = tid;
 	
 	dpv(this->EOF_token_id);
-	#endif
 	
 	EXIT;
 }

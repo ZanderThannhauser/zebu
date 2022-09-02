@@ -6,10 +6,14 @@
 
 void free_named_regex(void* ptr)
 {
+	ENTER;
+	
 	struct named_regex* this = ptr;
 	
-	free(this->name);
+	free_string(this->name);
 	
 	free(this);
+	
+	EXIT;
 }
 

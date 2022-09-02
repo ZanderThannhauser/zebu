@@ -8,14 +8,15 @@
 #include <parser/scope/lookup/inline_grammar.h>
 #include <parser/scope/build_absolute_name.h>
 
-#include <yacc/gegex/state/new.h>
-#include <yacc/gegex/dotout.h>
-#include <yacc/gegex/clone.h>
-#include <yacc/gegex/dfa_to_nfa.h>
-#include <yacc/gegex/state/add_grammar_transition.h>
+#include <gegex/state/new.h>
+#include <gegex/dotout.h>
+#include <gegex/clone.h>
+#include <gegex/dfa_to_nfa.h>
+#include <gegex/state/add_grammar_transition.h>
 
 #include <set/string/new.h>
 #include <set/string/add.h>
+#include <set/string/free.h>
 
 #include "identifier.h"
 
@@ -40,7 +41,9 @@ struct gbundle read_identifier_production(
 	}
 	else
 	{
-		char* full_name = scope_build_absolute_name(scope, (char*) tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+		struct string* base_name = new_string_from_tokenchars(tokenizer);
+		
+		struct string* full_name = scope_build_absolute_name(scope, base_name);
 		
 		struct stringset* tags = new_stringset();
 		
@@ -48,11 +51,13 @@ struct gbundle read_identifier_production(
 		
 		while (tokenizer->token == t_hashtag)
 		{
-			char* dup = strdup((void*) tokenizer->tokenchars.chars);
+			struct string* tag = new_string_from_tokenchars(tokenizer);
 			
-			stringset_add(tags, dup);
+			stringset_add(tags, tag);
 			
 			read_token(tokenizer, production_after_highest_machine);
+			
+			free_string(tag);
 		}
 		
 		struct gegex* start = new_gegex();
@@ -61,6 +66,12 @@ struct gbundle read_identifier_production(
 		gegex_add_grammar_transition(start, full_name, tags, end);
 		
 		retval = (struct gbundle) {start, end};
+		
+		free_stringset(tags);
+		
+		free_string(full_name);
+		
+		free_string(base_name);
 	}
 	
 	#ifdef DOTOUT

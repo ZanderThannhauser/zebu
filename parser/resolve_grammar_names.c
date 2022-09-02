@@ -1,90 +1,96 @@
 
 #include <debug.h>
 
-#if 0
-#include <avl/avl.h>
-
 #include <debug.h>
 
-/*#include <memory/sstrndup.h>*/
-/*#include <memory/smalloc.h>*/
-/*#include <memory/arena/strdup.h>*/
-/*#include <memory/arena/dealloc.h>*/
+#include <gegex/state/struct.h>
 
-#include <misc/phase_counters.h>
-
-#include <named/grammar/struct.h>
+#include <named/gegex/struct.h>
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/free.h>
 
 #include "scope/struct.h"
 #include "scope/resolve/grammar.h"
 
-#include <yacc/gegex/state/struct.h>
-
 #include "resolve_grammar_names.h"
-
-static void resolve(
-	struct gegex* state,
-	struct scope* scope)
-{
-	size_t i, n;
-	ENTER;
-	
-	if (state->phase != yacc_phase_counter)
-	{
-		state->phase = yacc_phase_counter;
-		
-		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
-		{
-			const struct transition* const ele = state->transitions.data[i];
-			resolve(ele->to, scope);
-		}
-		
-		// grammar_transitions:
-		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
-		{
-			struct gtransition* const ele = state->grammar_transitions.data[i];
-			
-			dpvs(ele->grammar);
-			
-			ele->grammar = scope_resolve_grammar(scope, ele->grammar);
-			
-			dpvs(ele->grammar);
-			
-			resolve(ele->to, scope);
-		}
-		
-		// lambda_transitions:
-		for (i = 0, n = state->lambda_transitions.n; i < n; i++)
-		{
-			resolve(state->lambda_transitions.data[i], scope);
-		}
-	}
-	
-	EXIT;
-}
-#endif
 
 void resolve_grammar_names(struct scope* scope)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	yacc_phase_counter++;
+	struct quack* todo = new_quack();
+	
+	struct gegexset* queued = new_gegexset();
 	
 	for (struct avl_node_t* i = scope->grammar->head; i; i = i->next)
 	{
-		const struct named_grammar* const ele = i->item;
+		const struct named_gegex* const ele = i->item;
 		
 		dpvs(ele->name);
 		
-		resolve(ele->grammar, scope);
+		if (gegexset_add(queued, ele->gegex))
+			quack_append(todo, ele->gegex);
 	}
-	#endif
+	
+	while (quack_len(todo))
+	{
+		struct gegex* state = quack_pop(todo);
+		
+		// normal transitions:
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			struct gegex* const to = state->transitions.data[i]->to;
+			
+			if (gegexset_add(queued, to))
+				quack_append(todo, to);
+		}
+		
+		// grammar_transitions:
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		{
+			struct gegex_grammar_transition* const ele = state->grammar_transitions.data[i];
+			
+			struct string* new = scope_resolve_grammar(scope, ele->grammar);
+			
+			free_string(ele->grammar), ele->grammar = new;
+			
+			if (gegexset_add(queued, ele->to))
+				quack_append(todo, ele->to);
+		}
+	}
+	
+	free_gegexset(queued);
+	
+	free_quack(todo);
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

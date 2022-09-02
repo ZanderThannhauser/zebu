@@ -15,7 +15,7 @@ void free_named_charset(void* ptr)
 	struct named_charset* this = ptr;
 	ENTER;
 	
-	free(this->name);
+	free_string(this->name);
 	
 	free_unsignedcharset(this->charset);
 	

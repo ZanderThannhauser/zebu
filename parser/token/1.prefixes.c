@@ -7,15 +7,14 @@
 /*#include "../tokenizer/read_token.h"*/
 /*#include "../tokenizer/machines/regex/inside_emark.h"*/
 
-/*#include <lex/regex/complement.h>*/
+/*#include <regex/complement.h>*/
 
 #include "0.highest.h"
 #include "1.prefixes.h"
 
 struct rbundle read_prefixes_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	struct rbundle retval;
 	ENTER;
@@ -30,7 +29,7 @@ struct rbundle read_prefixes_token_expression(
 		
 		default:
 		{
-			retval = read_highest_token_expression(tokenizer, scope, token_skip);
+			retval = read_highest_token_expression(tokenizer, scope);
 			break;
 		}
 	}

@@ -1,4 +1,50 @@
 
+#include <debug.h>
+
+#include "trieinfo/compare.h"
+#include "trieinfo/free.h"
+
+#include "build_structs.h"
+#include "build_tries.h"
+#include "yacc.h"
+
+struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
+{
+	ENTER;
+	
+	// one pass that figures out the grammar-structs:
+	struct avl_tree_t* structs = build_structs(named_gegexes);
+	
+	TODO;
+	
+	// break named_gegexes into named tries
+		// each trie's "reduction points" have a popcount
+			// and knows which fields and which indices it should grab
+		// we also need to know what the names and types are for each trie
+	
+	struct avl_tree_t* named_trieinfo = build_tries(named_trieinfo, named_gegexes);
+	
+	// generate firsts
+	TODO;
+	
+	// def expand():
+		// given a set of trie-states, it will expand out the stateinfo
+	
+	// call expand() with "(start)"'s first state.
+	// create new yacc state
+	// add to mapping and submit to `todo`
+	
+	// while len(todo):
+		// usual stuff here...
+	TODO;
+	
+	avl_free_tree(named_trieinfo);
+	
+	EXIT;
+}
+
+
+
 #if 0
 #include <assert.h>
 

@@ -48,7 +48,7 @@ struct gbundle read_subdefinitions_production(
 				
 				case t_gravemarked_identifier:
 				{
-					read_fragment(tokenizer, scope, options->token_skip);
+					read_fragment(tokenizer, scope);
 					break;
 				}
 				

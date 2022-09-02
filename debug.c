@@ -38,7 +38,7 @@ static void escape(char str[5], unsigned char ch)
 		
 		case '\n': strcpy(str, "\\n"); break;
 		case '\t': strcpy(str, "\\t"); break;
-		case '\\': strcpy(str, "\\"); break;
+		case '\\': strcpy(str, "\\\\"); break;
 		case '\"': strcpy(str, "\\\""); break;
 		case '\'': strcpy(str, "\\\'"); break;
 		

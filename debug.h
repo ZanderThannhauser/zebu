@@ -26,32 +26,6 @@
 	#include <time.h>
 	#include <pwd.h>
 	
-	#include <defines/argv0.h>
-	
-	#include <enums/error.h>
-	
-	#include <macros/strequals.h>
-	
-	#include <memory/smalloc.h>
-	#include <memory/srealloc.h>
-	
-	#include <avl/alloc_tree.h>
-	#include <avl/insert.h>
-	#include <avl/search.h>
-	#include <avl/delete.h>
-	#include <avl/free_nodes.h>
-	#include <avl/free_tree.h>
-	
-	struct quack;
-	
-	#include <quack/new.h>
-	#include <quack/len.h>
-	#include <quack/append.h>
-	#include <quack/pop.h>
-	#include <quack/push.h>
-	#include <quack/foreach.h>
-	#include <quack/free.h>
-	
 	struct lex;
 	struct regex;
 	struct gegex;
@@ -64,9 +38,43 @@
 	struct regex_transition;
 	struct regexset;
 	struct dlink;
+	struct trie;
 	struct charset;
 	struct unsignedcharset;
 	struct gegexset;
+	struct structinfo;
+	
+	#include <defines/argv0.h>
+	
+	#include <enums/error.h>
+	
+	#include <macros/strequals.h>
+	
+	#include <memory/smalloc.h>
+	#include <memory/srealloc.h>
+	
+	#include <string/struct.h>
+	#include <string/new.h>
+	#include <string/are_equal.h>
+	#include <string/compare.h>
+	#include <string/inc.h>
+	#include <string/free.h>
+	
+	#include <avl/alloc_tree.h>
+	#include <avl/insert.h>
+	#include <avl/search.h>
+	#include <avl/delete.h>
+	#include <avl/free_nodes.h>
+	#include <avl/free_tree.h>
+	
+	#include <quack/new.h>
+	#include <quack/len.h>
+	#include <quack/append.h>
+	#include <quack/pop.h>
+	#include <quack/push.h>
+	#include <quack/foreach.h>
+	#include <quack/free.h>
+	
 	
 #endif
 

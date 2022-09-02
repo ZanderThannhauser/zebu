@@ -12,27 +12,24 @@
 
 #include "../struct.h"
 
-/*#include <named/grammar/struct.h>*/
-
 #include "grammar.h"
 
-char* scope_resolve_grammar(
+struct string* scope_resolve_grammar(
 	struct scope* this,
-	char* full_name)
+	struct string* original)
 {
+	bool initially_found = true;
+	char *dot, *dot2;
+	struct avl_node_t* node;
 	ENTER;
 	
-	char *dot, *dot2;
+	char* copy = strdup(original->chars);
 	
-	dpvs(full_name);
+	dpvs(copy);
 	
-	struct avl_node_t* node;
-	
-	while (!(node = avl_search(this->grammar, &full_name)) && (dot = rindex(full_name, '.')))
+	while (!(node = avl_search(this->grammar, &(char**[]){&copy})) && (dot = rindex(copy, '.')))
 	{
-		dpvs(dot);
-		
-		*dot++ = 0, dot2 = rindex(full_name, '.');
+		*dot++ = 0, dot2 = rindex(copy, '.');
 		
 		if (dot2)
 		{
@@ -40,12 +37,11 @@ char* scope_resolve_grammar(
 		}
 		else
 		{
-			memmove(full_name, dot, strlen(dot) + 1);
+			memmove(copy, dot, strlen(dot) + 1);
+			dpvs(copy);
 		}
 		
-		dpvs(full_name);
-		
-		node = avl_search(this->grammar, &full_name);
+		initially_found = false;
 	}
 	
 	if (!node)
@@ -55,9 +51,8 @@ char* scope_resolve_grammar(
 	}
 	
 	EXIT;
-	return full_name;
+	return initially_found ? inc_string(original) : new_string_without_copy(copy);
 }
-
 
 
 

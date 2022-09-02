@@ -3,6 +3,5 @@
 
 struct rbundle read_prefixes_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 );

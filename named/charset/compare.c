@@ -7,6 +7,6 @@
 int compare_named_charsets(const void* a, const void* b)
 {
 	const struct named_charset *A = a, *B = b;
-	return strcmp(A->name, B->name);
+	return compare_strings(A->name, B->name);
 }
 

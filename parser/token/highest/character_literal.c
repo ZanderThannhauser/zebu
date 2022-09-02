@@ -3,15 +3,14 @@
 
 #include <parser/tokenizer/struct.h>
 
-#include <lex/regex/from_literal.h>
-#include <lex/regex/dotout.h>
+#include <regex/from_literal.h>
+#include <regex/dotout.h>
 
 #include "character_literal.h"
 
 struct rbundle read_character_literal_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	

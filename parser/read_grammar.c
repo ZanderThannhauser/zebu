@@ -8,11 +8,11 @@
 
 /*#include <enums/error.h>*/
 
-#include <yacc/gegex/state/struct.h>
-/*#include <yacc/gegex/state/new.h>*/
-#include <yacc/gegex/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
-#include <yacc/gegex/state/free.h>
+#include <gegex/state/struct.h>
+/*#include <gegex/state/new.h>*/
+#include <gegex/nfa_to_dfa.h>
+#include <gegex/simplify_dfa/simplify_dfa.h>
+#include <gegex/state/free.h>
 
 #include "production/root.h"
 
@@ -35,7 +35,7 @@ void read_grammar(
 	
 	assert(tokenizer->token == t_identifier);
 	
-	char* name = strdup((void*) tokenizer->tokenchars.chars);
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	dpvs(name);
 	
@@ -57,12 +57,10 @@ void read_grammar(
 	struct gegex* nfa_start = bundle.start;
 	
 	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	
 	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
 	
-	// add grammar rule to scope
 	scope_declare_grammar(scope, name, simp_start);
-	
-	free_gegex(nfa_start), free_gegex(dfa_start);
 	
 	if (true
 		&& tokenizer->token != t_semicolon
@@ -71,6 +69,10 @@ void read_grammar(
 		TODO;
 		exit(e_syntax_error);
 	}
+	
+	free_gegex(nfa_start), free_gegex(dfa_start);
+	
+	free_string(name);
 	
 	EXIT;
 }

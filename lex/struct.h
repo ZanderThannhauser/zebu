@@ -14,9 +14,4 @@ struct lex
 	unsigned EOF_token_id;
 	
 	struct avl_tree_t* tokenizer_cache; // # set(token ids) -> machine id
-	
-	struct {
-		struct unsignedset* literal_ids;
-		struct unsignedset* regex_ids;
-	} disambiguations;
 };

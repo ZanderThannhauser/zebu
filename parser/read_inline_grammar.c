@@ -10,11 +10,11 @@
 
 /*#include <arena/memdup.h>*/
 
-#include <yacc/gegex/state/struct.h>
-/*#include <yacc/gegex/state/new.h>*/
-#include <yacc/gegex/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
-#include <yacc/gegex/state/free.h>
+#include <gegex/state/struct.h>
+/*#include <gegex/state/new.h>*/
+#include <gegex/nfa_to_dfa.h>
+#include <gegex/simplify_dfa/simplify_dfa.h>
+#include <gegex/state/free.h>
 
 #include "production/root.h"
 /*#include "grammar/gbundle.h"*/
@@ -40,9 +40,7 @@ void read_inline_grammar(
 	
 	assert(tokenizer->token == t_parenthesised_identifier);
 	
-	char* name = strdup((void*) tokenizer->tokenchars.chars);
-	
-	dpvs(name);
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	// read a colon:
 	read_token(tokenizer, colon_machine);
@@ -67,8 +65,6 @@ void read_inline_grammar(
 	
 	scope_declare_inline_grammar(scope, name, simp_start);
 	
-	free_gegex(nfa_start), free_gegex(dfa_start);
-	
 	if (true
 		&& tokenizer->token != t_semicolon
 		&& tokenizer->token != t_colon)
@@ -77,8 +73,15 @@ void read_inline_grammar(
 		exit(e_syntax_error);
 	}
 	
+	free_gegex(nfa_start);
+	
+	free_gegex(dfa_start);
+	
+	free_string(name);
+	
 	EXIT;
 }
+
 
 
 

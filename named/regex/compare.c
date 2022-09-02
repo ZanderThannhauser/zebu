@@ -7,6 +7,6 @@
 int compare_named_regexes(const void* a, const void* b)
 {
 	const struct named_regex *A = a, *B = b;
-	return strcmp(A->name, B->name);
+	return compare_strings(A->name, B->name);
 }
 

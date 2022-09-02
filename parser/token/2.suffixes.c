@@ -5,12 +5,12 @@
 #include <debug.h>
 
 /*#include "regex/state/new.h"*/
-#include <lex/regex/dfa_to_nfa.h>
-#include <lex/regex/dotout.h>
-#include <lex/regex/clone.h>
-/*#include <lex/regex/state/new.h>*/
-/*#include <lex/regex/state/free.h>*/
-#include <lex/regex/state/add_lambda_transition.h>
+#include <regex/dfa_to_nfa.h>
+#include <regex/dotout.h>
+#include <regex/clone.h>
+/*#include <regex/state/new.h>*/
+/*#include <regex/state/free.h>*/
+#include <regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -24,12 +24,11 @@
 
 struct rbundle read_suffixes_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip
+	struct scope* scope
 ) {
 	ENTER;
 	
-	struct rbundle retval = read_prefixes_token_expression(tokenizer, scope, token_skip);
+	struct rbundle retval = read_prefixes_token_expression(tokenizer, scope);
 	
 	switch (tokenizer->token)
 	{
@@ -59,19 +58,8 @@ struct rbundle read_suffixes_token_expression(
 				retval = regex_dfa_to_nfa(retval.dfa);
 			}
 			
-			if (token_skip)
-			{
-				struct regex* cloned = regex_clone(token_skip);
-				
-				regex_add_lambda_transition(retval.nfa.end, cloned);
-				regex_add_lambda_transition(cloned, retval.nfa.start);
-				regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
-			}
-			else
-			{
-				regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
-				regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
-			}
+			regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
+			regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
@@ -89,17 +77,7 @@ struct rbundle read_suffixes_token_expression(
 				retval = regex_dfa_to_nfa(retval.dfa);
 			}
 			
-			if (token_skip)
-			{
-				struct regex* cloned = regex_clone(token_skip);
-				
-				regex_add_lambda_transition(retval.nfa.end, cloned);
-				regex_add_lambda_transition(cloned, retval.nfa.start);
-			}
-			else
-			{
-				regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
-			}
+			regex_add_lambda_transition(retval.nfa.end, retval.nfa.start);
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);

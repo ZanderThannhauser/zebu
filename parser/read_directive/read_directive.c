@@ -15,14 +15,14 @@
 /*#include "options/struct.h"*/
 /*#include "options/dlink.h"*/
 
-/*#include <lex/regex/state/free.h>*/
-/*#include <lex/regex/dfa_to_nfa.h>*/
-/*#include <lex/regex/state/add_lambda_transition.h>*/
+/*#include <regex/state/free.h>*/
+/*#include <regex/dfa_to_nfa.h>*/
+/*#include <regex/state/add_lambda_transition.h>*/
 
-/*#include <yacc/gegex/state/struct.h>*/
-/*#include <yacc/gegex/state/free.h>*/
-/*#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>*/
-/*#include <yacc/gegex/simplify_dfa/simplify_dfa.h>*/
+/*#include <gegex/state/struct.h>*/
+/*#include <gegex/state/free.h>*/
+/*#include <gegex/nfa_to_dfa/nfa_to_dfa.h>*/
+/*#include <gegex/simplify_dfa/simplify_dfa.h>*/
 
 #include "../tokenizer/struct.h"
 /*#include "tokenizer/read_token.h"*/
@@ -45,8 +45,6 @@
 #include "skip.h"
 #include "start.h"
 #include "include.h"
-#include "token_skip.h"
-#include "disambiguate.h"
 #include "read_directive.h"
 
 void read_directive(
@@ -71,14 +69,6 @@ void read_directive(
 	else if (strequals(token, "%""skip"))
 	{
 		read_skip_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
-	}
-	else if (strequals(token, "%""token_skip"))
-	{
-		read_token_skip_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
-	}
-	else if (strequals(token, "%""disambiguate"))
-	{
-		read_disambiguate_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
 	}
 	else if (strequals(token, "%""include"))
 	{

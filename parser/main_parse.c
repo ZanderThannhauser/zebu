@@ -8,7 +8,6 @@
 
 #include <cmdln/input_path.h>
 
-#include <lex/process_disambiguatations/process_disambiguatations.h>
 #include <lex/add_EOF_token.h>
 
 #include <misc/break_and_open_path.h>
@@ -55,11 +54,6 @@ void main_parse(struct avl_tree_t* grammar, struct lex* lex)
 	resolve_grammar_names(scope);
 	
 	lex_add_EOF_token(lex, options->skip);
-	
-	if (options->disambiguatations.head)
-	{
-		lex_process_disambiguatations(lex, options->disambiguatations.head);
-	}
 	
 	if (br.dirfd > 0)
 		close(br.dirfd);

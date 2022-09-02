@@ -10,8 +10,8 @@
 #include <avl/insert.h>
 #include <avl/free_tree.h>
 
-#include <lex/regex/state/struct.h>
-#include <lex/regex/dotout.h>
+#include <regex/state/struct.h>
+#include <regex/dotout.h>
 
 #include <lex/state/add_transition.h>
 #include <lex/state/dotout.h>
