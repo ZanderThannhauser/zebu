@@ -13,6 +13,8 @@
 
 #include "build_structinfo.h"
 #include "build_tries.h"
+#include "calc_firsts.h"
+
 #include "yacc.h"
 
 struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
@@ -39,8 +41,8 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 		runme;
 	}));
 	
-	// generate firsts
-	TODO;
+	// node->item are of `struct named_unsignedset*` type.
+	struct avl_tree_t* named_firsts = calc_firsts(named_tries);
 	
 	// def expand():
 		// given a set of trie-states, it will expand out the stateinfo
@@ -52,6 +54,8 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 	// while len(todo):
 		// usual stuff here...
 	TODO;
+	
+	avl_free_tree(named_firsts);
 	
 	avl_free_tree(structinfos);
 	

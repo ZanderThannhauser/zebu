@@ -1,4 +1,4 @@
 
-void stringset_update(
+bool stringset_update(
 	struct stringset* this,
 	const struct stringset* other);

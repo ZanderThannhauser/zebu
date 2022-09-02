@@ -4,10 +4,11 @@
 #include "struct.h"
 #include "update.h"
 
-void stringset_update(
+bool stringset_update(
 	struct stringset* this,
 	const struct stringset* other)
 {
+	bool has_changed = false;
 	ENTER;
 	
 	struct avl_node_t* a = this->tree->head;
@@ -41,9 +42,11 @@ void stringset_update(
 		this->n++;
 		avl_insert(this->tree, inc_string(b->item));
 		b = b->next;
+		has_changed = true;
 	}
 	
 	EXIT;
+	return has_changed;
 }
 
 

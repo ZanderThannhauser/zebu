@@ -30,8 +30,6 @@ void trie_add_transition(
 	
 	dpv(data);
 	
-	dpv(this->transitions.n);
-	
 	for (i = this->transitions.n - 1; 0 + 1 <= i + 1 && token < data[i]->token; i--)
 	{
 		dpv(i);
@@ -42,6 +40,8 @@ void trie_add_transition(
 	dpv(i);
 	
 	data[i + 1] = transition, this->transitions.n++;
+	
+	dpv(this->transitions.n);
 	
 	EXIT;
 }
