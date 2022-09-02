@@ -4,7 +4,7 @@
 #include "struct.h"
 #include "inc.h"
 
-struct reductioninfo* inc_reductioninfo(struct reductioninfo* this)
+struct structinfo* inc_structinfo(struct structinfo* this)
 {
 	if (this)
 		this->refcount++;

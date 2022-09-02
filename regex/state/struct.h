@@ -11,7 +11,7 @@ struct regex
 	
 	struct {
 		struct regex** data;
-		size_t n, cap;
+		unsigned n, cap;
 	} lambda_transitions;
 	
 	struct {

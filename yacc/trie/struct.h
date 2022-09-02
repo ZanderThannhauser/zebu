@@ -1,43 +1,25 @@
 
 struct trie
 {
-	struct {
-		struct reductioninfo* info;
-		unsigned popcount;
-		const char* as;
-	} reduce;
-};
-
-#if 0
-struct yacc_trie
-{
+	struct reductioninfo* reductioninfo;
+	struct structinfo* structinfo;
+	struct string* reduce_as;
+	unsigned popcount;
 	
 	struct {
-		struct transition {
+		struct trie_transition {
 			unsigned token;
-			struct gegex* to;
+			struct trie* to;
 		}** data;
-		size_t n, cap;
+		unsigned n, cap;
 	} transitions;
 	
 	struct {
-		struct gtransition {
-			char* grammar; // owned
-			struct gegex* to;
+		struct trie_grammar_transition {
+			struct string* grammar;
+			struct trie* to;
 		}** data;
-		size_t n, cap;
+		unsigned n, cap;
 	} grammar_transitions;
-	
-	struct {
-		struct rtransition {
-			unsigned token;
-			char* reduce_as; // owned
-			unsigned popcount;
-		}** data;
-		size_t n, cap;
-	} reduction_transitions;
-	
-	unsigned phase, refcount;
 };
 
-#endif

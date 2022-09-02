@@ -12,27 +12,27 @@
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
+#include <set/gegex/clear.h>
+
+#ifdef DOTOUT
+#include <set/string/to_hashtagstring.h>
+#include <set/gegex/contains.h>
+#include <misc/frame_counter.h>
+#endif
 
 #include "structinfo/new.h"
 #include "structinfo/to_string.h"
 #include "structinfo/add_token_field.h"
 #include "structinfo/add_grammar_field.h"
-#include "structinfo/compare.h"
-#include "structinfo/free.h"
+/*#include "structinfo/compare.h"*/
+/*#include "structinfo/free.h"*/
 
-#include "build_structs.h"
+#include "build_structinfo.h"
 
 #ifdef DOTOUT
-
-#include <set/string/to_hashtagstring.h>
-
-#include <set/gegex/contains.h>
-
-#include <misc/frame_counter.h>
-
 static void dotout(
-	struct avl_tree_t* structinfos,
-	struct avl_tree_t* named_gegexes,
+	struct structinfo* structinfo,
+	struct gegex* start,
 	struct gegexset* seen,
 	struct gegex* focus)
 {
@@ -52,37 +52,23 @@ static void dotout(
 	
 	struct quack* todo = new_quack();
 	
-	unsigned label_counter = 0;
-	
-	avl_tree_foreach(named_gegexes, ({
-		void runme(void* ptr)
-		{
-			struct named_gegex* const ng = ptr;
-			
-			dpvs(ng->name->chars);
-			
-			struct structinfo* si = avl_search(structinfos, &ng->name)->item;
-			
-			char* label = structinfo_to_string(si);
-			
-			fprintf(stream, ""
-				"\"label_%u\" [" "\n"
-					"label = \"%s\"" "\n"
-					"shape = box" "\n"
-				"];" "\n"
-				"\"label_%u\" -> \"%p\";" "\n"
-			"", label_counter, label, label_counter, ng->gegex);
-			
-			gegexset_add(queued, ng->gegex);
-			
-			quack_append(todo, ng->gegex);
-			
-			free(label);
-			
-			label_counter++;
-		}
-		runme;
-	}));
+	{
+		char* label = structinfo_to_string(structinfo);
+		
+		fprintf(stream, ""
+			"\"label\" [" "\n"
+				"label = \"%s\"" "\n"
+				"shape = box" "\n"
+			"];" "\n"
+			"\"label\" -> \"%p\";" "\n"
+		"", label, start);
+		
+		gegexset_add(queued, start);
+		
+		quack_append(todo, start);
+		
+		free(label);
+	}
 	
 	while (quack_len(todo))
 	{
@@ -148,106 +134,65 @@ static void dotout(
 
 #endif
 
-struct bundle
-{
-	struct structinfo* structinfo;
-	struct gegex* gegex;
-};
-
-static struct bundle* new_bundle(
-	struct structinfo* structinfo,
-	struct gegex* gegex)
+struct structinfo* build_structinfo(struct string* name, struct gegex* start)
 {
 	ENTER;
-	struct bundle* this = smalloc(sizeof(*this));
-	this->structinfo = structinfo;
-	this->gegex = gegex;
-	EXIT;
-	return this;
-}
-
-struct avl_tree_t* build_structs(struct avl_tree_t* named_gegexes)
-{
-	ENTER;
-	
-	struct avl_tree_t* structinfos = avl_alloc_tree(compare_structinfos, free_structinfo);
 	
 	struct gegexset* queued = new_gegexset();
 	
 	struct quack* todo = new_quack();
 	
-	avl_tree_foreach(named_gegexes, ({
-		void runme(void* ptr)
-		{
-			struct named_gegex* ngegex = ptr;
-			
-			struct structinfo* info = new_structinfo(ngegex->name);
-			
-			gegexset_add(queued, ngegex->gegex);
-			
-			avl_insert(structinfos, info);
-			
-			quack_append(todo, new_bundle(info, ngegex->gegex));
-		}
-		runme;
-	}));
+	struct structinfo* info = new_structinfo(name);
+	
+	gegexset_add(queued,  start);
+	
+	quack_append(todo,  start);
 	
 	while (quack_len(todo))
 	{
-		struct bundle* const bundle = quack_pop(todo);
+		struct gegex* state = quack_pop(todo);
 		
-		struct structinfo* const structinfo = bundle->structinfo;
-		
-		struct gegex* const gegex = bundle->gegex;
-		
-		for (unsigned i = 0, n = gegex->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct gegex_transition* const transition = gegex->transitions.data[i];
+			struct gegex_transition* const transition = state->transitions.data[i];
 			
 			stringset_foreach(transition->tags, ({
 				void runme(struct string* tag) {
-					structinfo_add_token_field(structinfo, tag);
+					structinfo_add_token_field(info, tag);
 				}
 				runme;
 			}));
 			
 			if (gegexset_add(queued, transition->to))
-				quack_append(todo, new_bundle(structinfo, transition->to));
+				quack_append(todo, transition->to);
 		}
 		
-		for (unsigned i = 0, n = gegex->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
-			struct gegex_grammar_transition* const transition = gegex->grammar_transitions.data[i];
+			struct gegex_grammar_transition* const transition = state->grammar_transitions.data[i];
 			
 			stringset_foreach(transition->tags, ({
 				void runme(struct string* tag) {
-					structinfo_add_grammar_field(structinfo, tag, transition->grammar);
+					structinfo_add_grammar_field(info, tag, transition->grammar);
 				}
 				runme;
 			}));
 			
 			if (gegexset_add(queued, transition->to))
-				quack_append(todo, new_bundle(structinfo, transition->to));
+				quack_append(todo, transition->to);
 		}
+		
 		
 		#ifdef DOTOUT
-		dotout(structinfos, named_gegexes, queued, gegex);
+		dotout(info, start, queued, state);
 		#endif
-		
-		free(bundle);
 	}
-	
-	free_quack(todo);
 	
 	free_gegexset(queued);
 	
 	EXIT;
-	return structinfos;
+	return info;
 }
-
-
-
-
 
 
 

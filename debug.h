@@ -35,6 +35,7 @@
 	struct unsignedset;
 	struct stringset;
 	struct tokenizer;
+	struct reductioninfo;
 	struct regex_transition;
 	struct regexset;
 	struct dlink;
@@ -161,6 +162,7 @@
 		_Generic(str, \
 			char*:          real_dpvsn (#str, ( char  *) (str), len), \
 			const char*:    real_dpvsn (#str, ( char  *) (str), len), \
+			struct string*: real_dpvsn(#str, ((struct string*) (str))->chars, len), \
 			wchar_t*:       real_dpvwsn(#str, (wchar_t*) (str), len), \
 			const wchar_t*: real_dpvwsn(#str, (wchar_t*) (str), len), \
 			default:        real_dpvsn (#str, (   void*) (str), len)); \

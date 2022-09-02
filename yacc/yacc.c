@@ -1,10 +1,17 @@
 
 #include <debug.h>
 
-#include "trieinfo/compare.h"
-#include "trieinfo/free.h"
+#include <avl/foreach.h>
 
-#include "build_structs.h"
+#include <named/gegex/struct.h>
+
+#include "named/trie/compare.h"
+#include "named/trie/free.h"
+
+#include "structinfo/compare.h"
+#include "structinfo/free.h"
+
+#include "build_structinfo.h"
 #include "build_tries.h"
 #include "yacc.h"
 
@@ -12,17 +19,25 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 {
 	ENTER;
 	
-	// one pass that figures out the grammar-structs:
-	struct avl_tree_t* structs = build_structs(named_gegexes);
+	struct avl_tree_t* structinfos = avl_alloc_tree(compare_structinfos, free_structinfo);
 	
-	TODO;
+	struct avl_tree_t* named_tries = avl_alloc_tree(compare_named_tries, free_named_trie);
 	
-	// break named_gegexes into named tries
-		// each trie's "reduction points" have a popcount
-			// and knows which fields and which indices it should grab
-		// we also need to know what the names and types are for each trie
-	
-	struct avl_tree_t* named_trieinfo = build_tries(named_trieinfo, named_gegexes);
+	avl_tree_foreach(named_gegexes, ({
+		void runme(void* ptr)
+		{
+			ENTER;
+			
+			struct named_gegex* named_gegex = ptr;
+			
+			struct structinfo* structinfo = build_structinfo(named_gegex->name, named_gegex->gegex);
+			
+			build_tries(named_tries, named_gegex->name, named_gegex->gegex, structinfo);
+			
+			EXIT;
+		}
+		runme;
+	}));
 	
 	// generate firsts
 	TODO;
@@ -38,7 +53,9 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 		// usual stuff here...
 	TODO;
 	
-	avl_free_tree(named_trieinfo);
+	avl_free_tree(structinfos);
+	
+	avl_free_tree(named_tries);
 	
 	EXIT;
 }

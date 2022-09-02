@@ -13,7 +13,7 @@ struct gegex
 			struct stringset* tags; // owned
 			struct gegex* to;
 		}** data;
-		size_t n, cap;
+		unsigned n, cap;
 	} transitions;
 	
 	struct {
@@ -22,12 +22,12 @@ struct gegex
 			struct stringset* tags; // owned
 			struct gegex* to;
 		}** data;
-		size_t n, cap;
+		unsigned n, cap;
 	} grammar_transitions;
 	
 	struct {
 		struct gegex** data; // owned
-		size_t n, cap;
+		unsigned n, cap;
 	} lambda_transitions;
 	
 	bool is_reduction_point;

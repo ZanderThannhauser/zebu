@@ -30,7 +30,7 @@ void gegex_add_grammar_transition(
 		from->grammar_transitions.data = realloc(from->grammar_transitions.data, sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
 	}
 	
-	size_t i;
+	unsigned i;
 	struct gegex_grammar_transition** const gdata = from->grammar_transitions.data;
 	
 	for (i = from->grammar_transitions.n++ - 1; 0 + 1 <= i + 1 && compare_strings(grammar_name, gdata[i]->grammar) < 0; i--)
