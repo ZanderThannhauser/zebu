@@ -5,41 +5,13 @@
 
 `string`: '\"' ['a' - 'z']+ '\"';
 
-// struct value
-// {
-	// char* true;
-	// char* false;
-	// char* number;
-	// char* string;
-	// struct {
-		// struct value** data;
-		// unsigned n, cap;
-	// }* elements;
-	// struct {
-		// struct {
-			// struct avl_node_t *next;
-			// struct avl_node_t *prev;
-			// struct avl_node_t *parent;
-			// struct avl_node_t *left;
-			// struct avl_node_t *right;
-			// char* key;
-			// struct value* value;
-			// unsigned int count;
-			// unsigned char depth;
-		// } *head, *tail, *top;
-		// unsigned n;
-	// }* dict;
-// }
-
 value
 	: "true"  #true
 	| "false" #false
 	| `['0' - '9']+` #number
 	| `string` #string
-	| %(element) value #elements[]:
-		"[" element ("," element)* "]"
-	| %(keyvalue): `string` #(key) ":" value #dict{key}:
-		"{" keyvalue ("," keyvalue)* "}"
+	| "[" value ("," value)* "]"
+	| "{" `string` ":" value ("," `string` ":" value)* "}"
 	;
 
 

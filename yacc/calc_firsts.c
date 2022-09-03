@@ -75,7 +75,15 @@ static void add(struct avl_tree_t* tree, struct string* name, struct string* add
 	
 	EXIT;
 }
-	
+
+struct unsignedset* get_firsts(struct avl_tree_t* named_firsts, struct string* name)
+{
+	struct avl_node_t* node = avl_search(named_firsts, &name);
+	assert(node);
+	struct named_unsignedset* named = node->item;
+	return named->unsignedset;
+}
+
 #ifdef DOTOUT
 static void dotout(
 	struct avl_tree_t* named_firsts,
@@ -157,14 +165,6 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 	
 	struct avl_tree_t* named_firsts = avl_alloc_tree(compare_named_unsignedsets, free_named_unsignedset);
 	
-	struct unsignedset* get_firsts(struct string* name)
-	{
-		struct avl_node_t* node = avl_search(named_firsts, &name);
-		assert(node);
-		struct named_unsignedset* named = node->item;
-		return named->unsignedset;
-	}
-	
 	struct avl_tree_t* dependent_on = avl_alloc_tree(compare_named_stringsets, free_named_stringset);
 	
 	struct avl_tree_t* dependent_of = avl_alloc_tree(compare_named_stringsets, free_named_stringset);
@@ -211,14 +211,14 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 	{
 		struct string* name = quack_pop(todo);
 		
-		struct unsignedset* firsts = get_firsts(name);
+		struct unsignedset* firsts = get_firsts(named_firsts, name);
 		
 		bool has_changed = false;
 		
 		stringset_foreach(get(dependent_on, name), ({
 			void runme(struct string* dep_name)
 			{
-				has_changed = unsignedset_update(firsts, get_firsts(dep_name));
+				has_changed = unsignedset_update(firsts, get_firsts(named_firsts, dep_name));
 			}
 			runme;
 		}));

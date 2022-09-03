@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <quack/struct.h>
-
 #ifdef VERBOSE
 #include <misc/default_sighandler.h>
 #endif
@@ -73,7 +71,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: gegex-clone: %u of %u (%.2f%%)\r", argv0,

@@ -45,6 +45,11 @@
 	struct unsignedcharset;
 	struct gegexset;
 	struct structinfo;
+	struct lex_state;
+	struct unsignedsetset;
+	struct lexstateset;
+	struct yacc_state;
+	struct yaccstateset;
 	
 	#include <defines/argv0.h>
 	

@@ -15,6 +15,8 @@ struct stateinfo* new_stateinfo()
 	
 	this->tree = avl_alloc_tree(compare_stateinfo_nodes, free_stateinfo_node);
 	
+	this->refcount = 1;
+	
 	EXIT;
 	return this;
 }

@@ -1,11 +1,4 @@
 
-struct yacc_state;
-struct lex;
-struct memory_arena;
-
 void lex_minimize_lexer(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct lex* this,
-	struct yacc_state* start);
+	struct yacc_state* ystart);

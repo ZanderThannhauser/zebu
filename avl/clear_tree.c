@@ -7,8 +7,6 @@
 
 void avl_clear_tree(avl_tree_t *avltree)
 {
-	ENTER;
 	avltree->top = avltree->head = avltree->tail = NULL;
-	EXIT;
 }
 

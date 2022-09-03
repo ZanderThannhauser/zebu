@@ -8,7 +8,7 @@ void free_regexset(struct regexset* this)
 {
 	ENTER;
 	
-	if (this)
+	if (this && !--this->refcount)
 	{
 		avl_free_tree(this->tree);
 		

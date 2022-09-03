@@ -45,7 +45,7 @@
 /*#include <string.h>*/
 /*#include <stdlib.h>*/
 /*#include <tree/of_gegexes/struct.h>*/
-#include <heap/struct.h>
+#include <heap/len.h>
 /*#include <macros/N.h>*/
 /*#include <macros/max.h>*/
 /*#include <defines/argv0.h>*/
@@ -232,7 +232,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + heap_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex simplify (percolate): %u of %u (%.2f%%)\r", argv0,
@@ -252,7 +252,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 /*	gegex_simplify_dfa_dotout(universe, connections, 0);*/
 /*	#endif*/
 	
-	while (todo->n)
+	while (heap_len(todo))
 	{
 		#ifdef VERBOSE
 		completed++;

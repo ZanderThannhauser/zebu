@@ -19,13 +19,13 @@
 #include <set/gegex/free.h>
 
 #include <heap/struct.h>
+#include <heap/len.h>
 #include <heap/new.h>
 #include <heap/push.h>
 #include <heap/pop.h>
 #include <heap/free.h>
 
 #ifdef VERBOSE
-#include <quack/struct.h>
 #include <misc/default_sighandler.h>
 #endif
 
@@ -114,7 +114,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: gegex nfa-to-dfa: %u of %u (%.2f%%)\r", argv0,
@@ -135,8 +135,6 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 	
 	while (quack_len(todo))
 	{
-		dpv(todo->n);
-		
 		#ifdef VERBOSE
 		completed++;
 		#endif
@@ -216,7 +214,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				runme;
 			}));
 			
-			while (heap->n)
+			while (heap_len(heap))
 			{
 				struct iterator* iterator;
 				

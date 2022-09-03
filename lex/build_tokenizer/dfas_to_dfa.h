@@ -1,10 +1,4 @@
 
-#if 0
-struct lex_state* dfas_to_dfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct tokensetset* accepting,
+struct unsignedsetset* dfas_to_dfa(
+	struct lex_state** outgoing,
 	struct regexset* starts);
-
-#endif

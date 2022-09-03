@@ -11,7 +11,6 @@
 
 #include <misc/default_sighandler.h>
 
-#include <lex/struct.h>
 #include <lex/new.h>
 #include <lex/free.h>
 
@@ -23,11 +22,8 @@
 
 #include <parser/main_parse.h>
 
-/*#include <arena/stdlib/new.h>*/
-/*#include <arena/mmap/new.h>*/
-/*#include <arena/free.h>*/
-
 #include <yacc/yacc.h>
+
 #include <yacc/state/free.h>
 
 int main(int argc, char* argv[])
@@ -62,17 +58,14 @@ int main(int argc, char* argv[])
 	
 	main_parse(grammar, lex);
 	
-	struct yacc_state* parser = yacc(grammar, lex->EOF_token_id);
+	struct yacc_state* parser = yacc(lex, grammar);
 	
 	TODO;
 	#if 0
 	out(parser);
 	#endif
 	
-	TODO;
-	#if 0
 	free_yacc_state(parser);
-	#endif
 	
 	avl_free_tree(grammar);
 	

@@ -21,6 +21,7 @@ struct regexset* new_regexset()
 	struct regexset* this = smalloc(sizeof(*this));
 	
 	this->tree = avl_alloc_tree(tree_compare, NULL);
+	this->refcount = 1;
 	this->n = 0;
 	
 	EXIT;

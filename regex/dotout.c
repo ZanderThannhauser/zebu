@@ -11,10 +11,9 @@
 
 #include <misc/escape.h>
 
-#include <quack/struct.h>
-
 #include <set/regex/new.h>
 #include <set/regex/add.h>
+#include <set/regex/foreach.h>
 #include <set/regex/free.h>
 
 #include <set/unsignedchar/to_string.h>
@@ -23,18 +22,38 @@
 
 #include "dotout.h"
 
-static void helper(FILE* out, struct regex* start)
+static void helper(const char* name, struct regexset* queued, struct quack* todo)
 {
 	ENTER;
 	
-	struct regexset* queued = new_regexset();
+	char path[PATH_MAX];
 	
-	struct quack* todo = new_quack();
+	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
 	
-	regexset_add(queued, start);
-	quack_append(todo, start);
+	dpvs(path);
 	
-	while (todo->n)
+	FILE* out = fopen(path, "w");
+	
+	if (!out)
+	{
+		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		abort();
+	}
+	
+	fprintf(out, "digraph {" "\n");
+	
+	fprintf(out, "\t" "rankdir = LR;" "\n");
+	
+	if (name)
+	{
+		fprintf(out, "\t" "label = \"%s\";" "\n", name);
+	}
+	
+	#if 0
+	fprintf(out, "\"%p\" [ shape = square; ];" "\n", state);
+	#endif
+	
+	while (quack_len(todo))
 	{
 		struct regex* state = quack_pop(todo);
 		
@@ -101,6 +120,27 @@ static void helper(FILE* out, struct regex* start)
 		}
 	}
 	
+	fprintf(out, "}" "\n");
+	
+	fclose(out);
+	
+	EXIT;
+}
+
+void regex_dotout(struct regex* state, const char* name)
+{
+	ENTER;
+	
+	struct regexset* queued = new_regexset();
+	
+	struct quack* todo = new_quack();
+	
+	regexset_add(queued, state);
+	
+	quack_append(todo, state);
+	
+	helper(name, queued, todo);
+	
 	free_regexset(queued);
 	
 	free_quack(todo);
@@ -108,82 +148,29 @@ static void helper(FILE* out, struct regex* start)
 	EXIT;
 }
 
-#if 0
-void regex_dotout_set(struct regexset* set)
+void regex_dotout_set(struct regexset* set, const char* name)
 {
 	ENTER;
 	
-	char path[PATH_MAX];
+	struct regexset* queued = new_regexset();
 	
-	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
-	
-	dpvs(path);
-	
-	FILE* out = fopen(path, "w");
-	
-	if (!out)
-	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
-		abort();
-	}
-	
-	fprintf(out, "digraph {" "\n");
-	
-	fprintf(out, "\t" "rankdir = LR;" "\n");
-	
-	dotout_phase_counter++;
+	struct quack* todo = new_quack();
 	
 	regexset_foreach(set, ({
-		void runme(struct regex* state) {
+		void runme(struct regex* state)
+		{
+			regexset_add(queued, state);
 			
-			helper(out, state);
-			
-			fprintf(out, "\"%p\" [ fillcolor = grey; ];" "\n", state);
-			
+			quack_append(todo, state);
 		}
 		runme;
 	}));
 	
-	fprintf(out, "}" "\n");
+	helper(name, queued, todo);
 	
-	if (out)
-		fclose(out);
+	free_regexset(queued);
 	
-	EXIT;
-}
-#endif
-
-void regex_dotout(struct regex* state, const char* name)
-{
-	ENTER;
-	
-	char path[PATH_MAX];
-	
-	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
-	
-	dpvs(path);
-	
-	FILE* out = fopen(path, "w");
-	
-	if (!out)
-	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
-		abort();
-	}
-	
-	fprintf(out, "digraph {" "\n");
-	
-	fprintf(out, "\t" "rankdir = LR;" "\n");
-	
-	fprintf(out, "\t" "label = \"%s\";" "\n", name);
-	
-	helper(out, state);
-	
-	fprintf(out, "\"%p\" [ shape = square; ];" "\n", state);
-	
-	fprintf(out, "}" "\n");
-	
-	fclose(out);
+	free_quack(todo);
 	
 	EXIT;
 }

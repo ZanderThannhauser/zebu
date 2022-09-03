@@ -1,10 +1,12 @@
 
 #include <stdlib.h>
-
 #include <assert.h>
 
 #include <debug.h>
 
+#include <set/unsigned/free.h>
+
+#include <set/unsignedset/free.h>
 
 #include "struct.h"
 #include "free.h"
@@ -15,14 +17,12 @@ void free_build_tokenizer_node(void *ptr)
 	
 	struct build_tokenizer_node* node = ptr;
 	
-	TODO;
-	#if 0
-	free_tokenset(node->given);
+	free_unsignedset(node->given);
 	
-	free_tokensetset(node->matches);
+	free_unsignedsetset(node->matches);
 	
 	free(node);
-	#endif
+	
 	EXIT;
 }
 

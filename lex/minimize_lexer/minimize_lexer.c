@@ -1,10 +1,11 @@
 
-#if 0
 #include <inttypes.h>
 #include <stdio.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#if 0
 
 #include <avl/alloc_tree.h>
 #include <avl/foreach.h>
@@ -55,27 +56,23 @@
 #include "task/new.h"
 #include "task/compare.h"
 #include "task/free.h"
+#endif
 
-#include "build_universe.h"
+/*#include "build_universe.h"*/
 #include "minimize_lexer.h"
-#include "mark_as_unequal.h"
-#include "traverse_and_clone.h"
-#include "add_dep.h"
+/*#include "mark_as_unequal.h"*/
+/*#include "traverse_and_clone.h"*/
+/*#include "add_dep.h"*/
 
 void lex_minimize_lexer(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct lex* this,
 	struct yacc_state* ystart)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct avl_tree_t* dependent_of = avl_alloc_tree(arena, lex_compare_dependent_of_nodes, free_lex_dependent_of_node);
-	#else
+	TODO;
+	#if 0
 	struct avl_tree_t* dependent_of = avl_alloc_tree(compare_lex_dependent_of_nodes, free_lex_dependent_of_node);
-	#endif
 	
 	struct lstatetree* universe = new_lstatetree();
 	
@@ -431,6 +428,7 @@ void lex_minimize_lexer(
 	avl_free_tree(connections);
 	
 	free_heap(todo);
+	#endif
 	
 	EXIT;
 }
@@ -460,4 +458,3 @@ void lex_minimize_lexer(
 
 
 
-#endif

@@ -22,7 +22,7 @@
 #include "read_directive/read_directive.h"
 #include "read_charset.h"
 #include "read_fragment.h"
-/*#include "read_grammar.h"*/
+#include "read_grammar.h"
 /*#include "read_inline_grammar.h"*/
 
 #include "recursive_parse.h"
@@ -102,18 +102,11 @@ void recursive_parse(
 				
 				case t_identifier:
 				{
-					TODO;
-					#if 0
 					read_grammar(
-						#ifdef WITH_ARENAS
-						/* grammar_arena:  */ grammar_arena,
-						/* token_arena:    */ token_arena,
-						#endif
 						/* tokenizer:   */ tokenizer,
 						/* options:     */ options,
 						/* scope        */ scope,
 						/* lex:         */ lex);
-					#endif
 					break;
 				}
 				

@@ -1,130 +1,22 @@
 
-#if 0
+#ifdef DOTOUT
+
 #include <debug.h>
 
-#include <misc/phase_counters.h>
+#include <set/lexstate/new.h>
+#include <set/lexstate/add.h>
+#include <set/lexstate/free.h>
 
 #include <misc/escape.h>
 
+#include <lex/state/struct.h>
+
+#include <set/unsigned/to_string.h>
+
 #include <misc/frame_counter.h>
 
-#include <set/of_tokens/to_string.h>
-
-#include "struct.h"
-
-#ifdef DOTOUT
-
-static void helper(FILE* out, struct lex_state* state)
-{
-	ENTER;
-	
-	if (state->phase != lex_phase_counter)
-	{
-		size_t i, n;
-		
-		state->phase = lex_phase_counter;
-		
-		{
-			char* label = NULL;
-			
-			if (state->accepting)
-				label = tokenset_to_string(state->accepting);
-			
-			fprintf(out, ""
-				"\"%p\" [" "\n"
-					"\t" "shape = %s;" "\n"
-					"\t" "label = \"%s\";" "\n"
-				"]" "\n"
-			"", state, state->accepting ? "doublecircle" : "circle", label ?: "");
-			
-			free(label);
-		}
-		
-		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
-		{
-			struct ltransition* transition = state->transitions.data[i];
-			
-			helper(out, transition->to);
-			
-			unsigned value = transition->value;
-			
-			dpvc(value);
-			
-			if (true
-				&& i + 1 < n
-				&& value + 1 == state->transitions.data[i + 1]->value
-				&& transition->to == state->transitions.data[i + 1]->to)
-			{
-				do i++; while (true
-					&& i + 1 < n
-					&& state->transitions.data[i]->value + 1 == state->transitions.data[i + 1]->value
-					&& transition->to == state->transitions.data[i + 1]->to);
-				
-				unsigned value2 = state->transitions.data[i]->value;
-				
-				dpvc(value2);
-				
-				char low[10], high[10];
-				escape(low, value);
-				escape(high, value2);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s - %s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, low, high);
-			}
-			else
-			{
-				char str[10];
-				escape(str, value);
-				dpvs(str);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, str);
-			}
-		}
-		
-		// default transition?:
-		if (state->default_transition_to)
-		{
-			struct lex_state* to = state->default_transition_to;
-			
-			helper(
-				/* out: */ out,
-				/* state:  */ to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<default>\"" "\n"
-				"]" "\n"
-			"", state, to);
-		}
-		
-		// EOF transition?
-		if (state->EOF_transition_to)
-		{
-			struct lex_state* to = state->EOF_transition_to;
-			
-			helper(out, to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<EOF>\"" "\n"
-				"]" "\n"
-			"", state, to);
-		}
-	}
-	
-	EXIT;
-}
-
 void lex_state_dotout(
-	struct lex_state* state)
+	struct lex_state* start)
 {
 	ENTER;
 	
@@ -134,47 +26,110 @@ void lex_state_dotout(
 	
 	dpvs(path);
 	
-	FILE* out = fopen(path, "w");
+	FILE* stream = fopen(path, "w");
 	
-	if (!out)
+	if (!stream)
 	{
 		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
 		abort();
 	}
 	
-	fprintf(out, "digraph {" "\n");
+	fprintf(stream, "digraph {" "\n");
 	
-	fprintf(out, "\t" "rankdir = LR;" "\n");
+	fprintf(stream, "\t" "rankdir = LR;" "\n");
 	
-	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
+	fprintf(stream, "\"%p\" [ style = bold; ];" "\n", start);
 	
-	lex_phase_counter++;
+	struct lexstateset* queued = new_lexstateset();
 	
-	helper(out, state);
+	struct quack* todo = new_quack();
 	
-	fprintf(out, "}" "\n");
+	lexstateset_add(queued, start);
 	
-	if (out)
-		fclose(out);
+	quack_append(todo, start);
+	
+	while (quack_len(todo))
+	{
+		struct lex_state* state = quack_pop(todo);
+		
+		if (state->accepts)
+		{
+			char* label = unsignedset_to_string(state->accepts);
+			
+			fprintf(stream, ""
+				"\"%p\" [" "\n"
+					"label = \"%s\"" "\n"
+					"shape = doublecircle" "\n"
+				"]" "\n"
+			"", state, label ?: "");
+			
+			free(label);
+		}
+		else
+		{
+			fprintf(stream, ""
+				"\"%p\" [" "\n"
+					"label = \"\"" "\n"
+					"shape = circle" "\n"
+				"]" "\n"
+			"", state);
+		}
+		
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			struct lex_transition* const ele = state->transitions.data[i];
+			
+			char str[10];
+			
+			escape(str, ele->value);
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"label = \"%s\"" "\n"
+				"]" "\n"
+			"", state, ele->to, str);
+			
+			if (lexstateset_add(queued, ele->to))
+				quack_append(todo, ele->to);
+		}
+		
+		if (state->default_transition_to)
+		{
+			TODO;
+		}
+		
+		if (state->EOF_transition_to)
+		{
+			struct lex_state* const to = state->EOF_transition_to;
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"label = \"<EOF>\"" "\n"
+				"]" "\n"
+			"", state, to);
+			
+			if (lexstateset_add(queued, to))
+				quack_append(todo, to);
+		}
+	}
+	
+	free_lexstateset(queued);
+	
+	fprintf(stream, "}" "\n");
+	
+	fclose(stream);
 	
 	EXIT;
 }
 
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif
+
+
+
+
+
+
+
+
+

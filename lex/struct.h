@@ -9,9 +9,9 @@ struct lex
 	
 	struct avl_tree_t* dfa_from_id; // token id -> token
 	
+	struct avl_tree_t* tokenizer_cache; // # set of token ids -> lex_state
+	
 	unsigned next_id;
 	
 	unsigned EOF_token_id;
-	
-	struct avl_tree_t* tokenizer_cache; // # set(token ids) -> machine id
 };

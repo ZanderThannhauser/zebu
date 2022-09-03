@@ -1,39 +1,26 @@
 
-#if 0
 #include <stdlib.h>
-
 #include <debug.h>
 
-#include <arena/malloc.h>
+#include <set/unsigned/inc.h>
 
-#include <set/of_tokens/clone.h>
+#include <set/unsignedset/inc.h>
 
 #include "struct.h"
 #include "new.h"
 
 struct build_tokenizer_node* new_build_tokenizer_node(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct tokenset* token_ids,  // needs to be cloned
-	struct tokensetset* matches,
+	struct unsignedset* token_ids,
+	struct unsignedsetset* matches,
 	struct lex_state* start)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct build_tokenizer_node* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct build_tokenizer_node* this = malloc(sizeof(*this));
-	#endif
+	struct build_tokenizer_node* this = smalloc(sizeof(*this));
 	
-	#ifdef WITH_ARENAS
-	this->given = tokenset_clone(arena, token_ids);
-	#else
-	this->given = tokenset_clone(token_ids);
-	#endif
+	this->given = inc_unsignedset(token_ids);
 	
-	this->matches = matches;
+	this->matches = inc_unsignedsetset(matches);
 	
 	this->start = start;
 	
@@ -41,4 +28,3 @@ struct build_tokenizer_node* new_build_tokenizer_node(
 	return this;
 }
 
-#endif

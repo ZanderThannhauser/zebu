@@ -23,6 +23,10 @@ struct unsignedset* new_unsignedset()
 	
 	this->tree = avl_alloc_tree(compare, free);
 	
+	this->len = 0;
+	
+	this->refcount = 1;
+	
 	EXIT;
 	return this;
 }

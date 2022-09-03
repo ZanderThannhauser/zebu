@@ -13,7 +13,6 @@
 #include <quack/free.h>
 
 #ifdef VERBOSE
-#include <quack/struct.h>
 #include <misc/default_sighandler.h>
 #endif
 
@@ -40,7 +39,7 @@ void regex_simplify_dfa_build_universe(
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex simplify (build universe): %u of %u (%.2f%%)\r", argv0,

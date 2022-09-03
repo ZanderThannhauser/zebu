@@ -19,6 +19,7 @@ struct regexset* regexset_clone(const struct regexset* this)
 	struct regexset* new = smalloc(sizeof(*new));
 	
 	new->n = this->n;
+	new->refcount = 1;
 	new->tree = tree;
 	
 	EXIT;

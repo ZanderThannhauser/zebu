@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <quack/struct.h>
-
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
@@ -23,7 +21,7 @@ void free_gegex(struct gegex* start)
 		
 		quack_append(todo, start);
 		
-		while (todo->n)
+		while (quack_len(todo))
 		{
 			struct gegex* state = quack_pop(todo);
 			

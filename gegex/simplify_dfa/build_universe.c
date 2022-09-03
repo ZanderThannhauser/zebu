@@ -7,7 +7,6 @@
 
 #ifdef VERBOSE
 #include <misc/default_sighandler.h>
-#include <quack/struct.h>
 #endif
 
 #include "../state/struct.h"
@@ -33,7 +32,7 @@ void gegex_simplify_dfa_build_universe(
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: gegex simplify (build universe): %u of %u (%.2f%%)\r", argv0,

@@ -31,7 +31,7 @@
 /*#include <string.h>*/
 /*#include <stdlib.h>*/
 #include <set/regex/struct.h>
-#include <heap/struct.h>
+#include <heap/len.h>
 #include <macros/N.h>
 /*#include <macros/max.h>*/
 /*#include <defines/argv0.h>*/
@@ -276,7 +276,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + heap_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex simplify (percolate): %u of %u (%.2f%%)\r", argv0,

@@ -6,7 +6,7 @@
 #include "struct.h"
 #include "add.h"
 
-void stateinfo_add(
+struct stateinfo_node* stateinfo_add(
 	struct stateinfo* this,
 	struct trie* trie,
 	struct unsignedset* lookahead // you're giving this to me
@@ -17,6 +17,10 @@ void stateinfo_add(
 	
 	if (node)
 	{
+		// update lookahead
+		TODO;
+		
+		// free given lookahead
 		TODO;
 	}
 	else
@@ -24,8 +28,9 @@ void stateinfo_add(
 		struct stateinfo_node* node = new_stateinfo_node(trie, lookahead);
 		
 		avl_insert(this->tree, node);
+		
+		EXIT;
+		return node;
 	}
-	
-	EXIT;
 }
 

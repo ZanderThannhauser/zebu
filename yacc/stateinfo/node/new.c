@@ -6,7 +6,7 @@
 
 struct stateinfo_node* new_stateinfo_node(
 	struct trie* trie,
-	struct unsignedset* lookahead // you're givin this to me
+	struct unsignedset* lookaheads // you're givin this to me
 ) {
 	ENTER;
 	
@@ -14,7 +14,7 @@ struct stateinfo_node* new_stateinfo_node(
 	
 	this->trie = trie;
 	
-	this->lookahead = lookahead;
+	this->lookaheads = lookaheads;
 	
 	EXIT;
 	return this;

@@ -12,7 +12,6 @@
 #include <set/unsignedchar/contains.h>
 
 #ifdef VERBOSE
-#include <quack/struct.h>
 #include <misc/default_sighandler.h>
 #endif
 
@@ -87,7 +86,7 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex intersect: %u of %u (%.2f%%)\r", argv0,

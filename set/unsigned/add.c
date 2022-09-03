@@ -10,18 +10,15 @@ void unsignedset_add(
 {
 	ENTER;
 	
-	
-	if (avl_search(this->tree, &token))
-	{
-		TODO;
-	}
-	else
+	if (!avl_search(this->tree, &token))
 	{
 		unsigned* new = smalloc(sizeof(token));
 		
 		*new = token;
 		
 		avl_insert(this->tree, new);
+		
+		this->len++;
 	}
 	
 	EXIT;

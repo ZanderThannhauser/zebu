@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include <quack/struct.h>
-
 #include <set/regex/new.h>
 #include <set/regex/add.h>
 #include <set/regex/free.h>
@@ -25,7 +23,7 @@ void regex_lambda_all_accepting_states(
 	
 	quack_append(todo, start);
 	
-	while (todo->n)
+	while (quack_len(todo))
 	{
 		struct regex* state = quack_pop(todo);
 		

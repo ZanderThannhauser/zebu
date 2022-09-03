@@ -14,8 +14,6 @@
 
 #include <misc/escape.h>
 
-#include <quack/struct.h>
-
 #include <set/regex/new.h>
 #include <set/regex/add.h>
 #include <set/regex/contains.h>
@@ -69,7 +67,7 @@ void simplify_dfa_dotout(
 		runme;
 	}));
 	
-	while (todo->n)
+	while (quack_len(todo))
 	{
 		struct regex* state = quack_pop(todo);
 		

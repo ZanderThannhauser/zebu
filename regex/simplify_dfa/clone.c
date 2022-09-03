@@ -14,7 +14,6 @@
 #include <avl/free_tree.h>
 
 #ifdef VERBOSE
-#include <quack/struct.h>
 #include <misc/default_sighandler.h>
 #endif
 
@@ -98,7 +97,7 @@ struct regex* regex_simplify_dfa_clone(
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex-clone: %u of %u (%.2f%%)\r", argv0,
@@ -176,6 +175,32 @@ struct regex* regex_simplify_dfa_clone(
 				struct mapping* submapping = new_mapping(cloneme, subnew);
 				
 				regex_set_default_transition(new, old->default_transition.exceptions, subnew);
+				
+				avl_insert(mappings, submapping);
+				
+				quack_append(todo, submapping);
+			}
+		}
+		
+		if (old->EOF_transition_to)
+		{
+			struct regex* cloneme = find(connections, old->EOF_transition_to);
+			
+			struct avl_node_t* node = avl_search(mappings, &cloneme);
+			
+			if (node)
+			{
+				struct mapping* submapping = node->item;
+				
+				regex_set_EOF_transition(new, submapping->new);
+			}
+			else
+			{
+				struct regex* subnew = new_regex();
+				
+				struct mapping* submapping = new_mapping(cloneme, subnew);
+				
+				regex_set_EOF_transition(new, subnew);
 				
 				avl_insert(mappings, submapping);
 				

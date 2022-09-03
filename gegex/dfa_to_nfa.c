@@ -5,7 +5,6 @@
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
 
-#include <quack/struct.h>
 #include <quack/append.h>
 
 #include "state/struct.h"
@@ -28,7 +27,7 @@ struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 	
 	quack_append(todo, start);
 	
-	while (todo->n)
+	while (quack_len(todo))
 	{
 		struct gegex* state = quack_pop(todo);
 		

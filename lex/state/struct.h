@@ -5,7 +5,7 @@
 struct lex_state
 {
 	struct {
-		struct ltransition {
+		struct lex_transition {
 			unsigned char value;
 			struct lex_state* to;
 		}** data;
@@ -16,12 +16,6 @@ struct lex_state
 	
 	struct lex_state* EOF_transition_to;
 	
-	struct tokenset* accepting; // freed by tokensetset
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
-	
-	unsigned phase;
+	struct unsignedset* accepts; // free me
 };
 

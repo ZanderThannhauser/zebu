@@ -10,7 +10,6 @@ void avl_free_nodes(avl_tree_t *avltree)
 {
 	avl_node_t *node, *next;
 	avl_freeitem_t freeitem;
-	ENTER;
 	
 	freeitem = avltree->freeitem;
 	
@@ -23,15 +22,9 @@ void avl_free_nodes(avl_tree_t *avltree)
 			freeitem(node->item);
 		}
 		
-		#ifdef WITH_ARENAS
-		arena_dealloc(avltree->arena, node);
-		#else
 		free(node);
-		#endif
 	}
 	
 	avl_clear_tree(avltree);
-	
-	EXIT;
 }
 

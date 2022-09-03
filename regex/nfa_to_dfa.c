@@ -7,6 +7,7 @@
 /*#include <avl/free_tree.h>*/
 
 #include <heap/struct.h>
+#include <heap/len.h>
 #include <heap/new.h>
 #include <heap/push.h>
 #include <heap/pop.h>
@@ -18,7 +19,7 @@
 #include <set/regex/compare.h>
 #include <set/regex/free.h>
 #include <set/regex/len.h>
-/*#include <set/regex/clear.h>*/
+#include <set/regex/inc.h>
 
 #include <set/unsignedchar/new.h>
 #include <set/unsignedchar/add.h>
@@ -29,10 +30,6 @@
 /*#include <named/regexset/compare.h>*/
 /*#include <named/regexset/free.h>*/
 
-#include <quack/len.h>
-
-#include <macros/len.h>
-
 #ifdef VERBOSE
 /*#include <stdio.h>*/
 /*#include <unistd.h>*/
@@ -41,11 +38,6 @@
 /*#include <string.h>*/
 /*#include <defines/argv0.h>*/
 #include <misc/default_sighandler.h>
-#include <quack/struct.h>
-#endif
-
-#ifdef DEBUGGING
-#include <quack/struct.h>
 #endif
 
 #include "state/struct.h"
@@ -75,7 +67,7 @@ static struct mapping* new_mapping(
 	
 	struct mapping* this = smalloc(sizeof(*this));
 	
-	this->stateset = stateset;
+	this->stateset = inc_regexset(stateset);
 	
 	this->combined_state = state;
 	
@@ -130,7 +122,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 	{
 		char buffer[1000] = {};
 		
-		unsigned total = completed + todo->n;
+		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
 			"\e[k" "%s: regex-nfa-to-dfa: %u of %u (%.2f%%)\r", argv0,
@@ -160,6 +152,8 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		quack_append(todo, mapping);
 		
 		avl_insert(mappings, mapping);
+		
+		free_regexset(start_set);
 	}
 	
 	#ifdef DOTOUT
@@ -168,8 +162,6 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 	
 	while (quack_len(todo))
 	{
-		dpv(todo->n);
-		
 		#ifdef VERBOSE
 		completed++;
 		#endif
@@ -247,7 +239,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		
 		struct heap* exceptions = new_heap(compare_chars);
 		
-		struct unsignedcharset* new_exceptions = new_unsignedcharset();
+		struct unsignedcharset* alphabet = new_unsignedcharset();
 		
 		// create default iterator list:
 		struct {
@@ -316,7 +308,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 			runme;
 		}));
 		
-		while (heap->n || exceptions->n)
+		while (heap_len(heap) || heap_len(exceptions))
 		{
 			struct iterator* iterator;
 			
@@ -348,7 +340,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 			
 			dpv(min_value);
 			
-			unsignedcharset_add(new_exceptions, min_value);
+			unsignedcharset_add(alphabet, min_value);
 			
 			struct regexset* subregexset = new_regexset();
 			
@@ -385,8 +377,6 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 					struct mapping* old = node->item;
 					
 					regex_add_transition(state, min_value, old->combined_state);
-					
-					free_regexset(subregexset);
 				}
 				else
 				{
@@ -401,10 +391,8 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 					avl_insert(mappings, new);
 				}
 			}
-			else
-			{
-				free_regexset(subregexset);
-			}
+			
+			free_regexset(subregexset);
 		}
 		
 		if (defaults.n)
@@ -415,9 +403,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 			{
 				struct mapping* old = node->item;
 				
-				regex_set_default_transition(state, new_exceptions, old->combined_state);
-				
-				free_regexset(default_subregexset);
+				regex_set_default_transition(state, alphabet, old->combined_state);
 			}
 			else
 			{
@@ -425,7 +411,7 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 				
 				struct mapping* new = new_mapping(default_subregexset, substate);
 				
-				regex_set_default_transition(state, new_exceptions, substate);
+				regex_set_default_transition(state, alphabet, substate);
 				
 				quack_append(todo, new);
 				
@@ -443,8 +429,6 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 				struct mapping* old = node->item;
 				
 				regex_set_EOF_transition(state, old->combined_state);
-				
-				free_regexset(EOF_subregexset);
 			}
 			else
 			{
@@ -466,7 +450,11 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		
 		free(defaults.data);
 		
-		free_unsignedcharset(new_exceptions);
+		free_regexset(default_subregexset);
+		
+		free_regexset(EOF_subregexset);
+			
+		free_unsignedcharset(alphabet);
 		
 		free_heap(heap);
 		

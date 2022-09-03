@@ -59,10 +59,7 @@ static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
 		
 		if (state->EOF_transition_to)
 		{
-			TODO;
-			#if 0
-			helper(state->EOF_transition_to);
-			#endif
+			helper(state->EOF_transition_to, is_accepting, is_literal);
 		}
 	}
 	

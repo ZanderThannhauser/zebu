@@ -33,7 +33,9 @@ bool unsignedset_update(
 		}
 		else
 		{
-			TODO;
+			dpv(ae);
+			an = an->next;
+			bn = bn->next;
 		}
 	}
 	
@@ -50,6 +52,8 @@ bool unsignedset_update(
 		avl_insert(this->tree, copy);
 		
 		has_changed = true;
+		
+		this->len++;
 		
 		bn = bn->next;
 	}

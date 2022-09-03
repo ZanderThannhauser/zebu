@@ -7,10 +7,7 @@
 
 #include <set/regex/new.h>
 #include <set/regex/add.h>
-/*#include <set/regex/foreach.h>*/
 #include <set/regex/free.h>
-
-#include <quack/struct.h>
 
 #include "struct.h"
 #include "free.h"
@@ -29,7 +26,7 @@ void free_regex(struct regex* start)
 		
 		quack_append(todo, start);
 		
-		while (todo->n)
+		while (quack_len(todo))
 		{
 			struct regex* state = quack_pop(todo);
 			
