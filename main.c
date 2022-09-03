@@ -11,8 +11,8 @@
 
 #include <misc/default_sighandler.h>
 
+#include <lex/struct.h>
 #include <lex/new.h>
-/*#include <lex/process_disambiguatations.h>*/
 #include <lex/free.h>
 
 #include <avl/alloc_tree.h>
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 	
 	main_parse(grammar, lex);
 	
-	struct yacc_state* parser = yacc(grammar);
+	struct yacc_state* parser = yacc(grammar, lex->EOF_token_id);
 	
 	TODO;
 	#if 0

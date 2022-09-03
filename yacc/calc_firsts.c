@@ -94,6 +94,10 @@ static void dotout(
 	
 	fprintf(stream, "rankdir = BT\n");
 	
+	fprintf(stream, "layout = neato\n");
+	
+	fprintf(stream, "overlap = false\n");
+	
 	avl_tree_foreach(named_firsts, ({
 		void runme(void* ptr)
 		{

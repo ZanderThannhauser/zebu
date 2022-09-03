@@ -36,6 +36,7 @@
 	struct stringset;
 	struct tokenizer;
 	struct reductioninfo;
+	struct stateinfo;
 	struct regex_transition;
 	struct regexset;
 	struct dlink;
@@ -76,14 +77,15 @@
 	#include <quack/foreach.h>
 	#include <quack/free.h>
 	
-	
 #endif
 
 #ifdef DEBUGGING
 	extern __thread int debug_depth;
 	
 	extern void real_dpvc(const char* e, char ch);
+	
 	extern void real_dpvsn(const char* e, const char* s, size_t n);
+	
 	extern void real_dpvwsn(const char* e, const wchar_t* s, size_t n);
 	
 	#define TODO \

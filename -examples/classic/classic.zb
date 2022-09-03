@@ -30,10 +30,6 @@
 // state. When the state returns a token enum value, it's done, feed it
 // to parser state machine.
 
-// %disambiguate: error;
-// %disambiguate: literal > regex;
-// %disambiguate: "abcc" > "abcccc"; // x2 length beats x3 length
-
 %skip: [' ', 'g'];
 
 // %token_skip: '-';
@@ -47,11 +43,11 @@
 // ABCCBA
 
 %start
-	: "abc"                #abc                                            "?"?
+	: "abc"          #abc1                                            "?"?
 	
-	| `abc & (..)*`  #even__abc  ":"        [wy]*                          "."
+	| `abc & (..)*`  #abc2  ":"        [wy]*                          "."
 	
-	| `abc & (...)*` #three_abc (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')] "!"
+	| `abc & (...)*` #abc3 (":")+ [(~((~wy) & (~ 'x'-'z'))) & (~'w')] "!"
 	
 	| %[b]: 'b';
 	   `b`: [b,          'B'];

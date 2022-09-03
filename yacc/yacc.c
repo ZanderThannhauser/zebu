@@ -5,6 +5,10 @@
 
 #include <named/gegex/struct.h>
 
+#include <set/unsigned/new.h>
+#include <set/unsigned/add.h>
+
+#include "named/trie/struct.h"
 #include "named/trie/compare.h"
 #include "named/trie/free.h"
 
@@ -15,9 +19,39 @@
 #include "build_tries.h"
 #include "calc_firsts.h"
 
+#include "state/new.h"
+
+#include "stateinfo/new.h"
+#include "stateinfo/add.h"
+
+#include "expand_stateinfo.h"
+
 #include "yacc.h"
 
-struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
+struct mapping
+{
+	struct stateinfo* stateinfo;
+	struct yacc_state* state;
+};
+
+static struct mapping* new_mapping()
+{
+	TODO;
+}
+
+static int compare_mappings(const void* a, const void* b)
+{
+	TODO;
+}
+
+static void free_mapping(void* ptr)
+{
+	TODO;
+}
+
+struct yacc_state* yacc(
+	struct avl_tree_t* named_gegexes,
+	unsigned EOF_token_id)
 {
 	ENTER;
 	
@@ -28,15 +62,11 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 	avl_tree_foreach(named_gegexes, ({
 		void runme(void* ptr)
 		{
-			ENTER;
-			
 			struct named_gegex* named_gegex = ptr;
 			
 			struct structinfo* structinfo = build_structinfo(named_gegex->name, named_gegex->gegex);
 			
 			build_tries(named_tries, named_gegex->name, named_gegex->gegex, structinfo);
-			
-			EXIT;
 		}
 		runme;
 	}));
@@ -44,16 +74,58 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 	// node->item are of `struct named_unsignedset*` type.
 	struct avl_tree_t* named_firsts = calc_firsts(named_tries);
 	
-	// def expand():
-		// given a set of trie-states, it will expand out the stateinfo
+	struct quack* todo = new_quack();
 	
-	// call expand() with "(start)"'s first state.
-	// create new yacc state
-	// add to mapping and submit to `todo`
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
 	
-	// while len(todo):
-		// usual stuff here...
+	struct yacc_state* start = new_yacc_state();
+	
+	{
+		struct stateinfo* stateinfo = new_stateinfo();
+		
+		struct named_trie* start_trie = avl_search(named_tries, &(const char**){(const char*[]) {"(start)"}})->item;
+		
+		struct unsignedset* lookahead = new_unsignedset();
+		
+		unsignedset_add(lookahead, EOF_token_id);
+		
+		stateinfo_add(stateinfo, start_trie->trie, lookahead);
+		
+		expand_stateinfo(stateinfo);
+		
+		quack_append(todo, new_mapping(stateinfo, start));
+		
+		avl_insert(mappings, stateinfo);
+	}
+	
+	while (quack_len(todo))
+	{
+		TODO;
+		
+		#ifdef DOTOUT
+		yacc_state_dotout(start);
+		#endif
+	}
+	
 	TODO;
+	#if 0
+	if (simplify_tokenizer)
+	{
+		#ifdef WITH_ARENAS
+		lex_simplify_tokenizer(tokenizer_arena, lex, start);
+		#else
+		lex_simplify_tokenizer(lex, start);
+		#endif
+		
+		#ifdef DOTOUT
+		yacc_state_dotout(start);
+		#endif
+	}
+	#endif
+	
+	free_quack(todo);
+	
+	avl_free_tree(mappings);
 	
 	avl_free_tree(named_firsts);
 	
@@ -62,6 +134,7 @@ struct yacc_state* yacc(struct avl_tree_t* named_gegexes)
 	avl_free_tree(named_tries);
 	
 	EXIT;
+	return start;
 }
 
 

@@ -1,0 +1,6 @@
+
+struct yacc_state
+{
+	
+};
+
