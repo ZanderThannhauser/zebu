@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <avl/tree_t.h>
@@ -23,3 +24,4 @@ void tokenset_to_id_foreach(
 	EXIT;
 }
 
+#endif

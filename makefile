@@ -76,7 +76,7 @@ ARGS += --verbose
 #ARGS += -l
 ARGS += --minimize-lexer
 
-#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -91,7 +91,7 @@ ARGS += --minimize-lexer
 #ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
-ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
+#ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
 #ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc

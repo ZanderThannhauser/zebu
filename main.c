@@ -24,6 +24,8 @@
 
 #include <yacc/yacc.h>
 
+#include <out/out.h>
+
 #include <yacc/state/free.h>
 
 int main(int argc, char* argv[])
@@ -60,10 +62,7 @@ int main(int argc, char* argv[])
 	
 	struct yacc_state* parser = yacc(lex, grammar);
 	
-	TODO;
-	#if 0
 	out(parser);
-	#endif
 	
 	free_yacc_state(parser);
 	

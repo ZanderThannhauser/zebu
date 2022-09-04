@@ -22,9 +22,13 @@ struct yacc_state
 	struct {
 		struct yacc_state_reduce_transition {
 			struct unsignedset* on;
+			
 			struct string* reduce_as;
+			
 			unsigned popcount;
+			
 			struct reductioninfo* reductioninfo;
+			
 			struct structinfo* structinfo;
 		}** data;
 		unsigned n, cap;

@@ -1,14 +1,15 @@
 
-struct lstate_to_id_node
+struct string_to_id_node
 {
-	struct lex_state* lstate;
+	struct string* string;
 	
 	unsigned id;
 };
 
-struct lstate_to_id
+struct string_to_id
 {
 	struct avl_tree_t* tree;
 	
 	unsigned next;
 };
+

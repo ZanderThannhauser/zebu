@@ -22,6 +22,8 @@ void dyntable_print_source(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	dpvs(this->name);
 	
 	#ifdef VERBOSE
@@ -59,6 +61,7 @@ void dyntable_print_source(
 	#ifdef VERBOSE
 	if (verbose)
 		signal(SIGALRM, default_sighandler);
+	#endif
 	#endif
 	
 	EXIT;

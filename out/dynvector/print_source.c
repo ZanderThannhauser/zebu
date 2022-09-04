@@ -24,6 +24,8 @@ void dynvector_print_source(
 	
 	dpvs(this->name);
 	
+	TODO;
+	#if 0
 	#ifdef VERBOSE
 	void handler(int _)
 	{
@@ -60,7 +62,11 @@ void dynvector_print_source(
 	if (verbose)
 		signal(SIGALRM, default_sighandler);
 	#endif
+	#endif
 	
 	EXIT;
 }
+
+
+
 

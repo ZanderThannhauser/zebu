@@ -1,17 +1,13 @@
 
-#include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <stdlib.h>
-#include <stddef.h>
+
 #include <assert.h>
-#include <stdio.h>
-#include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
 
 struct <PREFIX>_state
 {
