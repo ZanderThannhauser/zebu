@@ -48,7 +48,6 @@
 #include <heap/len.h>
 /*#include <macros/N.h>*/
 /*#include <macros/max.h>*/
-/*#include <defines/argv0.h>*/
 #include <misc/default_sighandler.h>
 #endif
 
@@ -79,7 +78,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "%s: gegex simplify (build deps) %4lu of %4lu (%.2f%%)\r", argv0,
+			"\e[K" "zebu: grammar simplify (build dependencies) %4lu of %4lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -190,7 +189,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "%s: simplify (allocating dep-trees): %4lu of %4lu (%.2f%%)\r", argv0,
+			"\e[K" "zebu: grammar simplify (allocating dependency-trees): %4lu of %4lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -235,9 +234,8 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		unsigned total = completed + heap_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex simplify (percolate): %u of %u (%.2f%%)\r", argv0,
-				completed, total,
-				(double) completed * 100 / total);
+			"\e[k" "zebu: grammar simplify (percolate): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)
 		{

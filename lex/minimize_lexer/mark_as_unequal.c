@@ -1,13 +1,10 @@
 
-#if 0
 #include <assert.h>
 
 #include <debug.h>
 
-#include <avl/search.h>
-
-#include <tree/of_lstates/contains.h>
-#include <tree/of_lstates/discard.h>
+#include <set/lexstate/contains.h>
+#include <set/lexstate/discard.h>
 
 #include "pair/struct.h"
 
@@ -30,12 +27,12 @@ bool lex_simplify_dfa_mark_as_unequal(
 	
 	bool removed = false;
 	
-	if (lstatetree_contains(a_sa->set, pair->b))
+	if (lexstateset_contains(a_sa->set, pair->b))
 	{
-		assert(lstatetree_contains(b_sa->set, pair->a));
+		assert(lexstateset_contains(b_sa->set, pair->a));
 		
-		lstatetree_discard(a_sa->set, pair->b);
-		lstatetree_discard(b_sa->set, pair->a);
+		lexstateset_discard(a_sa->set, pair->b);
+		lexstateset_discard(b_sa->set, pair->a);
 		
 		removed = true;
 	}
@@ -58,4 +55,3 @@ bool lex_simplify_dfa_mark_as_unequal(
 
 
 
-#endif

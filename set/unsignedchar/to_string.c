@@ -16,7 +16,7 @@ char* unsignedcharset_to_string(
 	
 	dpv(this->n);
 	
-	char* buffer = smalloc(1 + 1 + 6 * this->n + 1 + 1);
+	char* buffer = smalloc(1 + 1 + (10 + 2) * this->n + 1 + 1);
 	
 	char* moving = buffer;
 	

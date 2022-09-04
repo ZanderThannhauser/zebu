@@ -25,7 +25,7 @@ bool pragma_once_lookup(struct pragma_once* this, int fd)
 	
 	if (fstat(fd, &statbuf) < 0)
 	{
-		fprintf(stderr, "%s: fstat(): %m\n", argv0);
+		fprintf(stderr, "zebu: fstat(): %m\n");
 		exit(e_syscall_failed);
 	}
 	

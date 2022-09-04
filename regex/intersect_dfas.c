@@ -89,7 +89,7 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex intersect: %u of %u (%.2f%%)\r", argv0,
+			"\e[k" "zebu: regex intersect: %u of %u (%.2f%%)\r",
 				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)

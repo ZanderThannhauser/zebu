@@ -26,11 +26,7 @@ void *avl_delete_node(
 			avltree->freeitem(item);
 		}
 		
-		#ifdef WITH_ARENAS
-		arena_dealloc(avltree->arena, avlnode);
-		#else
 		free(avlnode);
-		#endif
 	}
 	
 	EXIT;

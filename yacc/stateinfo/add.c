@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <set/unsigned/update.h>
+#include <set/unsigned/free.h>
+
+#include "node/struct.h"
 #include "node/new.h"
 
 #include "struct.h"
@@ -9,7 +13,7 @@
 struct stateinfo_node* stateinfo_add(
 	struct stateinfo* this,
 	struct trie* trie,
-	struct unsignedset* lookahead // you're giving this to me
+	struct unsignedset* lookaheads // you're giving this to me
 ) {
 	ENTER;
 	
@@ -17,15 +21,18 @@ struct stateinfo_node* stateinfo_add(
 	
 	if (node)
 	{
-		// update lookahead
-		TODO;
+		struct stateinfo_node* ele = node->item;
 		
-		// free given lookahead
-		TODO;
+		unsignedset_update(ele->lookaheads, lookaheads);
+		
+		free_unsignedset(lookaheads);
+		
+		EXIT;
+		return NULL;
 	}
 	else
 	{
-		struct stateinfo_node* node = new_stateinfo_node(trie, lookahead);
+		struct stateinfo_node* node = new_stateinfo_node(trie, lookaheads);
 		
 		avl_insert(this->tree, node);
 		

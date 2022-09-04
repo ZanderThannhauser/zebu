@@ -74,7 +74,7 @@ default: $(buildprefix)/zebu
 ARGS += --verbose
 
 #ARGS += -l
-#ARGS += --minimize-lexer
+ARGS += --minimize-lexer
 
 #ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
@@ -84,14 +84,14 @@ ARGS += --verbose
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
+#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
 #ARGS += --yacc=readline-debug -i ./-examples/C-expressions/C.zb -o ./-examples/C-expressions/output
 #ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
 #ARGS += --yacc=readline-debug -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
-#ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
+ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
 #ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
 #ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc

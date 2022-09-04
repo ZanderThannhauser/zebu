@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 	#ifdef DOTOUT
 	if (mkdir("dot", 0775) < 0 && errno != EEXIST)
 	{
-		fprintf(stderr, "%s: mkdir(\"dot\"): %m\n", argv0);
+		fprintf(stderr, "zebu: mkdir(\"dot\"): %m\n");
 		exit(e_syscall_failed);
 	}
 	#endif

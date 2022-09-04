@@ -82,8 +82,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		char buffer[1000] = {};
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "regex simplify (build deps)",
+			"\e[K" "zebu: regex simplify (build dependencies): %4lu of %4lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, buffer, len) != len)
@@ -126,30 +125,20 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							
 							if (at->value < bt->value)
 							{
-								if (b->default_transition.to)
-								{
-									TODO;
-									#if 0
-									regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition_to);
-									a_i++;
-									#endif
-								}
+								if (b->default_transition.to && !unsignedcharset_contains(b->default_transition.exceptions, at->value))
+									regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
 								else
-								{
 									unequal = true;
-								}
+								
+								a_i++;
 							}
 							else if (at->value > bt->value)
 							{
 								if (a->default_transition.to && !unsignedcharset_contains(a->default_transition.exceptions, bt->value))
-								{
 									regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
-									b_i++;
-								}
 								else
-								{
 									unequal = true;
-								}
+								b_i++;
 							}
 							else
 							{
@@ -164,23 +153,19 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 							const struct regex_transition* const at = a->transitions.data[a_i++];
 							
 							if (!unsignedcharset_contains(b->default_transition.exceptions, at->value))
-							{
 								regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
-							}
 							else
-							{
 								unequal = true;
-							}
 						}
 						
 						while (!unequal && a->default_transition.to && b_i < b_n)
 						{
 							const struct regex_transition* const bt = b->transitions.data[b_i++];
 							
-							TODO;
-							#if 0
-							regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition_to, bt->to);
-							#endif
+							if (!unsignedcharset_contains(a->default_transition.exceptions, bt->value))
+								regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
+							else
+								unequal = true;
 						}
 						
 						if (!unequal && ((a_i < a_n) != (b_i < b_n)))
@@ -195,16 +180,10 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 						
 						if (!unequal && a->default_transition.to && b->default_transition.to)
 						{
-							// are exception-sets equal?
 							if (unsignedcharset_are_equal(a->default_transition.exceptions, b->default_transition.exceptions))
-							{
 								regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, b->default_transition.to);
-							}
 							else
-							{
-								// unequal = true;
-								TODO;
-							}
+								unequal = true;
 						}
 						
 						if (unequal)
@@ -231,8 +210,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		char ptr[200] = {};
 		
 		size_t len = snprintf(ptr, 200,
-			"\e[K" "%s: %s: %4lu of %4lu (%.2f%%)\r",
-			argv0, "regex simplify (allocating dep-trees)",
+			"\e[K" "zebu: regex simplify (allocating dep-trees): %4lu of %4lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -269,7 +247,6 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 	}));
 	
 	#ifdef VERBOSE
-	
 	unsigned completed = 0;
 	
 	void handler2(int _)
@@ -279,7 +256,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		unsigned total = completed + heap_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex simplify (percolate): %u of %u (%.2f%%)\r", argv0,
+			"\e[K" "zebu: regex simplify (percolate): %u of %u (%.2f%%)\r",
 				completed, total,
 				(double) completed * 100 / total);
 		

@@ -50,8 +50,7 @@
 	struct lexstateset;
 	struct yacc_state;
 	struct yaccstateset;
-	
-	#include <defines/argv0.h>
+	struct lex_pair;
 	
 	#include <enums/error.h>
 	

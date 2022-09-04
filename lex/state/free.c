@@ -1,53 +1,77 @@
 
-#ifdef WITHOUT_ARENAS
-
 #include <stdlib.h>
 
 #include <assert.h>
 
 #include <debug.h>
 
-#include <tree/of_lstates/add.h>
+#include <set/lexstate/add.h>
+
+#include <set/unsignedchar/free.h>
 
 #include "struct.h"
 #include "free.h"
 
-// needs to keep a list of what it has already freed
-// instead of using these booleans
-
-void free_lex_state(
-	struct lstatetree* freed,
-	struct lex_state* this)
+void free_lex_state(struct lexstateset* freed, struct lex_state* start)
 {
 	ENTER;
 	
-	if (lstatetree_add(freed, this))
+	struct quack* todo = new_quack();
+	
+	if (lexstateset_add(freed, start))
+		quack_append(todo, start);
+	
+	while (quack_len(todo))
 	{
-		for (unsigned i = 0, n = this->transitions.n; i < n; i++)
+		struct lex_state* state = quack_pop(todo);
+		
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct ltransition* t = this->transitions.data[i];
+			struct lex_transition* trans = state->transitions.data[i];
 			
-			free_lex_state(freed, t->to);
+			if (lexstateset_add(freed, trans->to))
+				quack_append(todo, trans->to);
 			
-			free(t);
+			free(trans);
 		}
 		
-		if (this->default_transition_to)
+		if (state->default_transition.to)
 		{
-			free_lex_state(freed, this->default_transition_to);
+			free_unsignedcharset(state->default_transition.exceptions);
+			
+			if (lexstateset_add(freed, state->default_transition.to))
+				quack_append(todo, state->default_transition.to);
 		}
 		
-		if (this->EOF_transition_to)
+		if (state->EOF_transition_to)
 		{
-			free_lex_state(freed, this->EOF_transition_to);
+			if (lexstateset_add(freed, state->EOF_transition_to))
+				quack_append(todo, state->EOF_transition_to);
 		}
 		
-		free(this->transitions.data);
+		free(state->transitions.data);
 		
-		free(this);
+		free(state);
 	}
+	
+	free_quack(todo);
 	
 	EXIT;
 }
 
-#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

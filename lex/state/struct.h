@@ -12,7 +12,10 @@ struct lex_state
 		size_t n, cap;
 	} transitions;
 	
-	struct lex_state* default_transition_to;
+	struct {
+		struct unsignedcharset* exceptions;
+		struct lex_state* to;
+	} default_transition;
 	
 	struct lex_state* EOF_transition_to;
 	

@@ -35,7 +35,7 @@ void gegex_simplify_dfa_build_universe(
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: gegex simplify (build universe): %u of %u (%.2f%%)\r", argv0,
+			"\e[K" "zebu: grammar simplify (build universe): %u of %u (%.2f%%)\r",
 				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)

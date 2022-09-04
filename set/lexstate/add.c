@@ -14,6 +14,7 @@ bool lexstateset_add(
 	
 	if (node)
 	{
+		this->len++;
 		return true;
 	}
 	else if (errno == EEXIST)

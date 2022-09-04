@@ -24,7 +24,19 @@ bool unsignedset_update(
 		
 		if (ae > be)
 		{
-			TODO;
+			dpv(be);
+			
+			unsigned *copy = smalloc(sizeof(*copy));
+			
+			*copy = be;
+			
+			avl_insert(this->tree, copy);
+			
+			has_changed = true;
+			
+			this->len++;
+			
+			bn = bn->next;
 		}
 		else if (ae < be)
 		{

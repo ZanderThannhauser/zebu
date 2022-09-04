@@ -16,7 +16,8 @@ struct lex_state* new_lex_state()
 	this->transitions.n = 0;
 	this->transitions.cap = 0;
 	
-	this->default_transition_to = NULL;
+	this->default_transition.exceptions = NULL;
+	this->default_transition.to = NULL;
 	
 	this->EOF_transition_to = NULL;
 	

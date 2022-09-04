@@ -1,9 +1,5 @@
 
-#if 0
 #include <debug.h>
-
-#include <avl/search.h>
-#include <avl/insert.h>
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/new.h"
@@ -14,9 +10,6 @@
 #include "add_dep.h"
 
 void lex_simplify_dfa_add_dep(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
 	struct avl_tree_t* dependent_of,
 	struct lex_state* a_on, struct lex_state* b_on,
 	struct lex_state* a_of, struct lex_state* b_of)
@@ -37,28 +30,16 @@ void lex_simplify_dfa_add_dep(
 		
 		if (!avl_search(old->dependent_of, &(struct lex_pair){a_on, b_on}))
 		{
-			#ifdef WITH_ARENAS
-			struct lex_pair* dep = new_lex_pair(arena, a_on, b_on);
-			#else
 			struct lex_pair* dep = new_lex_pair(a_on, b_on);
-			#endif
 			
 			avl_insert(old->dependent_of, dep);
 		}
 	}
 	else
 	{
-		#ifdef WITH_ARENAS
-		struct lex_dependent_of_node* new = new_lex_dependent_of_node(arena, a_of, b_of);
-		#else
 		struct lex_dependent_of_node* new = new_lex_dependent_of_node(a_of, b_of);
-		#endif
 		
-		#ifdef WITH_ARENAS
-		struct lex_pair* dep = new_lex_pair(arena, a_on, b_on);
-		#else
 		struct lex_pair* dep = new_lex_pair(a_on, b_on);
-		#endif
 		
 		avl_insert(new->dependent_of, dep);
 		
@@ -73,4 +54,3 @@ void lex_simplify_dfa_add_dep(
 
 
 
-#endif

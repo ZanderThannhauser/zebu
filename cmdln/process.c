@@ -7,8 +7,6 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
-
 #include <macros/strequals.h>
 
 #include <enums/error.h>
@@ -100,7 +98,7 @@ void cmdln_process(int argc, char* const* argv)
 	
 	if (!input_path || !output_path)
 	{
-		fprintf(stderr, "%s: missing arguments!\n", argv0);
+		fprintf(stderr, "zebu: missing arguments!\n");
 		usage(e_bad_cmdline_args);
 	}
 	

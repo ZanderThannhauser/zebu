@@ -21,6 +21,11 @@
 #include <set/unsignedset/foreach.h>
 #include <set/unsignedset/free.h>
 
+#ifdef VERBOSE
+#include <quack/len.h>
+#include <misc/default_sighandler.h>
+#endif
+
 #include "named/trie/struct.h"
 #include "named/trie/compare.h"
 #include "named/trie/free.h"
@@ -313,14 +318,9 @@ static void add_subgrammar(
 	
 	if (node)
 	{
-		TODO;
-		#if 0
 		struct subgrammar_node* old = node->item;
 		
-		struct unsignedset* duped = unsignedset_clone(lookaheads);
-		
-		stateinfo_add(old->stateinfo, to, reduce_as, duped);
-		#endif
+		stateinfo_add(old->stateinfo, to, unsignedset_clone(lookaheads));
 	}
 	else
 	{
@@ -385,6 +385,28 @@ struct yacc_state* yacc(
 		
 		free_stateinfo(stateinfo);
 	}
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler2(int _)
+	{
+		char buffer[1000] = {};
+		
+		unsigned total = completed + quack_len(todo);
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: generate parser: %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler2);
+	#endif
 	
 	while (quack_len(todo))
 	{
@@ -626,6 +648,10 @@ struct yacc_state* yacc(
 		yacc_state_dotout(start);
 		#endif
 		
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
 		free_unsignedset(all_tokens);
 		
 		free_unsignedsetset(tokens);
@@ -636,6 +662,10 @@ struct yacc_state* yacc(
 		
 		avl_free_tree(subgrammars);
 	}
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
 	
 	if (minimize_lexer)
 	{

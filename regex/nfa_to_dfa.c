@@ -36,7 +36,6 @@
 /*#include <stdlib.h>*/
 /*#include <signal.h>*/
 /*#include <string.h>*/
-/*#include <defines/argv0.h>*/
 #include <misc/default_sighandler.h>
 #endif
 
@@ -125,9 +124,8 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex-nfa-to-dfa: %u of %u (%.2f%%)\r", argv0,
-				completed, total,
-				(double) completed * 100 / total);
+			"\e[k" "zebu: regex nfa-to-dfa: %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)
 		{

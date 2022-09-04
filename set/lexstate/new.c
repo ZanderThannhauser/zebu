@@ -22,6 +22,8 @@ struct lexstateset* new_lexstateset()
 	
 	this->tree = avl_alloc_tree(compare, NULL);
 	
+	this->len = 0;
+	
 	EXIT;
 	return this;
 }

@@ -42,7 +42,7 @@ void regex_simplify_dfa_build_universe(
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: regex simplify (build universe): %u of %u (%.2f%%)\r", argv0,
+			"\e[k" "zebu: regex simplify (build universe): %u of %u (%.2f%%)\r",
 				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)

@@ -41,7 +41,7 @@ void gegex_simplify_dfa_dotout(
 	
 	if (!out)
 	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", path);
 		abort();
 	}
 	

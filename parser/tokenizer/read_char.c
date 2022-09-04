@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-#include <defines/argv0.h>
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -24,7 +22,7 @@ void read_char(struct tokenizer* this)
 	}
 	else if ((rretval = read(this->fd, this->buffer.data, sizeof(this->buffer.data))) < 0)
 	{
-		fprintf(stderr, "%s: read(): %m\n", argv0),
+		fprintf(stderr, "zebu: read(): %m\n"),
 		exit(e_syscall_failed);
 	}
 	else if (!rretval)

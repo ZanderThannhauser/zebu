@@ -51,15 +51,18 @@ static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
 		
 		if (state->default_transition.to)
 		{
-			TODO;
-			#if 0
-			helper(state->default_transition.to);
-			#endif
+			struct regex* to = state->default_transition.to;
+			
+			if (regexset_add(queued, to))
+				quack_append(todo, to);
 		}
 		
 		if (state->EOF_transition_to)
 		{
-			helper(state->EOF_transition_to, is_accepting, is_literal);
+			struct regex* to = state->EOF_transition_to;
+			
+			if (regexset_add(queued, to))
+				quack_append(todo, to);
 		}
 	}
 	

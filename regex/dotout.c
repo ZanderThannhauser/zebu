@@ -36,7 +36,7 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 	
 	if (!out)
 	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", path);
 		abort();
 	}
 	

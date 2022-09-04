@@ -4,7 +4,6 @@
 #include <avl/tree_t.h>
 
 #ifdef VERBOSE
-#include <defines/argv0.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <cmdln/verbose.h>
@@ -30,7 +29,7 @@ void dynvector_print_source(
 	{
 		char ptr[100] = {};
 		
-		size_t len = snprintf(ptr, 100, "\e[K" "%s: outputing %s table...\r", argv0, this->name);
+		size_t len = snprintf(ptr, 100, "\e[K" "zebu: writing %s table ...\r", this->name);
 		
 		if (write(1, ptr, len) != len)
 		{

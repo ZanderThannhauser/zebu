@@ -9,6 +9,7 @@
 #include <lex/state/struct.h>
 #include <lex/state/new.h>
 #include <lex/state/add_transition.h>
+#include <lex/state/set_default_transition.h>
 #include <lex/state/set_EOF_transition.h>
 #include <lex/state/dotout.h>
 
@@ -29,6 +30,7 @@
 #include <set/unsignedchar/new.h>
 #include <set/unsignedchar/add.h>
 #include <set/unsignedchar/contains.h>
+#include <set/unsignedchar/foreach.h>
 #include <set/unsignedchar/free.h>
 
 #include <set/unsigned/new.h>
@@ -226,36 +228,29 @@ struct unsignedsetset* dfas_to_dfa(
 				
 				if (ele->default_transition.to)
 				{
-					TODO;
-					#if 0
-					if (defaults.n + 1 > defaults.cap)
+					if (defaults.n == defaults.cap)
 					{
 						defaults.cap = defaults.cap << 1 ?: 1;
 						
 						dpv(defaults.cap);
 						
-						defaults.data = srealloc(defaults.data, sizeof(*de
-faults.data) * defaults.cap);
+						defaults.data = srealloc(defaults.data, sizeof(*defaults.data) * defaults.cap);
 					}
+					
+					regexset_add(default_subregexset, ele->default_transition.to);
 					
 					defaults.data[defaults.n].to = ele->default_transition.to;
 					
-					defaults.data[defaults.n].exceptions = ele->default_transi
-tion.exceptions;
+					defaults.data[defaults.n].exceptions = ele->default_transition.exceptions;
 					
 					defaults.n++;
 					
-					add_lambda_states(default_subregexset, ele->default_transi
-tion.to);
-					
-					unsignedcharset_foreach(ele->default_transition.exceptions
-, ({
+					unsignedcharset_foreach(ele->default_transition.exceptions, ({
 						void runme(unsigned char value)
 						{
 							dpv(value);
 							
-							unsigned char* dup = smalloc(sizeof(*dup))
-;
+							unsigned char* dup = smalloc(sizeof(*dup));
 							
 							*dup = value;
 							
@@ -263,7 +258,6 @@ tion.to);
 						}
 						runme;
 					}));
-					#endif
 				}
 				
 				if (ele->EOF_transition_to)
@@ -365,13 +359,26 @@ tion.to);
 		// default transitions:
 		if (regexset_len(default_subregexset))
 		{
-			// look it up, does it already exist?
-				// add a transition
-			// otherwise:
-				// create mapping (using `default_tos`)
-				// inc `default_tos`
-				// quack_append
-			TODO;
+			struct avl_node_t* node = avl_search(mappings, &default_subregexset);
+			
+			if (node)
+			{
+				struct mapping* old = node->item;
+				
+				lex_state_set_default_transition(state, alphabet, old->state);
+			}
+			else
+			{
+				struct lex_state* substate = new_lex_state();
+				
+				struct mapping* new = new_mapping(default_subregexset, substate);
+				
+				lex_state_set_default_transition(state, alphabet, substate);
+				
+				quack_append(todo, new);
+				
+				avl_insert(mappings, new);
+			}
 		}
 		
 		// EOF transitions:

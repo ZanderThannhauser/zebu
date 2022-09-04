@@ -30,7 +30,7 @@ void lex_state_dotout(
 	
 	if (!stream)
 	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", path);
 		abort();
 	}
 	
@@ -93,9 +93,18 @@ void lex_state_dotout(
 				quack_append(todo, ele->to);
 		}
 		
-		if (state->default_transition_to)
+		if (state->default_transition.to)
 		{
-			TODO;
+			struct lex_state* const to = state->default_transition.to;
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"label = \"<default>\"" "\n"
+				"]" "\n"
+			"", state, to);
+			
+			if (lexstateset_add(queued, to))
+				quack_append(todo, to);
 		}
 		
 		if (state->EOF_transition_to)

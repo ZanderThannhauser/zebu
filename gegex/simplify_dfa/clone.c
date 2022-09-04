@@ -99,9 +99,8 @@ struct gegex* gegex_simplify_dfa_clone(
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "%s: gegex clone: %u of %u (%.2f%%)\r", argv0,
-				completed, total,
-				(double) completed * 100 / total);
+			"\e[K" "zebu: grammar simplify (clone): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)
 		{
