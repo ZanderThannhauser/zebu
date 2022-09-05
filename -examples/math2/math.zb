@@ -1,0 +1,17 @@
+
+
+%start: root #root;
+
+%skip: ' ';
+
+highest: `['0' - '9']+` #literal | '(' root #subexpression ')' ;
+
+multiply: highest #left ('*' highest #times | '/' highest #divide)*;
+
+addition: multiply #left ('+' multiply #add | '-' multiply #minus)*;
+
+root: addition #root;
+
+
+
+

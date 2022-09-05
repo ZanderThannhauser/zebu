@@ -80,7 +80,8 @@ ARGS += --minimize-lexer
 #ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+ARGS += --yacc=readline-debug -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia

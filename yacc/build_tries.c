@@ -13,6 +13,7 @@
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
 
+#include <set/string/new.h>
 #include <set/string/foreach.h>
 
 #include <gegex/state/struct.h>
@@ -392,13 +393,9 @@ void build_tries(
 					
 					trie_add_grammar_transition(retval, gtotn->trie_name, reduce);
 					
-					TODO;
-					#if 0
-					reduce->reductioninfo = new_reductioninfo(gtotn->trie_name, popcount + 1, subreductioninfo);
+					reduce->reductioninfo = new_reductioninfo(new_stringset(), gtotn->trie_name, subreductioninfo);
 					reduce->structinfo = inc_structinfo(structinfo);
 					reduce->reduce_as = inc_string(bundle->trie_name);
-					reduce->popcount = popcount + 2;
-					#endif
 				}
 				else
 				{

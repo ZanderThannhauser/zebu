@@ -57,7 +57,7 @@ const unsigned zebu_lexer[10][58] = {
 };
 
 
-const unsigned zebu_lexer_starts[33] = {
+const unsigned zebu_lexer_starts[45] = {
 	[1] = 1,
 	[2] = 2,
 	[3] = 1,
@@ -73,23 +73,35 @@ const unsigned zebu_lexer_starts[33] = {
 	[13] = 6,
 	[14] = 1,
 	[15] = 1,
-	[16] = 1,
+	[16] = 4,
 	[17] = 1,
-	[18] = 6,
-	[19] = 1,
-	[20] = 1,
+	[18] = 1,
+	[19] = 3,
+	[20] = 6,
 	[21] = 1,
 	[22] = 1,
-	[23] = 2,
-	[24] = 4,
-	[25] = 4,
-	[26] = 3,
-	[27] = 3,
-	[28] = 5,
-	[29] = 7,
-	[30] = 7,
-	[31] = 6,
-	[32] = 6,
+	[23] = 7,
+	[24] = 1,
+	[25] = 1,
+	[26] = 6,
+	[27] = 2,
+	[28] = 2,
+	[29] = 2,
+	[30] = 4,
+	[31] = 4,
+	[32] = 5,
+	[33] = 5,
+	[34] = 5,
+	[35] = 7,
+	[36] = 7,
+	[37] = 4,
+	[38] = 4,
+	[39] = 3,
+	[40] = 3,
+	[41] = 7,
+	[42] = 7,
+	[43] = 6,
+	[44] = 6,
 };
 
 
@@ -116,43 +128,59 @@ const unsigned zebu_lexer_EOFs[5] = {
 };
 
 
-const unsigned zebu_shifts[23][10] = {
+const unsigned zebu_shifts[37][10] = {
 	[1][2] = 2,
 	[1][3] = 3,
 	[3][2] = 8,
 	[3][3] = 9,
 	[5][4] = 14,
 	[5][5] = 15,
-	[6][6] = 16,
-	[6][7] = 17,
+	[6][6] = 17,
+	[6][7] = 18,
 	[9][2] = 8,
 	[9][3] = 9,
-	[11][4] = 19,
-	[11][5] = 20,
-	[12][6] = 21,
-	[12][7] = 22,
-	[13][9] = 23,
+	[11][4] = 21,
+	[11][5] = 22,
+	[12][6] = 24,
+	[12][7] = 25,
+	[13][9] = 27,
 	[14][2] = 2,
 	[14][3] = 3,
 	[15][2] = 2,
 	[15][3] = 3,
-	[16][2] = 2,
-	[16][3] = 3,
 	[17][2] = 2,
 	[17][3] = 3,
-	[18][9] = 28,
-	[19][2] = 8,
-	[19][3] = 9,
-	[20][2] = 8,
-	[20][3] = 9,
+	[18][2] = 2,
+	[18][3] = 3,
+	[20][9] = 32,
 	[21][2] = 8,
 	[21][3] = 9,
 	[22][2] = 8,
 	[22][3] = 9,
+	[24][2] = 8,
+	[24][3] = 9,
+	[25][2] = 8,
+	[25][3] = 9,
+	[28][4] = 14,
+	[28][5] = 15,
+	[29][4] = 14,
+	[29][5] = 15,
+	[30][6] = 17,
+	[30][7] = 18,
+	[31][6] = 17,
+	[31][7] = 18,
+	[33][4] = 21,
+	[33][5] = 22,
+	[34][4] = 21,
+	[34][5] = 22,
+	[35][6] = 24,
+	[35][7] = 25,
+	[36][6] = 24,
+	[36][7] = 25,
 };
 
 
-const unsigned zebu_reduces[33][10] = {
+const unsigned zebu_reduces[45][10] = {
 	[2][4] = 1,
 	[2][5] = 1,
 	[2][6] = 1,
@@ -174,36 +202,60 @@ const unsigned zebu_reduces[33][10] = {
 	[11][7] = 3,
 	[11][9] = 3,
 	[12][9] = 4,
-	[23][4] = 6,
-	[23][5] = 6,
+	[16][6] = 6,
+	[16][7] = 6,
+	[16][8] = 6,
+	[19][8] = 7,
 	[23][6] = 6,
 	[23][7] = 6,
-	[23][8] = 6,
-	[24][6] = 7,
-	[24][7] = 7,
-	[24][8] = 7,
-	[25][6] = 8,
-	[25][7] = 8,
-	[25][8] = 8,
-	[26][8] = 9,
-	[27][8] = 10,
-	[28][4] = 6,
-	[28][5] = 6,
-	[28][6] = 6,
-	[28][7] = 6,
-	[28][9] = 6,
-	[29][6] = 7,
-	[29][7] = 7,
-	[29][9] = 7,
-	[30][6] = 8,
-	[30][7] = 8,
-	[30][9] = 8,
-	[31][9] = 9,
-	[32][9] = 10,
+	[23][9] = 6,
+	[26][9] = 7,
+	[27][4] = 8,
+	[27][5] = 8,
+	[27][6] = 8,
+	[27][7] = 8,
+	[27][8] = 8,
+	[28][6] = 9,
+	[28][7] = 9,
+	[28][8] = 9,
+	[29][6] = 10,
+	[29][7] = 10,
+	[29][8] = 10,
+	[30][8] = 11,
+	[31][8] = 12,
+	[32][4] = 8,
+	[32][5] = 8,
+	[32][6] = 8,
+	[32][7] = 8,
+	[32][9] = 8,
+	[33][6] = 9,
+	[33][7] = 9,
+	[33][9] = 9,
+	[34][6] = 10,
+	[34][7] = 10,
+	[34][9] = 10,
+	[35][9] = 11,
+	[36][9] = 12,
+	[37][6] = 13,
+	[37][7] = 13,
+	[37][8] = 13,
+	[38][6] = 14,
+	[38][7] = 14,
+	[38][8] = 14,
+	[39][8] = 15,
+	[40][8] = 16,
+	[41][6] = 13,
+	[41][7] = 13,
+	[41][9] = 13,
+	[42][6] = 14,
+	[42][7] = 14,
+	[42][9] = 14,
+	[43][9] = 15,
+	[44][9] = 16,
 };
 
 
-const unsigned zebu_gotos[23][5] = {
+const unsigned zebu_gotos[37][7] = {
 	[1][1] = 4,
 	[1][2] = 5,
 	[1][3] = 6,
@@ -212,30 +264,34 @@ const unsigned zebu_gotos[23][5] = {
 	[3][2] = 11,
 	[3][3] = 12,
 	[3][4] = 13,
+	[5][5] = 16,
+	[6][6] = 19,
 	[9][1] = 10,
 	[9][2] = 11,
 	[9][3] = 12,
-	[9][4] = 18,
-	[14][2] = 5,
-	[14][3] = 24,
-	[15][2] = 5,
-	[15][3] = 25,
-	[16][1] = 26,
-	[16][2] = 5,
-	[16][3] = 6,
-	[17][1] = 27,
+	[9][4] = 20,
+	[11][5] = 23,
+	[12][6] = 26,
+	[14][2] = 28,
+	[15][2] = 29,
 	[17][2] = 5,
-	[17][3] = 6,
-	[19][2] = 11,
-	[19][3] = 29,
-	[20][2] = 11,
-	[20][3] = 30,
-	[21][1] = 31,
-	[21][2] = 11,
-	[21][3] = 12,
-	[22][1] = 32,
-	[22][2] = 11,
-	[22][3] = 12,
+	[17][3] = 30,
+	[18][2] = 5,
+	[18][3] = 31,
+	[21][2] = 33,
+	[22][2] = 34,
+	[24][2] = 11,
+	[24][3] = 35,
+	[25][2] = 11,
+	[25][3] = 36,
+	[28][5] = 37,
+	[29][5] = 38,
+	[30][6] = 39,
+	[31][6] = 40,
+	[33][5] = 41,
+	[34][5] = 42,
+	[35][6] = 43,
+	[36][6] = 44,
 };
 
 
@@ -251,9 +307,9 @@ struct __start__
 
 struct addition
 {
-	struct addition* add;
+	struct multiply* add;
 	struct multiply* left;
-	struct addition* minus;
+	struct multiply* minus;
 };
 
 struct highest
@@ -264,9 +320,9 @@ struct highest
 
 struct multiply
 {
-	struct multiply* divide;
+	struct highest* divide;
 	struct highest* left;
-	struct multiply* times;
+	struct highest* times;
 };
 
 struct root
@@ -395,17 +451,17 @@ void print_addition_tree(struct link* links, enum prefix p, const char* name, st
 	}
 	printf("\e[34m%s\e[m (\e[36maddition\e[m)\n", name);
 	if (ptree->add)
-		print_addition_tree(new ?: links, p_not_last_child, "add", ptree->add);
+		print_multiply_tree(new ?: links, p_not_last_child, "add", ptree->add);
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "addition", "add");
+		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "add");
 	if (ptree->left)
 		print_multiply_tree(new ?: links, p_not_last_child, "left", ptree->left);
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "left");
 	if (ptree->minus)
-		print_addition_tree(new ?: links, p_last_child, "minus", ptree->minus);
+		print_multiply_tree(new ?: links, p_last_child, "minus", ptree->minus);
 	else
-		print_empty_leaf(new ?: links, p_last_child, "addition", "minus");
+		print_empty_leaf(new ?: links, p_last_child, "multiply", "minus");
 	free(new);
 }
 void print_highest_tree(struct link* links, enum prefix p, const char* name, struct highest* ptree)
@@ -471,17 +527,17 @@ void print_multiply_tree(struct link* links, enum prefix p, const char* name, st
 	}
 	printf("\e[34m%s\e[m (\e[36mmultiply\e[m)\n", name);
 	if (ptree->divide)
-		print_multiply_tree(new ?: links, p_not_last_child, "divide", ptree->divide);
+		print_highest_tree(new ?: links, p_not_last_child, "divide", ptree->divide);
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "divide");
+		print_empty_leaf(new ?: links, p_not_last_child, "highest", "divide");
 	if (ptree->left)
 		print_highest_tree(new ?: links, p_not_last_child, "left", ptree->left);
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "highest", "left");
 	if (ptree->times)
-		print_multiply_tree(new ?: links, p_last_child, "times", ptree->times);
+		print_highest_tree(new ?: links, p_last_child, "times", ptree->times);
 	else
-		print_empty_leaf(new ?: links, p_last_child, "multiply", "times");
+		print_empty_leaf(new ?: links, p_last_child, "highest", "times");
 	free(new);
 }
 void print_root_tree(struct link* links, enum prefix p, const char* name, struct root* ptree)
@@ -549,9 +605,9 @@ void free_addition_tree(struct addition* ptree)
 {
 	if (ptree)
 	{
-		free_addition_tree(ptree->add);
+		free_multiply_tree(ptree->add);
 		free_multiply_tree(ptree->left);
-		free_addition_tree(ptree->minus);
+		free_multiply_tree(ptree->minus);
 		free(ptree);
 	}
 }
@@ -570,9 +626,9 @@ void free_multiply_tree(struct multiply* ptree)
 {
 	if (ptree)
 	{
-		free_multiply_tree(ptree->divide);
+		free_highest_tree(ptree->divide);
 		free_highest_tree(ptree->left);
-		free_multiply_tree(ptree->times);
+		free_highest_tree(ptree->times);
 		free(ptree);
 	}
 }
@@ -782,89 +838,173 @@ int main()
 				
 				switch (r)
 {
+	case 15:
+	{
+		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		{
+			struct addition* trie = data.data[--yacc.n, --data.n];
+			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
+			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
+			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
+			free(trie);
+		};
+		free_multiply_tree(value->add), value->add = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 6;
+		break;
+	}
+	case 11:
+	{
+		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		free_multiply_tree(value->add), value->add = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 6;
+		break;
+	}
+	case 16:
+	{
+		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		{
+			struct addition* trie = data.data[--yacc.n, --data.n];
+			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
+			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
+			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
+			free(trie);
+		};
+		free_multiply_tree(value->minus), value->minus = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 6;
+		break;
+	}
+	case 12:
+	{
+		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		free_multiply_tree(value->minus), value->minus = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 6;
+		break;
+	}
+	case 9:
+	{
+		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		free_highest_tree(value->times), value->times = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 5;
+		break;
+	}
+	case 13:
+	{
+		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		{
+			struct multiply* trie = data.data[--yacc.n, --data.n];
+			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
+			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
+			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			free(trie);
+		};
+		free_highest_tree(value->times), value->times = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 5;
+		break;
+	}
+	case 10:
+	{
+		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		free_highest_tree(value->divide), value->divide = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 5;
+		break;
+	}
+	case 14:
+	{
+		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		{
+			struct multiply* trie = data.data[--yacc.n, --data.n];
+			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
+			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
+			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			free(trie);
+		};
+		free_highest_tree(value->divide), value->divide = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 5;
+		break;
+	}
 	case 5:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->root = data.data[--yacc.n, --data.n];
-		d = value, g = 5;
+		free_root_tree(value->root), value->root = data.data[--yacc.n, --data.n];
+		d = value, g = 7;
 		break;
 	}
 	case 4:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->left = data.data[--yacc.n, --data.n];
+		free_multiply_tree(value->left), value->left = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
-	case 10:
+	case 7:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->minus = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		value->left = data.data[--yacc.n, --data.n];
+		{
+			struct addition* trie = data.data[--yacc.n, --data.n];
+			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
+			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
+			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
+			free(trie);
+		};
+		free_multiply_tree(value->left), value->left = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
-	case 9:
+	case 8:
 	{
-		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->add = data.data[--yacc.n, --data.n];
+		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		free_token(data.data[--yacc.n, --data.n]);
-		value->left = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
+		free_root_tree(value->subexpression), value->subexpression = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 2;
 		break;
 	}
 	case 1:
 	{
 		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->literal = data.data[--yacc.n, --data.n];
+		free_token(value->literal), value->literal = data.data[--yacc.n, --data.n];
 		d = value, g = 2;
-		break;
-	}
-	case 6:
-	{
-		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		value->subexpression = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 2;
-		break;
-	}
-	case 7:
-	{
-		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->times = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		value->left = data.data[--yacc.n, --data.n];
-		d = value, g = 3;
-		break;
-	}
-	case 8:
-	{
-		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->divide = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		value->left = data.data[--yacc.n, --data.n];
-		d = value, g = 3;
 		break;
 	}
 	case 3:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->left = data.data[--yacc.n, --data.n];
+		free_highest_tree(value->left), value->left = data.data[--yacc.n, --data.n];
+		d = value, g = 3;
+		break;
+	}
+	case 6:
+	{
+		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		{
+			struct multiply* trie = data.data[--yacc.n, --data.n];
+			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
+			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
+			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			free(trie);
+		};
+		free_highest_tree(value->left), value->left = data.data[--yacc.n, --data.n];
 		d = value, g = 3;
 		break;
 	}
 	case 2:
 	{
 		struct root* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->root = data.data[--yacc.n, --data.n];
+		free_addition_tree(value->root), value->root = data.data[--yacc.n, --data.n];
 		d = value, g = 4;
 		break;
 	}
 }
 				
-				if (g == 5)
+				if (g == 7)
 				{
 					free_token(td);
 					yacc.n = 0, root = d;

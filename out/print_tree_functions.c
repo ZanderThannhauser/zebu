@@ -104,7 +104,7 @@ void print_tree_functions(
 						"\t" "\t" "\t" "new->prev = links;" "\n"
 						"\t" "\t" "break;" "\n"
 				"\t" "}" "\n"
-				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m): \\n\", name);" "\n"
+				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m)\\n\", name);" "\n"
 		"", ele->name->chars, ele->name->chars, ele->name->chars);
 		
 		for (struct avl_node_t* node = ele->tree->head; node; node = node->next)
