@@ -1,9 +1,9 @@
 
 struct reductioninfo
 {
-	struct string* tag;
+	struct stringset* tags; // could be null
 	
-	unsigned index;
+	struct string* grammar; // could be null (indicating token)
 	
 	unsigned refcount;
 	

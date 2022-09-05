@@ -15,7 +15,6 @@ void yacc_state_add_reduce_transition(
 	struct yacc_state* this,
 	struct unsignedset* on,
 	struct string* reduce_as,
-	unsigned popcount,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
@@ -25,7 +24,6 @@ void yacc_state_add_reduce_transition(
 	
 	transition->on = inc_unsignedset(on);
 	transition->reduce_as = inc_string(reduce_as);
-	transition->popcount = popcount;
 	transition->reductioninfo = inc_reductioninfo(reductioninfo);
 	transition->structinfo = inc_structinfo(structinfo);
 	

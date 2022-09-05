@@ -6,7 +6,7 @@
 
 struct stringset* inc_stringset(struct stringset* this)
 {
-	this->refcount++;
+	if (this) this->refcount++;
 	return this;
 }
 

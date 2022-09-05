@@ -34,6 +34,7 @@ struct rbundle read_prefixes_token_expression(
 		}
 	}
 	
+	EXIT;
 	return retval;
 }
 

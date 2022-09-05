@@ -20,11 +20,6 @@
 
 `string_literal`: '\"' ( "\\" . | [~('\"', '\\')] )* '\"' ;
 
-// struct primary_expression {
-	// char *variable, *literal, *string;
-	// union expression* subexpression;
-// }
-
 primary_expression
 	: `identifier & !"sizeof"` #variable
 	| `constant` #literal
@@ -32,34 +27,21 @@ primary_expression
 	| "(" expression #subexpression ")"
 	;
 
-// struct postfix_expression {
-	// union expression* expression;
-	// union expression* index_expression;
-	// char* dir_field_name;
-	// char* def_field_name;
-// }
-
 postfix_expression
 	: primary_expression #expression
 	| postfix_expression #expression "[" expression #index_expression "]"
 	| postfix_expression #expression "(" ")"
-	| postfix_expression #expression "(" argument_expression_list ")"
+	| postfix_expression #expression "(" argument_expression_list #arguments ")"
 	| postfix_expression #expression "."  `identifier` #dir_field_name
 	| postfix_expression #expression "->" `identifier` #def_field_name
-	| postfix_expression #expression "++"
-	| postfix_expression #expression "--"
+	| postfix_expression #expression "++" #increment
+	| postfix_expression #expression "--" #decrement
 	;
 
 argument_expression_list
 	: conditional_expression
 	| argument_expression_list ',' conditional_expression
 	;
-
-// struct unary_expression {
-	// union expression* expression;
-	// union expression* decrement_expression;
-	// union expression* address_of_expression;
-// }
 
 unary_expression
 	: postfix_expression #expression

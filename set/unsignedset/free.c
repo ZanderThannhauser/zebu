@@ -9,7 +9,8 @@ void free_unsignedsetset(
 {
 	if (this && !--this->refcount)
 	{
-		TODO;
+		avl_free_tree(this->tree);
+		free(this);
 	}
 }
 

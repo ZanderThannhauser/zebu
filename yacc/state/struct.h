@@ -25,8 +25,6 @@ struct yacc_state
 			
 			struct string* reduce_as;
 			
-			unsigned popcount;
-			
 			struct reductioninfo* reductioninfo;
 			
 			struct structinfo* structinfo;

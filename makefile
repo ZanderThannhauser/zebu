@@ -76,11 +76,11 @@ ARGS += --verbose
 #ARGS += -l
 ARGS += --minimize-lexer
 
-ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
@@ -134,13 +134,14 @@ gen/srclist.mk: | gen/%/
 ifneq "$(MAKECMDGOALS)" "clean"
 include gen/srclist.mk
 
-#srcs += ./out/escaped/just_tables_source.c     ./out/escaped/just_tables_header.c
-#srcs += ./out/escaped/buffer_driven_source.c   ./out/escaped/buffer_driven_header.c
-#srcs += ./out/escaped/readline_source.c        ./out/escaped/readline_header.c
-#srcs += ./out/escaped/readline_debug_source.c  ./out/escaped/readline_debug_header.c
-#srcs += ./out/escaped/fileio_debug_source.c    ./out/escaped/fileio_debug_header.c
-#srcs += ./out/escaped/fileio_passfail_source.c ./out/escaped/fileio_passfail_header.c
-#srcs += ./out/escaped/fileio_graphviz_source.c ./out/escaped/fileio_graphviz_header.c
+srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
+srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
+srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
+srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
+srcs += ./out/escaped/readline_debug_source.c     ./out/escaped/readline_debug_header.c
+srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
+srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
+srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
 
 endif
 
@@ -162,16 +163,16 @@ $(buildprefix)/escape: ./-escape.c | $(buildprefix)/
 	@ echo "compiling $<"
 	@ $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) ./$< $(LOADLIBES) $(LDLIBS) -o $@
 
-#.PRECIOUS: ./out/escaped/%_source.c
-#.PRECIOUS: ./out/escaped/%_header.c
+.PRECIOUS: ./out/escaped/%_source.c
+.PRECIOUS: ./out/escaped/%_header.c
 
-#./out/escaped/%_source.c: $(buildprefix)/escape ./out/-templates/%.c
-#	@ echo "escaping $*"
-#	@ $^ -v $*_source -o $@
+./out/escaped/%_source.c: $(buildprefix)/escape ./out/-templates/%.c
+	@ echo "escaping $*"
+	@ $^ -v $*_source -o $@
 
-#./out/escaped/%_header.c: $(buildprefix)/escape ./out/-templates/%.h
-#	@ echo "escaping $*"
-#	@ $^ -v $*_header -o $@
+./out/escaped/%_header.c: $(buildprefix)/escape ./out/-templates/%.h
+	@ echo "escaping $*"
+	@ $^ -v $*_header -o $@
 
 dot/%.png: dot/%.dot
 	dot -Tpng < $< > $@

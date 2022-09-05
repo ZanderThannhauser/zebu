@@ -8,6 +8,8 @@ char* reductioninfo_to_string(struct reductioninfo* info)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct {
 		char* data;
 		unsigned n, cap;
@@ -47,6 +49,7 @@ char* reductioninfo_to_string(struct reductioninfo* info)
 	
 	EXIT;
 	return buffer.data;
+	#endif
 }
 
 

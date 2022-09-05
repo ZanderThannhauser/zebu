@@ -3,9 +3,9 @@ struct reducerule_to_id_node
 {
 	struct string* reduce_as;
 	
-	unsigned popcount;
-	
 	struct reductioninfo* reductioninfo;
+	
+	struct structinfo* structinfo;
 	
 	unsigned id;
 };

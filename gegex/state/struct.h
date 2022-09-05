@@ -10,7 +10,7 @@ struct gegex
 	struct {
 		struct gegex_transition {
 			unsigned token;
-			struct stringset* tags; // owned
+			struct stringset* tags; // owned, might be NULL
 			struct gegex* to;
 		}** data;
 		unsigned n, cap;
@@ -18,8 +18,8 @@ struct gegex
 	
 	struct {
 		struct gegex_grammar_transition {
-			struct string* grammar; // owned
-			struct stringset* tags; // owned
+			struct string* grammar;
+			struct stringset* tags; // owned, might be NULL
 			struct gegex* to;
 		}** data;
 		unsigned n, cap;

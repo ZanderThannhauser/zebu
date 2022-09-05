@@ -1,8 +1,6 @@
 
 #include <debug.h>
 
-#include "node/struct.h"
-
 #include "struct.h"
 #include "add_token_field.h"
 

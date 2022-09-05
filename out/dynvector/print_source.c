@@ -6,7 +6,6 @@
 #ifdef VERBOSE
 #include <unistd.h>
 #include <stdlib.h>
-#include <cmdln/verbose.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #endif
@@ -17,15 +16,12 @@
 void dynvector_print_source(
 	struct dynvector* this,
 	const char* prefix,
-	FILE* source,
-	FILE* header)
+	FILE* stream)
 {
 	ENTER;
 	
 	dpvs(this->name);
 	
-	TODO;
-	#if 0
 	#ifdef VERBOSE
 	void handler(int _)
 	{
@@ -39,33 +35,36 @@ void dynvector_print_source(
 		}
 	}
 	
-	if (verbose)
-		signal(SIGALRM, handler);
+	signal(SIGALRM, handler);
 	#endif
 	
-	fprintf(header, "extern const unsigned %s_%s[%u];\n",
-		prefix, this->name, this->length + 1);
-	
-	fprintf(source, "const unsigned %s_%s[%u] = {\n",
-		prefix, this->name, this->length + 1);
+	fprintf(stream, "const unsigned %s_%s[%u] = {\n", prefix, this->name, this->length + 1);
 	
 	for (struct avl_node_t* node = this->list->head; node; node = node->next)
 	{
 		struct dynvector_node* ele = node->item;
 		
-		fprintf(source, "\t[%u] = %u,\n", ele->i, ele->v);
+		fprintf(stream, "\t[%u] = %u,\n", ele->i, ele->v);
 	}
 	
-	fprintf(source, "};\n");
+	fprintf(stream, "};\n");
 	
 	#ifdef VERBOSE
-	if (verbose)
-		signal(SIGALRM, default_sighandler);
-	#endif
+	signal(SIGALRM, default_sighandler);
 	#endif
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

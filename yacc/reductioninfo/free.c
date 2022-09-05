@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <set/string/free.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -8,7 +10,13 @@ void free_reductioninfo(struct reductioninfo* this)
 {
 	if (this && !--this->refcount)
 	{
-		TODO;
+		free_stringset(this->tags);
+		
+		free_string(this->grammar);
+		
+		free_reductioninfo(this->prev);
+		
+		free(this);
 	}
 }
 

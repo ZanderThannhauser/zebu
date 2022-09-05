@@ -353,36 +353,25 @@ void build_tries(
 		void expand_helper(
 			struct trie* const trie,
 			struct gegex* const gegex,
-			struct reductioninfo* reductioninfo,
-			unsigned popcount)
+			struct reductioninfo* reductioninfo)
 		{
 			ENTER;
 			
-			if (popcount && gegex->is_reduction_point)
+			if (reductioninfo && gegex->is_reduction_point)
 			{
 				trie->reductioninfo = inc_reductioninfo(reductioninfo);
 				trie->structinfo = inc_structinfo(structinfo);
 				trie->reduce_as = inc_string(bundle->trie_name);
-				trie->popcount = popcount;
 			}
 			
 			struct trie* process_transition(
-				struct stringset* tags,
+				struct stringset* tags, // might be NULL
+				struct string* grammar, // might be NULL
 				struct gegex* to)
 			{
 				ENTER;
 				
-				struct reductioninfo* subreductioninfo = inc_reductioninfo(reductioninfo);
-				
-				stringset_foreach(tags, ({
-					void runme(struct string* tag)
-					{
-						struct reductioninfo* new = new_reductioninfo(tag, popcount, subreductioninfo);
-						
-						free_reductioninfo(subreductioninfo), subreductioninfo = new;
-					}
-					runme;
-				}));
+				struct reductioninfo* subreductioninfo = new_reductioninfo(tags, grammar, reductioninfo);
 				
 				struct trie* retval = new_trie();
 				
@@ -395,7 +384,6 @@ void build_tries(
 						retval->reductioninfo = inc_reductioninfo(subreductioninfo);
 						retval->structinfo = inc_structinfo(structinfo);
 						retval->reduce_as = inc_string(bundle->trie_name);
-						retval->popcount = popcount + 1;
 					}
 					
 					struct trie* reduce = new_trie();
@@ -404,14 +392,17 @@ void build_tries(
 					
 					trie_add_grammar_transition(retval, gtotn->trie_name, reduce);
 					
+					TODO;
+					#if 0
 					reduce->reductioninfo = new_reductioninfo(gtotn->trie_name, popcount + 1, subreductioninfo);
 					reduce->structinfo = inc_structinfo(structinfo);
 					reduce->reduce_as = inc_string(bundle->trie_name);
 					reduce->popcount = popcount + 2;
+					#endif
 				}
 				else
 				{
-					expand_helper(retval, to, subreductioninfo, popcount + 1);
+					expand_helper(retval, to, subreductioninfo);
 				}
 				
 				free_reductioninfo(subreductioninfo);
@@ -424,7 +415,7 @@ void build_tries(
 			{
 				struct gegex_transition* transition = gegex->transitions.data[i];
 				
-				struct trie* to = process_transition(transition->tags, transition->to);
+				struct trie* to = process_transition(transition->tags, NULL, transition->to);
 				
 				trie_add_transition(trie, transition->token, to);
 			}
@@ -433,7 +424,7 @@ void build_tries(
 			{
 				struct gegex_grammar_transition* transition = gegex->grammar_transitions.data[i];
 				
-				struct trie* to = process_transition(transition->tags, transition->to);
+				struct trie* to = process_transition(transition->tags, transition->grammar, transition->to);
 				
 				trie_add_grammar_transition(trie, transition->grammar, to);
 			}
@@ -441,7 +432,7 @@ void build_tries(
 			EXIT;
 		}
 		
-		expand_helper(bundle->trie, bundle->gegex, NULL, 0);
+		expand_helper(bundle->trie, bundle->gegex, NULL);
 		
 		#ifdef DOTOUT
 		expand_dotout(bundle->trie);

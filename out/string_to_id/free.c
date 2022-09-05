@@ -7,6 +7,12 @@
 void free_string_to_id(
 	struct string_to_id* this)
 {
-	TODO;
+	ENTER;
+	
+	avl_free_tree(this->tree);
+	
+	free(this);
+	
+	EXIT;
 }
 

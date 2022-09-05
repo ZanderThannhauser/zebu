@@ -2,8 +2,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <debug.h>
-
 #include "unlink_node.h"
 #include "delete_node.h"
 
@@ -11,8 +9,6 @@ void *avl_delete_node(
 	avl_tree_t *avltree,
 	avl_node_t *avlnode)
 {
-	ENTER;
-	
 	void *item = NULL;
 	
 	if (avlnode)
@@ -29,6 +25,5 @@ void *avl_delete_node(
 		free(avlnode);
 	}
 	
-	EXIT;
 	return item;
 }

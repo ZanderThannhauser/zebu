@@ -11,9 +11,11 @@ static int compare_nodes(const void* a, const void* b)
 	return compare_strings(A->string, B->string);
 }
 
-static void free_node(void* this)
+static void free_node(void* ptr)
 {
-	TODO;
+	struct string_to_id_node* node = ptr;
+	free_string(node->string);
+	free(node);
 }
 
 struct string_to_id* new_string_to_id()

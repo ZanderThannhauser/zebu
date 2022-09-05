@@ -1,8 +1,6 @@
 
 #include <stdlib.h>
 
-#include <debug.h>
-
 #include "clear_tree.h"
 #include "free_nodes.h"
 

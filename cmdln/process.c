@@ -56,7 +56,7 @@ void cmdln_process(int argc, char* const* argv)
 			
 			case 'y':
 				if (strequals(optarg, "really-just-tables")) {
-					parser_template = pt_nothing;
+					parser_template = pt_really_just_tables;
 				} else if (strequals(optarg, "just-tables")) {
 					parser_template = pt_just_tables;
 				} else if (strequals(optarg, "buffer-driven")) {

@@ -2,7 +2,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include <debug.h>
+#include <memory/smalloc.h>
 
 #include "tree_t.h"
 #include "insert.h"

@@ -17,6 +17,7 @@
 #include <set/gegex/free.h>
 
 #include <heap/new.h>
+#include <heap/len.h>
 #include <heap/pop.h>
 #include <heap/push.h>
 #include <heap/free.h>
@@ -45,7 +46,6 @@
 /*#include <string.h>*/
 /*#include <stdlib.h>*/
 /*#include <tree/of_gegexes/struct.h>*/
-#include <heap/len.h>
 /*#include <macros/N.h>*/
 /*#include <macros/max.h>*/
 #include <misc/default_sighandler.h>

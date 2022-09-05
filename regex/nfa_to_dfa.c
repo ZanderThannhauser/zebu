@@ -195,15 +195,12 @@ struct regex* regex_nfa_to_dfa(struct regex* original_start)
 		
 		struct iterator* new_iterator(struct regex* state)
 		{
-			ENTER;
-			
 			struct iterator* this = smalloc(sizeof(*this));
 			
 			this->i = state->transitions.data;
 			
 			this->n = state->transitions.data + state->transitions.n;
 			
-			EXIT;
 			return this;
 		}
 		

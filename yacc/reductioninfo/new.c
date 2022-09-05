@@ -1,22 +1,24 @@
 
 #include <debug.h>
 
+#include <set/string/inc.h>
+
 #include "struct.h"
 #include "inc.h"
 #include "new.h"
 
 struct reductioninfo* new_reductioninfo(
-	struct string* tag,
-	unsigned index,
+	struct stringset* tags,
+	struct string* grammar,
 	struct reductioninfo* prev)
 {
 	ENTER;
 	
 	struct reductioninfo* this = smalloc(sizeof(*this));
 	
-	this->tag = inc_string(tag);
+	this->tags = inc_stringset(tags);
 	
-	this->index = index;
+	this->grammar = inc_string(grammar);
 	
 	this->prev = inc_reductioninfo(prev);
 	

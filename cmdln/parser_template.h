@@ -1,7 +1,7 @@
 
 enum parser_template
 {
-	pt_nothing,
+	pt_really_just_tables,
 	
 	pt_just_tables,
 	

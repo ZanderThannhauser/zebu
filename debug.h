@@ -51,6 +51,8 @@
 	struct yacc_state;
 	struct yaccstateset;
 	struct lex_pair;
+	struct reducerule_to_id;
+	struct string_to_id;
 	
 	#include <enums/error.h>
 	

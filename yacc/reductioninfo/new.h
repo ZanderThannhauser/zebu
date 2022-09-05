@@ -1,5 +1,5 @@
 
 struct reductioninfo* new_reductioninfo(
-	struct string* tag,
-	unsigned index,
+	struct stringset* tags,
+	struct string* grammar,
 	struct reductioninfo* prev);

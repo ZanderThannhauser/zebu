@@ -7,6 +7,8 @@
 
 #include <avl/alloc_tree.h>
 
+#include <set/unsigned/free.h>
+
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/compare.h>
@@ -24,7 +26,9 @@ static int compare_nodes(const void* a, const void* b)
 
 static void free_node(void* ptr)
 {
-	TODO;
+	struct unsignedset_to_id_node* node = ptr;
+	free_unsignedset(node->unsignedset);
+	free(node);
 }
 
 struct unsignedset_to_id* new_unsignedset_to_id()

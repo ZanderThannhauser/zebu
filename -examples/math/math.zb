@@ -1,20 +1,16 @@
 
 
-%start: root;
+%start: root #root;
 
 %skip: ' ';
 
-highest: `['0'-'9']+` #literal | '(' root #subexpression ')' ;
+highest: `['0' - '9']+` #literal | '(' root #subexpression ')' ;
 
-multiply: highest #term[] (('*' | '/') highest #term[])*;
+multiply: highest #left ('*' multiply #times | '/' multiply #divide)?;
 
-addition: multiply #term[] (('+' | '-') multiply #term[])*;
+addition: multiply #left ('+' addition #add | '-' addition #minus)?;
 
-// addition: multiply #term[0] (('+' #ops[] | '-' #ops[]) multiply #term[])*;
-
-// addition: multiply #start ('+' multiply #addmes[] | '-' multiply #submes[])*;
-
-root: addition;
+root: addition #root;
 
 
 

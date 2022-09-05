@@ -3,6 +3,7 @@
 
 #include <cmdln/output_path.h>
 #include <cmdln/output_prefix.h>
+#include <cmdln/parser_template.h>
 
 #include <set/yaccstate/new.h>
 #include <set/yaccstate/add.h>
@@ -14,12 +15,39 @@
 
 #include <yacc/state/struct.h>
 
-#include "dyntable/new.h"
-#include "dyntable/set.h"
-#include "dyntable/free.h"
+#include <lex/state/struct.h>
+
+#include <yacc/structinfo/inc.h>
+#include <yacc/structinfo/compare.h>
+#include <yacc/structinfo/free.h>
+
+#include "escaped/really_just_tables_source.h"
+#include "escaped/really_just_tables_header.h"
+
+#include "escaped/just_tables_source.h"
+#include "escaped/just_tables_header.h"
+
+#include "escaped/buffer_driven_source.h"
+#include "escaped/buffer_driven_header.h"
+
+#include "escaped/readline_source.h"
+#include "escaped/readline_header.h"
+
+#include "escaped/readline_debug_source.h"
+#include "escaped/readline_debug_header.h"
+
+#include "escaped/fileio_debug_source.h"
+#include "escaped/fileio_debug_header.h"
+
+#include "escaped/fileio_passfail_source.h"
+#include "escaped/fileio_passfail_header.h"
+
+#include "escaped/fileio_graphviz_source.h"
+#include "escaped/fileio_graphviz_header.h"
 
 #include "reducerule_to_id/new.h"
 #include "reducerule_to_id/reducerule_to_id.h"
+#include "reducerule_to_id/print_source.h"
 #include "reducerule_to_id/free.h"
 
 #include "string_to_id/new.h"
@@ -38,16 +66,26 @@
 #include "unsignedset_to_id/unsignedset_to_id.h"
 #include "unsignedset_to_id/free.h"
 
+#include "dyntable/new.h"
+#include "dyntable/set.h"
+#include "dyntable/print_source.h"
+#include "dyntable/free.h"
+
 #include "dynvector/new.h"
 #include "dynvector/set.h"
+#include "dynvector/print_source.h"
 #include "dynvector/free.h"
+
+#include "print_structs.h"
+#include "print_tree_functions.h"
+#include "print_free_functions.h"
 
 #include "out.h"
 
-#if 0
 static struct {
 	const char **source, **header;
 } lookup[number_of_parser_templates] = {
+	[pt_really_just_tables] = {&really_just_tables_source, &really_just_tables_header},
 	[pt_just_tables] = {&just_tables_source, &just_tables_header},
 	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},
 	[pt_readline] = {&readline_source, &readline_header},
@@ -56,7 +94,6 @@ static struct {
 	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},
 	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},
 };
-#endif
 
 void out(struct yacc_state* start)
 {
@@ -72,20 +109,22 @@ void out(struct yacc_state* start)
 	
 	struct reducerule_to_id* rrtoi = new_reducerule_to_id();
 	
-	struct dynvector* starts = new_dynvector("starts");
-	
-	struct dyntable* shifts = new_dyntable("shifts");
-	
-	struct dyntable* reduces = new_dyntable("reduces");
+	struct dynvector* EOFs = new_dynvector("lexer_EOFs");
+	struct dynvector* starts = new_dynvector("lexer_starts");
+	struct dynvector* accepts = new_dynvector("lexer_accepts");
+	struct dynvector* defaults = new_dynvector("lexer_defaults");
 	
 	struct dyntable* gotos = new_dyntable("gotos");
+	struct dyntable* lexer = new_dyntable("lexer");
+	struct dyntable* shifts = new_dyntable("shifts");
+	struct dyntable* reduces = new_dyntable("reduces");
+	
+	struct avl_tree_t* structinfos = avl_alloc_tree(compare_structinfos, free_structinfo);
 	
 	struct quack* yacc_todo = new_quack();
-	
 	struct quack* lex_todo = new_quack();
 	
 	struct yaccstateset* yacc_queued = new_yaccstateset();
-	
 	struct lexstateset* lex_queued = new_lexstateset();
 	
 	yaccstateset_add(yacc_queued, start);
@@ -153,7 +192,10 @@ void out(struct yacc_state* start)
 			
 			unsigned tid = unsignedset_to_id(ustoi, ele->on);
 			
-			unsigned rrid = reducerule_to_id(rrtoi, ele->reduce_as, ele->popcount, ele->reductioninfo);
+			unsigned rrid = reducerule_to_id(rrtoi, ele->reduce_as, ele->reductioninfo, ele->structinfo);
+			
+			if (avl_insert(structinfos, ele->structinfo))
+				inc_structinfo(ele->structinfo);
 			
 			dyntable_set(reduces, yid, tid, rrid);
 		}
@@ -161,15 +203,15 @@ void out(struct yacc_state* start)
 	
 	while (quack_len(lex_todo))
 	{
-		TODO;
-		#if 0
+		struct lex_state* const state = quack_pop(lex_todo);
+		
 		unsigned lid = lstate_to_id(ltoi, state);
 		
 		dpv(lid);
 		
-		if (state->accepting)
+		if (state->accepts)
 		{
-			unsigned tid = tokenset_to_id(ttoi, state->accepting);
+			unsigned tid = unsignedset_to_id(ustoi, state->accepts);
 			
 			dpv(tid);
 			
@@ -178,75 +220,196 @@ void out(struct yacc_state* start)
 		
 		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			const struct ltransition* const ele = state->transitions.data[i];
+			const struct lex_transition* const ele = state->transitions.data[i];
 			
 			unsigned slid = lstate_to_id(ltoi, ele->to);
 			
-			fill_lex_tables(shared, ele->to);
-			
 			dyntable_set(lexer, lid, ele->value, slid);
+			
+			if (lexstateset_add(lex_queued, ele->to))
+				quack_append(lex_todo, ele->to);
 		}
 		
-		if (state->default_transition_to)
+		if (state->default_transition.to)
 		{
+			// remember to record exceptions
+			TODO;
+			#if 0
 			unsigned slid = lstate_to_id(ltoi, state->default_transition_to);
 			
 			fill_lex_tables(shared, state->default_transition_to);
 			
 			dynvector_set(defaults, lid, slid);
+			#endif
 		}
 		
 		if (state->EOF_transition_to)
 		{
 			unsigned slid = lstate_to_id(ltoi, state->EOF_transition_to);
 			
-			fill_lex_tables(shared, state->EOF_transition_to);
-			
 			dynvector_set(EOFs, lid, slid);
+			
+			if (lexstateset_add(lex_queued, state->EOF_transition_to))
+				quack_append(lex_todo, state->EOF_transition_to);
 		}
-		#endif
 	}
 	
 	dpvs(output_path);
 	dpvs(output_prefix);
 	
-	// build header:
+	// header:
+	{
+		char path[PATH_MAX];
+		
+		strcat(strcpy(path, output_path), ".h");
+		
+		FILE* stream = fopen(path, "w");
+		
+		const char* template = *lookup[parser_template].header;
+		
+		const char* last = template, *moving, *end = template + strlen(template);
+		
+		while ((moving = strstr(last, "{{")))
+		{
+			TODO;
+			// {{PREFIX}}
+			
+			// {{SHIFT_TABLE}}
+			
+			// {{REDUCE_TABLE}}
+			
+			// {{GOTO_TABLE}}
+			
+			// {{LEXER_TABLE}}
+			
+			// {{STARTS_TABLE}}
+			
+			// {{DEFAULTS_TABLE}}
+			
+			// {{ACCEPTS_TABLE}}
+			
+			// {{PARSE_TREE_TYPES}}
+			
+			// {{PARSE_TREE_DESTRUCTORS}}
+			
+			last = moving;
+		}
+		
+		fwrite(last, 1, end - last, stream);
+		
+		fclose(stream);
+	}
 	
-	// {{PREFIX}}
+	// source:
+	{
+		char path[PATH_MAX];
+		
+		strcat(strcpy(path, output_path), ".c");
+		
+		FILE* stream = fopen(path, "w");
+		
+		char* slash = rindex(output_path, '/');
+		fprintf(stream, "#include \"%s.h\"\n", slash ? slash + 1 : output_path);
+		
+		const char* template = *lookup[parser_template].source;
+		
+		const char* last = template, *moving, *end = template + strlen(template);
+		
+		while ((moving = strstr(last, "{{")))
+		{
+			fwrite(last, 1, moving - last, stream), moving += 2;
+			
+			const char* old = moving;
+			
+			moving = strstr(moving, "}}");
+			
+			unsigned len = moving - old;
+			
+			if (!strncmp(old, "PREFIX", len))
+			{
+				fputs(output_prefix, stream);
+			}
+			else if (!strncmp(old, "SHIFT_TABLE", len))
+			{
+				dyntable_print_source(shifts, output_prefix, stream);
+			}
+			else if (!strncmp(old, "REDUCE_TABLE", len))
+			{
+				dyntable_print_source(reduces, output_prefix, stream);
+			}
+			else if (!strncmp(old, "GOTO_TABLE", len))
+			{
+				dyntable_print_source(gotos, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_TABLE", len))
+			{
+				dyntable_print_source(lexer, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_STARTS_TABLE", len))
+			{
+				dynvector_print_source(starts, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_DEFAULTS_TABLE", len))
+			{
+				dynvector_print_source(defaults, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_ACCEPTS_TABLE", len))
+			{
+				dynvector_print_source(accepts, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_EOF_TABLE", len))
+			{
+				dynvector_print_source(EOFs, output_prefix, stream);
+			}
+			else if (!strncmp(old, "REDUCTIONRULE_SWITCH", len))
+			{
+				reducerule_to_id_print_source(rrtoi, stoi, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_STRUCTS", len))
+			{
+				print_structs(structinfos, stream);
+			}
+			else if (!strncmp(old, "START_GRAMMAR_ID", len))
+			{
+				struct string* start = new_string("__start__");
+				
+				fprintf(stream, "%u", string_to_id(stoi, start));
+				
+				free_string(start);
+			}
+			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
+			{
+				print_tree_functions(structinfos, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
+			{
+				print_free_functions(structinfos, stream);
+			}
+			else
+			{
+				dpvsn(old, len);
+				TODO;
+			}
+			
+			// {{PARSE_TREE_TYPES}}
+			
+			// {{PARSE_TREE_CONSTRUCTORS}}
+			
+			// {{PARSE_TREE_GRAPHVIZ_PRINTOUT}}
+			
+			// {{PARSE_TREE_TERMINAL_PRINTOUT}}
+			
+			// {{PARSE_TREE_DESTRUCTORS}}
+			
+			last = moving + 2;
+		}
+		
+		fwrite(last, 1, end - last, stream);
+		
+		fclose(stream);
+	}
 	
-	// {{SHIFT_TABLE}}
-	
-	// {{REDUCE_TABLE}}
-	
-	// {{GOTO_TABLE}}
-	
-	// {{PARSE_TREE_TYPES}}
-	
-	// {{PARSE_TREE_DESTRUCTORS}}
-	
-	// build source:
-	// {{PREFIX}}
-	
-	// {{SHIFT_TABLE}}
-	
-	// {{REDUCE_TABLE}}
-	
-	// {{GOTO_TABLE}}
-	
-	// {{PARSE_TREE_TYPES}}
-	
-	// {{PARSE_TREE_CONSTRUCTORS}}
-	
-	// {{PARSE_TREE_GRAPHVIZ_PRINTOUT}}
-	
-	// {{PARSE_TREE_TERMINAL_PRINTOUT}}
-	
-	// {{PARSE_TREE_DESTRUCTORS}}
-	
-	// iterate through the template, looking for '{{' & '}}'
-	// ifelses to switch over what the inner-string is
-	// to write out the content
-	TODO;
+	avl_free_tree(structinfos);
 	
 	free_reducerule_to_id(rrtoi);
 	
@@ -263,15 +426,16 @@ void out(struct yacc_state* start)
 	free_lstate_to_id(ltoi);
 	
 	free_dynvector(starts);
+	free_dynvector(EOFs);
+	free_dynvector(defaults);
+	free_dynvector(accepts);
 	
+	free_dyntable(lexer);
 	free_dyntable(shifts);
-	
 	free_dyntable(reduces);
-	
 	free_dyntable(gotos);
 	
 	free_quack(yacc_todo);
-	
 	free_quack(lex_todo);
 	
 	EXIT;
