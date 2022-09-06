@@ -129,23 +129,33 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 			
 			if (A_trans->value < B_trans->value)
 			{
-				TODO;
-				#if 0
 				dpv(A_trans->value);
 				
-				if (B->default_transition_to)
+				if (B->default_transition.to && !unsignedcharset_contains(B->default_transition.exceptions, A_trans->value))
 				{
-					#ifdef WITH_ARENAS
-					struct regex* substate = helper(arena, mappings, A_trans->to, B->default_transition_to);
-					#else
-					struct regex* substate = helper(mappings, A_trans->to, B->default_transition_to);
-					#endif
+					struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A_trans->to, B->default_transition.to});
 					
-					regex_add_transition(state, A_trans->value, substate);
+					if (node)
+					{
+						struct mapping* submapping = node->item;
+						
+						regex_add_transition(state, A_trans->value, submapping->new);
+					}
+					else
+					{
+						struct regex* substate = new_regex();
+						
+						struct mapping* submapping = new_mapping(A_trans->to, B->default_transition.to, substate);
+						
+						regex_add_transition(state, A_trans->value, substate);
+						
+						avl_insert(mappings, submapping);
+						
+						quack_append(todo, submapping);
+					}
 				}
 				
 				a.i++;
-				#endif
 			}
 			else if (A_trans->value > B_trans->value)
 			{
@@ -160,20 +170,30 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 			}
 			else
 			{
-				TODO;
-				#if 0
-				dpv(A_trans->value);
+				dpvc(A_trans->value);
 				
-				#ifdef WITH_ARENAS
-				struct regex* substate = helper(arena, mappings, A_trans->to, B_trans->to);
-				#else
-				struct regex* substate = helper(mappings, A_trans->to, B_trans->to);
-				#endif
+				struct avl_node_t* node = avl_search(mappings, &(struct mapping) {A_trans->to, B_trans->to});
 				
-				regex_add_transition(state, A_trans->value, substate);
+				if (node)
+				{
+					struct mapping* submapping = node->item;
+					
+					regex_add_transition(state, A_trans->value, submapping->new);
+				}
+				else
+				{
+					struct regex* substate = new_regex();
+					
+					struct mapping* submapping = new_mapping(A_trans->to, B_trans->to, substate);
+					
+					regex_add_transition(state, A_trans->value, substate);
+					
+					avl_insert(mappings, submapping);
+					
+					quack_append(todo, submapping);
+				}
 				
 				a.i++, b.i++;
-				#endif
 			}
 		}
 		

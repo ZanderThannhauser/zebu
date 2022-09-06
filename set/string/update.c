@@ -25,11 +25,12 @@ bool stringset_update(
 		
 		if (cmp > 0)
 		{
-			TODO;
+			a = a->next;
 		}
 		else if (cmp < 0)
 		{
-			TODO;
+			avl_insert(this->tree, inc_string(b->item));
+			this->n++, b = b->next, has_changed = true;
 		}
 		else
 		{
@@ -39,10 +40,8 @@ bool stringset_update(
 	
 	while (b)
 	{
-		this->n++;
 		avl_insert(this->tree, inc_string(b->item));
-		b = b->next;
-		has_changed = true;
+		this->n++, b = b->next, has_changed = true;
 	}
 	
 	EXIT;

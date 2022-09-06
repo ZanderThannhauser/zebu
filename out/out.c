@@ -78,6 +78,7 @@
 
 #include "print_structs.h"
 #include "print_tree_functions.h"
+#include "print_inc_functions.h"
 #include "print_free_functions.h"
 
 #include "out.h"
@@ -233,14 +234,12 @@ void out(struct yacc_state* start)
 		if (state->default_transition.to)
 		{
 			// remember to record exceptions
-			TODO;
-			#if 0
-			unsigned slid = lstate_to_id(ltoi, state->default_transition_to);
-			
-			fill_lex_tables(shared, state->default_transition_to);
+			unsigned slid = lstate_to_id(ltoi, state->default_transition.to);
 			
 			dynvector_set(defaults, lid, slid);
-			#endif
+			
+			if (lexstateset_add(lex_queued, state->default_transition.to))
+				quack_append(lex_todo, state->default_transition.to);
 		}
 		
 		if (state->EOF_transition_to)
@@ -380,6 +379,10 @@ void out(struct yacc_state* start)
 			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
 			{
 				print_tree_functions(structinfos, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_INC_FUNCTIONS", len))
+			{
+				print_inc_functions(structinfos, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
 			{

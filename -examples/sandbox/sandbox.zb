@@ -1,11 +1,20 @@
 
 
-%start: `
-	  [ 'a', 'b'] '1'
-	| [ 'a', 'c'] '2'
-	| [~'b', 'a'] '3'
-	| [~'b', 'd'] '4'
-`;
+postfix_expression: `['a'-'z']+` #variable;
+
+unary_expression
+	: (     "++" #increment
+	  |     "--" #decrement
+	  |      "&" #address_of
+	  |      "*" #dereference
+	  |      "+" #positive
+	  |      "-" #negative
+	  |      "~" #bitwise_not
+	  |      "!" #logical_not
+	  | "sizeof" #sizeof_)* postfix_expression #expression ;
+
+
+%start: unary_expression #expression;
 
 
 

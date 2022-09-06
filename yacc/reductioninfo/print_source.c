@@ -74,7 +74,7 @@ void reductioninfo_print_source(
 				{
 					fprintf(stream, ""
 						"\t" "\t" "free_%s(value->%s), value->%s = inc_%s(data.data[data.n]);" "\n"
-					"", type ?: "token", tag->chars, tag->chars, type);
+					"", type ?: "token", tag->chars, tag->chars, type ?: "token");
 				}
 			}
 			runme;

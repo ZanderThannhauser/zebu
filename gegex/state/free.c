@@ -19,6 +19,7 @@ void free_gegex(struct gegex* start)
 		
 		struct gegexset* freed = new_gegexset();
 		
+		gegexset_add(freed, start);
 		quack_append(todo, start);
 		
 		while (quack_len(todo))

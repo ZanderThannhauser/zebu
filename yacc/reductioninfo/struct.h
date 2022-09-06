@@ -3,7 +3,13 @@ struct reductioninfo
 {
 	struct stringset* tags; // could be null
 	
-	struct string* grammar; // could be null (indicating token)
+	enum {
+		rik_token,
+		rik_grammar,
+		rik_trie,
+	} kind;
+	
+	struct string* grammar;
 	
 	unsigned refcount;
 	

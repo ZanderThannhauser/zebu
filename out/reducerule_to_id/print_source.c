@@ -33,6 +33,7 @@ void reducerule_to_id_print_source(
 		
 		fprintf(stream, ""
 			"\t" "\t" "struct %s* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));" "\n"
+			"\t" "\t" "value->refcount = 1;" "\n"
 		"", ele->structinfo->name->chars);
 		
 		reductioninfo_print_source(ele->reductioninfo, ele->structinfo, stream);

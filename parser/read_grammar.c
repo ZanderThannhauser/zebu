@@ -70,7 +70,8 @@ void read_grammar(
 		exit(e_syntax_error);
 	}
 	
-	free_gegex(nfa_start), free_gegex(dfa_start);
+	free_gegex(nfa_start);
+	free_gegex(dfa_start);
 	
 	free_string(name);
 	

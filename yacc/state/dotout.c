@@ -101,10 +101,10 @@ void yacc_state_dotout(
 			
 			fprintf(stream, ""
 				"\"reduce_%u\" [" "\n"
-					"label = \"{reduce_as = %s} | {popcount = %u} %s\"" "\n"
+					"label = \"{reduce_as = %s} | %s\"" "\n"
 					"shape = record" "\n"
 				"]" "\n"
-			"", reduce_counter, ele->reduce_as->chars, ele->popcount, rinfo ?: "");
+			"", reduce_counter, ele->reduce_as->chars, rinfo ?: "");
 			
 			reduce_counter++;
 			

@@ -47,6 +47,7 @@ void structinfo_print_source(
 	}
 	
 	fprintf(stream, ""
+		"\t" "unsigned refcount;" "\n"
 		"};" "\n"
 		"" "\n"
 	"");

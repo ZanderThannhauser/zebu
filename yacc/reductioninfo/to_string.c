@@ -8,8 +8,6 @@ char* reductioninfo_to_string(struct reductioninfo* info)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct {
 		char* data;
 		unsigned n, cap;
@@ -37,9 +35,9 @@ char* reductioninfo_to_string(struct reductioninfo* info)
 			
 			char temp[100];
 			
-			snprintf(temp, 100, " | @[%u] = ", info->index);
+			snprintf(temp, 100, " | %s", info->grammar ? info->grammar->chars : "token");
 			
-			append(temp), append(info->tag->chars);
+			append(temp);
 		}
 	}
 	
@@ -49,7 +47,6 @@ char* reductioninfo_to_string(struct reductioninfo* info)
 	
 	EXIT;
 	return buffer.data;
-	#endif
 }
 
 

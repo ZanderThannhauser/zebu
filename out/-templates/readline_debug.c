@@ -29,6 +29,8 @@
 
 {{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
 
+{{PARSE_TREE_INC_FUNCTIONS}}
+
 {{PARSE_TREE_FREE_FUNCTIONS}}
 
 #define N(array) (sizeof(array) / sizeof(*array))
@@ -177,6 +179,7 @@ int main()
 					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
 					
 					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
 					token->data = (void*) strndup(begin, lexer - begin);
 					t = b, td = token;
 					break;

@@ -18,7 +18,7 @@ void print_structs(
 		"struct token" "\n"
 		"{" "\n"
 			"unsigned char* data;" "\n"
-			"unsigned len;" "\n"
+			"unsigned len, refcount;" "\n"
 		"};" "\n"
 	"");
 	

@@ -167,8 +167,6 @@ void lex_minimize_traverse_and_clone(
 		
 		if (old->default_transition.to)
 		{
-			TODO;
-			#if 0
 			struct lex_state* subold = find(connections, old->default_transition.to);
 			
 			struct avl_node_t* node = avl_search(mappings, &subold);
@@ -191,7 +189,6 @@ void lex_minimize_traverse_and_clone(
 				
 				quack_append(lex_todo, submapping);
 			}
-			#endif
 		}
 		
 		// for each transition:

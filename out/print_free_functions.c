@@ -14,7 +14,7 @@ void print_free_functions(
 	fprintf(stream, ""
 		"void free_token(struct token* this)" "\n"
 		"{" "\n"
-			"\t" "if (this)" "\n"
+			"\t" "if (this && !--this->refcount)" "\n"
 			"\t" "{" "\n"
 				"\t" "\t" "free(this->data);" "\n"
 				"\t" "\t" "free(this);" "\n"
@@ -39,7 +39,7 @@ void print_free_functions(
 		fprintf(stream, ""
 			"void free_%s_tree(struct %s* ptree)" "\n"
 			"{" "\n"
-			"\t" "if (ptree)" "\n"
+			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
 		"", ele->name->chars, ele->name->chars);
 		
