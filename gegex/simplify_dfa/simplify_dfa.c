@@ -22,7 +22,7 @@
 #include <heap/push.h>
 #include <heap/free.h>
 
-#include <set/string/are_equal.h>
+#include <yacc/structinfo/are_equal.h>
 
 #include <gegex/state/struct.h>
 #include <gegex/dotout.h>
@@ -118,7 +118,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 								{
 									unequal = true;
 								}
-								else if (!stringsets_are_equal(at->tags, bt->tags))
+								else if (!structinfos_are_equal(at->structinfo, bt->structinfo))
 								{
 									unequal = true;
 								}
@@ -148,7 +148,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 								{
 									unequal = true;
 								}
-								else if (!stringsets_are_equal(at->tags, bt->tags))
+								else if (!structinfos_are_equal(at->structinfo, bt->structinfo))
 								{
 									unequal = true;
 								}

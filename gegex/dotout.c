@@ -15,7 +15,7 @@
 
 #include <string/struct.h>
 
-#include <set/string/to_hashtagstring.h>
+#include <yacc/structinfo/to_hashtagstring.h>
 
 #include "state/struct.h"
 
@@ -71,10 +71,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 		{
 			struct gegex_transition* transition = state->transitions.data[i];
 			
-			if (gegexset_add(queued, transition->to))
-				quack_append(todo, transition->to);
-			
-			char* label = stringset_to_hashtagstring(transition->tags);
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"
@@ -83,6 +80,10 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 			"", state, transition->to, transition->token, label);
 			
 			free(label);
+			
+			if (gegexset_add(queued, transition->to))
+				quack_append(todo, transition->to);
+			
 		}
 		
 		// grammar transitions:
@@ -93,7 +94,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 			if (gegexset_add(queued, gtransition->to))
 				quack_append(todo, gtransition->to);
 			
-			char* label = stringset_to_hashtagstring(gtransition->tags);
+			char* label = structinfo_to_hashtagstring(gtransition->structinfo);
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [ label = \"%s %s\" ]" "\n"

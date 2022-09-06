@@ -3,6 +3,6 @@
 
 struct reductioninfo* new_reductioninfo(
 	enum reductioninfo_kind kind,
-	struct stringset* tags,
+	struct structinfo* structinfo,
 	struct string* grammar,
 	struct reductioninfo* prev);

@@ -136,7 +136,7 @@ struct gegex* gegex_simplify_dfa_clone(
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_transition(new, ele->token, ele->tags, submapping->new);
+				gegex_add_transition(new, ele->token, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -144,7 +144,7 @@ struct gegex* gegex_simplify_dfa_clone(
 				
 				struct mapping* submapping = new_mapping(cloneme, subnew);
 				
-				gegex_add_transition(new, ele->token, ele->tags, subnew);
+				gegex_add_transition(new, ele->token, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				
@@ -164,7 +164,7 @@ struct gegex* gegex_simplify_dfa_clone(
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_grammar_transition(new, ele->grammar, ele->tags, submapping->new);
+				gegex_add_grammar_transition(new, ele->grammar, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -172,7 +172,7 @@ struct gegex* gegex_simplify_dfa_clone(
 				
 				struct mapping* submapping = new_mapping(cloneme, subnew);
 				
-				gegex_add_grammar_transition(new, ele->grammar, ele->tags, subnew);
+				gegex_add_grammar_transition(new, ele->grammar, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				

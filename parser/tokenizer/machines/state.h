@@ -35,7 +35,8 @@ enum tokenizer_state
 	ts_gravemark,
 	ts_csquare,
 	ts_percent,
-	ts_hashtag,
+	ts_hashtag_scalar,
+	ts_hashtag_array,
 	
 	ts_character_literal,
 	
@@ -104,6 +105,8 @@ enum tokenizer_state
 	ts_reading_identifier,
 	ts_reading_hashtag,
 	ts_reading_hashtag2,
+	ts_reading_hashtag3,
+	ts_reading_hashtag4,
 	
 	ts_read_bracketed_identifier,
 	ts_read_gravemarked_identifier,

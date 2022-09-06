@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <set/string/free.h>
+#include <yacc/structinfo/free.h>
 
 #include "struct.h"
 #include "free.h"
@@ -10,7 +10,7 @@ void free_reductioninfo(struct reductioninfo* this)
 {
 	if (this && !--this->refcount)
 	{
-		free_stringset(this->tags);
+		free_structinfo(this->structinfo);
 		
 		free_string(this->grammar);
 		

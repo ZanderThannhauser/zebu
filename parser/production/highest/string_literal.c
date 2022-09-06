@@ -12,10 +12,6 @@
 #include <gegex/state/new.h>
 #include <gegex/state/add_transition.h>
 
-#include <set/string/new.h>
-#include <set/string/add.h>
-#include <set/string/free.h>
-
 #include <regex/clone.h>
 #include <regex/dotout.h>
 #include <regex/dfa_to_nfa.h>
@@ -27,6 +23,11 @@
 #include <regex/simplify_dfa/simplify_dfa.h>
 
 #include <lex/lookup/add_token.h>
+
+#include <yacc/structinfo/new.h>
+#include <yacc/structinfo/add_token_array_field.h>
+#include <yacc/structinfo/add_token_scalar_field.h>
+#include <yacc/structinfo/free.h>
 
 #include "string_literal.h"
 
@@ -74,17 +75,30 @@ struct gbundle read_string_literal_production(
 	
 	dpv(token_id);
 	
-	struct stringset* tags = new_stringset();
+	struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 	
 	read_token(tokenizer, production_after_highest_machine);
 	
-	while (tokenizer->token == t_hashtag)
+	while (false
+		|| tokenizer->token == t_hashtag_scalar
+		|| tokenizer->token == t_hashtag_array)
 	{
-		dpvs(tokenizer->tokenchars.chars);
-		
 		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
-		stringset_add(tags, tag);
+		switch (tokenizer->token)
+		{
+			case t_hashtag_scalar:
+				structinfo_add_token_scalar_field(structinfo, tag);
+				break;
+			
+			case t_hashtag_array:
+				structinfo_add_token_array_field(structinfo, tag);
+				break;
+			
+			default:
+				TODO;
+				break;
+		}
 		
 		read_token(tokenizer, production_after_highest_machine);
 		
@@ -95,13 +109,13 @@ struct gbundle read_string_literal_production(
 	
 	struct gegex* gegex_end = new_gegex();
 	
-	gegex_add_transition(gegex_start, token_id, tags, gegex_end);
+	gegex_add_transition(gegex_start, token_id, structinfo, gegex_end);
+	
+	free_structinfo(structinfo);
 	
 	#ifdef DOTOUT
 	gegex_dotout(gegex_start, gegex_end, __PRETTY_FUNCTION__);
 	#endif
-	
-	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {gegex_start, gegex_end};

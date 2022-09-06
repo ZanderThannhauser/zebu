@@ -7,11 +7,6 @@
 #include <gegex/state/add_grammar_transition.h>
 #include <gegex/dotout.h>
 
-#include <set/string/new.h>
-#include <set/string/add.h>
-#include <set/string/foreach.h>
-#include <set/string/update.h>
-
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/foreach.h>
@@ -24,6 +19,10 @@
 #include <heap/push.h>
 #include <heap/pop.h>
 #include <heap/free.h>
+
+#include <yacc/structinfo/new.h>
+#include <yacc/structinfo/update.h>
+#include <yacc/structinfo/free.h>
 
 #ifdef VERBOSE
 #include <misc/default_sighandler.h>
@@ -226,7 +225,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				
 				struct gegexset* subgegexset = new_gegexset();
 				
-				struct stringset* tags = new_stringset();
+				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 				
 				while (heap->n && (transition = (iterator = heap->data[0])->i[0])->token == min_token)
 				{
@@ -234,7 +233,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					
 					add_lambda_states(subgegexset, transition->to);
 					
-					stringset_update(tags, transition->tags);
+					structinfo_update(structinfo, transition->structinfo);
 					
 					if (++iterator->i < iterator->n)
 						heap_push(heap, iterator);
@@ -248,7 +247,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				{
 					struct mapping* old = node->item;
 					
-					gegex_add_transition(state, min_token, tags, old->combined_state);
+					gegex_add_transition(state, min_token, structinfo, old->combined_state);
 					
 					free_gegexset(subgegexset);
 				}
@@ -258,12 +257,14 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					
 					struct mapping* new = new_mapping(subgegexset, substate);
 					
-					gegex_add_transition(state, min_token, tags, substate);
+					gegex_add_transition(state, min_token, structinfo, substate);
 					
 					quack_append(todo, new);
 					
 					avl_insert(mappings, new);
 				}
+				
+				free_structinfo(structinfo);
 			}
 			
 			free_heap(heap);
@@ -325,7 +326,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				
 				struct gegexset* subgegexset = new_gegexset();
 				
-				struct stringset* tags = new_stringset();
+				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 				
 				while (heap->n && strings_are_equal((transition = (iterator = heap->data[0])->i[0])->grammar, min_grammar))
 				{
@@ -333,7 +334,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					
 					add_lambda_states(subgegexset, transition->to);
 					
-					stringset_update(tags, transition->tags);
+					structinfo_update(structinfo, transition->structinfo);
 					
 					if (++iterator->i < iterator->n)
 						heap_push(heap, iterator);
@@ -347,7 +348,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				{
 					struct mapping* old = node->item;
 					
-					gegex_add_grammar_transition(state, min_grammar, tags, old->combined_state);
+					gegex_add_grammar_transition(state, min_grammar, structinfo, old->combined_state);
 					
 					free_gegexset(subgegexset);
 				}
@@ -357,12 +358,14 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					
 					struct mapping* new = new_mapping(subgegexset, substate);
 					
-					gegex_add_grammar_transition(state, min_grammar, tags, substate);
+					gegex_add_grammar_transition(state, min_grammar, structinfo, substate);
 					
 					quack_append(todo, new);
 					
 					avl_insert(mappings, new);
 				}
+				
+				free_structinfo(structinfo);
 			}
 			
 			free_heap(heap);

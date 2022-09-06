@@ -14,9 +14,10 @@
 #include <gegex/dfa_to_nfa.h>
 #include <gegex/state/add_grammar_transition.h>
 
-#include <set/string/new.h>
-#include <set/string/add.h>
-#include <set/string/free.h>
+#include <yacc/structinfo/new.h>
+#include <yacc/structinfo/add_grammar_scalar_field.h>
+#include <yacc/structinfo/add_grammar_array_field.h>
+#include <yacc/structinfo/free.h>
 
 #include "identifier.h"
 
@@ -45,15 +46,30 @@ struct gbundle read_identifier_production(
 		
 		struct string* full_name = scope_build_absolute_name(scope, base_name);
 		
-		struct stringset* tags = new_stringset();
+		struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 		
 		read_token(tokenizer, production_after_highest_machine);
 		
-		while (tokenizer->token == t_hashtag)
+		while (false
+			|| tokenizer->token == t_hashtag_scalar
+			|| tokenizer->token == t_hashtag_array)
 		{
 			struct string* tag = new_string_from_tokenchars(tokenizer);
 			
-			stringset_add(tags, tag);
+			switch (tokenizer->token)
+			{
+				case t_hashtag_scalar:
+					structinfo_add_grammar_scalar_field(structinfo, tag, full_name);
+					break;
+				
+				case t_hashtag_array:
+					structinfo_add_grammar_array_field(structinfo, tag, full_name);
+					break;
+				
+				default:
+					TODO;
+					break;
+			}
 			
 			read_token(tokenizer, production_after_highest_machine);
 			
@@ -63,11 +79,11 @@ struct gbundle read_identifier_production(
 		struct gegex* start = new_gegex();
 		struct gegex* end = new_gegex();
 		
-		gegex_add_grammar_transition(start, full_name, tags, end);
+		gegex_add_grammar_transition(start, full_name, structinfo, end);
 		
 		retval = (struct gbundle) {start, end};
 		
-		free_stringset(tags);
+		free_structinfo(structinfo);
 		
 		free_string(full_name);
 		

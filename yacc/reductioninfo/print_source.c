@@ -1,10 +1,9 @@
 
 #include <debug.h>
 
-#include <set/string/foreach.h>
-#include <set/string/is_empty.h>
-
 #include <yacc/structinfo/struct.h>
+#include <yacc/structinfo/foreach.h>
+#include <yacc/structinfo/is_empty.h>
 
 #include "struct.h"
 #include "print_source.h"
@@ -24,27 +23,45 @@ void reductioninfo_print_source(
 		{
 			bool once = true;
 			
-			stringset_foreach(this->tags, ({
-				void runme(struct string* tag)
+			structinfo_foreach(this->structinfo, ({
+				void runme(struct string* name, enum structinfo_node_kind kind, struct string* _)
 				{
-					if (once)
+					switch (kind)
 					{
-						fprintf(stream, ""
-							"\t" "\t" "free_token(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
-						"", tag->chars, tag->chars);
-						once = false;
-					}
-					else
-					{
-						fprintf(stream, ""
-							"\t" "\t" "free_token(value->%s), value->%s = inc_token(data.data[data.n]);" "\n"
-						"", tag->chars, tag->chars);
+						case sin_token_scalar:
+						{
+							if (once)
+							{
+								fprintf(stream, ""
+									"\t" "\t" "free_token(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+								"", name->chars, name->chars);
+								once = false;
+							}
+							else
+							{
+								fprintf(stream, ""
+									"\t" "\t" "free_token(value->%s), value->%s = inc_token(data.data[data.n]);" "\n"
+								"", name->chars, name->chars);
+							}
+							break;
+						}
+						
+						case sin_token_array:
+						{
+							// prepending one element
+							TODO;
+							break;
+						}
+						
+						default:
+							TODO;
+							break;
 					}
 				}
 				runme;
 			}));
 			
-			if (stringset_is_empty(this->tags))
+			if (structinfo_is_empty(this->structinfo))
 			{
 				fprintf(stream, ""
 					"\t" "\t" "free_token(data.data[--yacc.n, --data.n]);" "\n"
@@ -59,30 +76,71 @@ void reductioninfo_print_source(
 			
 			const char* type = this->grammar->chars;
 			
-			stringset_foreach(this->tags, ({
-				void runme(struct string* tag)
+			structinfo_foreach(this->structinfo, ({
+				void runme(struct string* name, enum structinfo_node_kind kind, struct string* grammar)
 				{
-					if (once)
+					switch (kind)
 					{
-						fprintf(stream, ""
-							"\t" "\t" "free_%s_tree(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
-						"", type, tag->chars, tag->chars);
-						once = false;
+						case sin_grammar_scalar:
+						{
+							if (once)
+							{
+								fprintf(stream, ""
+									"\t" "\t" "free_%s(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+								"", type, name->chars, name->chars);
+								once = false;
+							}
+							else
+							{
+								TODO;
+								#if 0
+								fprintf(stream, ""
+									"\t" "\t" "free_%s(value->%s), value->%s = inc_%s_tree(data.data[data.n]);" "\n"
+								"", type, tag->chars, tag->chars, type);
+								#endif
+							}
+							break;
+						}
+						
+						case sin_grammar_array:
+						{
+							if (once)
+							{
+								fprintf(stream, ""
+									"\t" "\t" "if (value->%s.n == value->%s.cap)" "\n"
+									"\t" "\t" "{" "\n"
+									"\t" "\t" "\t" "value->%s.cap = value->%s.cap << 1 ?: 1;" "\n"
+									"\t" "\t" "\t" "value->%s.data = realloc(value->%s.data, sizeof(*value->%s.data) * value->%s.cap);" "\n"
+									"\t" "\t" "}" "\n"
+									"\t" "\t" "memmove(value->%s.data + 1, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
+									"\t" "\t" "value->%s.data[0] = data.data[--yacc.n, --data.n], value->%s.n++;" "\n"
+								"", name->chars, name->chars,
+								name->chars, name->chars,
+								name->chars, name->chars, name->chars, name->chars,
+								name->chars, name->chars, name->chars, name->chars,
+								name->chars, name->chars);
+								once = false;
+							}
+							else
+							{
+								TODO;
+							}
+							break;
+						}
+						
+						default:
+							TODO;
+							break;
 					}
-					else
-					{
-						fprintf(stream, ""
-							"\t" "\t" "free_%s_tree(value->%s), value->%s = inc_%s_tree(data.data[data.n]);" "\n"
-						"", type, tag->chars, tag->chars, type);
-					}
+					
 				}
 				runme;
 			}));
 			
-			if (stringset_is_empty(this->tags))
+			if (structinfo_is_empty(this->structinfo))
 			{
 				fprintf(stream, ""
-					"\t" "\t" "free_%s_tree(data.data[--yacc.n, --data.n]);" "\n"
+					"\t" "\t" "free_%s(data.data[--yacc.n, --data.n]);" "\n"
 				"", type);
 			}
 			
@@ -91,36 +149,67 @@ void reductioninfo_print_source(
 		
 		case rik_trie:
 		{
+			dpvs(this->grammar);
+			
+			assert(this->grammar);
+			
 			fprintf(stream, ""
 				"\t" "\t" "{" "\n"
 				"\t" "\t" "\t" "struct %s* trie = data.data[--yacc.n, --data.n];" "\n"
 			"", structinfo->name->chars);
 			
-			for (struct avl_node_t* node = structinfo->tree->head; node; node = node->next)
-			{
-				struct structinfo_node* const ele = node->item;
-				
-				const char* field = ele->name->chars;
-				
-				switch (ele->kind)
+			structinfo_foreach(structinfo, ({
+				void runme(struct string* name, enum structinfo_node_kind kind, struct string* grammar)
 				{
-					case sin_token:
-						fprintf(stream, ""
-							"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = trie->%s; }" "\n"
-						"", field, field, field, field);
-						break;
-					
-					case sin_grammar:
-						fprintf(stream, ""
-							"\t" "\t" "\t" "if (trie->%s) { free_%s_tree(value->%s); value->%s = trie->%s; }" "\n"
-						"", field, ele->grammar.name->chars, field, field, field);
-						break;
-					
-					default:
-						TODO;
-						break;
+					switch (kind)
+					{
+						case sin_token_scalar:
+						{
+							fprintf(stream, ""
+								"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = trie->%s; }" "\n"
+							"", name->chars, name->chars, name->chars, name->chars);
+							break;
+						}
+						
+						case sin_token_array:
+							TODO;
+							break;
+						
+						case sin_grammar_scalar:
+						{
+							fprintf(stream, ""
+								"\t" "\t" "\t" "if (trie->%s) { free_%s(value->%s); value->%s = trie->%s; }" "\n"
+							"", name->chars, grammar->chars, name->chars, name->chars, name->chars);
+							break;
+						}
+						
+						case sin_grammar_array:
+						{
+							fprintf(stream, ""
+								"\t" "\t" "\t" "if (trie->%s.n)"
+								"\t" "\t" "\t" "{" "\n"
+								"\t" "\t" "\t" "\t" "while (value->%s.n + trie->%s.n > value->%s.cap)" "\n"
+								"\t" "\t" "\t" "\t" "{" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.cap = value->%s.cap << 1 ?: 1;" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.data = realloc(value->%s.data, sizeof(*value->%s.data) * value->%s.cap);" "\n"
+								"\t" "\t" "\t" "\t" "}" "\n"
+								"\t" "\t" "\t" "\t" "memmove(value->%s.data + trie->%s.n, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
+								"\t" "\t" "\t" "\t" "memcpy(value->%s.data, trie->%s.data, sizeof(*trie->%s.data) * trie->%s.n);" "\n"
+								"\t" "\t" "\t" "\t" "value->%s.n += trie->%s.n;" "\n"
+								"\t" "\t" "\t" "}" "\n"
+							"", name->chars,
+							name->chars, name->chars, name->chars,
+							name->chars, name->chars,
+							name->chars, name->chars, name->chars, name->chars,
+							name->chars, name->chars, name->chars, name->chars, name->chars,
+							name->chars, name->chars, name->chars, name->chars,
+							name->chars, name->chars);
+							break;
+						}
+					}
 				}
-			}
+				runme;
+			}));
 			
 			fprintf(stream, ""
 				"\t" "\t" "\t" "free(trie);" "\n"

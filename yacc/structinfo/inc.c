@@ -6,8 +6,7 @@
 
 struct structinfo* inc_structinfo(struct structinfo* this)
 {
-	if (this)
-		this->refcount++;
+	if (this) this->refcount++;
 	return this;
 }
 

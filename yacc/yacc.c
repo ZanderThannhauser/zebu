@@ -261,7 +261,6 @@ static void add_reduce(
 	struct avl_tree_t* reduce_tokens,
 	unsigned token,
 	struct string* reduce_as,
-	unsigned popcount,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
@@ -429,7 +428,7 @@ struct yacc_state* yacc(
 					unsignedset_foreach(lookaheads, ({
 						void runme(unsigned token)
 						{
-							add_reduce(reduce_tokens, token, trie->reduce_as, trie->popcount, trie->reductioninfo, trie->structinfo);
+							add_reduce(reduce_tokens, token, trie->reduce_as, trie->reductioninfo, trie->structinfo);
 							
 							unsignedset_add(all_tokens, token);
 						}

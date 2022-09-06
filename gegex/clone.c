@@ -106,6 +106,8 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			
 			struct avl_node_t* node = avl_search(mappings, &ele->to);
 			
+			TODO;
+			#if 0
 			if (node)
 			{
 				struct mapping* submapping = node->item;
@@ -124,15 +126,17 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				quack_append(todo, submapping);
 			}
+			#endif
 		}
 		
-		// for each lambda transition:
 		for (unsigned i = 0, n = old->grammar_transitions.n; i < n; i++)
 		{
 			struct gegex_grammar_transition* const ele = old->grammar_transitions.data[i];
 			
 			struct avl_node_t* node = avl_search(mappings, &ele->to);
 			
+			TODO;
+			#if 0
 			if (node)
 			{
 				struct mapping* submapping = node->item;
@@ -151,6 +155,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				quack_append(todo, submapping);
 			}
+			#endif
 		}
 		
 		// for each lambda transition:

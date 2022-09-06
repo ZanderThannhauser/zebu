@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <debug.h>
 
-#include <set/string/inc.h>
+#include <yacc/structinfo/inc.h>
 
 #include "struct.h"
 #include "add_transition.h"
@@ -10,7 +10,7 @@
 void gegex_add_transition(
 	struct gegex* from,
 	unsigned token,
-	struct stringset* tags,
+	struct structinfo* structinfo,
 	struct gegex* to)
 {
 	ENTER;
@@ -18,7 +18,7 @@ void gegex_add_transition(
 	struct gegex_transition* transition = smalloc(sizeof(*transition));
 	
 	transition->token = token;
-	transition->tags = inc_stringset(tags);
+	transition->structinfo = inc_structinfo(structinfo);
 	transition->to = to;
 	
 	if (from->transitions.n + 1 > from->transitions.cap)
@@ -27,7 +27,7 @@ void gegex_add_transition(
 		
 		dpv(from->transitions.cap);
 		
-		from->transitions.data = realloc(from->transitions.data, sizeof(*from->transitions.data) * from->transitions.cap);
+		from->transitions.data = srealloc(from->transitions.data, sizeof(*from->transitions.data) * from->transitions.cap);
 	}
 	
 	unsigned i;

@@ -2,9 +2,10 @@
 struct trie
 {
 	struct reductioninfo* reductioninfo;
+	
 	struct structinfo* structinfo;
+	
 	struct string* reduce_as;
-	unsigned popcount;
 	
 	struct {
 		struct trie_transition {

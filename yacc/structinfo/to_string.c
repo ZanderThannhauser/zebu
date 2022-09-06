@@ -38,13 +38,22 @@ char* structinfo_to_string(struct structinfo* this)
 			
 			switch (node->kind)
 			{
-				case sin_token:
+				case sin_token_scalar:
 					append("struct token* "), append(node->name->chars), append(";\\l");
 					break;
 				
-				case sin_grammar:
-					append("struct "), append(node->grammar.name->chars);
+				case sin_token_array:
+					TODO;
+					break;
+				
+				case sin_grammar_scalar:
+					append("struct "), append(node->grammar->chars);
 					append("* "), append(node->name->chars), append(";\\l");
+					break;
+				
+				case sin_grammar_array:
+					append("struct "), append(node->grammar->chars);
+					append("* "), append(node->name->chars), append("[];\\l");
 					break;
 				
 				default:

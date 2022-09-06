@@ -21,7 +21,7 @@ struct string* scope_build_absolute_name(
 	{
 		memcpy(m, this->prefix.chars, this->prefix.n);
 		m += this->prefix.n;
-		*m++ = '_';
+		*m++ = '$';
 	}
 	
 	memcpy(m, suffix->chars, suffix->len);

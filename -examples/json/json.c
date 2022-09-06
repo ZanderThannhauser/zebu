@@ -111,7 +111,7 @@ const unsigned zebu_lexer[25][126] = {
 };
 
 
-const unsigned zebu_lexer_starts[69] = {
+const unsigned zebu_lexer_starts[54] = {
 	[1] = 1,
 	[2] = 2,
 	[3] = 2,
@@ -126,65 +126,50 @@ const unsigned zebu_lexer_starts[69] = {
 	[12] = 4,
 	[13] = 1,
 	[14] = 3,
-	[15] = 4,
-	[16] = 5,
-	[17] = 4,
-	[18] = 5,
-	[19] = 1,
-	[20] = 2,
-	[21] = 2,
-	[22] = 1,
-	[23] = 1,
-	[24] = 4,
-	[25] = 4,
+	[15] = 2,
+	[16] = 4,
+	[17] = 5,
+	[18] = 2,
+	[19] = 6,
+	[20] = 4,
+	[21] = 4,
+	[22] = 4,
+	[23] = 6,
+	[24] = 1,
+	[25] = 2,
 	[26] = 1,
-	[27] = 4,
-	[28] = 6,
-	[29] = 6,
-	[30] = 6,
-	[31] = 6,
-	[32] = 1,
-	[33] = 3,
+	[27] = 3,
+	[28] = 2,
+	[29] = 1,
+	[30] = 4,
+	[31] = 3,
+	[32] = 4,
+	[33] = 2,
 	[34] = 6,
-	[35] = 4,
+	[35] = 6,
 	[36] = 6,
-	[37] = 2,
-	[38] = 4,
-	[39] = 5,
-	[40] = 3,
+	[37] = 6,
+	[38] = 1,
+	[39] = 3,
+	[40] = 6,
 	[41] = 2,
-	[42] = 2,
+	[42] = 4,
 	[43] = 4,
-	[44] = 3,
+	[44] = 6,
 	[45] = 4,
-	[46] = 4,
-	[47] = 1,
-	[48] = 6,
+	[46] = 6,
+	[47] = 6,
+	[48] = 1,
 	[49] = 6,
-	[50] = 1,
-	[51] = 5,
-	[52] = 5,
-	[53] = 4,
-	[54] = 6,
-	[55] = 1,
-	[56] = 1,
-	[57] = 6,
-	[58] = 3,
-	[59] = 6,
-	[60] = 6,
-	[61] = 6,
-	[62] = 6,
-	[63] = 5,
-	[64] = 2,
-	[65] = 4,
-	[66] = 1,
-	[67] = 6,
-	[68] = 6,
+	[50] = 3,
+	[51] = 6,
+	[52] = 6,
+	[53] = 6,
 };
 
 
 const unsigned zebu_lexer_accepts[27] = {
-	[8] = 4,
+	[8] = 5,
 	[9] = 6,
 	[12] = 7,
 	[13] = 8,
@@ -192,9 +177,9 @@ const unsigned zebu_lexer_accepts[27] = {
 	[15] = 10,
 	[16] = 11,
 	[17] = 12,
-	[21] = 5,
-	[25] = 2,
-	[26] = 3,
+	[21] = 2,
+	[25] = 3,
+	[26] = 4,
 };
 
 
@@ -203,7 +188,7 @@ const unsigned zebu_lexer_EOFs[3] = {
 };
 
 
-const unsigned zebu_shifts[68][13] = {
+const unsigned zebu_shifts[51][13] = {
 	[1][2] = 2,
 	[1][3] = 3,
 	[1][4] = 4,
@@ -216,112 +201,65 @@ const unsigned zebu_shifts[68][13] = {
 	[6][5] = 12,
 	[6][6] = 13,
 	[6][7] = 14,
-	[7][5] = 16,
+	[7][2] = 17,
 	[13][2] = 9,
 	[13][3] = 10,
 	[13][4] = 11,
 	[13][5] = 12,
 	[13][6] = 13,
 	[13][7] = 14,
-	[14][5] = 18,
-	[15][9] = 19,
-	[15][10] = 20,
-	[16][11] = 22,
-	[17][9] = 23,
-	[17][10] = 24,
-	[18][11] = 26,
-	[19][2] = 9,
-	[19][3] = 10,
-	[19][4] = 11,
-	[19][5] = 12,
-	[19][6] = 13,
-	[19][7] = 14,
-	[22][2] = 28,
-	[22][3] = 29,
-	[22][4] = 30,
-	[22][5] = 31,
-	[22][6] = 32,
-	[22][7] = 33,
-	[23][2] = 9,
-	[23][3] = 10,
-	[23][4] = 11,
-	[23][5] = 12,
-	[23][6] = 13,
-	[23][7] = 14,
-	[26][2] = 28,
-	[26][3] = 29,
-	[26][4] = 30,
-	[26][5] = 31,
-	[26][6] = 32,
-	[26][7] = 33,
-	[27][9] = 19,
-	[27][10] = 20,
-	[32][2] = 9,
-	[32][3] = 10,
-	[32][4] = 11,
-	[32][5] = 12,
-	[32][6] = 13,
-	[32][7] = 14,
-	[33][5] = 39,
-	[34][9] = 40,
-	[34][12] = 41,
-	[35][9] = 23,
-	[35][10] = 24,
-	[36][9] = 44,
-	[36][12] = 45,
-	[38][9] = 47,
-	[38][10] = 48,
-	[39][11] = 50,
-	[40][5] = 51,
-	[44][5] = 52,
-	[47][2] = 9,
-	[47][3] = 10,
-	[47][4] = 11,
-	[47][5] = 12,
-	[47][6] = 13,
-	[47][7] = 14,
-	[50][2] = 28,
-	[50][3] = 29,
-	[50][4] = 30,
-	[50][5] = 31,
-	[50][6] = 32,
-	[50][7] = 33,
-	[51][11] = 55,
-	[52][11] = 56,
-	[53][9] = 47,
-	[53][10] = 48,
-	[54][9] = 58,
-	[54][12] = 59,
-	[55][2] = 28,
-	[55][3] = 29,
-	[55][4] = 30,
-	[55][5] = 31,
-	[55][6] = 32,
-	[55][7] = 33,
-	[56][2] = 28,
-	[56][3] = 29,
-	[56][4] = 30,
-	[56][5] = 31,
-	[56][6] = 32,
-	[56][7] = 33,
-	[58][5] = 63,
-	[61][9] = 40,
-	[61][12] = 41,
-	[62][9] = 44,
-	[62][12] = 45,
-	[63][11] = 66,
-	[66][2] = 28,
-	[66][3] = 29,
-	[66][4] = 30,
-	[66][5] = 31,
-	[66][6] = 32,
-	[66][7] = 33,
-	[67][9] = 58,
-	[67][12] = 59,
+	[14][2] = 17,
+	[16][9] = 24,
+	[16][10] = 25,
+	[17][11] = 26,
+	[19][9] = 27,
+	[19][12] = 28,
+	[21][9] = 29,
+	[21][10] = 30,
+	[23][9] = 31,
+	[23][12] = 32,
+	[24][2] = 9,
+	[24][3] = 10,
+	[24][4] = 11,
+	[24][5] = 12,
+	[24][6] = 13,
+	[24][7] = 14,
+	[26][2] = 34,
+	[26][3] = 35,
+	[26][4] = 36,
+	[26][5] = 37,
+	[26][6] = 38,
+	[26][7] = 39,
+	[27][2] = 17,
+	[29][2] = 9,
+	[29][3] = 10,
+	[29][4] = 11,
+	[29][5] = 12,
+	[29][6] = 13,
+	[29][7] = 14,
+	[31][2] = 17,
+	[38][2] = 9,
+	[38][3] = 10,
+	[38][4] = 11,
+	[38][5] = 12,
+	[38][6] = 13,
+	[38][7] = 14,
+	[39][2] = 17,
+	[45][9] = 48,
+	[45][10] = 49,
+	[47][9] = 50,
+	[47][12] = 51,
+	[48][2] = 9,
+	[48][3] = 10,
+	[48][4] = 11,
+	[48][5] = 12,
+	[48][6] = 13,
+	[48][7] = 14,
+	[50][2] = 17,
 };
 
 
-const unsigned zebu_reduces[69][13] = {
+const unsigned zebu_reduces[54][13] = {
 	[2][8] = 1,
 	[3][8] = 2,
 	[4][8] = 3,
@@ -335,73 +273,76 @@ const unsigned zebu_reduces[69][13] = {
 	[11][10] = 3,
 	[12][9] = 4,
 	[12][10] = 4,
-	[20][8] = 6,
-	[21][8] = 7,
-	[24][9] = 6,
-	[24][10] = 6,
-	[25][9] = 7,
-	[25][10] = 7,
-	[28][9] = 1,
-	[28][12] = 1,
-	[29][9] = 2,
-	[29][12] = 2,
-	[30][9] = 3,
-	[30][12] = 3,
-	[31][9] = 4,
-	[31][12] = 4,
-	[37][8] = 8,
-	[41][8] = 9,
-	[42][8] = 10,
-	[43][9] = 8,
-	[43][10] = 8,
-	[45][9] = 9,
-	[45][10] = 9,
-	[46][9] = 10,
-	[46][10] = 10,
-	[48][9] = 6,
-	[48][12] = 6,
-	[49][9] = 7,
-	[49][12] = 7,
-	[57][9] = 8,
-	[57][12] = 8,
-	[59][9] = 9,
-	[59][12] = 9,
-	[60][9] = 10,
-	[60][12] = 10,
-	[64][8] = 11,
-	[65][9] = 11,
-	[65][10] = 11,
-	[68][9] = 11,
-	[68][12] = 11,
+	[15][8] = 6,
+	[18][8] = 7,
+	[20][9] = 6,
+	[20][10] = 6,
+	[22][9] = 7,
+	[22][10] = 7,
+	[25][8] = 8,
+	[28][8] = 9,
+	[30][9] = 8,
+	[30][10] = 8,
+	[32][9] = 9,
+	[32][10] = 9,
+	[33][8] = 10,
+	[34][9] = 1,
+	[34][12] = 1,
+	[35][9] = 2,
+	[35][12] = 2,
+	[36][9] = 3,
+	[36][12] = 3,
+	[37][9] = 4,
+	[37][12] = 4,
+	[40][9] = 11,
+	[40][12] = 11,
+	[41][8] = 12,
+	[42][9] = 10,
+	[42][10] = 10,
+	[43][9] = 12,
+	[43][10] = 12,
+	[44][9] = 6,
+	[44][12] = 6,
+	[46][9] = 7,
+	[46][12] = 7,
+	[49][9] = 8,
+	[49][12] = 8,
+	[51][9] = 9,
+	[51][12] = 9,
+	[52][9] = 10,
+	[52][12] = 10,
+	[53][9] = 12,
+	[53][12] = 12,
 };
 
 
-const unsigned zebu_gotos[68][4] = {
+const unsigned zebu_gotos[51][5] = {
 	[1][1] = 8,
-	[6][1] = 15,
-	[13][1] = 17,
-	[15][2] = 21,
-	[17][2] = 25,
-	[19][1] = 27,
-	[22][1] = 34,
-	[23][1] = 35,
-	[26][1] = 36,
-	[27][2] = 37,
-	[32][1] = 38,
-	[34][3] = 42,
-	[35][2] = 43,
-	[36][3] = 46,
-	[38][2] = 49,
-	[47][1] = 53,
-	[50][1] = 54,
-	[53][2] = 57,
-	[54][3] = 60,
-	[55][1] = 61,
-	[56][1] = 62,
-	[61][3] = 64,
-	[62][3] = 65,
-	[66][1] = 67,
-	[67][3] = 68,
+	[6][1] = 16,
+	[6][2] = 15,
+	[7][3] = 18,
+	[7][4] = 19,
+	[13][1] = 21,
+	[13][2] = 20,
+	[14][3] = 22,
+	[14][4] = 23,
+	[24][1] = 16,
+	[24][2] = 33,
+	[26][1] = 40,
+	[27][3] = 41,
+	[27][4] = 19,
+	[29][1] = 21,
+	[29][2] = 42,
+	[31][3] = 43,
+	[31][4] = 23,
+	[38][1] = 45,
+	[38][2] = 44,
+	[39][3] = 46,
+	[39][4] = 47,
+	[48][1] = 45,
+	[48][2] = 52,
+	[50][3] = 53,
+	[50][4] = 47,
 };
 
 
@@ -416,14 +357,26 @@ struct __start__
 	unsigned refcount;
 };
 
+struct keyvalue
+{
+	struct token* key;
+	struct value* value;
+	unsigned refcount;
+};
+
 struct value
 {
 	struct token* boolean;
-	struct value* element;
-	struct token* key;
+	struct {
+		struct keyvalue** data;
+		unsigned n, cap;
+	} dict;
+	struct {
+		struct value** data;
+		unsigned n, cap;
+	} elements;
 	struct token* number;
 	struct token* string;
-	struct value* value;
 	unsigned refcount;
 };
 
@@ -479,11 +432,13 @@ void print_empty_leaf(struct link* links, enum prefix p, const char* type, const
 	}
 	printf("\e[31m%s\e[0m (\e[36m%s\e[0m)\n", name, type);
 }
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
+void print___start__(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
 
-void print_value_tree(struct link* links, enum prefix p, const char* name, struct value* ptree);
+void print_keyvalue(struct link* links, enum prefix p, const char* name, struct keyvalue* ptree);
 
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
+void print_value(struct link* links, enum prefix p, const char* name, struct value* ptree);
+
+void print___start__(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
 {
 	print_links(links);
 	
@@ -510,12 +465,48 @@ void print___start___tree(struct link* links, enum prefix p, const char* name, s
 	}
 	printf("\e[34m%s\e[m (\e[36m__start__\e[m)\n", name);
 	if (ptree->value)
-		print_value_tree(new ?: links, p_last_child, "value", ptree->value);
+		print_value(new ?: links, p_last_child, "value", ptree->value);
 	else
 		print_empty_leaf(new ?: links, p_last_child, "value", "value");
 	free(new);
 }
-void print_value_tree(struct link* links, enum prefix p, const char* name, struct value* ptree)
+void print_keyvalue(struct link* links, enum prefix p, const char* name, struct keyvalue* ptree)
+{
+	print_links(links);
+	
+	struct link* new = NULL;
+	
+	switch (p)
+	{
+		case p_root:
+			break;
+		
+		case p_not_last_child:
+			fputs("├── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = false;
+			new->prev = links;
+			break;
+		
+		case p_last_child:
+			fputs("└── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = true;
+			new->prev = links;
+		break;
+	}
+	printf("\e[34m%s\e[m (\e[36mkeyvalue\e[m)\n", name);
+	if (ptree->key)
+		print_token_leaf(new ?: links, p_not_last_child, "key", ptree->key);
+	else
+		print_empty_leaf(new ?: links, p_not_last_child, "token", "key");
+	if (ptree->value)
+		print_value(new ?: links, p_last_child, "value", ptree->value);
+	else
+		print_empty_leaf(new ?: links, p_last_child, "value", "value");
+	free(new);
+}
+void print_value(struct link* links, enum prefix p, const char* name, struct value* ptree)
 {
 	print_links(links);
 	
@@ -545,26 +536,40 @@ void print_value_tree(struct link* links, enum prefix p, const char* name, struc
 		print_token_leaf(new ?: links, p_not_last_child, "boolean", ptree->boolean);
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "token", "boolean");
-	if (ptree->element)
-		print_value_tree(new ?: links, p_not_last_child, "element", ptree->element);
+	if (ptree->dict.n)
+	{
+		for (unsigned i = 0, n = ptree->dict.n; i < n; i++)
+		{
+			char label[4 + 30];
+			snprintf(label, sizeof(label), "dict[%u]", i);
+			print_keyvalue(new ?: links, i + 1 < n ? p_not_last_child : p_not_last_child, label, ptree->dict.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "value", "element");
-	if (ptree->key)
-		print_token_leaf(new ?: links, p_not_last_child, "key", ptree->key);
+	{
+		print_empty_leaf(new ?: links, p_not_last_child, "keyvalue[]", "dict");
+	}
+	if (ptree->elements.n)
+	{
+		for (unsigned i = 0, n = ptree->elements.n; i < n; i++)
+		{
+			char label[8 + 30];
+			snprintf(label, sizeof(label), "elements[%u]", i);
+			print_value(new ?: links, i + 1 < n ? p_not_last_child : p_not_last_child, label, ptree->elements.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "token", "key");
+	{
+		print_empty_leaf(new ?: links, p_not_last_child, "value[]", "elements");
+	}
 	if (ptree->number)
 		print_token_leaf(new ?: links, p_not_last_child, "number", ptree->number);
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "token", "number");
 	if (ptree->string)
-		print_token_leaf(new ?: links, p_not_last_child, "string", ptree->string);
+		print_token_leaf(new ?: links, p_last_child, "string", ptree->string);
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "token", "string");
-	if (ptree->value)
-		print_value_tree(new ?: links, p_last_child, "value", ptree->value);
-	else
-		print_empty_leaf(new ?: links, p_last_child, "value", "value");
+		print_empty_leaf(new ?: links, p_last_child, "token", "string");
 	free(new);
 }
 
@@ -575,6 +580,12 @@ struct token* inc_token(struct token* this)
 	return this;
 }
 struct __start__* inc___start___tree(struct __start__* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct keyvalue* inc_keyvalue_tree(struct keyvalue* ptree)
 {
 	if (ptree) ptree->refcount++;
 	return ptree;
@@ -596,29 +607,44 @@ void free_token(struct token* this)
 		free(this);
 	}
 }
-void free___start___tree(struct __start__* ptree);
+void free___start__(struct __start__* ptree);
 
-void free_value_tree(struct value* ptree);
+void free_keyvalue(struct keyvalue* ptree);
 
-void free___start___tree(struct __start__* ptree)
+void free_value(struct value* ptree);
+
+void free___start__(struct __start__* ptree)
 {
 	if (ptree && !--ptree->refcount)
 	{
-		free_value_tree(ptree->value);
+		free_value(ptree->value);
 		free(ptree);
 	}
 }
 
-void free_value_tree(struct value* ptree)
+void free_keyvalue(struct keyvalue* ptree)
+{
+	if (ptree && !--ptree->refcount)
+	{
+		free_token(ptree->key);
+		free_value(ptree->value);
+		free(ptree);
+	}
+}
+
+void free_value(struct value* ptree)
 {
 	if (ptree && !--ptree->refcount)
 	{
 		free_token(ptree->boolean);
-		free_value_tree(ptree->element);
-		free_token(ptree->key);
+		for (unsigned i = 0, n = ptree->dict.n; i < n; i++)
+			free_keyvalue(ptree->dict.data[i]);
+		free(ptree->dict.data);
+		for (unsigned i = 0, n = ptree->elements.n; i < n; i++)
+			free_value(ptree->elements.data[i]);
+		free(ptree->elements.data);
 		free_token(ptree->number);
 		free_token(ptree->string);
-		free_value_tree(ptree->value);
 		free(ptree);
 	}
 }
@@ -815,51 +841,102 @@ int main()
 				
 				switch (r)
 {
+	case 10:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct value* trie = data.data[--yacc.n, --data.n];
+			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
+			if (trie->dict.n)			{
+				while (value->dict.n + trie->dict.n > value->dict.cap)
+				{
+					value->dict.cap = value->dict.cap << 1 ?: 1;
+					value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+				}
+				memmove(value->dict.data + trie->dict.n, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+				memcpy(value->dict.data, trie->dict.data, sizeof(*trie->dict.data) * trie->dict.n);
+				value->dict.n += trie->dict.n;
+			}
+			if (trie->elements.n)			{
+				while (value->elements.n + trie->elements.n > value->elements.cap)
+				{
+					value->elements.cap = value->elements.cap << 1 ?: 1;
+					value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+				}
+				memmove(value->elements.data + trie->elements.n, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+				memcpy(value->elements.data, trie->elements.data, sizeof(*trie->elements.data) * trie->elements.n);
+				value->elements.n += trie->elements.n;
+			}
+			if (trie->number) { free_token(value->number); value->number = trie->number; }
+			if (trie->string) { free_token(value->string); value->string = trie->string; }
+			free(trie);
+		};
+		free_token(data.data[--yacc.n, --data.n]);
+		if (value->elements.n == value->elements.cap)
+		{
+			value->elements.cap = value->elements.cap << 1 ?: 1;
+			value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+		}
+		memmove(value->elements.data + 1, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+		value->elements.data[0] = data.data[--yacc.n, --data.n], value->elements.n++;
+		d = value, g = 2;
+		break;
+	}
 	case 8:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		if (value->elements.n == value->elements.cap)
 		{
-			struct value* trie = data.data[--yacc.n, --data.n];
-			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
-			if (trie->element) { free_value_tree(value->element); value->element = trie->element; }
-			if (trie->key) { free_token(value->key); value->key = trie->key; }
-			if (trie->number) { free_token(value->number); value->number = trie->number; }
-			if (trie->string) { free_token(value->string); value->string = trie->string; }
-			if (trie->value) { free_value_tree(value->value); value->value = trie->value; }
-			free(trie);
-		};
-		free_value_tree(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
+			value->elements.cap = value->elements.cap << 1 ?: 1;
+			value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+		}
+		memmove(value->elements.data + 1, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+		value->elements.data[0] = data.data[--yacc.n, --data.n], value->elements.n++;
 		d = value, g = 2;
 		break;
 	}
-	case 6:
-	{
-		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 2;
-		break;
-	}
-	case 11:
+	case 12:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
-			if (trie->element) { free_value_tree(value->element); value->element = trie->element; }
-			if (trie->key) { free_token(value->key); value->key = trie->key; }
+			if (trie->dict.n)			{
+				while (value->dict.n + trie->dict.n > value->dict.cap)
+				{
+					value->dict.cap = value->dict.cap << 1 ?: 1;
+					value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+				}
+				memmove(value->dict.data + trie->dict.n, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+				memcpy(value->dict.data, trie->dict.data, sizeof(*trie->dict.data) * trie->dict.n);
+				value->dict.n += trie->dict.n;
+			}
+			if (trie->elements.n)			{
+				while (value->elements.n + trie->elements.n > value->elements.cap)
+				{
+					value->elements.cap = value->elements.cap << 1 ?: 1;
+					value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+				}
+				memmove(value->elements.data + trie->elements.n, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+				memcpy(value->elements.data, trie->elements.data, sizeof(*trie->elements.data) * trie->elements.n);
+				value->elements.n += trie->elements.n;
+			}
 			if (trie->number) { free_token(value->number); value->number = trie->number; }
 			if (trie->string) { free_token(value->string); value->string = trie->string; }
-			if (trie->value) { free_value_tree(value->value); value->value = trie->value; }
 			free(trie);
 		};
-		free_value_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
+		if (value->dict.n == value->dict.cap)
+		{
+			value->dict.cap = value->dict.cap << 1 ?: 1;
+			value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+		}
+		memmove(value->dict.data + 1, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+		value->dict.data[0] = data.data[--yacc.n, --data.n], value->dict.n++;
 		d = value, g = 3;
 		break;
 	}
@@ -868,6 +945,13 @@ int main()
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		free_token(data.data[--yacc.n, --data.n]);
+		if (value->dict.n == value->dict.cap)
+		{
+			value->dict.cap = value->dict.cap << 1 ?: 1;
+			value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+		}
+		memmove(value->dict.data + 1, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+		value->dict.data[0] = data.data[--yacc.n, --data.n], value->dict.n++;
 		d = value, g = 3;
 		break;
 	}
@@ -875,8 +959,34 @@ int main()
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		free_value_tree(value->value), value->value = data.data[--yacc.n, --data.n];
+		free_value(value->value), value->value = data.data[--yacc.n, --data.n];
+		d = value, g = 5;
+		break;
+	}
+	case 11:
+	{
+		struct keyvalue* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_value(value->value), value->value = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		free_token(value->key), value->key = data.data[--yacc.n, --data.n];
 		d = value, g = 4;
+		break;
+	}
+	case 4:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->number), value->number = data.data[--yacc.n, --data.n];
+		d = value, g = 1;
+		break;
+	}
+	case 3:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->boolean), value->boolean = data.data[--yacc.n, --data.n];
+		d = value, g = 1;
 		break;
 	}
 	case 7:
@@ -886,52 +996,74 @@ int main()
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
-			if (trie->element) { free_value_tree(value->element); value->element = trie->element; }
-			if (trie->key) { free_token(value->key); value->key = trie->key; }
+			if (trie->dict.n)			{
+				while (value->dict.n + trie->dict.n > value->dict.cap)
+				{
+					value->dict.cap = value->dict.cap << 1 ?: 1;
+					value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+				}
+				memmove(value->dict.data + trie->dict.n, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+				memcpy(value->dict.data, trie->dict.data, sizeof(*trie->dict.data) * trie->dict.n);
+				value->dict.n += trie->dict.n;
+			}
+			if (trie->elements.n)			{
+				while (value->elements.n + trie->elements.n > value->elements.cap)
+				{
+					value->elements.cap = value->elements.cap << 1 ?: 1;
+					value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+				}
+				memmove(value->elements.data + trie->elements.n, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+				memcpy(value->elements.data, trie->elements.data, sizeof(*trie->elements.data) * trie->elements.n);
+				value->elements.n += trie->elements.n;
+			}
 			if (trie->number) { free_token(value->number); value->number = trie->number; }
 			if (trie->string) { free_token(value->string); value->string = trie->string; }
-			if (trie->value) { free_value_tree(value->value); value->value = trie->value; }
 			free(trie);
 		};
-		free_value_tree(value->element), value->element = data.data[--yacc.n, --data.n];
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 1;
 		break;
 	}
-	case 3:
+	case 1:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		free_token(value->number), value->number = data.data[--yacc.n, --data.n];
+		free_token(value->string), value->string = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
-	case 10:
+	case 6:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
-			if (trie->element) { free_value_tree(value->element); value->element = trie->element; }
-			if (trie->key) { free_token(value->key); value->key = trie->key; }
+			if (trie->dict.n)			{
+				while (value->dict.n + trie->dict.n > value->dict.cap)
+				{
+					value->dict.cap = value->dict.cap << 1 ?: 1;
+					value->dict.data = realloc(value->dict.data, sizeof(*value->dict.data) * value->dict.cap);
+				}
+				memmove(value->dict.data + trie->dict.n, value->dict.data, sizeof(*value->dict.data) * value->dict.n);
+				memcpy(value->dict.data, trie->dict.data, sizeof(*trie->dict.data) * trie->dict.n);
+				value->dict.n += trie->dict.n;
+			}
+			if (trie->elements.n)			{
+				while (value->elements.n + trie->elements.n > value->elements.cap)
+				{
+					value->elements.cap = value->elements.cap << 1 ?: 1;
+					value->elements.data = realloc(value->elements.data, sizeof(*value->elements.data) * value->elements.cap);
+				}
+				memmove(value->elements.data + trie->elements.n, value->elements.data, sizeof(*value->elements.data) * value->elements.n);
+				memcpy(value->elements.data, trie->elements.data, sizeof(*trie->elements.data) * trie->elements.n);
+				value->elements.n += trie->elements.n;
+			}
 			if (trie->number) { free_token(value->number); value->number = trie->number; }
 			if (trie->string) { free_token(value->string); value->string = trie->string; }
-			if (trie->value) { free_value_tree(value->value); value->value = trie->value; }
 			free(trie);
 		};
-		free_value_tree(value->value), value->value = data.data[--yacc.n, --data.n];
 		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->key), value->key = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 1;
-		break;
-	}
-	case 4:
-	{
-		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(value->string), value->string = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
@@ -943,17 +1075,9 @@ int main()
 		d = value, g = 1;
 		break;
 	}
-	case 1:
-	{
-		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(value->boolean), value->boolean = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
 }
 				
-				if (g == 4)
+				if (g == 5)
 				{
 					free_token(td);
 					yacc.n = 0, root = d;
@@ -983,9 +1107,9 @@ int main()
 		
 		puts("accepted!");
 		
-		print___start___tree(NULL, p_root, "start", root);
+		print___start__(NULL, p_root, "start", root);
 		
-		free___start___tree(root);
+		free___start__(root);
 		
 		add_history(line);
 		

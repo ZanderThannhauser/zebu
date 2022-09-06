@@ -1,21 +1,15 @@
 
+#include "node_kind.h"
+
 struct structinfo_node
 {
 	struct string* name;
 	
-	enum {
-		sin_token,
-		sin_grammar
-	} kind;
+	enum structinfo_node_kind kind;
 	
-	union {
-		struct {
-		
-		} token;
-		struct {
-			struct string* name;
-		} grammar;
-	};
+	struct string* grammar;
+	
+	unsigned refcount;
 };
 
 struct structinfo

@@ -81,6 +81,8 @@ struct gbundle read_square_production(
 	
 	dpv(token_id);
 	
+	TODO;
+	#if 0
 	struct stringset* tags = new_stringset();
 	
 	read_token(tokenizer, production_after_highest_machine);
@@ -101,14 +103,15 @@ struct gbundle read_square_production(
 	
 	gegex_add_transition(start, token_id, tags, end);
 	
+	free_stringset(tags);
+	
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
 	
-	free_stringset(tags);
-	
 	EXIT;
 	return (struct gbundle) {start, end};
+	#endif
 }
 
 

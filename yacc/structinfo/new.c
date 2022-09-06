@@ -14,30 +14,33 @@ static void free_node(void* ptr)
 {
 	struct structinfo_node* node = ptr;
 	
-	free_string(node->name);
-	
-	switch (node->kind)
+	if (node && !--node->refcount)
 	{
-		case sin_token:
-			break;
+		free_string(node->name);
 		
-		case sin_grammar:
-			free_string(node->grammar.name);
-			break;
+		switch (node->kind)
+		{
+			case sin_token_scalar:
+			case sin_token_array:
+				break;
+			
+			case sin_grammar_scalar:
+			case sin_grammar_array:
+				free_string(node->grammar);
+				break;
+			
+			default:
+				TODO;
+				break;
+		}
 		
-		default:
-			TODO;
-			break;
+		free(node);
 	}
-	
-	free(node);
 }
 
 struct structinfo* new_structinfo(struct string* name)
 {
 	ENTER;
-	
-	dpvs(name);
 	
 	struct structinfo* this = smalloc(sizeof(*this));
 	
@@ -50,4 +53,16 @@ struct structinfo* new_structinfo(struct string* name)
 	EXIT;
 	return this;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

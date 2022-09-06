@@ -69,7 +69,7 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s_tree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"void print_%s(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
 			"\n"
 		"", ele->name->chars, ele->name->chars);
 	};
@@ -79,7 +79,7 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s_tree(struct link* links, enum prefix p, const char* name, struct %s* ptree)" "\n"
+			"void print_%s(struct link* links, enum prefix p, const char* name, struct %s* ptree)" "\n"
 			"{" "\n"
 				"\t" "print_links(links);" "\n"
 				"\t" "\n"
@@ -87,22 +87,22 @@ void print_tree_functions(
 				"\t" "\n"
 				"\t" "switch (p)" "\n"
 				"\t" "{" "\n"
-					"\t" "\t" "case p_root:" "\n"
-						"\t" "\t" "\t" "break;" "\n"
-					"\t" "\t" "\n"
-					"\t" "\t" "case p_not_last_child:" "\n"
-						"\t" "\t" "\t" "fputs(\"├── \", stdout);" "\n"
-						"\t" "\t" "\t" "new = malloc(sizeof(*new));" "\n"
-						"\t" "\t" "\t" "new->is_last = false;" "\n"
-						"\t" "\t" "\t" "new->prev = links;" "\n"
-						"\t" "\t" "\t" "break;" "\n"
-					"\t" "\t" "\n"
-					"\t" "\t" "case p_last_child:" "\n"
-						"\t" "\t" "\t" "fputs(\"└── \", stdout);" "\n"
-						"\t" "\t" "\t" "new = malloc(sizeof(*new));" "\n"
-						"\t" "\t" "\t" "new->is_last = true;" "\n"
-						"\t" "\t" "\t" "new->prev = links;" "\n"
-						"\t" "\t" "break;" "\n"
+				"\t" "\t" "case p_root:" "\n"
+				"\t" "\t" "\t" "break;" "\n"
+				"\t" "\t" "\n"
+				"\t" "\t" "case p_not_last_child:" "\n"
+				"\t" "\t" "\t" "fputs(\"├── \", stdout);" "\n"
+				"\t" "\t" "\t" "new = malloc(sizeof(*new));" "\n"
+				"\t" "\t" "\t" "new->is_last = false;" "\n"
+				"\t" "\t" "\t" "new->prev = links;" "\n"
+				"\t" "\t" "\t" "break;" "\n"
+				"\t" "\t" "\n"
+				"\t" "\t" "case p_last_child:" "\n"
+				"\t" "\t" "\t" "fputs(\"└── \", stdout);" "\n"
+				"\t" "\t" "\t" "new = malloc(sizeof(*new));" "\n"
+				"\t" "\t" "\t" "new->is_last = true;" "\n"
+				"\t" "\t" "\t" "new->prev = links;" "\n"
+				"\t" "\t" "break;" "\n"
 				"\t" "}" "\n"
 				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m)\\n\", name);" "\n"
 		"", ele->name->chars, ele->name->chars, ele->name->chars);
@@ -116,25 +116,56 @@ void print_tree_functions(
 			
 			switch (ele->kind)
 			{
-				case sin_token:
+				case sin_token_scalar:
+				{
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
-							"\t" "\t" "print_token_leaf(new ?: links, %s, \"%s\", ptree->%s);" "\n"
+						"\t" "\t" "print_token_leaf(new ?: links, %s, \"%s\", ptree->%s);" "\n"
 						"\t" "else" "\n"
-							"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
-					"", field, prefix, field, field, prefix, "token", field);
+						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"token\", \"%s\");" "\n"
+					"", field, prefix, field, field, prefix, field);
 					break;
+				}
 				
-				case sin_grammar:
+				case sin_token_array:
 				{
-					const char* grammar_chars = ele->grammar.name->chars;
+					TODO;
+					break;
+				}
+				
+				case sin_grammar_scalar:
+				{
+					const char* grammar_chars = ele->grammar->chars;
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
-							"\t" "\t" "print_%s_tree(new ?: links, %s, \"%s\", ptree->%s);" "\n"
+						"\t" "\t" "print_%s(new ?: links, %s, \"%s\", ptree->%s);" "\n"
 						"\t" "else" "\n"
-							"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
+						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
 					"", field, grammar_chars, prefix, field, field, prefix, grammar_chars, field);
+					break;
+				}
+				
+				case sin_grammar_array:
+				{
+					const char* grammar_chars = ele->grammar->chars;
+					
+					fprintf(stream, ""
+						"\t" "if (ptree->%s.n)" "\n"
+						"\t" "{" "\n"
+						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
+						"\t" "\t" "{" "\n"
+						"\t" "\t" "\t" "char label[%lu + 30];" "\n"
+						"\t" "\t" "\t" "snprintf(label, sizeof(label), \"%s[%%u]\", i);" "\n"
+						"\t" "\t" "\t" "print_%s(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
+						"\t" "\t" "}" "\n"
+						"\t" "}" "\n"
+						"\t" "else" "\n"
+						"\t" "{" "\n"
+						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s[]\", \"%s\");" "\n"
+						"\t" "}" "\n"
+					"", field, field, strlen(field), field, grammar_chars, prefix, field, prefix, grammar_chars, field);
+					
 					break;
 				}
 				
@@ -145,7 +176,7 @@ void print_tree_functions(
 		}
 		
 		fprintf(stream, ""
-				"\t" "free(new);" "\n"
+			"\t" "free(new);" "\n"
 			"}" "\n"
 		"");
 	}

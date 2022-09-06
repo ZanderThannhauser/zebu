@@ -14,11 +14,11 @@ void print_free_functions(
 	fprintf(stream, ""
 		"void free_token(struct token* this)" "\n"
 		"{" "\n"
-			"\t" "if (this && !--this->refcount)" "\n"
-			"\t" "{" "\n"
-				"\t" "\t" "free(this->data);" "\n"
-				"\t" "\t" "free(this);" "\n"
-			"\t" "}" "\n"
+		"\t" "if (this && !--this->refcount)" "\n"
+		"\t" "{" "\n"
+		"\t" "\t" "free(this->data);" "\n"
+		"\t" "\t" "free(this);" "\n"
+		"\t" "}" "\n"
 		"}" "\n"
 	"");
 	
@@ -27,7 +27,7 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s_tree(struct %s* ptree);" "\n"
+			"void free_%s(struct %s* ptree);" "\n"
 			"" "\n"
 		"", ele->name->chars, ele->name->chars);
 	}
@@ -37,7 +37,7 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s_tree(struct %s* ptree)" "\n"
+			"void free_%s(struct %s* ptree)" "\n"
 			"{" "\n"
 			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
@@ -51,17 +51,31 @@ void print_free_functions(
 			
 			switch (ele->kind)
 			{
-				case sin_token:
+				case sin_token_scalar:
 					fprintf(stream, ""
 						"\t" "\t" "free_token(ptree->%s);" "\n"
 					"", field);
 					break;
 				
-				case sin_grammar:
-					fprintf(stream, ""
-						"\t" "\t" "free_%s_tree(ptree->%s);" "\n"
-					"", ele->grammar.name->chars, field);
+				case sin_token_array:
+					TODO;
 					break;
+				
+				case sin_grammar_scalar:
+					fprintf(stream, ""
+						"\t" "\t" "free_%s(ptree->%s);" "\n"
+					"", ele->grammar->chars, field);
+					break;
+				
+				case sin_grammar_array:
+				{
+					fprintf(stream, ""
+						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
+						"\t" "\t" "\t" "free_%s(ptree->%s.data[i]);" "\n"
+						"\t" "\t" "free(ptree->%s.data);" "\n"
+					"", field, ele->grammar->chars, field, field);
+					break;
+				}
 				
 				default:
 					TODO;
@@ -79,4 +93,8 @@ void print_free_functions(
 	
 	EXIT;
 }
+
+
+
+
 

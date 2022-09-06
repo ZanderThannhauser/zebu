@@ -23,9 +23,10 @@
 #include <gegex/state/new.h>
 #include <gegex/state/add_transition.h>
 
-#include <set/string/new.h>
-#include <set/string/add.h>
-#include <set/string/free.h>
+#include <yacc/structinfo/new.h>
+#include <yacc/structinfo/add_token_array_field.h>
+#include <yacc/structinfo/add_token_scalar_field.h>
+#include <yacc/structinfo/free.h>
 
 #include "character_literal.h"
 
@@ -71,15 +72,29 @@ struct gbundle read_character_literal_production(
 	
 	dpv(token_id);
 	
-	struct stringset* tags = new_stringset();
+	struct structinfo* tags = new_structinfo(/* name: */ NULL);
 	
 	read_token(tokenizer, production_after_highest_machine);
 	
-	while (tokenizer->token == t_hashtag)
+	while (false
+		|| tokenizer->token == t_hashtag_scalar
+		|| tokenizer->token == t_hashtag_array)
 	{
 		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
-		stringset_add(tags, tag);
+		switch (tokenizer->token)
+		{
+			case t_hashtag_scalar:
+				structinfo_add_token_scalar_field(tags, tag);
+				break;
+			case t_hashtag_array:
+				structinfo_add_token_array_field(tags, tag);
+				break;
+			default:
+				TODO;
+				break;
+		}
+		
 		
 		read_token(tokenizer, production_after_highest_machine);
 		
@@ -94,11 +109,11 @@ struct gbundle read_character_literal_production(
 	
 	gegex_add_transition(start, token_id, tags, end);
 	
+	free_structinfo(tags);
+	
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
-	
-	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

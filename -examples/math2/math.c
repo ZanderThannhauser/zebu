@@ -105,10 +105,6 @@ const unsigned zebu_lexer_starts[45] = {
 };
 
 
-const unsigned zebu_lexer_defaults[1] = {
-};
-
-
 const unsigned zebu_lexer_accepts[16] = {
 	[8] = 3,
 	[9] = 2,
@@ -298,36 +294,53 @@ const unsigned zebu_gotos[37][7] = {
 struct token
 {
 unsigned char* data;
-unsigned len;
+unsigned len, refcount;
 };
 struct __start__
 {
 	struct root* root;
+	unsigned refcount;
 };
 
 struct addition
 {
-	struct multiply* add;
-	struct multiply* left;
-	struct multiply* minus;
+	struct {
+		struct multiply** data;
+		unsigned n, cap;
+	} addmes;
+	struct multiply* base;
+	struct {
+		struct multiply** data;
+		unsigned n, cap;
+	} subtractmes;
+	unsigned refcount;
 };
 
 struct highest
 {
 	struct token* literal;
 	struct root* subexpression;
+	unsigned refcount;
 };
 
 struct multiply
 {
-	struct highest* divide;
-	struct highest* left;
-	struct highest* times;
+	struct highest* base;
+	struct {
+		struct highest** data;
+		unsigned n, cap;
+	} dividemes;
+	struct {
+		struct highest** data;
+		unsigned n, cap;
+	} multiplymes;
+	unsigned refcount;
 };
 
 struct root
 {
 	struct addition* root;
+	unsigned refcount;
 };
 
 
@@ -382,17 +395,17 @@ void print_empty_leaf(struct link* links, enum prefix p, const char* type, const
 	}
 	printf("\e[31m%s\e[0m (\e[36m%s\e[0m)\n", name, type);
 }
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
+void print___start__(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
 
-void print_addition_tree(struct link* links, enum prefix p, const char* name, struct addition* ptree);
+void print_addition(struct link* links, enum prefix p, const char* name, struct addition* ptree);
 
-void print_highest_tree(struct link* links, enum prefix p, const char* name, struct highest* ptree);
+void print_highest(struct link* links, enum prefix p, const char* name, struct highest* ptree);
 
-void print_multiply_tree(struct link* links, enum prefix p, const char* name, struct multiply* ptree);
+void print_multiply(struct link* links, enum prefix p, const char* name, struct multiply* ptree);
 
-void print_root_tree(struct link* links, enum prefix p, const char* name, struct root* ptree);
+void print_root(struct link* links, enum prefix p, const char* name, struct root* ptree);
 
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
+void print___start__(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
 {
 	print_links(links);
 	
@@ -419,12 +432,12 @@ void print___start___tree(struct link* links, enum prefix p, const char* name, s
 	}
 	printf("\e[34m%s\e[m (\e[36m__start__\e[m)\n", name);
 	if (ptree->root)
-		print_root_tree(new ?: links, p_last_child, "root", ptree->root);
+		print_root(new ?: links, p_last_child, "root", ptree->root);
 	else
 		print_empty_leaf(new ?: links, p_last_child, "root", "root");
 	free(new);
 }
-void print_addition_tree(struct link* links, enum prefix p, const char* name, struct addition* ptree)
+void print_addition(struct link* links, enum prefix p, const char* name, struct addition* ptree)
 {
 	print_links(links);
 	
@@ -450,21 +463,39 @@ void print_addition_tree(struct link* links, enum prefix p, const char* name, st
 		break;
 	}
 	printf("\e[34m%s\e[m (\e[36maddition\e[m)\n", name);
-	if (ptree->add)
-		print_multiply_tree(new ?: links, p_not_last_child, "add", ptree->add);
+	if (ptree->addmes.n)
+	{
+		for (unsigned i = 0, n = ptree->addmes.n; i < n; i++)
+		{
+			char label[6 + 30];
+			snprintf(label, sizeof(label), "addmes[%u]", i);
+			print_multiply(new ?: links, i + 1 < n ? p_not_last_child : p_not_last_child, label, ptree->addmes.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "add");
-	if (ptree->left)
-		print_multiply_tree(new ?: links, p_not_last_child, "left", ptree->left);
+	{
+		print_empty_leaf(new ?: links, p_not_last_child, "multiply[]", "addmes");
+	}
+	if (ptree->base)
+		print_multiply(new ?: links, p_not_last_child, "base", ptree->base);
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "left");
-	if (ptree->minus)
-		print_multiply_tree(new ?: links, p_last_child, "minus", ptree->minus);
+		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "base");
+	if (ptree->subtractmes.n)
+	{
+		for (unsigned i = 0, n = ptree->subtractmes.n; i < n; i++)
+		{
+			char label[11 + 30];
+			snprintf(label, sizeof(label), "subtractmes[%u]", i);
+			print_multiply(new ?: links, i + 1 < n ? p_not_last_child : p_last_child, label, ptree->subtractmes.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_last_child, "multiply", "minus");
+	{
+		print_empty_leaf(new ?: links, p_last_child, "multiply[]", "subtractmes");
+	}
 	free(new);
 }
-void print_highest_tree(struct link* links, enum prefix p, const char* name, struct highest* ptree)
+void print_highest(struct link* links, enum prefix p, const char* name, struct highest* ptree)
 {
 	print_links(links);
 	
@@ -495,12 +526,12 @@ void print_highest_tree(struct link* links, enum prefix p, const char* name, str
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "token", "literal");
 	if (ptree->subexpression)
-		print_root_tree(new ?: links, p_last_child, "subexpression", ptree->subexpression);
+		print_root(new ?: links, p_last_child, "subexpression", ptree->subexpression);
 	else
 		print_empty_leaf(new ?: links, p_last_child, "root", "subexpression");
 	free(new);
 }
-void print_multiply_tree(struct link* links, enum prefix p, const char* name, struct multiply* ptree)
+void print_multiply(struct link* links, enum prefix p, const char* name, struct multiply* ptree)
 {
 	print_links(links);
 	
@@ -526,21 +557,39 @@ void print_multiply_tree(struct link* links, enum prefix p, const char* name, st
 		break;
 	}
 	printf("\e[34m%s\e[m (\e[36mmultiply\e[m)\n", name);
-	if (ptree->divide)
-		print_highest_tree(new ?: links, p_not_last_child, "divide", ptree->divide);
+	if (ptree->base)
+		print_highest(new ?: links, p_not_last_child, "base", ptree->base);
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "highest", "divide");
-	if (ptree->left)
-		print_highest_tree(new ?: links, p_not_last_child, "left", ptree->left);
+		print_empty_leaf(new ?: links, p_not_last_child, "highest", "base");
+	if (ptree->dividemes.n)
+	{
+		for (unsigned i = 0, n = ptree->dividemes.n; i < n; i++)
+		{
+			char label[9 + 30];
+			snprintf(label, sizeof(label), "dividemes[%u]", i);
+			print_highest(new ?: links, i + 1 < n ? p_not_last_child : p_not_last_child, label, ptree->dividemes.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_not_last_child, "highest", "left");
-	if (ptree->times)
-		print_highest_tree(new ?: links, p_last_child, "times", ptree->times);
+	{
+		print_empty_leaf(new ?: links, p_not_last_child, "highest[]", "dividemes");
+	}
+	if (ptree->multiplymes.n)
+	{
+		for (unsigned i = 0, n = ptree->multiplymes.n; i < n; i++)
+		{
+			char label[11 + 30];
+			snprintf(label, sizeof(label), "multiplymes[%u]", i);
+			print_highest(new ?: links, i + 1 < n ? p_not_last_child : p_last_child, label, ptree->multiplymes.data[i]);
+		}
+	}
 	else
-		print_empty_leaf(new ?: links, p_last_child, "highest", "times");
+	{
+		print_empty_leaf(new ?: links, p_last_child, "highest[]", "multiplymes");
+	}
 	free(new);
 }
-void print_root_tree(struct link* links, enum prefix p, const char* name, struct root* ptree)
+void print_root(struct link* links, enum prefix p, const char* name, struct root* ptree)
 {
 	print_links(links);
 	
@@ -567,77 +616,122 @@ void print_root_tree(struct link* links, enum prefix p, const char* name, struct
 	}
 	printf("\e[34m%s\e[m (\e[36mroot\e[m)\n", name);
 	if (ptree->root)
-		print_addition_tree(new ?: links, p_last_child, "root", ptree->root);
+		print_addition(new ?: links, p_last_child, "root", ptree->root);
 	else
 		print_empty_leaf(new ?: links, p_last_child, "addition", "root");
 	free(new);
 }
 
 
+struct token* inc_token(struct token* this)
+{
+	if (this) this->refcount++;
+	return this;
+}
+struct __start__* inc___start___tree(struct __start__* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct addition* inc_addition_tree(struct addition* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct highest* inc_highest_tree(struct highest* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct multiply* inc_multiply_tree(struct multiply* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct root* inc_root_tree(struct root* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+
+
 void free_token(struct token* this)
 {
-	if (this)
+	if (this && !--this->refcount)
 	{
 		free(this->data);
 		free(this);
 	}
 }
-void free___start___tree(struct __start__* ptree);
+void free___start__(struct __start__* ptree);
 
-void free_addition_tree(struct addition* ptree);
+void free_addition(struct addition* ptree);
 
-void free_highest_tree(struct highest* ptree);
+void free_highest(struct highest* ptree);
 
-void free_multiply_tree(struct multiply* ptree);
+void free_multiply(struct multiply* ptree);
 
-void free_root_tree(struct root* ptree);
+void free_root(struct root* ptree);
 
-void free___start___tree(struct __start__* ptree)
+void free___start__(struct __start__* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
-		free_root_tree(ptree->root);
+		free_root(ptree->root);
 		free(ptree);
 	}
 }
 
-void free_addition_tree(struct addition* ptree)
+void free_addition(struct addition* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
-		free_multiply_tree(ptree->add);
-		free_multiply_tree(ptree->left);
-		free_multiply_tree(ptree->minus);
+		for (unsigned i = 0, n = ptree->addmes.n; i < n; i++)
+			free_multiply(ptree->addmes.data[i]);
+		free(ptree->addmes.data);
+		free_multiply(ptree->base);
+		for (unsigned i = 0, n = ptree->subtractmes.n; i < n; i++)
+			free_multiply(ptree->subtractmes.data[i]);
+		free(ptree->subtractmes.data);
 		free(ptree);
 	}
 }
 
-void free_highest_tree(struct highest* ptree)
+void free_highest(struct highest* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
 		free_token(ptree->literal);
-		free_root_tree(ptree->subexpression);
+		free_root(ptree->subexpression);
 		free(ptree);
 	}
 }
 
-void free_multiply_tree(struct multiply* ptree)
+void free_multiply(struct multiply* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
-		free_highest_tree(ptree->divide);
-		free_highest_tree(ptree->left);
-		free_highest_tree(ptree->times);
+		free_highest(ptree->base);
+		for (unsigned i = 0, n = ptree->dividemes.n; i < n; i++)
+			free_highest(ptree->dividemes.data[i]);
+		free(ptree->dividemes.data);
+		for (unsigned i = 0, n = ptree->multiplymes.n; i < n; i++)
+			free_highest(ptree->multiplymes.data[i]);
+		free(ptree->multiplymes.data);
 		free(ptree);
 	}
 }
 
-void free_root_tree(struct root* ptree)
+void free_root(struct root* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
-		free_addition_tree(ptree->root);
+		free_addition(ptree->root);
 		free(ptree);
 	}
 }
@@ -745,7 +839,7 @@ int main()
 		{
 			char escaped[10];
 			
-			char* begin = lexer;
+			char* begin = lexer, *f = NULL;
 			
 			unsigned a, b, c;
 			
@@ -757,9 +851,7 @@ int main()
 					
 					ddprintf("c = '%s' (0x%X)\n", escaped, c);
 					
-					a = 0
-						?: (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0)
-						?: (l < N(zebu_lexer_defaults) ? zebu_lexer_defaults[l] : 0);
+					a = l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0;
 				}
 				else
 				{
@@ -775,11 +867,8 @@ int main()
 				{
 					if (b)
 					{
-						assert(!"144");
-						#if 0
-						l = a, t = b, f = i++;
-						ddprintf("l = %u, t == %u, f = %u (saved)\n", l, t, f);
-						#endif
+						l = a, t = b, f = lexer++;
+						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
 					}
 					else
 					{
@@ -793,6 +882,7 @@ int main()
 					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
 					
 					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
 					token->data = (void*) strndup(begin, lexer - begin);
 					t = b, td = token;
 					break;
@@ -838,25 +928,57 @@ int main()
 				
 				switch (r)
 {
-	case 15:
+	case 12:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		if (value->subtractmes.n == value->subtractmes.cap)
 		{
-			struct addition* trie = data.data[--yacc.n, --data.n];
-			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
-			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
-			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
-			free(trie);
-		};
-		free_multiply_tree(value->add), value->add = data.data[--yacc.n, --data.n];
+			value->subtractmes.cap = value->subtractmes.cap << 1 ?: 1;
+			value->subtractmes.data = realloc(value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.cap);
+		}
+		memmove(value->subtractmes.data + 1, value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.n);
+		value->subtractmes.data[0] = data.data[--yacc.n, --data.n], value->subtractmes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 6;
 		break;
 	}
-	case 11:
+	case 15:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_multiply_tree(value->add), value->add = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		{
+			struct addition* trie = data.data[--yacc.n, --data.n];
+			if (trie->addmes.n)			{
+				while (value->addmes.n + trie->addmes.n > value->addmes.cap)
+				{
+					value->addmes.cap = value->addmes.cap << 1 ?: 1;
+					value->addmes.data = realloc(value->addmes.data, sizeof(*value->addmes.data) * value->addmes.cap);
+				}
+				memmove(value->addmes.data + trie->addmes.n, value->addmes.data, sizeof(*value->addmes.data) * value->addmes.n);
+				memcpy(value->addmes.data, trie->addmes.data, sizeof(*trie->addmes.data) * trie->addmes.n);
+				value->addmes.n += trie->addmes.n;
+			}
+			if (trie->base) { free_multiply(value->base); value->base = trie->base; }
+			if (trie->subtractmes.n)			{
+				while (value->subtractmes.n + trie->subtractmes.n > value->subtractmes.cap)
+				{
+					value->subtractmes.cap = value->subtractmes.cap << 1 ?: 1;
+					value->subtractmes.data = realloc(value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.cap);
+				}
+				memmove(value->subtractmes.data + trie->subtractmes.n, value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.n);
+				memcpy(value->subtractmes.data, trie->subtractmes.data, sizeof(*trie->subtractmes.data) * trie->subtractmes.n);
+				value->subtractmes.n += trie->subtractmes.n;
+			}
+			free(trie);
+		};
+		if (value->addmes.n == value->addmes.cap)
+		{
+			value->addmes.cap = value->addmes.cap << 1 ?: 1;
+			value->addmes.data = realloc(value->addmes.data, sizeof(*value->addmes.data) * value->addmes.cap);
+		}
+		memmove(value->addmes.data + 1, value->addmes.data, sizeof(*value->addmes.data) * value->addmes.n);
+		value->addmes.data[0] = data.data[--yacc.n, --data.n], value->addmes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 6;
 		break;
@@ -864,22 +986,54 @@ int main()
 	case 16:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct addition* trie = data.data[--yacc.n, --data.n];
-			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
-			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
-			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
+			if (trie->addmes.n)			{
+				while (value->addmes.n + trie->addmes.n > value->addmes.cap)
+				{
+					value->addmes.cap = value->addmes.cap << 1 ?: 1;
+					value->addmes.data = realloc(value->addmes.data, sizeof(*value->addmes.data) * value->addmes.cap);
+				}
+				memmove(value->addmes.data + trie->addmes.n, value->addmes.data, sizeof(*value->addmes.data) * value->addmes.n);
+				memcpy(value->addmes.data, trie->addmes.data, sizeof(*trie->addmes.data) * trie->addmes.n);
+				value->addmes.n += trie->addmes.n;
+			}
+			if (trie->base) { free_multiply(value->base); value->base = trie->base; }
+			if (trie->subtractmes.n)			{
+				while (value->subtractmes.n + trie->subtractmes.n > value->subtractmes.cap)
+				{
+					value->subtractmes.cap = value->subtractmes.cap << 1 ?: 1;
+					value->subtractmes.data = realloc(value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.cap);
+				}
+				memmove(value->subtractmes.data + trie->subtractmes.n, value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.n);
+				memcpy(value->subtractmes.data, trie->subtractmes.data, sizeof(*trie->subtractmes.data) * trie->subtractmes.n);
+				value->subtractmes.n += trie->subtractmes.n;
+			}
 			free(trie);
 		};
-		free_multiply_tree(value->minus), value->minus = data.data[--yacc.n, --data.n];
+		if (value->subtractmes.n == value->subtractmes.cap)
+		{
+			value->subtractmes.cap = value->subtractmes.cap << 1 ?: 1;
+			value->subtractmes.data = realloc(value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.cap);
+		}
+		memmove(value->subtractmes.data + 1, value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.n);
+		value->subtractmes.data[0] = data.data[--yacc.n, --data.n], value->subtractmes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 6;
 		break;
 	}
-	case 12:
+	case 11:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_multiply_tree(value->minus), value->minus = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		if (value->addmes.n == value->addmes.cap)
+		{
+			value->addmes.cap = value->addmes.cap << 1 ?: 1;
+			value->addmes.data = realloc(value->addmes.data, sizeof(*value->addmes.data) * value->addmes.cap);
+		}
+		memmove(value->addmes.data + 1, value->addmes.data, sizeof(*value->addmes.data) * value->addmes.n);
+		value->addmes.data[0] = data.data[--yacc.n, --data.n], value->addmes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 6;
 		break;
@@ -887,7 +1041,14 @@ int main()
 	case 9:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_highest_tree(value->times), value->times = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		if (value->multiplymes.n == value->multiplymes.cap)
+		{
+			value->multiplymes.cap = value->multiplymes.cap << 1 ?: 1;
+			value->multiplymes.data = realloc(value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.cap);
+		}
+		memmove(value->multiplymes.data + 1, value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.n);
+		value->multiplymes.data[0] = data.data[--yacc.n, --data.n], value->multiplymes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 5;
 		break;
@@ -895,14 +1056,39 @@ int main()
 	case 13:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct multiply* trie = data.data[--yacc.n, --data.n];
-			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
-			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
-			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			if (trie->base) { free_highest(value->base); value->base = trie->base; }
+			if (trie->dividemes.n)			{
+				while (value->dividemes.n + trie->dividemes.n > value->dividemes.cap)
+				{
+					value->dividemes.cap = value->dividemes.cap << 1 ?: 1;
+					value->dividemes.data = realloc(value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.cap);
+				}
+				memmove(value->dividemes.data + trie->dividemes.n, value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.n);
+				memcpy(value->dividemes.data, trie->dividemes.data, sizeof(*trie->dividemes.data) * trie->dividemes.n);
+				value->dividemes.n += trie->dividemes.n;
+			}
+			if (trie->multiplymes.n)			{
+				while (value->multiplymes.n + trie->multiplymes.n > value->multiplymes.cap)
+				{
+					value->multiplymes.cap = value->multiplymes.cap << 1 ?: 1;
+					value->multiplymes.data = realloc(value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.cap);
+				}
+				memmove(value->multiplymes.data + trie->multiplymes.n, value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.n);
+				memcpy(value->multiplymes.data, trie->multiplymes.data, sizeof(*trie->multiplymes.data) * trie->multiplymes.n);
+				value->multiplymes.n += trie->multiplymes.n;
+			}
 			free(trie);
 		};
-		free_highest_tree(value->times), value->times = data.data[--yacc.n, --data.n];
+		if (value->multiplymes.n == value->multiplymes.cap)
+		{
+			value->multiplymes.cap = value->multiplymes.cap << 1 ?: 1;
+			value->multiplymes.data = realloc(value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.cap);
+		}
+		memmove(value->multiplymes.data + 1, value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.n);
+		value->multiplymes.data[0] = data.data[--yacc.n, --data.n], value->multiplymes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 5;
 		break;
@@ -910,7 +1096,14 @@ int main()
 	case 10:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_highest_tree(value->divide), value->divide = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		if (value->dividemes.n == value->dividemes.cap)
+		{
+			value->dividemes.cap = value->dividemes.cap << 1 ?: 1;
+			value->dividemes.data = realloc(value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.cap);
+		}
+		memmove(value->dividemes.data + 1, value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.n);
+		value->dividemes.data[0] = data.data[--yacc.n, --data.n], value->dividemes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 5;
 		break;
@@ -918,14 +1111,39 @@ int main()
 	case 14:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct multiply* trie = data.data[--yacc.n, --data.n];
-			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
-			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
-			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			if (trie->base) { free_highest(value->base); value->base = trie->base; }
+			if (trie->dividemes.n)			{
+				while (value->dividemes.n + trie->dividemes.n > value->dividemes.cap)
+				{
+					value->dividemes.cap = value->dividemes.cap << 1 ?: 1;
+					value->dividemes.data = realloc(value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.cap);
+				}
+				memmove(value->dividemes.data + trie->dividemes.n, value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.n);
+				memcpy(value->dividemes.data, trie->dividemes.data, sizeof(*trie->dividemes.data) * trie->dividemes.n);
+				value->dividemes.n += trie->dividemes.n;
+			}
+			if (trie->multiplymes.n)			{
+				while (value->multiplymes.n + trie->multiplymes.n > value->multiplymes.cap)
+				{
+					value->multiplymes.cap = value->multiplymes.cap << 1 ?: 1;
+					value->multiplymes.data = realloc(value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.cap);
+				}
+				memmove(value->multiplymes.data + trie->multiplymes.n, value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.n);
+				memcpy(value->multiplymes.data, trie->multiplymes.data, sizeof(*trie->multiplymes.data) * trie->multiplymes.n);
+				value->multiplymes.n += trie->multiplymes.n;
+			}
 			free(trie);
 		};
-		free_highest_tree(value->divide), value->divide = data.data[--yacc.n, --data.n];
+		if (value->dividemes.n == value->dividemes.cap)
+		{
+			value->dividemes.cap = value->dividemes.cap << 1 ?: 1;
+			value->dividemes.data = realloc(value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.cap);
+		}
+		memmove(value->dividemes.data + 1, value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.n);
+		value->dividemes.data[0] = data.data[--yacc.n, --data.n], value->dividemes.n++;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 5;
 		break;
@@ -933,72 +1151,116 @@ int main()
 	case 5:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_root_tree(value->root), value->root = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		free_root(value->root), value->root = data.data[--yacc.n, --data.n];
 		d = value, g = 7;
 		break;
 	}
 	case 4:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_multiply_tree(value->left), value->left = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		free_multiply(value->base), value->base = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
 	case 7:
 	{
 		struct addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct addition* trie = data.data[--yacc.n, --data.n];
-			if (trie->add) { free_multiply_tree(value->add); value->add = trie->add; }
-			if (trie->left) { free_multiply_tree(value->left); value->left = trie->left; }
-			if (trie->minus) { free_multiply_tree(value->minus); value->minus = trie->minus; }
+			if (trie->addmes.n)			{
+				while (value->addmes.n + trie->addmes.n > value->addmes.cap)
+				{
+					value->addmes.cap = value->addmes.cap << 1 ?: 1;
+					value->addmes.data = realloc(value->addmes.data, sizeof(*value->addmes.data) * value->addmes.cap);
+				}
+				memmove(value->addmes.data + trie->addmes.n, value->addmes.data, sizeof(*value->addmes.data) * value->addmes.n);
+				memcpy(value->addmes.data, trie->addmes.data, sizeof(*trie->addmes.data) * trie->addmes.n);
+				value->addmes.n += trie->addmes.n;
+			}
+			if (trie->base) { free_multiply(value->base); value->base = trie->base; }
+			if (trie->subtractmes.n)			{
+				while (value->subtractmes.n + trie->subtractmes.n > value->subtractmes.cap)
+				{
+					value->subtractmes.cap = value->subtractmes.cap << 1 ?: 1;
+					value->subtractmes.data = realloc(value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.cap);
+				}
+				memmove(value->subtractmes.data + trie->subtractmes.n, value->subtractmes.data, sizeof(*value->subtractmes.data) * value->subtractmes.n);
+				memcpy(value->subtractmes.data, trie->subtractmes.data, sizeof(*trie->subtractmes.data) * trie->subtractmes.n);
+				value->subtractmes.n += trie->subtractmes.n;
+			}
 			free(trie);
 		};
-		free_multiply_tree(value->left), value->left = data.data[--yacc.n, --data.n];
+		free_multiply(value->base), value->base = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
-		break;
-	}
-	case 8:
-	{
-		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		free_root_tree(value->subexpression), value->subexpression = data.data[--yacc.n, --data.n];
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 2;
 		break;
 	}
 	case 1:
 	{
 		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_token(value->literal), value->literal = data.data[--yacc.n, --data.n];
+		d = value, g = 2;
+		break;
+	}
+	case 8:
+	{
+		struct highest* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		free_root(value->subexpression), value->subexpression = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 2;
 		break;
 	}
 	case 3:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_highest_tree(value->left), value->left = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		free_highest(value->base), value->base = data.data[--yacc.n, --data.n];
 		d = value, g = 3;
 		break;
 	}
 	case 6:
 	{
 		struct multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct multiply* trie = data.data[--yacc.n, --data.n];
-			if (trie->divide) { free_highest_tree(value->divide); value->divide = trie->divide; }
-			if (trie->left) { free_highest_tree(value->left); value->left = trie->left; }
-			if (trie->times) { free_highest_tree(value->times); value->times = trie->times; }
+			if (trie->base) { free_highest(value->base); value->base = trie->base; }
+			if (trie->dividemes.n)			{
+				while (value->dividemes.n + trie->dividemes.n > value->dividemes.cap)
+				{
+					value->dividemes.cap = value->dividemes.cap << 1 ?: 1;
+					value->dividemes.data = realloc(value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.cap);
+				}
+				memmove(value->dividemes.data + trie->dividemes.n, value->dividemes.data, sizeof(*value->dividemes.data) * value->dividemes.n);
+				memcpy(value->dividemes.data, trie->dividemes.data, sizeof(*trie->dividemes.data) * trie->dividemes.n);
+				value->dividemes.n += trie->dividemes.n;
+			}
+			if (trie->multiplymes.n)			{
+				while (value->multiplymes.n + trie->multiplymes.n > value->multiplymes.cap)
+				{
+					value->multiplymes.cap = value->multiplymes.cap << 1 ?: 1;
+					value->multiplymes.data = realloc(value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.cap);
+				}
+				memmove(value->multiplymes.data + trie->multiplymes.n, value->multiplymes.data, sizeof(*value->multiplymes.data) * value->multiplymes.n);
+				memcpy(value->multiplymes.data, trie->multiplymes.data, sizeof(*trie->multiplymes.data) * trie->multiplymes.n);
+				value->multiplymes.n += trie->multiplymes.n;
+			}
 			free(trie);
 		};
-		free_highest_tree(value->left), value->left = data.data[--yacc.n, --data.n];
+		free_highest(value->base), value->base = data.data[--yacc.n, --data.n];
 		d = value, g = 3;
 		break;
 	}
 	case 2:
 	{
 		struct root* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_addition_tree(value->root), value->root = data.data[--yacc.n, --data.n];
+		value->refcount = 1;
+		free_addition(value->root), value->root = data.data[--yacc.n, --data.n];
 		d = value, g = 4;
 		break;
 	}
@@ -1034,9 +1296,9 @@ int main()
 		
 		puts("accepted!");
 		
-		print___start___tree(NULL, p_root, "start", root);
+		print___start__(NULL, p_root, "start", root);
 		
-		free___start___tree(root);
+		free___start__(root);
 		
 		add_history(line);
 		

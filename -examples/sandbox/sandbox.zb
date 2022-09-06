@@ -1,35 +1,22 @@
 
 
-`a`: ['a', 'A'];
+postfix_expression: `['a'-'z']+` #variable | `['0'-'9']+` #literal;
 
-%start: x #x;
+operator:
+	(     "++" #increment
+	|     "--" #decrement
+	|      "&" #address_of
+	|      "*" #dereference
+	|      "+" #positive
+	|      "-" #negative
+	|      "~" #bitwise_not
+	|      "!" #logical_not
+	| "sizeof" #sizeof_
+	);
 
-x: `a`* (`a` #tag1 `a` #tag2 `a` #tag3 );
+unary_expression: (operator #operators[])* postfix_expression #expression ;
 
-// postfix_expression: `['a'-'z']+` #variable | `['0'-'9']+` #literal;
-
-// operator: (     "++" #increment
-// 	  |     "--" #decrement
-// 	  |      "&" #address_of
-// 	  |      "*" #dereference
-// 	  |      "+" #positive
-// 	  |      "-" #negative
-// 	  |      "~" #bitwise_not
-// 	  |      "!" #logical_not
-// 	  | "sizeof" #sizeof_);
-
-// struct unary_expression
-// {
-	// struct {
-		// struct operator** data;
-		// unsigned n, dap
-	// } operators;
-	// struct postfix_expression* expression;
-// }
-
-// unary_expression: (operator #operators)* postfix_expression #expression ;
-
-// %start: unary_expression #expression;
+%start: unary_expression #expression;
 
 
 

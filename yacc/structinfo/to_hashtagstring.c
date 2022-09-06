@@ -6,7 +6,7 @@
 #include "struct.h"
 #include "to_hashtagstring.h"
 
-char* stringset_to_hashtagstring(const struct stringset* this)
+char* structinfo_to_hashtagstring(const struct structinfo* this)
 {
 	ENTER;
 	
@@ -32,14 +32,15 @@ char* stringset_to_hashtagstring(const struct stringset* this)
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
 	{
-		struct string* element = node->item;
+		struct structinfo_node* element = node->item;
 		
-		append("#"), append(element->chars);
+		append("#"), append(element->name->chars);
+		
+		if (element->kind == sin_grammar_array || element->kind == sin_token_array)
+			append("[]");
 		
 		if (node->next)
-		{
 			append(", ");
-		}
 	}
 	
 	append("");
@@ -47,4 +48,14 @@ char* stringset_to_hashtagstring(const struct stringset* this)
 	EXIT;
 	return buffer.data;
 }
+
+
+
+
+
+
+
+
+
+
 

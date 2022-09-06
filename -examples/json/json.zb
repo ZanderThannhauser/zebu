@@ -5,13 +5,15 @@
 
 `string`: '\"' ['a' - 'z']+ '\"';
 
+keyvalue: `string` #key ":" value #value;
+
 value
 	: "true"  #boolean
 	| "false" #boolean
 	| `['0' - '9']+` #number
 	| `string` #string
-	| "[" value #element ("," value)* "]"
-	| "{" `string` #key ":" value #value ("," `string` ":" value)* "}"
+	| "[" value #elements[] ("," value #elements[])* "]"
+	| ("{" keyvalue #dict[] ("," keyvalue #dict[])* "}")
 	;
 
 

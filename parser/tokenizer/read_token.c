@@ -224,7 +224,7 @@ enum token read_token(
 			dputs("t_identifier");
 			break;
 		
-		case ts_hashtag:
+		case ts_hashtag_scalar:
 		{
 			// remove #:
 			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
@@ -233,7 +233,23 @@ enum token read_token(
 			
 			append(this, 0);
 			
-			this->token = t_hashtag;
+			this->token = t_hashtag_scalar;
+			dputs("t_hashtag");
+			break;
+		}
+		
+		case ts_hashtag_array:
+		{
+			// remove #:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			
+			this->tokenchars.n -= 3;
+			
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
+			this->token = t_hashtag_array;
 			dputs("t_hashtag");
 			break;
 		}

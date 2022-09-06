@@ -24,21 +24,35 @@ void structinfo_print_source(
 		
 		switch (ele->kind)
 		{
-			case sin_token:
-			{
+			case sin_token_scalar:
 				fprintf(stream, ""
 					"\t" "struct token* %s;" "\n"
 				"", ele->name->chars);
 				break;
-			}
 			
-			case sin_grammar:
-			{
+			case sin_token_array:
+				fprintf(stream, ""
+					"\t" "struct {" "\n"
+					"\t" "\t" "struct token** data;" "\n"
+					"\t" "\t" "unsigned n, cap;" "\n"
+					"\t" "} %s;" "\n"
+				"", ele->name->chars);
+				break;
+			
+			case sin_grammar_scalar:
 				fprintf(stream, ""
 					"\t" "struct %s* %s;" "\n"
-				"", ele->grammar.name->chars, ele->name->chars);
+				"", ele->grammar->chars, ele->name->chars);
 				break;
-			}
+			
+			case sin_grammar_array:
+				fprintf(stream, ""
+					"\t" "struct {" "\n"
+					"\t" "\t" "struct %s** data;" "\n"
+					"\t" "\t" "unsigned n, cap;" "\n"
+					"\t" "} %s;" "\n"
+				"", ele->grammar->chars, ele->name->chars);
+				break;
 			
 			default:
 				TODO;

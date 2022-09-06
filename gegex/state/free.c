@@ -5,7 +5,7 @@
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
 
-#include <set/string/free.h>
+#include <yacc/structinfo/free.h>
 
 #include "struct.h"
 
@@ -31,11 +31,9 @@ void free_gegex(struct gegex* start)
 				struct gegex_transition* t = state->transitions.data[i];
 				
 				if (gegexset_add(freed, t->to))
-				{
 					quack_append(todo, t->to);
-				}
 				
-				free_stringset(t->tags);
+				free_structinfo(t->structinfo);
 				
 				free(t);
 			}
@@ -51,7 +49,7 @@ void free_gegex(struct gegex* start)
 				
 				free_string(t->grammar);
 				
-				free_stringset(t->tags);
+				free_structinfo(t->structinfo);
 				
 				free(t);
 			}

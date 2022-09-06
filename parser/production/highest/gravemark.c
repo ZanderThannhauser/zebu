@@ -14,10 +14,6 @@
 #include <gegex/state/add_transition.h>
 #include <gegex/dotout.h>
 
-#include <set/string/new.h>
-#include <set/string/add.h>
-#include <set/string/free.h>
-
 #include <lex/lookup/add_token.h>
 
 #include <regex/dfa_to_nfa.h>
@@ -28,6 +24,11 @@
 #include <regex/state/struct.h>
 #include <regex/state/free.h>
 #include <regex/state/add_lambda_transition.h>
+
+#include <yacc/structinfo/new.h>
+#include <yacc/structinfo/add_token_scalar_field.h>
+#include <yacc/structinfo/add_token_array_field.h>
+#include <yacc/structinfo/free.h>
 
 #include "gravemark.h"
 
@@ -91,15 +92,30 @@ struct gbundle read_gravemark_production(
 	
 	dpv(token_id);
 	
-	struct stringset* tags = new_stringset();
+	struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 	
 	read_token(tokenizer, production_after_highest_machine);
 	
-	while (tokenizer->token == t_hashtag)
+	while (false
+		|| tokenizer->token == t_hashtag_scalar
+		|| tokenizer->token == t_hashtag_array)
 	{
 		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
-		stringset_add(tags, tag);
+		switch (tokenizer->token)
+		{
+			case t_hashtag_scalar:
+				structinfo_add_token_scalar_field(structinfo, tag);
+				break;
+			
+			case t_hashtag_array:
+				structinfo_add_token_array_field(structinfo, tag);
+				break;
+			
+			default:
+				TODO;
+				break;
+		}
 		
 		read_token(tokenizer, production_after_highest_machine);
 		
@@ -109,16 +125,13 @@ struct gbundle read_gravemark_production(
 	struct gegex* start = new_gegex();
 	struct gegex* end = new_gegex();
 	
-	dpv(start);
-	dpv(end);
+	gegex_add_transition(start, token_id, structinfo, end);
 	
-	gegex_add_transition(start, token_id, tags, end);
+	free_structinfo(structinfo);
 	
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
-	
-	free_stringset(tags);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

@@ -49,7 +49,9 @@ enum token
 	t_bracketed_identifier,
 	t_parenthesised_identifier,
 	t_directive,
-	t_hashtag,
+	
+	t_hashtag_scalar,
+	t_hashtag_array,
 	
 	t_identifier,
 	

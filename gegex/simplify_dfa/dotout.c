@@ -16,7 +16,7 @@
 #include <set/gegex/foreach.h>
 #include <set/gegex/free.h>
 
-#include <set/string/to_hashtagstring.h>
+#include <yacc/structinfo/to_hashtagstring.h>
 
 #include "same_as_node/struct.h"
 
@@ -128,7 +128,7 @@ void gegex_simplify_dfa_dotout(
 			if (gegexset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 			
-			char* label = stringset_to_hashtagstring(transition->tags);
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
 			
 			fprintf(out, ""
 				"\"%p\" -> \"%p\" [" "\n"

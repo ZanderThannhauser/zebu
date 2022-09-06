@@ -1,7 +1,7 @@
 
 #include <debug.h>
 
-#include <set/string/inc.h>
+#include <yacc/structinfo/inc.h>
 
 #include "struct.h"
 #include "inc.h"
@@ -9,7 +9,7 @@
 
 struct reductioninfo* new_reductioninfo(
 	enum reductioninfo_kind kind,
-	struct stringset* tags,
+	struct structinfo* structinfo, // could be NULL
 	struct string* grammar,
 	struct reductioninfo* prev)
 {
@@ -19,7 +19,7 @@ struct reductioninfo* new_reductioninfo(
 	
 	this->kind = kind;
 	
-	this->tags = inc_stringset(tags);
+	this->structinfo = inc_structinfo(structinfo);
 	
 	this->grammar = inc_string(grammar);
 	

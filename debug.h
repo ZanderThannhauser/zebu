@@ -53,6 +53,7 @@
 	struct lex_pair;
 	struct reducerule_to_id;
 	struct string_to_id;
+	struct tags;
 	
 	#include <enums/error.h>
 	

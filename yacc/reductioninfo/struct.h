@@ -3,7 +3,7 @@
 
 struct reductioninfo
 {
-	struct stringset* tags; // could be null
+	struct structinfo* structinfo; // could be NULL
 	
 	enum reductioninfo_kind kind;
 	

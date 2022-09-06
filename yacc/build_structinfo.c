@@ -15,15 +15,16 @@
 #include <set/gegex/clear.h>
 
 #ifdef DOTOUT
-#include <set/string/to_hashtagstring.h>
 #include <set/gegex/contains.h>
 #include <misc/frame_counter.h>
 #endif
 
 #include "structinfo/new.h"
+#include "structinfo/update.h"
 #include "structinfo/to_string.h"
-#include "structinfo/add_token_field.h"
-#include "structinfo/add_grammar_field.h"
+#include "structinfo/to_hashtagstring.h"
+/*#include "structinfo/add_token_field.h"*/
+/*#include "structinfo/add_grammar_field.h"*/
 /*#include "structinfo/compare.h"*/
 /*#include "structinfo/free.h"*/
 
@@ -93,7 +94,7 @@ static void dotout(
 			if (gegexset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 			
-			char* label = stringset_to_hashtagstring(transition->tags);
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
 			
 			fprintf(stream, ""
 				"\"%p\" -> \"%p\" [" "\n"
@@ -111,7 +112,7 @@ static void dotout(
 			if (gegexset_add(queued, gtransition->to))
 				quack_append(todo, gtransition->to);
 			
-			char* label = stringset_to_hashtagstring(gtransition->tags);
+			char* label = structinfo_to_hashtagstring(gtransition->structinfo);
 			
 			fprintf(stream, ""
 				"\"%p\" -> \"%p\" [ label = \"%s %s\" ]" "\n"
@@ -144,9 +145,9 @@ struct structinfo* build_structinfo(struct string* name, struct gegex* start)
 	
 	struct structinfo* info = new_structinfo(name);
 	
-	gegexset_add(queued,  start);
+	gegexset_add(queued, start);
 	
-	quack_append(todo,  start);
+	quack_append(todo, start);
 	
 	while (quack_len(todo))
 	{
@@ -156,12 +157,7 @@ struct structinfo* build_structinfo(struct string* name, struct gegex* start)
 		{
 			struct gegex_transition* const transition = state->transitions.data[i];
 			
-			stringset_foreach(transition->tags, ({
-				void runme(struct string* tag) {
-					structinfo_add_token_field(info, tag);
-				}
-				runme;
-			}));
+			structinfo_update(info, transition->structinfo);
 			
 			if (gegexset_add(queued, transition->to))
 				quack_append(todo, transition->to);
@@ -171,17 +167,11 @@ struct structinfo* build_structinfo(struct string* name, struct gegex* start)
 		{
 			struct gegex_grammar_transition* const transition = state->grammar_transitions.data[i];
 			
-			stringset_foreach(transition->tags, ({
-				void runme(struct string* tag) {
-					structinfo_add_grammar_field(info, tag, transition->grammar);
-				}
-				runme;
-			}));
+			structinfo_update(info, transition->structinfo);
 			
 			if (gegexset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 		}
-		
 		
 		#ifdef DOTOUT
 		dotout(info, start, queued, state);

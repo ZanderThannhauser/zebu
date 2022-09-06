@@ -20,7 +20,6 @@
 
 #ifdef DOTOUT
 #include <misc/frame_counter.h>
-#include <set/string/to_hashtagstring.h>
 #include <set/gegex/contains.h>
 #endif
 
@@ -30,6 +29,7 @@
 #include "reductioninfo/free.h"
 
 #include "structinfo/inc.h"
+#include "structinfo/to_hashtagstring.h"
 
 #include "trie/struct.h"
 #include "trie/add_transition.h"
@@ -37,6 +37,10 @@
 #include "trie/new.h"
 
 #include "build_tries.h"
+
+#ifdef DOTOUT
+#include "structinfo/struct.h"
+#endif
 
 struct expand_bundle
 {
@@ -133,7 +137,7 @@ static void explore_dotout(
 			if (gegexset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 			
-			char* label = stringset_to_hashtagstring(transition->tags);
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
 			
 			fprintf(stream, ""
 				"\"%p\" -> \"%p\" [" "\n"
@@ -151,7 +155,7 @@ static void explore_dotout(
 			if (gegexset_add(queued, gtransition->to))
 				quack_append(todo, gtransition->to);
 			
-			char* label = stringset_to_hashtagstring(gtransition->tags);
+			char* label = structinfo_to_hashtagstring(gtransition->structinfo);
 			
 			fprintf(stream, ""
 				"\"%p\" -> \"%p\" [ label = \"%s %s\" ]" "\n"
@@ -192,15 +196,19 @@ static void expand_dotout(struct trie* start)
 		{
 			char* reductioninfo_string = reductioninfo_to_string(trie->reductioninfo);
 			
+			#ifdef DEBUGGING
+			assert(trie->structinfo->name);
+			#endif
+			
 			fprintf(stream, ""
 				"\"%p\" [" "\n"
-					"label = \"{ popcount = %u } | { reduce_as = %s } %s \"" "\n"
+					"label = \"{ reduce_as = %s } | {structinfo = %s} %s \"" "\n"
 					"shape = record" "\n"
 					"style = filled" "\n"
 					"color = black" "\n"
 					"fillcolor = white" "\n"
 				"];" "\n"
-			"", trie, trie->popcount, trie->reduce_as->chars, reductioninfo_string ?: "");
+			"", trie, trie->reduce_as->chars, trie->structinfo->name->chars, reductioninfo_string ?: "");
 			
 			free(reductioninfo_string);
 		}
@@ -261,6 +269,10 @@ void build_tries(
 	struct structinfo* structinfo)
 {
 	ENTER;
+	
+	#ifdef DEBUGGING
+	assert(structinfo->name);
+	#endif
 	
 	struct quack* explore = new_quack();
 	
@@ -366,11 +378,15 @@ void build_tries(
 			}
 			
 			struct trie* process_transition(
-				struct stringset* tags, // might be empty
+				struct structinfo* tags, // might be empty
 				struct string* grammar, // might be NULL
 				struct gegex* to)
 			{
 				ENTER;
+				
+				#ifdef DEBUGGING
+				assert(structinfo->name);
+				#endif
 				
 				struct reductioninfo* subreductioninfo = new_reductioninfo(grammar ? rik_grammar : rik_token, tags, grammar, reductioninfo);
 				
@@ -412,7 +428,7 @@ void build_tries(
 			{
 				struct gegex_transition* transition = gegex->transitions.data[i];
 				
-				struct trie* to = process_transition(transition->tags, NULL, transition->to);
+				struct trie* to = process_transition(transition->structinfo, NULL, transition->to);
 				
 				trie_add_transition(trie, transition->token, to);
 			}
@@ -421,7 +437,7 @@ void build_tries(
 			{
 				struct gegex_grammar_transition* transition = gegex->grammar_transitions.data[i];
 				
-				struct trie* to = process_transition(transition->tags, transition->grammar, transition->to);
+				struct trie* to = process_transition(transition->structinfo, transition->grammar, transition->to);
 				
 				trie_add_grammar_transition(trie, transition->grammar, to);
 			}
