@@ -27,9 +27,9 @@ struct string* scope_resolve_grammar(
 	
 	dpvs(copy);
 	
-	while (!(node = avl_search(this->grammar, &(char**[]){&copy})) && (dot = rindex(copy, '.')))
+	while (!(node = avl_search(this->grammar, &(char**[]){&copy})) && (dot = rindex(copy, '_')))
 	{
-		*dot++ = 0, dot2 = rindex(copy, '.');
+		*dot++ = 0, dot2 = rindex(copy, '_');
 		
 		if (dot2)
 		{

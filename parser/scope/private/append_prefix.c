@@ -39,7 +39,7 @@ void private_scope_append_prefix(struct scope* this, const char* appendme)
 	
 	if (this->prefix.n)
 	{
-		append_prefix(this, ".");
+		append_prefix(this, "_");
 	}
 	
 	append_prefix(this, appendme);

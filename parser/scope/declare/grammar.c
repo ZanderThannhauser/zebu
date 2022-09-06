@@ -25,7 +25,7 @@ void scope_declare_grammar(
 		
 		memcpy(full, this->prefix.chars, this->prefix.n), m += this->prefix.n;
 		
-		*m++ = '.';
+		*m++ = '_';
 		
 		memcpy(m, name->chars, name->len), m += name->len;
 		

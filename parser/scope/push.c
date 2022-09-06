@@ -44,7 +44,7 @@ void scope_push(struct scope* this)
 	{
 		char number[30];
 		
-		sprintf(number, "%u", this->layer->sublayer_counter++);
+		sprintf(number, "__%u", this->layer->sublayer_counter++);
 		
 		private_scope_append_prefix(this, number);
 	}
@@ -55,6 +55,8 @@ void scope_push(struct scope* this)
 	
 	EXIT;
 }
+
+
 
 
 

@@ -15,13 +15,13 @@ struct string* scope_build_absolute_name(
 {
 	ENTER;
 	
-	char* full = malloc(this->prefix.n + 1 + suffix->len + 1), *m = full;
+	char* full = smalloc(this->prefix.n + 1 + suffix->len + 1), *m = full;
 	
 	if (this->prefix.n)
 	{
 		memcpy(m, this->prefix.chars, this->prefix.n);
 		m += this->prefix.n;
-		*m++ = '.';
+		*m++ = '_';
 	}
 	
 	memcpy(m, suffix->chars, suffix->len);
