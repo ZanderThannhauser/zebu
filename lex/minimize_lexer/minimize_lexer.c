@@ -187,6 +187,16 @@ void lex_minimize_lexer(
 							lex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, b->default_transition.to);
 						}
 						
+						if (!unequal)
+						{
+							if (!a->EOF_transition_to != !b->EOF_transition_to)
+								unequal = true;
+							else if (a->EOF_transition_to && b->EOF_transition_to)
+							{
+								lex_simplify_dfa_add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
+							}
+						}
+						
 						if (unequal)
 						{
 							heap_push(todo, new_lex_simplify_task(a, b, 0));

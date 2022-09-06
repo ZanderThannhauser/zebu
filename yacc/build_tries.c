@@ -366,13 +366,13 @@ void build_tries(
 			}
 			
 			struct trie* process_transition(
-				struct stringset* tags, // might be NULL
+				struct stringset* tags, // might be empty
 				struct string* grammar, // might be NULL
 				struct gegex* to)
 			{
 				ENTER;
 				
-				struct reductioninfo* subreductioninfo = new_reductioninfo(tags, grammar, reductioninfo);
+				struct reductioninfo* subreductioninfo = new_reductioninfo(grammar ? rik_grammar : rik_token, tags, grammar, reductioninfo);
 				
 				struct trie* retval = new_trie();
 				
@@ -393,7 +393,7 @@ void build_tries(
 					
 					trie_add_grammar_transition(retval, gtotn->trie_name, reduce);
 					
-					reduce->reductioninfo = new_reductioninfo(new_stringset(), gtotn->trie_name, subreductioninfo);
+					reduce->reductioninfo = new_reductioninfo(rik_trie, NULL, gtotn->trie_name, subreductioninfo);
 					reduce->structinfo = inc_structinfo(structinfo);
 					reduce->reduce_as = inc_string(bundle->trie_name);
 				}

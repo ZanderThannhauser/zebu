@@ -8,6 +8,7 @@
 #include "new.h"
 
 struct reductioninfo* new_reductioninfo(
+	enum reductioninfo_kind kind,
 	struct stringset* tags,
 	struct string* grammar,
 	struct reductioninfo* prev)
@@ -15,6 +16,8 @@ struct reductioninfo* new_reductioninfo(
 	ENTER;
 	
 	struct reductioninfo* this = smalloc(sizeof(*this));
+	
+	this->kind = kind;
 	
 	this->tags = inc_stringset(tags);
 	

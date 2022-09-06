@@ -18,76 +18,120 @@ void reductioninfo_print_source(
 	
 	assert(this);
 	
-	if (this->grammar && this->grammar->chars[0] == '(')
+	switch (this->kind)
 	{
-		fprintf(stream, ""
-			"\t" "\t" "{" "\n"
-			"\t" "\t" "\t" "struct %s* trie = data.data[--yacc.n, --data.n];" "\n"
-		"", structinfo->name->chars);
-		
-		for (struct avl_node_t* node = structinfo->tree->head; node; node = node->next)
+		case rik_token:
 		{
-			struct structinfo_node* const ele = node->item;
+			bool once = true;
 			
-			const char* field = ele->name->chars;
+			stringset_foreach(this->tags, ({
+				void runme(struct string* tag)
+				{
+					if (once)
+					{
+						fprintf(stream, ""
+							"\t" "\t" "free_token(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+						"", tag->chars, tag->chars);
+						once = false;
+					}
+					else
+					{
+						fprintf(stream, ""
+							"\t" "\t" "free_token(value->%s), value->%s = inc_token(data.data[data.n]);" "\n"
+						"", tag->chars, tag->chars);
+					}
+				}
+				runme;
+			}));
 			
-			if (ele->kind == sin_grammar)
+			if (stringset_is_empty(this->tags))
 			{
 				fprintf(stream, ""
-					"\t" "\t" "\t" "if (trie->%s) { free_%s_tree(value->%s); value->%s = trie->%s; }" "\n"
-				"", field, ele->grammar.name->chars, field, field, field);
+					"\t" "\t" "free_token(data.data[--yacc.n, --data.n]);" "\n"
+				"");
 			}
-			else
-			{
-				fprintf(stream, ""
-					"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = trie->%s; }" "\n"
-				"", field, field, field, field);
-			}
+			break;
 		}
 		
-		fprintf(stream, ""
-			"\t" "\t" "\t" "free(trie);" "\n"
-			"\t" "\t" "};" "\n"
-		"");
-		
-	}
-	else
-	{
-		bool once = true;
-		
-		char* type = NULL;
-		
-		if (this->grammar && asprintf(&type, "%s_tree", this->grammar->chars) < 0)
-			abort();
-		
-		stringset_foreach(this->tags, ({
-			void runme(struct string* tag)
+		case rik_grammar:
+		{
+			bool once = true;
+			
+			const char* type = this->grammar->chars;
+			
+			stringset_foreach(this->tags, ({
+				void runme(struct string* tag)
+				{
+					if (once)
+					{
+						fprintf(stream, ""
+							"\t" "\t" "free_%s_tree(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+						"", type, tag->chars, tag->chars);
+						once = false;
+					}
+					else
+					{
+						fprintf(stream, ""
+							"\t" "\t" "free_%s_tree(value->%s), value->%s = inc_%s_tree(data.data[data.n]);" "\n"
+						"", type, tag->chars, tag->chars, type);
+					}
+				}
+				runme;
+			}));
+			
+			if (stringset_is_empty(this->tags))
 			{
-				if (once)
-				{
-					fprintf(stream, ""
-						"\t" "\t" "free_%s(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
-					"", type ?: "token", tag->chars, tag->chars);
-					once = false;
-				}
-				else
-				{
-					fprintf(stream, ""
-						"\t" "\t" "free_%s(value->%s), value->%s = inc_%s(data.data[data.n]);" "\n"
-					"", type ?: "token", tag->chars, tag->chars, type ?: "token");
-				}
+				fprintf(stream, ""
+					"\t" "\t" "free_%s_tree(data.data[--yacc.n, --data.n]);" "\n"
+				"", type);
 			}
-			runme;
-		}));
+			
+			break;
+		}
 		
-		if (stringset_is_empty(this->tags))
+		case rik_trie:
 		{
 			fprintf(stream, ""
-				"\t" "\t" "free_%s(data.data[--yacc.n, --data.n]);" "\n"
-			"", type ?: "token");
+				"\t" "\t" "{" "\n"
+				"\t" "\t" "\t" "struct %s* trie = data.data[--yacc.n, --data.n];" "\n"
+			"", structinfo->name->chars);
+			
+			for (struct avl_node_t* node = structinfo->tree->head; node; node = node->next)
+			{
+				struct structinfo_node* const ele = node->item;
+				
+				const char* field = ele->name->chars;
+				
+				switch (ele->kind)
+				{
+					case sin_token:
+						fprintf(stream, ""
+							"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = trie->%s; }" "\n"
+						"", field, field, field, field);
+						break;
+					
+					case sin_grammar:
+						fprintf(stream, ""
+							"\t" "\t" "\t" "if (trie->%s) { free_%s_tree(value->%s); value->%s = trie->%s; }" "\n"
+						"", field, ele->grammar.name->chars, field, field, field);
+						break;
+					
+					default:
+						TODO;
+						break;
+				}
+			}
+			
+			fprintf(stream, ""
+				"\t" "\t" "\t" "free(trie);" "\n"
+				"\t" "\t" "};" "\n"
+			"");
+			break;
 		}
 		
-		free(type);
+		default:
+			TODO;
+			break;
 	}
 	
 	if (this->prev)
