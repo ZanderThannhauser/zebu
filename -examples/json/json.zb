@@ -1,17 +1,17 @@
 
-%start: value;
+%start: value #value;
 
 %skip: ' ';
 
 `string`: '\"' ['a' - 'z']+ '\"';
 
 value
-	: "true"  #true
-	| "false" #false
+	: "true"  #boolean
+	| "false" #boolean
 	| `['0' - '9']+` #number
 	| `string` #string
-	| "[" value ("," value)* "]"
-	| "{" `string` ":" value ("," `string` ":" value)* "}"
+	| "[" value #element ("," value)* "]"
+	| "{" `string` #key ":" value #value ("," `string` ":" value)* "}"
 	;
 
 

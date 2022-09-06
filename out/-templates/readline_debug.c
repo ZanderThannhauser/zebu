@@ -132,7 +132,7 @@ int main()
 		{
 			char escaped[10];
 			
-			char* begin = lexer;
+			char* begin = lexer, *f = NULL;
 			
 			unsigned a, b, c;
 			
@@ -162,11 +162,8 @@ int main()
 				{
 					if (b)
 					{
-						assert(!"144");
-						#if 0
-						l = a, t = b, f = i++;
-						ddprintf("l = %u, t == %u, f = %u (saved)\n", l, t, f);
-						#endif
+						l = a, t = b, f = lexer++;
+						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
 					}
 					else
 					{

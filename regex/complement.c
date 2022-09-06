@@ -1,8 +1,6 @@
 
-#if 0
-#include <debug.h>
 
-#include <misc/phase_counters.h>
+#include <debug.h>
 
 #include "state/struct.h"
 #include "state/new.h"
@@ -11,20 +9,21 @@
 #include "dotout.h"
 #include "complement.h"
 
-static void helper(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct regex* regex)
+void regex_complement(struct regex* start)
 {
 	ENTER;
 	
-	if (regex->phase != lex_phase_counter)
+	struct quack* todo = new_quack();
+	
+	quack_append(todo, start);
+	
+	while (quack_len(todo))
 	{
-		regex->phase = lex_phase_counter;
-		regex->is_accepting = !regex->is_accepting;
+		struct regex* const state = quack_pop(todo);
 		
-		size_t i, n;
+		TODO;
+		#if 0
+		regex->is_accepting = !regex->is_accepting;
 		
 		// normal transitions:
 		for (i = 0, n = regex->transitions.n; i < n; i++)
@@ -68,31 +67,15 @@ static void helper(
 			regex_set_default_transition(regex, phi);
 			regex_set_default_transition(phi, phi);
 		}
+		#endif
 	}
-	
-	EXIT;
-}
-
-void regex_complement(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct regex* start)
-{
-	ENTER;
-	
-	lex_phase_counter++;
-	
-	#ifdef WITH_ARENAS
-	helper(arena, start);
-	#else
-	helper(start);
-	#endif
 	
 	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
+	free_quack(todo);
+	
 	EXIT;
 }
 
@@ -110,4 +93,3 @@ void regex_complement(
 
 
 
-#endif

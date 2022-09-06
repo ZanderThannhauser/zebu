@@ -1,6 +1,4 @@
 
-%start: root;
-
 %skip: ' ';
 
 `D`:  ['0' - '9'];
@@ -29,102 +27,103 @@ primary_expression
 
 postfix_expression
 	: primary_expression #expression
-	| postfix_expression #expression "[" expression #index_expression "]"
-	| postfix_expression #expression "(" ")"
-	| postfix_expression #expression "(" argument_expression_list #arguments ")"
-	| postfix_expression #expression "."  `identifier` #dir_field_name
-	| postfix_expression #expression "->" `identifier` #def_field_name
-	| postfix_expression #expression "++" #increment
-	| postfix_expression #expression "--" #decrement
+	| postfix_expression #array_expression "[" expression #index_expression "]"
+	| postfix_expression #function_expression "(" ")"
+	| postfix_expression #function_expression "(" argument_expression_list #arguments ")"
+	| postfix_expression #field_expression "."  `identifier` #field_name
+	| postfix_expression #field_expression "->" `identifier` #field_name
+	| postfix_expression #post_increment "++"
+	| postfix_expression #post_decrement "--"
 	;
 
 argument_expression_list
-	: conditional_expression
-	| argument_expression_list ',' conditional_expression
+	: conditional_expression #expression
+	| argument_expression_list #left ',' conditional_expression #right
 	;
 
 unary_expression
-	: postfix_expression #expression
-	| "++" unary_expression
-	| "--" unary_expression #decrement_expression
-	| "&" unary_expression #address_of_expression
-	| "*" unary_expression
-	| "+" unary_expression
-	| "-" unary_expression
-	| "~" unary_expression
-	| "!" unary_expression
-	| "sizeof" unary_expression
+	:          postfix_expression #expression
+	|     "++"   unary_expression #increment
+	|     "--"   unary_expression #decrement
+	|      "&"   unary_expression #address_of
+	|      "*"   unary_expression #dereference
+	|      "+"   unary_expression #positive
+	|      "-"   unary_expression #negative
+	|      "~"   unary_expression #bitwise_not
+	|      "!"   unary_expression #logical_not
+	| "sizeof"   unary_expression #_sizeof
 	;
 
 multiplicative_expression
-	: unary_expression
-	| multiplicative_expression '*' unary_expression
-	| multiplicative_expression '/' unary_expression
-	| multiplicative_expression '%' unary_expression
+	: unary_expression #expression
+	| multiplicative_expression #times_left     '*' unary_expression #times_right
+	| multiplicative_expression #divide_left    '/' unary_expression #divide_right
+	| multiplicative_expression #remainder_left '%' unary_expression #remainder_right
 	;
 
 additive_expression
-	: multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	: multiplicative_expression #expression
+	| additive_expression #add_left '+' multiplicative_expression #add_right
+	| additive_expression #sub_left '-' multiplicative_expression #sub_right
 	;
 
 shift_expression
-	: additive_expression
-	| shift_expression "<<" additive_expression
-	| shift_expression ">>" additive_expression
+	: additive_expression #expression
+	| shift_expression #leftshift_left "<<" additive_expression #leftshift_right
+	| shift_expression #rightshift_left ">>" additive_expression #rightshift_right
 	;
 
 relational_expression
-	: shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
-	| relational_expression "<=" shift_expression
-	| relational_expression ">=" shift_expression
+	: shift_expression #expression
+	| relational_expression       #less_than_left '<'  shift_expression #right
+	| relational_expression    #greater_than_left '>'  shift_expression #right
+	| relational_expression    #less_than_eq_left "<=" shift_expression #right
+	| relational_expression #greater_than_eq_left ">=" shift_expression #right
 	;
 
 equality_expression
-	: relational_expression
-	| equality_expression "==" relational_expression
-	| equality_expression "!=" relational_expression
+	: relational_expression #expression
+	| equality_expression #equal_to_left "==" relational_expression #equal_to_right
+	| equality_expression #not_equal_left "!=" relational_expression #not_equal_right
 	;
 
 and_expression
-	: equality_expression
-	| and_expression '&' equality_expression
+	: equality_expression #expression
+	| and_expression #left '&' equality_expression #right
 	;
 
 exclusive_or_expression
-	: and_expression
-	| exclusive_or_expression '^' and_expression
+	: and_expression #expression
+	| exclusive_or_expression #left '^' and_expression #right
 	;
 
 inclusive_or_expression
-	: exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	: exclusive_or_expression #expression
+	| inclusive_or_expression #left '|' exclusive_or_expression #right
 	;
 
 logical_and_expression
-	: inclusive_or_expression
-	| logical_and_expression "&&" inclusive_or_expression
+	: inclusive_or_expression #expression
+	| logical_and_expression #left "&&" inclusive_or_expression #right
 	;
 
 logical_or_expression
-	: logical_and_expression
-	| logical_or_expression "||" logical_and_expression
+	: logical_and_expression #expression
+	| logical_or_expression #left "||" logical_and_expression #right
 	;
 
 conditional_expression
-	: logical_or_expression
-	| logical_or_expression '?' expression ':' conditional_expression
+	: logical_or_expression #expression 
+	| logical_or_expression #conditional '?' expression #true_case ':' conditional_expression #false_case
 	;
 
 expression
-	: conditional_expression
-	| expression ',' conditional_expression
+	: conditional_expression #expression
+	| expression #comma_left ',' conditional_expression #comma_right
 	;
 
-root: expression;
+%start: expression #root;
+
 
 
 
