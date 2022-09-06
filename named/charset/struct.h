@@ -1,8 +1,9 @@
 
+#include <parser/charset/charset.h>
+
 struct named_charset
 {
 	struct string* name;
-	bool is_complement;
-	struct unsignedcharset* charset;
+	charset_t charset;
 };
 

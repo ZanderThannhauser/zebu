@@ -8,7 +8,6 @@
 #include <regex/nfa_to_dfa.h>
 #include <regex/simplify_dfa/simplify_dfa.h>
 #include <regex/state/add_lambda_transition.h>
-#include <regex/state/set_EOF_transition.h>
 
 #include <regex/dotout.h>
 
@@ -27,7 +26,7 @@ void lex_add_EOF_token(
 	struct regex* start = new_regex();
 	struct regex* end = new_regex();
 	
-	regex_set_EOF_transition(start, end);
+	start->EOF_transition_to = end;
 	
 	end->is_accepting = true;
 	

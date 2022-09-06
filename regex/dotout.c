@@ -16,8 +16,6 @@
 #include <set/regex/foreach.h>
 #include <set/regex/free.h>
 
-#include <set/unsignedchar/to_string.h>
-
 #include "state/struct.h"
 
 #include "dotout.h"
@@ -49,10 +47,6 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 		fprintf(out, "\t" "label = \"%s\";" "\n", name);
 	}
 	
-	#if 0
-	fprintf(out, "\"%p\" [ shape = square; ];" "\n", state);
-	#endif
-	
 	while (quack_len(todo))
 	{
 		struct regex* state = quack_pop(todo);
@@ -69,18 +63,21 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 		           state->is_accepting ? 2 + state->is_literal : 1);
 		
 		// normal transitions:
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			char str[10];
+			struct regex* const to = state->transitions[i];
 			
-			struct regex_transition* ele = state->transitions.data[i];
-			
-			escape(str, ele->value);
-			
-			fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, ele->to, str);
-			
-			if (regexset_add(queued, ele->to))
-				quack_append(todo, ele->to);
+			if (to)
+			{
+				char str[10];
+				
+				escape(str, i);
+				
+				fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, to, str);
+				
+				if (regexset_add(queued, to))
+					quack_append(todo, to);
+			}
 		}
 		
 		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
@@ -91,22 +88,6 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 		
 			if (regexset_add(queued, to))
 				quack_append(todo, to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct regex* const to = state->default_transition.to;
-			
-			if (regexset_add(queued, to))
-				quack_append(todo, to);
-			
-			char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
-			"", state, state->default_transition.to, label ?: "<default>");
-			
-			free(label);
 		}
 		
 		if (state->EOF_transition_to)

@@ -13,8 +13,6 @@
 
 {{LEXER_STARTS_TABLE}}
 
-{{LEXER_DEFAULTS_TABLE}}
-
 {{LEXER_ACCEPTS_TABLE}}
 
 {{LEXER_EOF_TABLE}}
@@ -146,9 +144,7 @@ int main()
 					
 					ddprintf("c = '%s' (0x%X)\n", escaped, c);
 					
-					a = 0
-						?: (l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0)
-						?: (l < N({{PREFIX}}_lexer_defaults) ? {{PREFIX}}_lexer_defaults[l] : 0);
+					a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 				}
 				else
 				{

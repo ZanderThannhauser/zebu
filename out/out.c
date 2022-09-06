@@ -113,7 +113,6 @@ void out(struct yacc_state* start)
 	struct dynvector* EOFs = new_dynvector("lexer_EOFs");
 	struct dynvector* starts = new_dynvector("lexer_starts");
 	struct dynvector* accepts = new_dynvector("lexer_accepts");
-	struct dynvector* defaults = new_dynvector("lexer_defaults");
 	
 	struct dyntable* gotos = new_dyntable("gotos");
 	struct dyntable* lexer = new_dyntable("lexer");
@@ -219,37 +218,31 @@ void out(struct yacc_state* start)
 			dynvector_set(accepts, lid, tid);
 		}
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			const struct lex_transition* const ele = state->transitions.data[i];
+			struct lex_state* to = state->transitions[i];
 			
-			unsigned slid = lstate_to_id(ltoi, ele->to);
-			
-			dyntable_set(lexer, lid, ele->value, slid);
-			
-			if (lexstateset_add(lex_queued, ele->to))
-				quack_append(lex_todo, ele->to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			// remember to record exceptions
-			unsigned slid = lstate_to_id(ltoi, state->default_transition.to);
-			
-			dynvector_set(defaults, lid, slid);
-			
-			if (lexstateset_add(lex_queued, state->default_transition.to))
-				quack_append(lex_todo, state->default_transition.to);
+			if (to)
+			{
+				unsigned slid = lstate_to_id(ltoi, to);
+				
+				dyntable_set(lexer, lid, i, slid);
+				
+				if (lexstateset_add(lex_queued, to))
+					quack_append(lex_todo, to);
+			}
 		}
 		
 		if (state->EOF_transition_to)
 		{
-			unsigned slid = lstate_to_id(ltoi, state->EOF_transition_to);
+			struct lex_state* to = state->EOF_transition_to;
+			
+			unsigned slid = lstate_to_id(ltoi, to);
 			
 			dynvector_set(EOFs, lid, slid);
 			
-			if (lexstateset_add(lex_queued, state->EOF_transition_to))
-				quack_append(lex_todo, state->EOF_transition_to);
+			if (lexstateset_add(lex_queued, to))
+				quack_append(lex_todo, to);
 		}
 	}
 	
@@ -282,8 +275,6 @@ void out(struct yacc_state* start)
 			// {{LEXER_TABLE}}
 			
 			// {{STARTS_TABLE}}
-			
-			// {{DEFAULTS_TABLE}}
 			
 			// {{ACCEPTS_TABLE}}
 			
@@ -347,10 +338,6 @@ void out(struct yacc_state* start)
 			else if (!strncmp(old, "LEXER_STARTS_TABLE", len))
 			{
 				dynvector_print_source(starts, output_prefix, stream);
-			}
-			else if (!strncmp(old, "LEXER_DEFAULTS_TABLE", len))
-			{
-				dynvector_print_source(defaults, output_prefix, stream);
 			}
 			else if (!strncmp(old, "LEXER_ACCEPTS_TABLE", len))
 			{
@@ -430,7 +417,6 @@ void out(struct yacc_state* start)
 	
 	free_dynvector(starts);
 	free_dynvector(EOFs);
-	free_dynvector(defaults);
 	free_dynvector(accepts);
 	
 	free_dyntable(lexer);
@@ -446,104 +432,6 @@ void out(struct yacc_state* start)
 
 
 
-
-
-
-
-
-	#if 0
-	char path[PATH_MAX];
-	
-	FILE* source = NULL;
-	FILE* header = NULL;
-	
-	struct out_shared* shared = malloc(sizeof(*shared));
-	
-	reduces = new_dyntable("reduces");
-	popcounts = new_dyntable("popcounts");
-	
-	lexer = new_dyntable("lexer");
-	
-	defaults = new_dynvector("defaults");
-	
-	EOFs = new_dynvector("EOFs");
-	
-	accepts = new_dynvector("accepts");
-	
-	fill_yacc_tables(shared, start);
-	
-	strcat(strcpy(path, output_path), ".c");
-	
-	if (!(source = fopen(path, "w")))
-	{
-		fprintf(stderr, "%s: fopen(\"%s\", \"w\"): %m\n", argv0, path);
-		exit(1);
-	}
-	
-	strcat(strcpy(path, output_path), ".h");
-	
-	if (!(header = fopen(path, "w")))
-	{
-		fprintf(stderr, "%s: fopen(\"%s\", \"w\"): %m\n", argv0, path);
-		exit(1);
-	}
-	
-	dyntable_print_source(shifts, output_prefix, source, header);
-	dyntable_print_source(reduces, output_prefix, source, header);
-	dyntable_print_source(popcounts, output_prefix, source, header);
-	dyntable_print_source(lexer, output_prefix, source, header);
-	
-	dynvector_print_source(starts, output_prefix, source, header);
-	dynvector_print_source(defaults, output_prefix, source, header);
-	dynvector_print_source(EOFs, output_prefix, source, header);
-	dynvector_print_source(accepts, output_prefix, source, header);
-	
-	{
-		unsigned sid = grammar_to_id(ttoi, "(start)");
-		
-		fprintf(source, "const unsigned start_grammar_id = %u;\n", sid);
-		fprintf(header, "extern const unsigned start_grammar_id;\n");
-	}
-	
-	tokenset_to_id_print_source(ttoi, output_prefix, source, header);
-	
-	if (parser_template != pt_nothing)
-	{
-		assert(lookup[parser_template].source);
-		
-		const char* template_source = *lookup[parser_template].source;
-		const char* template_header = *lookup[parser_template].header;
-		
-		char* specialized_source = strfandr(template_source, "<PREFIX>", output_prefix);
-		char* specialized_header = strfandr(template_header, "<PREFIX>", output_prefix);
-		
-		fputs(specialized_source, source);
-		fputs(specialized_header, header);
-		
-		free(specialized_source);
-		free(specialized_header);
-	}
-	
-	free_ystate_to_id(ytoi);
-	free_lstate_to_id(ltoi);
-	free_tokenset_to_id(ttoi);
-
-	free_dyntable(shifts);
-	free_dyntable(reduces);
-	free_dyntable(popcounts);
-	free_dyntable(lexer);
-
-	free_dynvector(starts);
-	free_dynvector(defaults);
-	free_dynvector(EOFs);
-	free_dynvector(accepts);
-
-	free(shared);
-	
-	fclose(source);
-	fclose(header);
-	#endif
-	
 
 
 

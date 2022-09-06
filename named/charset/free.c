@@ -5,8 +5,6 @@
 
 #include <debug.h>
 
-#include <set/unsignedchar/free.h>
-
 #include "struct.h"
 #include "free.h"
 
@@ -16,8 +14,6 @@ void free_named_charset(void* ptr)
 	ENTER;
 	
 	free_string(this->name);
-	
-	free_unsignedcharset(this->charset);
 	
 	free(this);
 	

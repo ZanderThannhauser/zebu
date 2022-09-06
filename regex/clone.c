@@ -17,9 +17,7 @@
 
 #include "state/struct.h"
 #include "state/new.h"
-#include "state/add_transition.h"
 #include "state/add_lambda_transition.h"
-#include "state/set_default_transition.h"
 
 #include "clone.h"
 
@@ -101,29 +99,32 @@ struct regex* regex_clone(struct regex* original_start)
 		new->is_accepting = old->is_accepting;
 		
 		// for each transition:
-		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regex_transition* const ele = old->transitions.data[i];
+			struct regex* const to = old->transitions[i];
 			
-			struct avl_node_t* node = avl_search(mappings, &ele->to);
-			
-			if (node)
+			if (to)
 			{
-				struct mapping* submapping = node->item;
+				struct avl_node_t* node = avl_search(mappings, &to);
 				
-				regex_add_transition(new, ele->value, submapping->new);
-			}
-			else
-			{
-				struct regex* subnew = new_regex();
-				
-				struct mapping* submapping = new_mapping(ele->to, subnew);
-				
-				regex_add_transition(new, ele->value, subnew);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(todo, submapping);
+				if (node)
+				{
+					struct mapping* submapping = node->item;
+					
+					new->transitions[i] = submapping->new;
+				}
+				else
+				{
+					struct regex* subnew = new_regex();
+					
+					struct mapping* submapping = new_mapping(to, subnew);
+					
+					new->transitions[i] = subnew;
+					
+					avl_insert(mappings, submapping);
+					
+					quack_append(todo, submapping);
+				}
 			}
 		}
 		
@@ -154,31 +155,6 @@ struct regex* regex_clone(struct regex* original_start)
 			}
 		}
 		
-		// for default transition:
-		if (old->default_transition.to)
-		{
-			struct avl_node_t* node = avl_search(mappings, &old->default_transition.to);
-			
-			if (node)
-			{
-				struct mapping* submapping = node->item;
-				
-				regex_set_default_transition(new, old->default_transition.exceptions, submapping->new);
-			}
-			else
-			{
-				struct regex* subnew = new_regex();
-				
-				struct mapping* submapping = new_mapping(old->default_transition.to, subnew);
-				
-				regex_set_default_transition(new, old->default_transition.exceptions, subnew);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(todo, submapping);
-			}
-		}
-		
 		if (old->EOF_transition_to)
 		{
 			TODO;
@@ -198,42 +174,4 @@ struct regex* regex_clone(struct regex* original_start)
 }
 
 
-#if 0
-struct clone_nfa_bundle regex_clone_nfa(
-	struct regex* start,
-	struct regex* end)
-{
-	ENTER;
-	
-	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
-	
-	struct regex* new_start = clone_helper(mappings, start);
-	struct regex* new_end = clone_helper(mappings, end);
-	
-	avl_free_tree(mappings);
-	
-	EXIT;
-	return (struct clone_nfa_bundle) {new_start, new_end};
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif

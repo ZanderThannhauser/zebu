@@ -13,9 +13,6 @@
 #include <set/regex/foreach.h>
 #include <set/regex/free.h>
 
-#include <set/unsignedchar/contains.h>
-#include <set/unsignedchar/are_equal.h>
-
 #include <heap/new.h>
 #include <heap/pop.h>
 #include <heap/push.h>
@@ -107,89 +104,29 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 					if (a < b)
 					{
 						ENTER;
-					
+						
 						bool unequal = false;
 						
 						if (a->is_accepting != b->is_accepting)
-						{
 							unequal = true;
-						}
-						
-						unsigned a_i = 0, a_n = a->transitions.n;
-						unsigned b_i = 0, b_n = b->transitions.n;
-						
-						while (!unequal && a_i < a_n && b_i < b_n)
-						{
-							const struct regex_transition* const at = a->transitions.data[a_i];
-							const struct regex_transition* const bt = b->transitions.data[b_i];
-							
-							if (at->value < bt->value)
-							{
-								if (b->default_transition.to && !unsignedcharset_contains(b->default_transition.exceptions, at->value))
-									regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
-								else
-									unequal = true;
-								
-								a_i++;
-							}
-							else if (at->value > bt->value)
-							{
-								if (a->default_transition.to && !unsignedcharset_contains(a->default_transition.exceptions, bt->value))
-									regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
-								else
-									unequal = true;
-								b_i++;
-							}
-							else
-							{
-								regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
-								
-								a_i++, b_i++;
-							}
-						}
-						
-						while (!unequal && a_i < a_n && b->default_transition.to)
-						{
-							const struct regex_transition* const at = a->transitions.data[a_i++];
-							
-							if (!unsignedcharset_contains(b->default_transition.exceptions, at->value))
-								regex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
-							else
-								unequal = true;
-						}
-						
-						while (!unequal && a->default_transition.to && b_i < b_n)
-						{
-							const struct regex_transition* const bt = b->transitions.data[b_i++];
-							
-							if (!unsignedcharset_contains(a->default_transition.exceptions, bt->value))
-								regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
-							else
-								unequal = true;
-						}
-						
-						if (!unequal && ((a_i < a_n) != (b_i < b_n)))
-						{
+						else if (!a->EOF_transition_to != !b->EOF_transition_to)
 							unequal = true;
-						}
+						else if (a->EOF_transition_to && b->EOF_transition_to)
+							regex_simplify_dfa_add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
 						
-						if (!unequal && (!a->default_transition.to != !b->default_transition.to))
+						for (unsigned i = 0, n = 256; !unequal && i < n; i++)
 						{
-							unequal = true;
-						}
-						
-						if (!unequal && a->default_transition.to && b->default_transition.to)
-						{
-							if (unsignedcharset_are_equal(a->default_transition.exceptions, b->default_transition.exceptions))
-								regex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, b->default_transition.to);
-							else
+							struct regex* a_to = a->transitions[i];
+							struct regex* b_to = b->transitions[i];
+							
+							if (!a_to != !b_to)
 								unequal = true;
+							else if (a_to && b_to)
+								regex_simplify_dfa_add_dep(dependent_of, a, b, a_to, b_to);
 						}
 						
 						if (unequal)
-						{
 							heap_push(todo, new_regex_simplify_task(a, b, 0));
-						}
 						
 						#ifdef VERBOSE
 						count++;
@@ -203,6 +140,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		}
 		runme;
 	}));
+	
 	
 	#ifdef VERBOSE
 	void handler12(int _)

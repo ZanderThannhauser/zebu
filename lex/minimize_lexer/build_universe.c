@@ -39,7 +39,7 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 		unsigned total = completed + quack_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "zebu: minimize tokenizer (build universe): %u of %u (%.2f%%)\r",
+			"\e[K" "zebu: minimize tokenizer (build universe): %u of %u (%.2f%%)\r",
 				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)
@@ -71,19 +71,11 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 		
 		struct lex_state* state = quack_pop(todo);
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct lex_state* const to = state->transitions.data[i]->to;
+			struct lex_state* const to = state->transitions[i];
 			
-			if (lexstateset_add(universe, to))
-				quack_append(todo, to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct lex_state* const to = state->default_transition.to;
-			
-			if (lexstateset_add(universe, to))
+			if (to && lexstateset_add(universe, to))
 				quack_append(todo, to);
 		}
 		

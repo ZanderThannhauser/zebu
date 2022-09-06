@@ -7,8 +7,6 @@
 
 #include <set/lexstate/add.h>
 
-#include <set/unsignedchar/free.h>
-
 #include "struct.h"
 #include "free.h"
 
@@ -25,31 +23,21 @@ void free_lex_state(struct lexstateset* freed, struct lex_state* start)
 	{
 		struct lex_state* state = quack_pop(todo);
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct lex_transition* trans = state->transitions.data[i];
+			struct lex_state* to = state->transitions[i];
 			
-			if (lexstateset_add(freed, trans->to))
-				quack_append(todo, trans->to);
-			
-			free(trans);
-		}
-		
-		if (state->default_transition.to)
-		{
-			free_unsignedcharset(state->default_transition.exceptions);
-			
-			if (lexstateset_add(freed, state->default_transition.to))
-				quack_append(todo, state->default_transition.to);
+			if (to && lexstateset_add(freed, to))
+				quack_append(todo, to);
 		}
 		
 		if (state->EOF_transition_to)
 		{
-			if (lexstateset_add(freed, state->EOF_transition_to))
-				quack_append(todo, state->EOF_transition_to);
+			struct lex_state* to = state->EOF_transition_to;
+			
+			if (lexstateset_add(freed, to))
+				quack_append(todo, to);
 		}
-		
-		free(state->transitions.data);
 		
 		free(state);
 	}

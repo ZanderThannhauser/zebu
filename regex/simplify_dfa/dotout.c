@@ -8,8 +8,6 @@
 
 #include <debug.h>
 
-#include <set/unsignedchar/to_string.h>
-
 #include <misc/frame_counter.h>
 
 #include <misc/escape.h>
@@ -54,6 +52,7 @@ void simplify_dfa_dotout(
 	fprintf(out, "\t" "label = \"%s: hopcount: %u\";" "\n", __PRETTY_FUNCTION__, hopcount);
 	
 	struct regexset* drawn = new_regexset();
+	
 	struct regexset* queued = new_regexset();
 	
 	struct quack* todo = new_quack();
@@ -109,34 +108,21 @@ void simplify_dfa_dotout(
 			}));
 		}
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			char str[10];
+			struct regex* const to = state->transitions[i];
 			
-			struct regex_transition* const ele = state->transitions.data[i];
-			
-			escape(str, ele->value);
-			
-			fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, ele->to, str);
-			
-			if (regexset_add(queued, ele->to))
-				quack_append(todo, ele->to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct regex* to = state->default_transition.to;
-			
-			char* label = unsignedcharset_to_string(state->default_transition.exceptions, true);
-			
-			if (regexset_add(queued, to))
-				quack_append(todo, to);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [ label = \"%s\" ]; \n"
-			"", state, state->default_transition.to, label ?: "<default>");
-			
-			free(label);
+			if (to)
+			{
+				char str[10];
+				
+				escape(str, i);
+				
+				fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, to, str);
+				
+				if (regexset_add(queued, to))
+					quack_append(todo, to);
+			}
 		}
 		
 		if (state->EOF_transition_to)
@@ -146,7 +132,7 @@ void simplify_dfa_dotout(
 			if (regexset_add(queued, to))
 				quack_append(todo, to);
 			
-			fprintf(out, "\"%p\" -> \"%p\" [ label = \"<EOF>\" ]" "\n", state, state->EOF_transition_to);
+			fprintf(out, "\"%p\" -> \"%p\" [ label = \"<EOF>\" ]" "\n", state, to);
 		}
 	}
 	
@@ -158,8 +144,7 @@ void simplify_dfa_dotout(
 	
 	fprintf(out, "}" "\n");
 	
-	if (out)
-		fclose(out);
+	fclose(out);
 	
 	EXIT;
 }

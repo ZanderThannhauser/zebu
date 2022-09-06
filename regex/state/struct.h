@@ -1,23 +1,12 @@
 
 struct regex
 {
-	struct {
-		struct regex_transition {
-			unsigned char value;
-			struct regex* to;
-		}** data;
-		unsigned n, cap;
-	} transitions;
+	struct regex* transitions[256];
 	
 	struct {
 		struct regex** data;
 		unsigned n, cap;
 	} lambda_transitions;
-	
-	struct {
-		struct regex* to;
-		struct unsignedcharset* exceptions;
-	} default_transition;
 	
 	struct regex* EOF_transition_to;
 	

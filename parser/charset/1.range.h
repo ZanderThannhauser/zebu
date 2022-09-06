@@ -1,6 +1,6 @@
 
-#include "cbundle.h"
+#include "charset.h"
 
-struct cbundle read_range_charset(
+charset_t read_range_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope);

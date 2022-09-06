@@ -76,7 +76,7 @@ ARGS += --verbose
 #ARGS += -l
 ARGS += --minimize-lexer
 
-ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -85,7 +85,7 @@ ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/c
 
 #ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
 #ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
+ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
 #ARGS += --yacc=readline-debug -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/output
 #ARGS += --yacc=readline-debug -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
 #ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/explode

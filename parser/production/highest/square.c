@@ -14,8 +14,6 @@
 #include <set/string/add.h>
 #include <set/string/free.h>
 
-#include <set/unsignedchar/free.h>
-
 #include <regex/from_charset.h>
 #include <regex/dfa_to_nfa.h>
 #include <regex/nfa_to_dfa.h>
@@ -44,7 +42,7 @@ struct gbundle read_square_production(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	struct cbundle charset = read_root_charset(tokenizer, scope);
+	charset_t charset = read_root_charset(tokenizer, scope);
 	
 	if (tokenizer->token != t_csquare)
 	{
@@ -52,7 +50,7 @@ struct gbundle read_square_production(
 		exit(1);
 	}
 	
-	struct regex* regex_start = regex_from_charset(charset.is_complement, charset.charset);
+	struct regex* regex_start = regex_from_charset(charset);
 	
 	if (options->skip)
 	{
@@ -108,8 +106,6 @@ struct gbundle read_square_production(
 	#endif
 	
 	free_stringset(tags);
-	
-	free_unsignedcharset(charset.charset);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

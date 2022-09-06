@@ -3,22 +3,19 @@
 
 #include "state/new.h"
 #include "state/struct.h"
-#include "state/add_transition.h"
 
 #include "dotout.h"
 #include "from_literal.h"
 
-struct regex* regex_from_literal(
-	const unsigned char* string,
-	size_t len
-) {
+struct regex* regex_from_literal(const unsigned char* string, unsigned len)
+{
 	ENTER;
 	
 	dpvsn(string, len);
 	
-	struct regex* start = new_regex();
+	assert(len);
 	
-	dpv(start);
+	struct regex* start = new_regex();
 	
 	struct regex* accept = start;
 	
@@ -26,7 +23,7 @@ struct regex* regex_from_literal(
 	{
 		struct regex* temp = new_regex();
 		
-		regex_add_transition(accept, *string++, temp);
+		accept->transitions[*string++] = temp;
 		
 		accept = temp;
 	}

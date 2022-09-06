@@ -23,9 +23,6 @@
 
 #include "../state/struct.h"
 #include "../state/new.h"
-#include "../state/add_transition.h"
-#include "../state/set_default_transition.h"
-#include "../state/set_EOF_transition.h"
 
 #include "same_as_node/struct.h"
 
@@ -165,61 +162,35 @@ void lex_minimize_traverse_and_clone(
 		
 		new->accepts = old->accepts;
 		
-		if (old->default_transition.to)
-		{
-			struct lex_state* subold = find(connections, old->default_transition.to);
-			
-			struct avl_node_t* node = avl_search(mappings, &subold);
-			
-			if (node)
-			{
-				struct mapping* submapping = node->item;
-				
-				lex_state_set_default_transition(new, old->default_transition.exceptions, submapping->new);
-			}
-			else
-			{
-				struct lex_state* substate = new_lex_state();
-				
-				struct mapping* submapping = new_mapping(subold, substate);
-				
-				lex_state_set_default_transition(new, old->default_transition.exceptions, substate);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(lex_todo, submapping);
-			}
-		}
-		
 		// for each transition:
-		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct lex_transition* const ele = old->transitions.data[i];
+			struct lex_state* to = old->transitions[i];
 			
-			struct lex_state* subold = find(connections, ele->to);
-			
-			struct avl_node_t* node = avl_search(mappings, &subold);
-			
-			if (node)
+			if (to)
 			{
-				struct mapping* submapping = node->item;
+				struct lex_state* subold = find(connections, to);
 				
-				if (new->default_transition.to != submapping->new)
+				struct avl_node_t* node = avl_search(mappings, &subold);
+				
+				if (node)
 				{
-					lex_state_add_transition(new, ele->value, submapping->new);
+					struct mapping* submapping = node->item;
+					
+					new->transitions[i] = submapping->new;
 				}
-			}
-			else
-			{
-				struct lex_state* substate = new_lex_state();
-				
-				struct mapping* submapping = new_mapping(subold, substate);
-				
-				lex_state_add_transition(new, ele->value, substate);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(lex_todo, submapping);
+				else
+				{
+					struct lex_state* substate = new_lex_state();
+					
+					struct mapping* submapping = new_mapping(subold, substate);
+					
+					new->transitions[i] = substate;
+					
+					avl_insert(mappings, submapping);
+					
+					quack_append(lex_todo, submapping);
+				}
 			}
 		}
 		
@@ -234,7 +205,7 @@ void lex_minimize_traverse_and_clone(
 			{
 				struct mapping* submapping = node->item;
 				
-				lex_state_set_EOF_transition(new, submapping->new);
+				new->EOF_transition_to = submapping->new;
 			}
 			else
 			{
@@ -242,7 +213,7 @@ void lex_minimize_traverse_and_clone(
 				
 				struct mapping* submapping = new_mapping(subold, substate);
 				
-				lex_state_set_EOF_transition(new, substate);
+				new->EOF_transition_to = substate;
 				
 				avl_insert(mappings, submapping);
 				

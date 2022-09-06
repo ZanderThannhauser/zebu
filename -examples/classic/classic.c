@@ -363,10 +363,6 @@ const unsigned zebu_lexer_starts[215] = {
 };
 
 
-const unsigned zebu_lexer_defaults[1] = {
-};
-
-
 const unsigned zebu_lexer_accepts[57] = {
 	[21] = 9,
 	[22] = 10,
@@ -1462,9 +1458,7 @@ int main()
 					
 					ddprintf("c = '%s' (0x%X)\n", escaped, c);
 					
-					a = 0
-						?: (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0)
-						?: (l < N(zebu_lexer_defaults) ? zebu_lexer_defaults[l] : 0);
+					a = l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0;
 				}
 				else
 				{
@@ -1653,6 +1647,14 @@ int main()
 		d = value, g = 20;
 		break;
 	}
+	case 25:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free___0_c_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 12;
+		break;
+	}
 	case 51:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -1664,14 +1666,6 @@ int main()
 			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
 			free(trie);
 		};
-		free___0_c_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 12;
-		break;
-	}
-	case 25:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
 		free___0_c_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 12;
 		break;
@@ -1697,21 +1691,6 @@ int main()
 		};
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 23;
-		break;
-	}
-	case 26:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
-		free___0_b_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 6;
 		break;
 	}
 	case 27:
@@ -1744,6 +1723,36 @@ int main()
 		d = value, g = 6;
 		break;
 	}
+	case 26:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free___0_b_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 6;
+		break;
+	}
+	case 42:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 7;
+		break;
+	}
 	case 13:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -1764,21 +1773,6 @@ int main()
 			free(trie);
 		};
 		free___0_c_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 7;
-		break;
-	}
-	case 42:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
-		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 7;
 		break;
 	}
@@ -1841,33 +1835,11 @@ int main()
 		d = value, g = 18;
 		break;
 	}
-	case 45:
+	case 16:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
 		free___1_a_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 9;
-		break;
-	}
-	case 46:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
-		free___1_b_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 9;
 		break;
 	}
@@ -1886,18 +1858,17 @@ int main()
 		d = value, g = 9;
 		break;
 	}
-	case 18:
+	case 45:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		free___1_c_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 9;
-		break;
-	}
-	case 16:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
 		free___1_a_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 9;
 		break;
@@ -1907,6 +1878,29 @@ int main()
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		free___1_b_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 9;
+		break;
+	}
+	case 46:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free___1_b_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 9;
+		break;
+	}
+	case 18:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free___1_c_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 9;
 		break;
 	}
@@ -2020,6 +2014,15 @@ int main()
 		d = value, g = 1;
 		break;
 	}
+	case 7:
+	{
+		struct __0_b* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 1;
+		break;
+	}
 	case 29:
 	{
 		struct __0_b* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -2029,15 +2032,6 @@ int main()
 			free(trie);
 		};
 		free___0_c_tree(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 1;
-		break;
-	}
-	case 7:
-	{
-		struct __0_b* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 1;
 		break;
@@ -2052,6 +2046,19 @@ int main()
 		};
 		free_token(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 2;
+		break;
+	}
+	case 31:
+	{
+		struct __0_c* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __0_c* trie = data.data[--yacc.n, --data.n];
+			free(trie);
+		};
+		free___0_b_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 2;
 		break;
@@ -2093,17 +2100,13 @@ int main()
 		d = value, g = 2;
 		break;
 	}
-	case 31:
+	case 9:
 	{
-		struct __0_c* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		struct __1_a* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		{
-			struct __0_c* trie = data.data[--yacc.n, --data.n];
-			free(trie);
-		};
-		free___0_b_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 2;
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 3;
 		break;
 	}
 	case 34:
@@ -2119,15 +2122,6 @@ int main()
 		d = value, g = 3;
 		break;
 	}
-	case 9:
-	{
-		struct __1_a* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 3;
-		break;
-	}
 	case 33:
 	{
 		struct __1_a* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -2139,15 +2133,6 @@ int main()
 		free___1_b_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 3;
-		break;
-	}
-	case 10:
-	{
-		struct __1_b* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 4;
 		break;
 	}
 	case 37:
@@ -2176,17 +2161,13 @@ int main()
 		d = value, g = 4;
 		break;
 	}
-	case 39:
+	case 10:
 	{
-		struct __1_c* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		struct __1_b* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		{
-			struct __1_c* trie = data.data[--yacc.n, --data.n];
-			free(trie);
-		};
-		free___1_a_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 5;
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 4;
 		break;
 	}
 	case 40:
@@ -2211,67 +2192,17 @@ int main()
 		d = value, g = 5;
 		break;
 	}
-	case 14:
+	case 39:
 	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		struct __1_c* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			struct __1_c* trie = data.data[--yacc.n, --data.n];
 			free(trie);
 		};
-		free___0_c_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 24;
-		break;
-	}
-	case 1:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free_token(value->abc1), value->abc1 = data.data[--yacc.n, --data.n];
-		d = value, g = 24;
-		break;
-	}
-	case 5:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
+		free___1_a_tree(data.data[--yacc.n, --data.n]);
 		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->abc1), value->abc1 = data.data[--yacc.n, --data.n];
-		d = value, g = 24;
-		break;
-	}
-	case 23:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->abc3), value->abc3 = data.data[--yacc.n, --data.n];
-		d = value, g = 24;
-		break;
-	}
-	case 6:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct __start__* trie = data.data[--yacc.n, --data.n];
-			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
-			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
-			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
-			free(trie);
-		};
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 24;
+		d = value, g = 5;
 		break;
 	}
 	case 3:
@@ -2294,6 +2225,37 @@ int main()
 			free(trie);
 		};
 		free___1_b_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 24;
+		break;
+	}
+	case 4:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free___1_c_tree(data.data[--yacc.n, --data.n]);
+		d = value, g = 24;
+		break;
+	}
+	case 1:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->abc1), value->abc1 = data.data[--yacc.n, --data.n];
+		d = value, g = 24;
+		break;
+	}
+	case 14:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free___0_c_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 24;
 		break;
 	}
@@ -2320,6 +2282,21 @@ int main()
 		d = value, g = 24;
 		break;
 	}
+	case 6:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 24;
+		break;
+	}
 	case 12:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -2332,14 +2309,6 @@ int main()
 			free(trie);
 		};
 		free___0_b_tree(data.data[--yacc.n, --data.n]);
-		d = value, g = 24;
-		break;
-	}
-	case 4:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		free___1_c_tree(data.data[--yacc.n, --data.n]);
 		d = value, g = 24;
 		break;
 	}
@@ -2358,6 +2327,15 @@ int main()
 		d = value, g = 24;
 		break;
 	}
+	case 5:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		free_token(value->abc1), value->abc1 = data.data[--yacc.n, --data.n];
+		d = value, g = 24;
+		break;
+	}
 	case 22:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
@@ -2371,6 +2349,22 @@ int main()
 		};
 		free_token(data.data[--yacc.n, --data.n]);
 		free_token(value->abc2), value->abc2 = data.data[--yacc.n, --data.n];
+		d = value, g = 24;
+		break;
+	}
+	case 23:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct __start__* trie = data.data[--yacc.n, --data.n];
+			if (trie->abc1) { free_token(value->abc1); value->abc1 = trie->abc1; }
+			if (trie->abc2) { free_token(value->abc2); value->abc2 = trie->abc2; }
+			if (trie->abc3) { free_token(value->abc3); value->abc3 = trie->abc3; }
+			free(trie);
+		};
+		free_token(data.data[--yacc.n, --data.n]);
+		free_token(value->abc3), value->abc3 = data.data[--yacc.n, --data.n];
 		d = value, g = 24;
 		break;
 	}

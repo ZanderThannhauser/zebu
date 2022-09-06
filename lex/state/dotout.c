@@ -75,36 +75,25 @@ void lex_state_dotout(
 			"", state);
 		}
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct lex_transition* const ele = state->transitions.data[i];
+			struct lex_state* const to = state->transitions[i];
 			
-			char str[10];
-			
-			escape(str, ele->value);
-			
-			fprintf(stream, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"label = \"%s\"" "\n"
-				"]" "\n"
-			"", state, ele->to, str);
-			
-			if (lexstateset_add(queued, ele->to))
-				quack_append(todo, ele->to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct lex_state* const to = state->default_transition.to;
-			
-			fprintf(stream, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"label = \"<default>\"" "\n"
-				"]" "\n"
-			"", state, to);
-			
-			if (lexstateset_add(queued, to))
-				quack_append(todo, to);
+			if (to)
+			{
+				char str[10];
+				
+				escape(str, i);
+				
+				fprintf(stream, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"label = \"%s\"" "\n"
+					"]" "\n"
+				"", state, to, str);
+				
+				if (lexstateset_add(queued, to))
+					quack_append(todo, to);
+			}
 		}
 		
 		if (state->EOF_transition_to)

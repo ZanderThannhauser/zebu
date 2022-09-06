@@ -1,5 +1,0 @@
-
-void lex_state_set_default_transition(
-	struct lex_state* this,
-	struct unsignedcharset* exceptions,
-	struct lex_state* default_transition_to);

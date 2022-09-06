@@ -1,6 +1,6 @@
 
-#include "cbundle.h"
+#include "charset.h"
 
-struct cbundle read_complement_charset(
+charset_t read_complement_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope);

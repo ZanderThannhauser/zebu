@@ -183,10 +183,6 @@ const unsigned zebu_lexer_starts[69] = {
 };
 
 
-const unsigned zebu_lexer_defaults[1] = {
-};
-
-
 const unsigned zebu_lexer_accepts[27] = {
 	[8] = 4,
 	[9] = 6,
@@ -412,11 +408,12 @@ const unsigned zebu_gotos[68][4] = {
 struct token
 {
 unsigned char* data;
-unsigned len;
+unsigned len, refcount;
 };
 struct __start__
 {
 	struct value* value;
+	unsigned refcount;
 };
 
 struct value
@@ -427,6 +424,7 @@ struct value
 	struct token* number;
 	struct token* string;
 	struct value* value;
+	unsigned refcount;
 };
 
 
@@ -571,9 +569,28 @@ void print_value_tree(struct link* links, enum prefix p, const char* name, struc
 }
 
 
+struct token* inc_token(struct token* this)
+{
+	if (this) this->refcount++;
+	return this;
+}
+struct __start__* inc___start___tree(struct __start__* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+struct value* inc_value_tree(struct value* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+
+
 void free_token(struct token* this)
 {
-	if (this)
+	if (this && !--this->refcount)
 	{
 		free(this->data);
 		free(this);
@@ -585,7 +602,7 @@ void free_value_tree(struct value* ptree);
 
 void free___start___tree(struct __start__* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
 		free_value_tree(ptree->value);
 		free(ptree);
@@ -594,7 +611,7 @@ void free___start___tree(struct __start__* ptree)
 
 void free_value_tree(struct value* ptree)
 {
-	if (ptree)
+	if (ptree && !--ptree->refcount)
 	{
 		free_token(ptree->boolean);
 		free_value_tree(ptree->element);
@@ -721,9 +738,7 @@ int main()
 					
 					ddprintf("c = '%s' (0x%X)\n", escaped, c);
 					
-					a = 0
-						?: (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0)
-						?: (l < N(zebu_lexer_defaults) ? zebu_lexer_defaults[l] : 0);
+					a = l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0;
 				}
 				else
 				{
@@ -754,6 +769,7 @@ int main()
 					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
 					
 					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
 					token->data = (void*) strndup(begin, lexer - begin);
 					t = b, td = token;
 					break;
@@ -799,16 +815,10 @@ int main()
 				
 				switch (r)
 {
-	case 6:
-	{
-		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		d = value, g = 2;
-		break;
-	}
 	case 8:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
@@ -824,9 +834,18 @@ int main()
 		d = value, g = 2;
 		break;
 	}
+	case 6:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 2;
+		break;
+	}
 	case 11:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
@@ -847,6 +866,7 @@ int main()
 	case 9:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_token(data.data[--yacc.n, --data.n]);
 		d = value, g = 3;
 		break;
@@ -854,6 +874,7 @@ int main()
 	case 5:
 	{
 		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_value_tree(value->value), value->value = data.data[--yacc.n, --data.n];
 		d = value, g = 4;
 		break;
@@ -861,6 +882,7 @@ int main()
 	case 7:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
@@ -879,20 +901,15 @@ int main()
 	case 3:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_token(value->number), value->number = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
-	case 1:
-	{
-		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(value->boolean), value->boolean = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
 	}
 	case 10:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		{
 			struct value* trie = data.data[--yacc.n, --data.n];
 			if (trie->boolean) { free_token(value->boolean); value->boolean = trie->boolean; }
@@ -913,6 +930,7 @@ int main()
 	case 4:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_token(value->string), value->string = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;
@@ -920,6 +938,15 @@ int main()
 	case 2:
 	{
 		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->boolean), value->boolean = data.data[--yacc.n, --data.n];
+		d = value, g = 1;
+		break;
+	}
+	case 1:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
 		free_token(value->boolean), value->boolean = data.data[--yacc.n, --data.n];
 		d = value, g = 1;
 		break;

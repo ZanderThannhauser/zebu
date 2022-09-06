@@ -1,6 +1,6 @@
 
-#include "cbundle.h"
+#include "charset.h"
 
-struct cbundle read_intersect_charset(
+charset_t read_intersect_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope);

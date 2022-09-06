@@ -31,10 +31,8 @@
 
 #include "read_fragment.h"
 
-void read_fragment(
-	struct tokenizer* tokenizer,
-	struct scope* scope
-) {
+void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
+{
 	ENTER;
 	
 	assert(tokenizer->token == t_gravemarked_identifier);

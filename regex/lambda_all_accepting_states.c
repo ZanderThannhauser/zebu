@@ -38,11 +38,11 @@ void regex_lambda_all_accepting_states(
 		}
 		
 		// normal transitions:
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regex* to = state->transitions.data[i]->to;
+			struct regex* to = state->transitions[i];
 			
-			if (regexset_add(done, to))
+			if (to && regexset_add(done, to))
 				quack_append(todo, to);
 		}
 		
@@ -54,14 +54,6 @@ void regex_lambda_all_accepting_states(
 			if (regexset_add(done, to))
 				quack_append(todo, to);
 			
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct regex* to = state->default_transition.to;
-			
-			if (regexset_add(done, to))
-				quack_append(todo, to);
 		}
 		
 		if (state->EOF_transition_to)

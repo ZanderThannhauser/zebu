@@ -5,8 +5,6 @@
 
 #include <debug.h>
 
-#include <set/unsignedchar/compare.h>
-
 #include "state/struct.h"
 
 #include "compare_simplified.h"
@@ -108,79 +106,22 @@ int compare_simplified_regexes(
 			
 			next_number++;
 			
-			// compare acceptance?
 			if (!!a->is_accepting > !!b->is_accepting)
 				cmp = +1;
 			else if (!!a->is_accepting < !!b->is_accepting)
 				cmp = -1;
 			
-			unsigned a_i = 0, a_n = a->transitions.n,
-				     b_i = 0, b_n = b->transitions.n;
-			
-			// compare transition values and destinations
-			while (!cmp && a_i < a_n && b_i < b_n)
+			for (unsigned i = 0, n = 256; !cmp && i < n; i++)
 			{
-				const struct regex_transition* const at = a->transitions.data[a_i];
-				const struct regex_transition* const bt = b->transitions.data[b_i];
-				
-				dpvc(at->value);
-				dpvc(bt->value);
-				
-				if (at->value < bt->value)
-				{
-					if (b->default_transition.to)
-					{
-						TODO;
-					}
-					else
-						cmp = -1, a_i++;
-				}
-				else if (bt->value < at->value)
-				{
-					if (a->default_transition.to)
-					{
-						TODO;
-					}
-					else
-						cmp = +1, b_i++;
-				}
-				else
-					cmp = helper(at->to, bt->to), a_i++, b_i++;
-			}
-			
-			while (!cmp && a_i < a_n && b->default_transition.to)
-			{
-				TODO;
-			}
-			
-			while (!cmp && a->default_transition.to && b_i < b_n)
-			{
-				TODO;
-			}
-			
-			if (!cmp)
-			{
-				if (a_i < a_n)
-					cmp = +1;
-				else if (b_i < b_n)
-					cmp = -1;
-			}
-			
-			// possibly compare default states
-			if (!cmp)
-			{
-				const struct regex* const at = a->default_transition.to;
-				const struct regex* const bt = b->default_transition.to;
+				struct regex* at = a->transitions[i], * bt = b->transitions[i];
 				
 				if (at)
+				{
 					if (bt)
-						cmp = 0
-							?: compare_unsignedcharsets(
-								a->default_transition.exceptions,
-								b->default_transition.exceptions)
-							?: helper(at, bt);
+						cmp = helper(at, bt);
 					else
 						cmp = +1;
+				}
 				else if (bt)
 					cmp = -1;
 			}
@@ -188,8 +129,7 @@ int compare_simplified_regexes(
 			// possibly compare EOF states
 			if (!cmp)
 			{
-				const struct regex* const at = a->EOF_transition_to;
-				const struct regex* const bt = b->EOF_transition_to;
+				struct regex* at = a->EOF_transition_to, * bt = b->EOF_transition_to;
 				
 				if (at)
 					if (bt)

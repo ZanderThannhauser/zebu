@@ -1,4 +1,4 @@
 
-struct regex* regex_from_charset(
-	bool is_complement,
-	struct unsignedcharset* charset);
+#include <parser/charset/charset.h>
+
+struct regex* regex_from_charset(charset_t charset);

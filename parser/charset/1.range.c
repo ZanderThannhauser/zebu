@@ -5,15 +5,6 @@
 
 #include <debug.h>
 
-#include <macros/min.h>
-#include <macros/max.h>
-
-#include <set/unsignedchar/new.h>
-#include <set/unsignedchar/add.h>
-#include <set/unsignedchar/min.h>
-#include <set/unsignedchar/max.h>
-#include <set/unsignedchar/free.h>
-
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_range.h"
@@ -21,54 +12,53 @@
 #include "0.highest.h"
 #include "1.range.h"
 
-struct cbundle read_range_charset(
+static unsigned char max(charset_t value)
+{
+	for (unsigned i = 255; 1 <= i + 1; i--)
+		if (value[i >> 4] & (1 << (i & 0xF)))
+			return i;
+	return 0;
+}
+
+static unsigned char min(charset_t value)
+{
+	for (unsigned i = 0, n = 256; i < n; i++)
+		if (value[i >> 4] & (1 << (i & 0xF)))
+			return i;
+	return 255;
+}
+
+charset_t read_range_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	struct cbundle inner = read_highest_charset(tokenizer, scope);
+	charset_t left = read_highest_charset(tokenizer, scope);
 	
 	if (tokenizer->token == t_hypen)
 	{
-		#define left (inner)
-		
 		read_token(tokenizer, charset_inside_range_machine);
 		
-		struct cbundle right = read_highest_charset(tokenizer, scope);
+		charset_t right = read_highest_charset(tokenizer, scope);
 		
-		if (left.is_complement || right.is_complement)
-		{
-			TODO;
-			exit(e_bad_input_file);
-		}
-		
-		unsigned char l = unsignedcharset_min(left.charset);
-		unsigned char r = unsignedcharset_max(right.charset);
+		unsigned char l = min(left), r = max(right);
 		
 		dpv(l);
 		dpv(r);
 		
-		unsigned char min = min(l, r), max = max(l, r);
+		charset_t range = {};
 		
-		struct unsignedcharset* set = new_unsignedcharset();
+		for (unsigned i = l; i <= r; i++)
+			range[i >> 4] |= (1 << (i & 0xF));
 		
-		for (unsigned i = min; i <= max; i++)
-			unsignedcharset_add(set, i);
-		
-		free_unsignedcharset(left.charset), free_unsignedcharset(right.charset);
-		
-		#undef left
 		EXIT;
-		return (struct cbundle) {
-			.is_complement = false,
-			.charset = set,
-		};
+		return range;
 	}
 	else
 	{
 		EXIT;
-		return inner;
+		return left;
 	}
 }
 

@@ -19,9 +19,6 @@
 
 #include "../state/struct.h"
 #include "../state/new.h"
-#include "../state/add_transition.h"
-#include "../state/set_default_transition.h"
-#include "../state/set_EOF_transition.h"
 
 #include "../dotout.h"
 
@@ -126,58 +123,34 @@ struct regex* regex_simplify_dfa_clone(
 		new->is_accepting = old->is_accepting;
 		
 		// for each transition:
-		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regex_transition* const ele = old->transitions.data[i];
+			struct regex* const to = old->transitions[i];
 			
-			struct regex* cloneme = find(connections, ele->to);
-			
-			struct avl_node_t* node = avl_search(mappings, &cloneme);
-			
-			if (node)
+			if (to)
 			{
-				struct mapping* submapping = node->item;
+				struct regex* cloneme = find(connections, to);
 				
-				regex_add_transition(new, ele->value, submapping->new);
-			}
-			else
-			{
-				struct regex* subnew = new_regex();
+				struct avl_node_t* node = avl_search(mappings, &cloneme);
 				
-				struct mapping* submapping = new_mapping(cloneme, subnew);
-				
-				regex_add_transition(new, ele->value, subnew);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(todo, submapping);
-			}
-		}
-		
-		// for default transition:
-		if (old->default_transition.to)
-		{
-			struct regex* cloneme = find(connections, old->default_transition.to);
-			
-			struct avl_node_t* node = avl_search(mappings, &cloneme);
-			
-			if (node)
-			{
-				struct mapping* submapping = node->item;
-				
-				regex_set_default_transition(new, old->default_transition.exceptions, submapping->new);
-			}
-			else
-			{
-				struct regex* subnew = new_regex();
-				
-				struct mapping* submapping = new_mapping(cloneme, subnew);
-				
-				regex_set_default_transition(new, old->default_transition.exceptions, subnew);
-				
-				avl_insert(mappings, submapping);
-				
-				quack_append(todo, submapping);
+				if (node)
+				{
+					struct mapping* submapping = node->item;
+					
+					new->transitions[i] = submapping->new;
+				}
+				else
+				{
+					struct regex* subnew = new_regex();
+					
+					struct mapping* submapping = new_mapping(cloneme, subnew);
+					
+					new->transitions[i] = subnew;
+					
+					avl_insert(mappings, submapping);
+					
+					quack_append(todo, submapping);
+				}
 			}
 		}
 		
@@ -191,7 +164,7 @@ struct regex* regex_simplify_dfa_clone(
 			{
 				struct mapping* submapping = node->item;
 				
-				regex_set_EOF_transition(new, submapping->new);
+				new->EOF_transition_to = submapping->new;
 			}
 			else
 			{
@@ -199,7 +172,7 @@ struct regex* regex_simplify_dfa_clone(
 				
 				struct mapping* submapping = new_mapping(cloneme, subnew);
 				
-				regex_set_EOF_transition(new, subnew);
+				new->EOF_transition_to = subnew;
 				
 				avl_insert(mappings, submapping);
 				

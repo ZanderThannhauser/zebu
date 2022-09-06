@@ -7,8 +7,6 @@
 #include <parser/tokenizer/read_token.h>
 #include <parser/tokenizer/machines/charset/root.h>
 
-#include <set/unsignedchar/free.h>
-
 #include <regex/from_charset.h>
 #include <regex/dotout.h>
 
@@ -22,7 +20,7 @@ struct rbundle read_square_token_expression(
 	
 	read_token(tokenizer, charset_root_machine);
 	
-	struct cbundle cbundle = read_root_charset(tokenizer, scope);
+	charset_t charset = read_root_charset(tokenizer, scope);
 	
 	if (tokenizer->token != t_csquare)
 	{
@@ -30,13 +28,7 @@ struct rbundle read_square_token_expression(
 		exit(1);
 	}
 	
-	struct regex* start = regex_from_charset(cbundle.is_complement, cbundle.charset);
-	
-	free_unsignedcharset(cbundle.charset);
-	
-	#ifdef DOTOUT
-	regex_dotout(start, __PRETTY_FUNCTION__);
-	#endif
+	struct regex* start = regex_from_charset(charset);
 	
 	EXIT;
 	return (struct rbundle) {
@@ -44,6 +36,21 @@ struct rbundle read_square_token_expression(
 		.dfa = start,
 	};
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

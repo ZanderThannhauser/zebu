@@ -41,19 +41,11 @@ static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
 			state->is_literal = is_literal;
 		}
 		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regex* to = state->transitions.data[i]->to;
+			struct regex* to = state->transitions[i];
 			
-			if (regexset_add(queued, to))
-				quack_append(todo, to);
-		}
-		
-		if (state->default_transition.to)
-		{
-			struct regex* to = state->default_transition.to;
-			
-			if (regexset_add(queued, to))
+			if (to && regexset_add(queued, to))
 				quack_append(todo, to);
 		}
 		

@@ -24,8 +24,6 @@
 
 #include <set/unsigned/compare.h>
 
-#include <set/unsignedchar/contains.h>
-
 #ifdef VERBOSE
 #include <heap/len.h>
 /*#include <cmdln/verbose.h>*/
@@ -112,95 +110,27 @@ void lex_minimize_lexer(
 						bool unequal = false;
 						
 						if (!a->accepts != !b->accepts)
-						{
 							unequal = true;
-						}
 						else if (a->accepts && b->accepts && compare_unsignedsets(a->accepts, b->accepts))
-						{
 							unequal = true;
-						}
-						
-						unsigned a_i = 0, a_n = a->transitions.n;
-						unsigned b_i = 0, b_n = b->transitions.n;
-						
-						while (!unequal && a_i < a_n && b_i < b_n)
-						{
-							const struct lex_transition* const at = a->transitions.data[a_i];
-							const struct lex_transition* const bt = b->transitions.data[b_i];
-							
-							if (at->value < bt->value)
-							{
-								if (b->default_transition.to && !unsignedcharset_contains(b->default_transition.exceptions, at->value))
-									lex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
-								else
-									unequal = true;
-								
-								a_i++;
-							}
-							else if (at->value > bt->value)
-							{
-								if (a->default_transition.to && !unsignedcharset_contains(a->default_transition.exceptions, bt->value))
-									lex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
-								else
-									unequal = true;
-								b_i++;
-							}
-							else
-							{
-								lex_simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
-								a_i++, b_i++;
-							}
-						}
-						
-						while (!unequal && a_i < a_n && b->default_transition.to)
-						{
-							const struct lex_transition* const at = a->transitions.data[a_i++];
-							
-							if (!unsignedcharset_contains(b->default_transition.exceptions, at->value))
-								lex_simplify_dfa_add_dep(dependent_of, a, b, at->to, b->default_transition.to);
-							else
-								unequal = true;
-						}
-						
-						while (!unequal && a->default_transition.to && b_i < b_n)
-						{
-							const struct lex_transition* const bt = b->transitions.data[b_i++];
-							
-							if (!unsignedcharset_contains(a->default_transition.exceptions, bt->value))
-								lex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, bt->to);
-							else
-								unequal = true;
-						}
-						
-						if (!unequal && (a_i < a_n || b_i < b_n))
-						{
+						else if (!a->EOF_transition_to != !b->EOF_transition_to)
 							unequal = true;
-						}
-						
-						if (!unequal && (!a->default_transition.to != !b->default_transition.to))
+						else if (a->EOF_transition_to && b->EOF_transition_to)
+							lex_simplify_dfa_add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
+							
+						for (unsigned i = 0, n = 256; !unequal && i < n; i++)
 						{
-							unequal = true;
-						}
-						
-						if (!unequal && a->default_transition.to && b->default_transition.to)
-						{
-							lex_simplify_dfa_add_dep(dependent_of, a, b, a->default_transition.to, b->default_transition.to);
-						}
-						
-						if (!unequal)
-						{
-							if (!a->EOF_transition_to != !b->EOF_transition_to)
+							struct lex_state* at = a->transitions[i];
+							struct lex_state* bt = b->transitions[i];
+							
+							if (!at != !bt)
 								unequal = true;
-							else if (a->EOF_transition_to && b->EOF_transition_to)
-							{
-								lex_simplify_dfa_add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
-							}
+							else if (at && bt)
+								lex_simplify_dfa_add_dep(dependent_of, a, b, at, bt);
 						}
 						
 						if (unequal)
-						{
 							heap_push(todo, new_lex_simplify_task(a, b, 0));
-						}
 						
 						#ifdef VERBOSE
 						count++;

@@ -14,16 +14,13 @@
 void scope_declare_charset(
 	struct scope* this,
 	struct string* name,
-	bool is_complement,
-	struct unsignedcharset* charset)
+	charset_t charset)
 {
 	ENTER;
 	
-	dpv(charset);
-	
 	assert(this->layer);
 	
-	avl_insert(this->layer->charsets, new_named_charset(name, is_complement, charset));
+	avl_insert(this->layer->charsets, new_named_charset(name, charset));
 	
 	EXIT;
 }

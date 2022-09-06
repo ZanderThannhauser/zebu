@@ -62,34 +62,20 @@ void regex_simplify_dfa_build_universe(
 		
 		struct regex* node = quack_pop(todo);
 		
-		for (unsigned i = 0, n = node->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regex* to = node->transitions.data[i]->to;
+			struct regex* const to = node->transitions[i];
 			
-			if (regexset_add(universe, to))
-			{
+			if (to && regexset_add(universe, to))
 				quack_append(todo, to);
-			}
-		}
-		
-		if (node->default_transition.to)
-		{
-			struct regex* to = node->default_transition.to;
-			
-			if (regexset_add(universe, to))
-			{
-				quack_append(todo, to);
-			}
 		}
 		
 		if (node->EOF_transition_to)
 		{
-			struct regex* to = node->EOF_transition_to;
+			struct regex* const to = node->EOF_transition_to;
 			
 			if (regexset_add(universe, to))
-			{
 				quack_append(todo, to);
-			}
 		}
 	}
 	
