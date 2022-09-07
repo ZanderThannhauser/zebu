@@ -1,574 +1,627 @@
-const unsigned zebu_shifts[20][10] = {
-	[1][2] = 5,
-	[1][3] = 2,
-	[1][4] = 3,
-	[1][5] = 4,
-	[1][7] = 22,
-	[4][2] = 5,
-	[4][3] = 2,
-	[4][4] = 3,
-	[4][5] = 4,
-	[4][7] = 21,
-	[5][2] = 9,
-	[5][3] = 6,
-	[5][4] = 7,
-	[5][5] = 8,
-	[5][7] = 16,
-	[8][2] = 9,
-	[8][3] = 6,
-	[8][4] = 7,
-	[8][5] = 8,
-	[8][7] = 15,
-	[9][2] = 9,
-	[9][3] = 6,
-	[9][4] = 7,
-	[9][5] = 8,
-	[9][7] = 10,
-	[10][2] = 9,
-	[10][3] = 6,
-	[10][4] = 7,
-	[10][5] = 8,
-	[10][7] = 13,
-	[10][8] = 11,
-	[10][9] = 12,
-	[13][2] = 9,
-	[13][3] = 6,
-	[13][4] = 7,
-	[13][5] = 8,
-	[13][7] = 13,
-	[13][8] = 11,
-	[13][9] = 14,
-	[16][2] = 9,
-	[16][3] = 6,
-	[16][4] = 7,
-	[16][5] = 8,
-	[16][7] = 19,
-	[16][8] = 17,
-	[16][9] = 18,
-	[19][2] = 9,
-	[19][3] = 6,
-	[19][4] = 7,
-	[19][5] = 8,
-	[19][7] = 19,
-	[19][8] = 17,
-	[19][9] = 20,
-};
-const unsigned zebu_reduces[23][9] = {
-	[2][6] = 7,
-	[3][6] = 7,
-	[6][2] = 7,
-	[6][3] = 7,
-	[6][4] = 7,
-	[6][5] = 7,
-	[6][8] = 7,
-	[7][2] = 7,
-	[7][3] = 7,
-	[7][4] = 7,
-	[7][5] = 7,
-	[7][8] = 7,
-	[11][2] = 9,
+#include "lisp.h"
+
+#define _GNU_SOURCE
+
+#include <stdarg.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
+#include <errno.h>
+
+const unsigned zebu_shifts[21][8] = {
+	[1][2] = 2,
+	[1][3] = 3,
+	[1][4] = 4,
+	[1][5] = 5,
+	[4][2] = 2,
+	[4][3] = 3,
+	[4][4] = 4,
+	[4][5] = 5,
+	[5][2] = 8,
+	[5][3] = 9,
+	[5][4] = 10,
+	[5][5] = 11,
+	[10][2] = 8,
+	[10][3] = 9,
+	[10][4] = 10,
+	[10][5] = 11,
+	[11][2] = 8,
 	[11][3] = 9,
-	[11][4] = 9,
-	[11][5] = 9,
-	[11][8] = 9,
-	[12][2] = 7,
-	[12][3] = 7,
-	[12][4] = 7,
-	[12][5] = 7,
-	[12][8] = 7,
-	[14][2] = 9,
+	[11][4] = 10,
+	[11][5] = 11,
+	[12][2] = 8,
+	[12][3] = 9,
+	[12][4] = 10,
+	[12][5] = 11,
+	[12][7] = 15,
+	[14][2] = 8,
 	[14][3] = 9,
-	[14][4] = 9,
-	[14][5] = 9,
-	[14][8] = 9,
-	[15][2] = 7,
-	[15][3] = 7,
-	[15][4] = 7,
-	[15][5] = 7,
-	[15][8] = 7,
-	[17][6] = 9,
-	[18][6] = 7,
-	[20][6] = 9,
-	[21][6] = 7,
-	[22][6] = 10,
+	[14][4] = 10,
+	[14][5] = 11,
+	[14][7] = 18,
+	[17][2] = 8,
+	[17][3] = 9,
+	[17][4] = 10,
+	[17][5] = 11,
+	[17][7] = 15,
+	[20][2] = 8,
+	[20][3] = 9,
+	[20][4] = 10,
+	[20][5] = 11,
+	[20][7] = 18,
 };
-const unsigned zebu_popcounts[23][9] = {
+
+
+const unsigned zebu_reduces[23][8] = {
 	[2][6] = 1,
-	[3][6] = 1,
-	[6][2] = 1,
-	[6][3] = 1,
-	[6][4] = 1,
-	[6][5] = 1,
-	[6][8] = 1,
-	[7][2] = 1,
-	[7][3] = 1,
-	[7][4] = 1,
-	[7][5] = 1,
-	[7][8] = 1,
-	[11][2] = 1,
-	[11][3] = 1,
-	[11][4] = 1,
-	[11][5] = 1,
-	[11][8] = 1,
-	[12][2] = 3,
-	[12][3] = 3,
-	[12][4] = 3,
-	[12][5] = 3,
-	[12][8] = 3,
-	[14][2] = 2,
-	[14][3] = 2,
-	[14][4] = 2,
-	[14][5] = 2,
-	[14][8] = 2,
-	[15][2] = 2,
-	[15][3] = 2,
-	[15][4] = 2,
-	[15][5] = 2,
-	[15][8] = 2,
-	[17][6] = 1,
-	[18][6] = 3,
-	[20][6] = 2,
-	[21][6] = 2,
-	[22][6] = 1,
+	[3][6] = 2,
+	[6][6] = 3,
+	[7][6] = 4,
+	[8][2] = 1,
+	[8][3] = 1,
+	[8][4] = 1,
+	[8][5] = 1,
+	[8][7] = 1,
+	[9][2] = 2,
+	[9][3] = 2,
+	[9][4] = 2,
+	[9][5] = 2,
+	[9][7] = 2,
+	[13][2] = 4,
+	[13][3] = 4,
+	[13][4] = 4,
+	[13][5] = 4,
+	[13][7] = 4,
+	[15][6] = 5,
+	[16][6] = 6,
+	[18][2] = 5,
+	[18][3] = 5,
+	[18][4] = 5,
+	[18][5] = 5,
+	[18][7] = 5,
+	[19][2] = 6,
+	[19][3] = 6,
+	[19][4] = 6,
+	[19][5] = 6,
+	[19][7] = 6,
+	[21][6] = 7,
+	[22][2] = 7,
+	[22][3] = 7,
+	[22][4] = 7,
+	[22][5] = 7,
+	[22][7] = 7,
 };
-const unsigned zebu_lexer[13][123] = {
+
+
+const unsigned zebu_gotos[21][3] = {
+	[1][1] = 6,
+	[4][1] = 7,
+	[5][1] = 12,
+	[10][1] = 13,
+	[11][1] = 14,
+	[12][1] = 17,
+	[12][2] = 16,
+	[14][1] = 20,
+	[14][2] = 19,
+	[17][1] = 17,
+	[17][2] = 21,
+	[20][1] = 20,
+	[20][2] = 22,
+};
+
+
+const unsigned zebu_lexer[7][123] = {
 	[1][9] = 1,
 	[1][10] = 1,
 	[1][32] = 1,
-	[1][40] = 2,
-	[1][48] = 3,
-	[1][49] = 3,
-	[1][50] = 3,
-	[1][51] = 3,
-	[1][52] = 3,
-	[1][53] = 3,
-	[1][54] = 3,
-	[1][55] = 3,
-	[1][56] = 3,
-	[1][57] = 3,
-	[1][65] = 4,
-	[1][66] = 4,
-	[1][67] = 4,
-	[1][68] = 4,
-	[1][69] = 4,
-	[1][70] = 4,
-	[1][71] = 4,
-	[1][72] = 4,
-	[1][73] = 4,
-	[1][74] = 4,
-	[1][75] = 4,
-	[1][76] = 4,
-	[1][77] = 4,
-	[1][78] = 4,
-	[1][79] = 4,
-	[1][80] = 4,
-	[1][81] = 4,
-	[1][82] = 4,
-	[1][83] = 4,
-	[1][84] = 4,
-	[1][85] = 4,
-	[1][86] = 4,
-	[1][87] = 4,
-	[1][88] = 4,
-	[1][89] = 4,
-	[1][90] = 4,
-	[1][96] = 5,
-	[1][97] = 4,
-	[1][98] = 4,
-	[1][99] = 4,
-	[1][100] = 4,
-	[1][101] = 4,
-	[1][102] = 4,
-	[1][103] = 4,
-	[1][104] = 4,
-	[1][105] = 4,
-	[1][106] = 4,
-	[1][107] = 4,
-	[1][108] = 4,
-	[1][109] = 4,
-	[1][110] = 4,
-	[1][111] = 4,
-	[1][112] = 4,
-	[1][113] = 4,
-	[1][114] = 4,
-	[1][115] = 4,
-	[1][116] = 4,
-	[1][117] = 4,
-	[1][118] = 4,
-	[1][119] = 4,
-	[1][120] = 4,
-	[1][121] = 4,
-	[1][122] = 4,
-	[3][48] = 3,
-	[3][49] = 3,
-	[3][50] = 3,
-	[3][51] = 3,
-	[3][52] = 3,
-	[3][53] = 3,
-	[3][54] = 3,
-	[3][55] = 3,
-	[3][56] = 3,
-	[3][57] = 3,
-	[4][65] = 4,
-	[4][66] = 4,
-	[4][67] = 4,
-	[4][68] = 4,
-	[4][69] = 4,
-	[4][70] = 4,
-	[4][71] = 4,
-	[4][72] = 4,
-	[4][73] = 4,
-	[4][74] = 4,
-	[4][75] = 4,
-	[4][76] = 4,
-	[4][77] = 4,
-	[4][78] = 4,
-	[4][79] = 4,
-	[4][80] = 4,
-	[4][81] = 4,
-	[4][82] = 4,
-	[4][83] = 4,
-	[4][84] = 4,
-	[4][85] = 4,
-	[4][86] = 4,
-	[4][87] = 4,
-	[4][88] = 4,
-	[4][89] = 4,
-	[4][90] = 4,
-	[4][97] = 4,
-	[4][98] = 4,
-	[4][99] = 4,
-	[4][100] = 4,
-	[4][101] = 4,
-	[4][102] = 4,
-	[4][103] = 4,
-	[4][104] = 4,
-	[4][105] = 4,
-	[4][106] = 4,
-	[4][107] = 4,
-	[4][108] = 4,
-	[4][109] = 4,
-	[4][110] = 4,
-	[4][111] = 4,
-	[4][112] = 4,
-	[4][113] = 4,
-	[4][114] = 4,
-	[4][115] = 4,
-	[4][116] = 4,
-	[4][117] = 4,
-	[4][118] = 4,
-	[4][119] = 4,
-	[4][120] = 4,
-	[4][121] = 4,
-	[4][122] = 4,
-	[6][9] = 6,
-	[6][10] = 6,
-	[6][32] = 6,
-	[8][9] = 8,
-	[8][10] = 8,
-	[8][32] = 8,
-	[8][40] = 9,
-	[8][41] = 10,
-	[8][48] = 11,
-	[8][49] = 11,
-	[8][50] = 11,
-	[8][51] = 11,
-	[8][52] = 11,
-	[8][53] = 11,
-	[8][54] = 11,
-	[8][55] = 11,
-	[8][56] = 11,
-	[8][57] = 11,
-	[8][65] = 12,
-	[8][66] = 12,
-	[8][67] = 12,
-	[8][68] = 12,
-	[8][69] = 12,
-	[8][70] = 12,
-	[8][71] = 12,
-	[8][72] = 12,
-	[8][73] = 12,
-	[8][74] = 12,
-	[8][75] = 12,
-	[8][76] = 12,
-	[8][77] = 12,
-	[8][78] = 12,
-	[8][79] = 12,
-	[8][80] = 12,
-	[8][81] = 12,
-	[8][82] = 12,
-	[8][83] = 12,
-	[8][84] = 12,
-	[8][85] = 12,
-	[8][86] = 12,
-	[8][87] = 12,
-	[8][88] = 12,
-	[8][89] = 12,
-	[8][90] = 12,
-	[8][96] = 13,
-	[8][97] = 12,
-	[8][98] = 12,
-	[8][99] = 12,
-	[8][100] = 12,
-	[8][101] = 12,
-	[8][102] = 12,
-	[8][103] = 12,
-	[8][104] = 12,
-	[8][105] = 12,
-	[8][106] = 12,
-	[8][107] = 12,
-	[8][108] = 12,
-	[8][109] = 12,
-	[8][110] = 12,
-	[8][111] = 12,
-	[8][112] = 12,
-	[8][113] = 12,
-	[8][114] = 12,
-	[8][115] = 12,
-	[8][116] = 12,
-	[8][117] = 12,
-	[8][118] = 12,
-	[8][119] = 12,
-	[8][120] = 12,
-	[8][121] = 12,
-	[8][122] = 12,
-	[11][48] = 11,
-	[11][49] = 11,
-	[11][50] = 11,
-	[11][51] = 11,
-	[11][52] = 11,
-	[11][53] = 11,
-	[11][54] = 11,
-	[11][55] = 11,
-	[11][56] = 11,
-	[11][57] = 11,
-	[12][65] = 12,
-	[12][66] = 12,
-	[12][67] = 12,
-	[12][68] = 12,
-	[12][69] = 12,
-	[12][70] = 12,
-	[12][71] = 12,
-	[12][72] = 12,
-	[12][73] = 12,
-	[12][74] = 12,
-	[12][75] = 12,
-	[12][76] = 12,
-	[12][77] = 12,
-	[12][78] = 12,
-	[12][79] = 12,
-	[12][80] = 12,
-	[12][81] = 12,
-	[12][82] = 12,
-	[12][83] = 12,
-	[12][84] = 12,
-	[12][85] = 12,
-	[12][86] = 12,
-	[12][87] = 12,
-	[12][88] = 12,
-	[12][89] = 12,
-	[12][90] = 12,
-	[12][97] = 12,
-	[12][98] = 12,
-	[12][99] = 12,
-	[12][100] = 12,
-	[12][101] = 12,
-	[12][102] = 12,
-	[12][103] = 12,
-	[12][104] = 12,
-	[12][105] = 12,
-	[12][106] = 12,
-	[12][107] = 12,
-	[12][108] = 12,
-	[12][109] = 12,
-	[12][110] = 12,
-	[12][111] = 12,
-	[12][112] = 12,
-	[12][113] = 12,
-	[12][114] = 12,
-	[12][115] = 12,
-	[12][116] = 12,
-	[12][117] = 12,
-	[12][118] = 12,
-	[12][119] = 12,
-	[12][120] = 12,
-	[12][121] = 12,
-	[12][122] = 12,
+	[1][40] = 4,
+	[1][48] = 5,
+	[1][49] = 5,
+	[1][50] = 5,
+	[1][51] = 5,
+	[1][52] = 5,
+	[1][53] = 5,
+	[1][54] = 5,
+	[1][55] = 5,
+	[1][56] = 5,
+	[1][57] = 5,
+	[1][65] = 6,
+	[1][66] = 6,
+	[1][67] = 6,
+	[1][68] = 6,
+	[1][69] = 6,
+	[1][70] = 6,
+	[1][71] = 6,
+	[1][72] = 6,
+	[1][73] = 6,
+	[1][74] = 6,
+	[1][75] = 6,
+	[1][76] = 6,
+	[1][77] = 6,
+	[1][78] = 6,
+	[1][79] = 6,
+	[1][80] = 6,
+	[1][81] = 6,
+	[1][82] = 6,
+	[1][83] = 6,
+	[1][84] = 6,
+	[1][85] = 6,
+	[1][86] = 6,
+	[1][87] = 6,
+	[1][88] = 6,
+	[1][89] = 6,
+	[1][90] = 6,
+	[1][96] = 7,
+	[1][97] = 6,
+	[1][98] = 6,
+	[1][99] = 6,
+	[1][100] = 6,
+	[1][101] = 6,
+	[1][102] = 6,
+	[1][103] = 6,
+	[1][104] = 6,
+	[1][105] = 6,
+	[1][106] = 6,
+	[1][107] = 6,
+	[1][108] = 6,
+	[1][109] = 6,
+	[1][110] = 6,
+	[1][111] = 6,
+	[1][112] = 6,
+	[1][113] = 6,
+	[1][114] = 6,
+	[1][115] = 6,
+	[1][116] = 6,
+	[1][117] = 6,
+	[1][118] = 6,
+	[1][119] = 6,
+	[1][120] = 6,
+	[1][121] = 6,
+	[1][122] = 6,
+	[2][9] = 2,
+	[2][10] = 2,
+	[2][32] = 2,
+	[3][9] = 3,
+	[3][10] = 3,
+	[3][32] = 3,
+	[3][40] = 4,
+	[3][41] = 9,
+	[3][48] = 5,
+	[3][49] = 5,
+	[3][50] = 5,
+	[3][51] = 5,
+	[3][52] = 5,
+	[3][53] = 5,
+	[3][54] = 5,
+	[3][55] = 5,
+	[3][56] = 5,
+	[3][57] = 5,
+	[3][65] = 6,
+	[3][66] = 6,
+	[3][67] = 6,
+	[3][68] = 6,
+	[3][69] = 6,
+	[3][70] = 6,
+	[3][71] = 6,
+	[3][72] = 6,
+	[3][73] = 6,
+	[3][74] = 6,
+	[3][75] = 6,
+	[3][76] = 6,
+	[3][77] = 6,
+	[3][78] = 6,
+	[3][79] = 6,
+	[3][80] = 6,
+	[3][81] = 6,
+	[3][82] = 6,
+	[3][83] = 6,
+	[3][84] = 6,
+	[3][85] = 6,
+	[3][86] = 6,
+	[3][87] = 6,
+	[3][88] = 6,
+	[3][89] = 6,
+	[3][90] = 6,
+	[3][96] = 7,
+	[3][97] = 6,
+	[3][98] = 6,
+	[3][99] = 6,
+	[3][100] = 6,
+	[3][101] = 6,
+	[3][102] = 6,
+	[3][103] = 6,
+	[3][104] = 6,
+	[3][105] = 6,
+	[3][106] = 6,
+	[3][107] = 6,
+	[3][108] = 6,
+	[3][109] = 6,
+	[3][110] = 6,
+	[3][111] = 6,
+	[3][112] = 6,
+	[3][113] = 6,
+	[3][114] = 6,
+	[3][115] = 6,
+	[3][116] = 6,
+	[3][117] = 6,
+	[3][118] = 6,
+	[3][119] = 6,
+	[3][120] = 6,
+	[3][121] = 6,
+	[3][122] = 6,
+	[5][48] = 5,
+	[5][49] = 5,
+	[5][50] = 5,
+	[5][51] = 5,
+	[5][52] = 5,
+	[5][53] = 5,
+	[5][54] = 5,
+	[5][55] = 5,
+	[5][56] = 5,
+	[5][57] = 5,
+	[6][65] = 6,
+	[6][66] = 6,
+	[6][67] = 6,
+	[6][68] = 6,
+	[6][69] = 6,
+	[6][70] = 6,
+	[6][71] = 6,
+	[6][72] = 6,
+	[6][73] = 6,
+	[6][74] = 6,
+	[6][75] = 6,
+	[6][76] = 6,
+	[6][77] = 6,
+	[6][78] = 6,
+	[6][79] = 6,
+	[6][80] = 6,
+	[6][81] = 6,
+	[6][82] = 6,
+	[6][83] = 6,
+	[6][84] = 6,
+	[6][85] = 6,
+	[6][86] = 6,
+	[6][87] = 6,
+	[6][88] = 6,
+	[6][89] = 6,
+	[6][90] = 6,
+	[6][97] = 6,
+	[6][98] = 6,
+	[6][99] = 6,
+	[6][100] = 6,
+	[6][101] = 6,
+	[6][102] = 6,
+	[6][103] = 6,
+	[6][104] = 6,
+	[6][105] = 6,
+	[6][106] = 6,
+	[6][107] = 6,
+	[6][108] = 6,
+	[6][109] = 6,
+	[6][110] = 6,
+	[6][111] = 6,
+	[6][112] = 6,
+	[6][113] = 6,
+	[6][114] = 6,
+	[6][115] = 6,
+	[6][116] = 6,
+	[6][117] = 6,
+	[6][118] = 6,
+	[6][119] = 6,
+	[6][120] = 6,
+	[6][121] = 6,
+	[6][122] = 6,
 };
-const unsigned zebu_starts[23] = {
+
+
+const unsigned zebu_lexer_starts[23] = {
 	[1] = 1,
-	[2] = 6,
-	[3] = 6,
+	[2] = 2,
+	[3] = 2,
 	[4] = 1,
 	[5] = 1,
-	[6] = 8,
-	[7] = 8,
-	[8] = 1,
-	[9] = 1,
-	[10] = 8,
-	[11] = 8,
-	[12] = 8,
-	[13] = 8,
-	[14] = 8,
-	[15] = 8,
-	[16] = 8,
-	[17] = 6,
-	[18] = 6,
-	[19] = 8,
-	[20] = 6,
-	[21] = 6,
-	[22] = 6,
-};
-const unsigned zebu_defaults[1] = {
-};
-const unsigned zebu_EOFs[7] = {
-	[6] = 7,
-};
-const unsigned zebu_accepts[14] = {
-	[2] = 2,
-	[3] = 3,
-	[4] = 4,
-	[5] = 5,
-	[7] = 6,
-	[9] = 2,
-	[10] = 8,
-	[11] = 3,
-	[12] = 4,
-	[13] = 5,
-};
-const unsigned start_grammar_id = 10;
-const char* zebu_grammar_names[12] = {
-	[10] = "(start)",
-	[9] = "(trie #1)",
-	[7] = "value",
-};
-const char* zebu_token_names[12] = {
-	[1] = "0",
-	[3] = "1",
-	[4] = "2",
-	[5] = "3",
-	[2] = "4",
-	[8] = "5",
-	[6] = "6",
+	[6] = 2,
+	[7] = 2,
+	[8] = 3,
+	[9] = 3,
+	[10] = 1,
+	[11] = 1,
+	[12] = 3,
+	[13] = 3,
+	[14] = 3,
+	[15] = 2,
+	[16] = 2,
+	[17] = 3,
+	[18] = 3,
+	[19] = 3,
+	[20] = 3,
+	[21] = 2,
+	[22] = 3,
 };
 
-#include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
 
-struct zebu_state
+const unsigned zebu_lexer_accepts[10] = {
+	[4] = 5,
+	[5] = 2,
+	[6] = 3,
+	[7] = 4,
+	[8] = 6,
+	[9] = 7,
+};
+
+
+const unsigned zebu_lexer_EOFs[3] = {
+	[2] = 8,
+};
+
+
+struct token
 {
-	struct { unsigned* data, n, cap; } y;
-	struct { unsigned char* data, n, cap; } l;
-	unsigned lstate, t;
+unsigned char* data;
+unsigned len, refcount;
+};
+struct __start__
+{
+	struct value* root;
+	unsigned refcount;
 };
 
-static void ddprintf(struct zebu_state* this, const char* fmt, ...)
+struct value
 {
-	for (unsigned i = 0, n = this->y.n; i < n; i++)
-		printf("%u ", this->y.data[i]);
+	struct value* backtack;
+	struct token* identifier;
+	struct {
+		struct value** data;
+		unsigned n, cap;
+	} list;
+	struct token* number;
+	unsigned refcount;
+};
+
+
+
+#include <stdbool.h>
+
+struct link
+{
+	bool is_last;
+	struct link* prev;
+};
+
+void print_links(struct link* link)
+{
+	if (!link) return;
 	
-	printf("| ");
+	print_links(link->prev);
 	
-	va_list va;
-	va_start(va, fmt);
-	vprintf(fmt, va);
-	va_end(va);
+	if (link->is_last)
+		fputs("    ", stdout);
+	else
+		fputs("│   ", stdout);
 }
 
-static void push(struct zebu_state* this, unsigned ystate)
+enum prefix
 {
-	if (this->y.n + 1 >= this->y.cap)
+	p_root,
+	p_not_last_child,
+	p_last_child,
+};
+
+void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token)
+{
+	print_links(links);
+	switch (p)
 	{
-		this->y.cap = this->y.cap << 1 ?: 1;
-		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
+		case p_root: break;
+		case p_not_last_child: fputs("├── ", stdout); break;
+		case p_last_child: fputs("└── ", stdout); break;
 	}
-	
-	this->y.data[this->y.n++] = ystate;
+	printf("\e[32m%s\e[0m (\e[35m\"%s\"\e[0m)\n", name, token->data);
 }
 
-static void append(struct zebu_state* this, const unsigned char* text, size_t length)
+void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name)
 {
-	while (this->l.n + length >= this->l.cap)
+	print_links(links);
+	switch (p)
 	{
-		this->l.cap = this->l.cap << 1 ?: 1;
-		this->l.data = realloc(this->l.data, this->l.cap);
+		case p_root: break;
+		case p_not_last_child: fputs("├── ", stdout); break;
+		case p_last_child: fputs("└── ", stdout); break;
 	}
-	memcpy(this->l.data + this->l.n, text, length);
-	this->l.n += length;
+	printf("\e[31m%s\e[0m (\e[36m%s\e[0m)\n", name, type);
+}
+void print___start___ptree(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
+
+void print_value_ptree(struct link* links, enum prefix p, const char* name, struct value* ptree);
+
+void print___start___ptree(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
+{
+	print_links(links);
+	
+	struct link* new = NULL;
+	
+	switch (p)
+	{
+		case p_root:
+			break;
+		
+		case p_not_last_child:
+			fputs("├── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = false;
+			new->prev = links;
+			break;
+		
+		case p_last_child:
+			fputs("└── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = true;
+			new->prev = links;
+		break;
+	}
+	printf("\e[34m%s\e[m (\e[36m__start__\e[m)\n", name);
+	if (ptree->root)
+		print_value_ptree(new ?: links, p_last_child, "root", ptree->root);
+	else
+		print_empty_leaf(new ?: links, p_last_child, "value", "root");
+	free(new);
+}
+void print_value_ptree(struct link* links, enum prefix p, const char* name, struct value* ptree)
+{
+	print_links(links);
+	
+	struct link* new = NULL;
+	
+	switch (p)
+	{
+		case p_root:
+			break;
+		
+		case p_not_last_child:
+			fputs("├── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = false;
+			new->prev = links;
+			break;
+		
+		case p_last_child:
+			fputs("└── ", stdout);
+			new = malloc(sizeof(*new));
+			new->is_last = true;
+			new->prev = links;
+		break;
+	}
+	printf("\e[34m%s\e[m (\e[36mvalue\e[m)\n", name);
+	if (ptree->backtack)
+		print_value_ptree(new ?: links, p_not_last_child, "backtack", ptree->backtack);
+	else
+		print_empty_leaf(new ?: links, p_not_last_child, "value", "backtack");
+	if (ptree->identifier)
+		print_token_leaf(new ?: links, p_not_last_child, "identifier", ptree->identifier);
+	else
+		print_empty_leaf(new ?: links, p_not_last_child, "token", "identifier");
+	if (ptree->list.n)
+	{
+		for (unsigned i = 0, n = ptree->list.n; i < n; i++)
+		{
+			char label[4 + 30];
+			snprintf(label, sizeof(label), "list[%u]", i);
+			print_value_ptree(new ?: links, i + 1 < n ? p_not_last_child : p_not_last_child, label, ptree->list.data[i]);
+		}
+	}
+	else
+	{
+		print_empty_leaf(new ?: links, p_not_last_child, "value[]", "list");
+	}
+	if (ptree->number)
+		print_token_leaf(new ?: links, p_last_child, "number", ptree->number);
+	else
+		print_empty_leaf(new ?: links, p_last_child, "token", "number");
+	free(new);
 }
 
-static struct zebu_state* new_zebu_state()
+
+struct token* inc_token(struct token* this)
 {
-	struct zebu_state* this = malloc(sizeof(*this));
-	assert(this);
-	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
-	this->l.data = NULL, this->l.n = 0, this->l.cap = 0;
-	this->lstate = 1, this->t = 0;
-	push(this, 1);
+	if (this) this->refcount++;
 	return this;
 }
-
-static void zebu_reset(struct zebu_state* this)
+struct __start__* inc___start___ptree(struct __start__* ptree)
 {
-	this->y.n = 0;
-	this->l.n = 0;
-	this->lstate = 1;
-	push(this, 1);
-	ddprintf(this, "y = %u, l == %u\n", 1, 1);
+	if (ptree) ptree->refcount++;
+	return ptree;
 }
+
+struct value* inc_value_ptree(struct value* ptree)
+{
+	if (ptree) ptree->refcount++;
+	return ptree;
+}
+
+
+
+void free_token(struct token* this)
+{
+	if (this && !--this->refcount)
+	{
+		free(this->data);
+		free(this);
+	}
+}
+void free___start___ptree(struct __start__* ptree);
+
+void free_value_ptree(struct value* ptree);
+
+void free___start___ptree(struct __start__* ptree)
+{
+	if (ptree && !--ptree->refcount)
+	{
+		free_value_ptree(ptree->root);
+		free(ptree);
+	}
+}
+
+void free_value_ptree(struct value* ptree)
+{
+	if (ptree && !--ptree->refcount)
+	{
+		free_value_ptree(ptree->backtack);
+		free_token(ptree->identifier);
+		for (unsigned i = 0, n = ptree->list.n; i < n; i++)
+			free_value_ptree(ptree->list.data[i]);
+		free(ptree->list.data);
+		free_token(ptree->number);
+		free(ptree);
+	}
+}
+
+
+
+#define argv0 (program_invocation_name)
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
-static void process_token(struct zebu_state* this, unsigned t)
+struct cmdln
 {
-	unsigned b, d, p, y = this->y.data[this->y.n - 1];
+	const char* input;
+};
+
+void usage(int code)
+{
+	fprintf(stderr, "usage: %s <path/to/input/file>\n", argv0);
+	exit(code);
+}
+
+struct cmdln* process_cmdln(int argc, char* const* argv)
+{
+	int opt;
 	
-	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
+	const char* input = NULL;
+	
+	while ((opt = getopt(argc, argv, "h")) != -1)
 	{
-		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t]))
+		switch (opt)
 		{
-			ddprintf(this, "b == %u\n", b);
-			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
+			case 'h':
+				usage(0);
+				break;
 			
-			if (b == start_grammar_id)
-			{
-				this->y.n = 0;
-				return;
-			}
-			
-			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
-			
-			this->y.n -= p;
-			
-			y = this->y.data[this->y.n - 1];
-			ddprintf(this, "y = %u\n", y);
-			
-			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
-			
-			d = zebu_shifts[y][b];
-			ddprintf(this, "d = %u\n", d);
-			
-			push(this, d), y = d;
-		}
-		else
-		{
-			assert(!"TODO");
-			exit(1);
+			default:
+				usage(1);
 		}
 	}
 	
-	push(this, b), y = b;
+	input = argv[optind++];
+	
+	if (!input)
+		usage(1);
+	
+	struct cmdln* retval = malloc(sizeof(*retval));
+	assert(retval);
+	retval->input = input;
+	return retval;
 }
 
 static void escape(char *out, unsigned char in)
@@ -617,160 +670,360 @@ static void escape(char *out, unsigned char in)
 	}
 }
 
-static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length)
+void* parse(FILE* stream)
 {
-	unsigned c, l = this->lstate;
-	unsigned a, b, i, n, f, t = this->t;
+	void* root;
+	struct { unsigned* data, n, cap; } yacc = {};
+	struct { void** data; unsigned n, cap; } data = {};
+	struct { unsigned char* data; unsigned n, cap; } lexer = {};
 	
-	char escaped[10];
-	
-	i = this->l.n;
-	
-	append(this, text, length);
-	
-	for (n = this->l.n, f = 0; i < n;)
+	void push_state(unsigned y)
 	{
-		c = this->l.data[i];
-		
-		escape(escaped, c);
-		
-		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-		a = (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		
-		if (a)
+		if (yacc.n + 1 >= yacc.cap)
 		{
-			if (b)
+			yacc.cap = yacc.cap << 1 ?: 1;
+			yacc.data = realloc(yacc.data, sizeof(*yacc.data) * yacc.cap);
+		}
+		yacc.data[yacc.n++] = y;
+	}
+	
+	void push_data(void* d)
+	{
+		if (data.n + 1 >= data.cap)
+		{
+			data.cap = data.cap << 1 ?: 1;
+			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
+		}
+		data.data[data.n++] = d;
+	}
+	
+	void ddprintf(const char* fmt, ...)
+	{
+		for (unsigned i = 0, n = yacc.n; i < n; i++)
+			printf("%u ", yacc.data[i]);
+		
+		printf("| ");
+		
+		va_list va;
+		va_start(va, fmt);
+		vprintf(fmt, va);
+		va_end(va);
+	}
+	
+	unsigned y, t, s, r;
+	void* td;
+	
+	void read_token(unsigned l)
+	{
+		void append(unsigned char c)
+		{
+			while (lexer.n + 1 >= lexer.cap)
 			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
+				lexer.cap = lexer.cap << 1 ?: 1;
+				ddprintf("lexer.cap == %u\n", lexer.cap);
+				lexer.data = realloc(lexer.data, lexer.cap);
+			}
+			
+			lexer.data[lexer.n++] = c;
+		}
+		
+		unsigned i = 0, f, a, b, c;
+		
+		t = 0;
+		
+		ddprintf("l = %u\n", l);
+		
+		while (1)
+		{
+			if (i < lexer.n)
+			{
+				c = lexer.data[i];
+				
+				char escaped[10];
+				
+				escape(escaped, c);
+				
+				printf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				
+				assert(!"163");
+				#if 0
+				next = 0
+					?: (state < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[state][c] : 0)
+					?: (state < N(zebu_defaults) ? zebu_defaults[state] : 0);
+				#endif
+			}
+			else if ((c = getc(stream)) != EOF)
+			{
+				append(c);
+				
+				char escaped[10];
+				
+				escape(escaped, c);
+				
+				ddprintf("c = '%s' (0x%X)\n", escaped, c);
+				
+				a = l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0;
 			}
 			else
 			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
+				c = EOF;
+				
+				ddprintf("c = <EOF>\n");
+				
+				a = l < N(zebu_lexer_EOFs) ? zebu_lexer_EOFs[l] : 0;
 			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
-	}
-	
-	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
-	
-	this->t = t;
-	
-	this->lstate = l;
-}
-
-static void zebu_parse_EOF(struct zebu_state* this)
-{
-	unsigned i = this->l.n, n = i, l = this->lstate;
-	unsigned a, b, c, f = 0, t = this->t;
-	
-	char escaped[10];
-	
-	while (1)
-	{
-		assert(i <= n + 1);
-		
-		if (i < n)
-		{
-			c = this->l.data[i];
 			
-			escape(escaped, c);
+			b = l < N(zebu_lexer_accepts) ? zebu_lexer_accepts[l] : 0;
 			
-			ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		}
-		else
-		{
-			ddprintf(this, "c == <EOF>\n");
-			a = l < N(zebu_EOFs) ? zebu_EOFs[l] : 0;
-		}
-		
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
+			ddprintf("a = %u, b = %u\n", a, b);
+			
+			if (a)
 			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
+				if (b)
+				{
+					l = a, t = b, f = i++;
+					ddprintf("l = %u\n", l);
+				}
+				else
+				{
+					l = a, i++;
+					ddprintf("l = %u\n", l);
+				}
+			}
+			else if (b)
+			{
+				if (c != EOF)
+				{
+					lexer.n--, ungetc(c, stream);
+				}
+				
+				ddprintf("lexer.n == %u\n", lexer.n);
+				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
+				
+				append('\0');
+				
+				struct token* token = malloc(sizeof(*token));
+				token->refcount = 1;
+				token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
+				t = b, td = token, lexer.n = 0;
+				break;
+			}
+			else if (t)
+			{
+				assert(!"235");
+				#if 0
+				memmove(lexer.data, lexer.data + fallback, lexer.n - fallback);
+				lexer.n -= fallback;
+				return token;
+				#endif
 			}
 			else
 			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
+				assert(!"168");
 			}
 		}
-		else if (b)
+	}
+	
+	push_state(1), y = 1, read_token(1);
+	
+	ddprintf("y = %u, t = %u\n", y, t);
+	
+	while (yacc.n)
+	{
+		if (y < N(zebu_shifts) && t < N(*zebu_shifts) && (s = zebu_shifts[y][t]))
 		{
-			process_token(this, b);
+			ddprintf("s == %u\n", s);
 			
-			if (!this->y.n) break;
+			y = s, push_state(y), push_data(td);
 			
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
+			read_token(zebu_lexer_starts[y]);
+			
+			ddprintf("t = %u\n", t);
 		}
-		else if (t)
+		else if (y < N( zebu_reduces) && t < N(*zebu_reduces) && (r = zebu_reduces[y][t]))
 		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
+			ddprintf("r == %u\n", r);
+			
+			unsigned g;
+			void* d;
+			
+			switch (r)
+{
+	case 5:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 2;
+		break;
+	}
+	case 7:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct value* trie = data.data[--yacc.n, --data.n];
+			if (trie->backtack) { free_value_ptree(value->backtack); value->backtack = inc_value_ptree(trie->backtack); }
+			if (trie->identifier) { free_token(value->identifier); value->identifier = inc_token(trie->identifier); }
+			if (trie->list.n)
+			{
+				while (value->list.n + trie->list.n > value->list.cap)
+				{
+					value->list.cap = value->list.cap << 1 ?: 1;
+					value->list.data = realloc(value->list.data, sizeof(*value->list.data) * value->list.cap);
+				}
+				memmove(value->list.data + trie->list.n, value->list.data, sizeof(*value->list.data) * value->list.n);
+				for (unsigned i = 0, n = trie->list.n; i < n; i++)
+					value->list.data[i] = inc_value_ptree(trie->list.data[i]);
+				value->list.n += trie->list.n;
+			}
+			if (trie->number) { free_token(value->number); value->number = inc_token(trie->number); }
+			free_value_ptree(trie);
+		}
+		if (value->list.n == value->list.cap)
+		{
+			value->list.cap = value->list.cap << 1 ?: 1;
+			value->list.data = realloc(value->list.data, sizeof(*value->list.data) * value->list.cap);
+		}
+		memmove(value->list.data + 1, value->list.data, sizeof(*value->list.data) * value->list.n);
+		value->list.data[0] = data.data[--yacc.n, --data.n], value->list.n++;
+		d = value, g = 2;
+		break;
+	}
+	case 3:
+	{
+		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_value_ptree(value->root), value->root = data.data[--yacc.n, --data.n];
+		d = value, g = 3;
+		break;
+	}
+	case 4:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_value_ptree(value->backtack), value->backtack = data.data[--yacc.n, --data.n];
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 1;
+		break;
+	}
+	case 6:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+			struct value* trie = data.data[--yacc.n, --data.n];
+			if (trie->backtack) { free_value_ptree(value->backtack); value->backtack = inc_value_ptree(trie->backtack); }
+			if (trie->identifier) { free_token(value->identifier); value->identifier = inc_token(trie->identifier); }
+			if (trie->list.n)
+			{
+				while (value->list.n + trie->list.n > value->list.cap)
+				{
+					value->list.cap = value->list.cap << 1 ?: 1;
+					value->list.data = realloc(value->list.data, sizeof(*value->list.data) * value->list.cap);
+				}
+				memmove(value->list.data + trie->list.n, value->list.data, sizeof(*value->list.data) * value->list.n);
+				for (unsigned i = 0, n = trie->list.n; i < n; i++)
+					value->list.data[i] = inc_value_ptree(trie->list.data[i]);
+				value->list.n += trie->list.n;
+			}
+			if (trie->number) { free_token(value->number); value->number = inc_token(trie->number); }
+			free_value_ptree(trie);
+		}
+		if (value->list.n == value->list.cap)
+		{
+			value->list.cap = value->list.cap << 1 ?: 1;
+			value->list.data = realloc(value->list.data, sizeof(*value->list.data) * value->list.cap);
+		}
+		memmove(value->list.data + 1, value->list.data, sizeof(*value->list.data) * value->list.n);
+		value->list.data[0] = data.data[--yacc.n, --data.n], value->list.n++;
+		free_token(data.data[--yacc.n, --data.n]);
+		d = value, g = 1;
+		break;
+	}
+	case 2:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->identifier), value->identifier = data.data[--yacc.n, --data.n];
+		d = value, g = 1;
+		break;
+	}
+	case 1:
+	{
+		struct value* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		free_token(value->number), value->number = data.data[--yacc.n, --data.n];
+		d = value, g = 1;
+		break;
+	}
+}
+			
+			if (g == 3)
+			{
+				free_token(td);
+				yacc.n = 0, root = d;
+			}
+			else
+			{
+				y = yacc.data[yacc.n - 1];
+				
+				ddprintf("y = %u\n", y);
+				
+				assert(y < N(zebu_gotos) && g < N(*zebu_gotos));
+				
+				s = zebu_gotos[y][g];
+				
+				ddprintf("s = %u\n", s);
+				
+				y = s, push_state(y), push_data(d);
+			}
 		}
 		else
 		{
-			assert(!"TODO");
+			assert(!"266");
 		}
 	}
-}
-
-static void free_zebu_state(struct zebu_state* this)
-{
-	free(this->y.data);
-	free(this->l.data);
-	free(this);
-}
-
-int main()
-{
-	struct zebu_state* new = new_zebu_state();
 	
-	for (char* line; (line = readline(">>> "));)
+	free(yacc.data);
+	free(data.data);
+	free(lexer.data);
+	
+	return root;
+}
+
+int main(int argc, char* const* argv)
+{
+	struct cmdln* cmdln = process_cmdln(argc, argv);
+	
+	FILE* input = fopen(cmdln->input, "r");
+	
+	if (!input)
 	{
-		zebu_reset(new);
-		
-		zebu_parse(new, (unsigned char*) line, strlen(line));
-		
-		zebu_parse_EOF(new);
-		
-		puts("accepted!");
-		
-		add_history(line);
-		
-		free(line);
+		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, cmdln->input),
+		exit(1);
 	}
 	
-	free_zebu_state(new);
+	void* root = parse(input);
+	
+	print___start___ptree(NULL, p_root, "start", root);
+	
+	free___start___ptree(root);
+	
+	fclose(input);
+	
+	free(cmdln);
 	
 	return 0;
 }
+
+
+
+
+
+
+
+
 
 
 

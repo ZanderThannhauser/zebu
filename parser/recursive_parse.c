@@ -23,7 +23,7 @@
 #include "read_charset.h"
 #include "read_fragment.h"
 #include "read_grammar.h"
-/*#include "read_inline_grammar.h"*/
+#include "read_inline_grammar.h"
 
 #include "recursive_parse.h"
 
@@ -86,17 +86,11 @@ void recursive_parse(
 				
 				case t_parenthesised_identifier:
 				{
-					TODO;
-					#if 0
 					read_inline_grammar(
-						#ifdef WITH_ARENAS
-						/* token_arena: */ token_arena,
-						#endif
 						/* tokenizer: */ tokenizer,
 						/* options: */ options,
 						/* scope: */ scope,
 						/* lex: */ lex);
-					#endif
 					break;
 				}
 				

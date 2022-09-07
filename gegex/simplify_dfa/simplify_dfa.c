@@ -78,7 +78,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "zebu: grammar simplify (build dependencies) %4lu of %4lu (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (build dependencies) %lu of %lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -189,7 +189,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "zebu: grammar simplify (allocating dependency-trees): %4lu of %4lu (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (allocating dependency-trees): %lu of %lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -234,7 +234,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		unsigned total = completed + heap_len(todo);
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[k" "zebu: grammar simplify (percolate): %u of %u (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (percolate): %u of %u (%.2f%%)\r",
 				completed, total, (double) completed * 100 / total);
 		
 		if (write(1, buffer, len) != len)

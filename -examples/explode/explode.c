@@ -1,15 +1,5 @@
 #include "explode.h"
 
-#include <readline/readline.h>
-#include <readline/history.h>
-
-#include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stddef.h>
-#include <string.h>
-
 const unsigned zebu_lexer[233][98] = {
 	[1][97] = 18,
 	[2][50] = 19,
@@ -281,10 +271,6 @@ const unsigned zebu_lexer_starts[21] = {
 };
 
 
-const unsigned zebu_lexer_defaults[1] = {
-};
-
-
 const unsigned zebu_lexer_accepts[233] = {
 	[19] = 17,
 	[20] = 18,
@@ -524,422 +510,51 @@ const unsigned zebu_gotos[1][1] = {
 };
 
 
-struct token
-{
-unsigned char* data;
-unsigned len;
-};
-struct __start__
-{
-	struct token* multiple2;
-	struct token* multiple3;
-	struct token* multiple5;
-	struct token* multiple7;
-};
+// expected more than just tables?
 
+// try these options to have zebu paste pre-constructed parsers into this file:
 
+// --yacc=just-tables:
+	// print tables and this message, this is the default.
 
-#include <stdbool.h>
+// --yacc=really-just-tables:
+	// generate just the tables, don't print this help message.
 
-struct link
-{
-	bool is_last;
-	struct link* prev;
-};
-
-void print_links(struct link* link)
-{
-	if (!link) return;
+// --yacc=buffer-driven
+	// generates functions to link into a larger program:
+		// struct <PREFIX>_state* new_<PREFIX>_state()
+			// allocates space using malloc() for maintaining the state of the
+			// parser
+		
+		// void <PREFIX>_reset(struct <PREFIX>_state* this);
+			// resets the state of the parser, this is useful in applications
+			// where the parser needs to switch to processing a new input stream.
+		
+		// void <PREFIX>_parse(struct <PREFIX>_state* this, const unsigned char* text, size_t length);
+			// makes the parser process the input buffer `text`, expected to be `length` long.
+		
+		// void <PREFIX>_parse_EOF(struct <PREFIX>_state* this);
+			// used to communicate the the parser that the input stream has ended
+			// performs all the final reductions.
+		
+		// void free_<PREFIX>_state(struct <PREFIX>_state* this);
+			// frees the struct and all internal datastructures.
 	
-	print_links(link->prev);
-	
-	if (link->is_last)
-		fputs("    ", stdout);
-	else
-		fputs("│   ", stdout);
-}
+	// remember that <PREFIX> can be defined with the --prefix=<PREFIX>
+	// argument.
 
-enum prefix
-{
-	p_root,
-	p_not_last_child,
-	p_last_child,
-};
+// --yacc=readline
+	// generates a bottom-up parser that uses the readline library to feed
+	// input strings into the parser. Bewteen each line the parser is reset.
 
-void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token)
-{
-	print_links(links);
-	switch (p)
-	{
-		case p_root: break;
-		case p_not_last_child: fputs("├── ", stdout); break;
-		case p_last_child: fputs("└── ", stdout); break;
-	}
-	printf("\e[32m%s\e[0m (\e[35m\"%s\"\e[0m)\n", name, token->data);
-}
+// --yacc=readline-debug
+	// generates a bottom-up parser that uses the readline library to feed
+	// input strings into the parser. Bewteen each line the parser is reset.
+	// variables internal to the parser are printed, along with the stack used.
 
-void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name)
-{
-	print_links(links);
-	switch (p)
-	{
-		case p_root: break;
-		case p_not_last_child: fputs("├── ", stdout); break;
-		case p_last_child: fputs("└── ", stdout); break;
-	}
-	printf("\e[31m%s\e[0m (\e[36m%s\e[0m)\n", name, type);
-}
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree);
-
-void print___start___tree(struct link* links, enum prefix p, const char* name, struct __start__* ptree)
-{
-	print_links(links);
-	
-	struct link* new = NULL;
-	
-	switch (p)
-	{
-		case p_root:
-			break;
-		
-		case p_not_last_child:
-			fputs("├── ", stdout);
-			new = malloc(sizeof(*new));
-			new->is_last = false;
-			new->prev = links;
-			break;
-		
-		case p_last_child:
-			fputs("└── ", stdout);
-			new = malloc(sizeof(*new));
-			new->is_last = true;
-			new->prev = links;
-		break;
-	}
-	printf("\e[34m%s\e[m (\e[36m__start__\e[m)\n", name);
-	if (ptree->multiple2)
-		print_token_leaf(new ?: links, p_not_last_child, "multiple2", ptree->multiple2);
-	else
-		print_empty_leaf(new ?: links, p_not_last_child, "token", "multiple2");
-	if (ptree->multiple3)
-		print_token_leaf(new ?: links, p_not_last_child, "multiple3", ptree->multiple3);
-	else
-		print_empty_leaf(new ?: links, p_not_last_child, "token", "multiple3");
-	if (ptree->multiple5)
-		print_token_leaf(new ?: links, p_not_last_child, "multiple5", ptree->multiple5);
-	else
-		print_empty_leaf(new ?: links, p_not_last_child, "token", "multiple5");
-	if (ptree->multiple7)
-		print_token_leaf(new ?: links, p_last_child, "multiple7", ptree->multiple7);
-	else
-		print_empty_leaf(new ?: links, p_last_child, "token", "multiple7");
-	free(new);
-}
-
-
-void free_token(struct token* this)
-{
-	if (this)
-	{
-		free(this->data);
-		free(this);
-	}
-}
-void free___start___tree(struct __start__* ptree);
-
-void free___start___tree(struct __start__* ptree)
-{
-	if (ptree)
-	{
-		free_token(ptree->multiple2);
-		free_token(ptree->multiple3);
-		free_token(ptree->multiple5);
-		free_token(ptree->multiple7);
-		free(ptree);
-	}
-}
-
-
-
-#define N(array) (sizeof(array) / sizeof(*array))
-
-static void escape(char *out, char in)
-{
-	switch (in)
-	{
-		case ' ':
-		case '~':
-		case '!':
-		case '@':
-		case '#':
-		case '$':
-		case '%':
-		case '^':
-		case '&':
-		case '*':
-		case '-':
-		case '+':
-		case '=':
-		case '|':
-		case '<': case '>':
-		case '(': case ')':
-		case '{': case '}':
-		case '[': case ']':
-		case ':': case ';':
-		case ',': case '.':
-		case '_':
-		case '0' ... '9':
-		case 'a' ... 'z':
-		case 'A' ... 'Z':
-			*out++ = in;
-			*out = 0;
-			break;
-		
-		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
-		
-		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
-		
-		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
-		
-		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
-		
-		default:
-			sprintf(out, "\\x%02X", in);
-			break;
-	}
-}
-
-int main()
-{
-	struct { unsigned* data, n, cap; } yacc = {};
-	
-	struct { void** data; unsigned n, cap; } data = {};
-	
-	void ddprintf(const char* fmt, ...)
-	{
-		for (unsigned i = 0, n = yacc.n; i < n; i++)
-			printf("%u ", yacc.data[i]);
-		
-		printf("| ");
-		
-		va_list va;
-		va_start(va, fmt);
-		vprintf(fmt, va);
-		va_end(va);
-	}
-
-	void push_state(unsigned state)
-	{
-		if (yacc.n + 1 >= yacc.cap)
-		{
-			yacc.cap = yacc.cap << 1 ?: 1;
-			yacc.data = realloc(yacc.data, sizeof(*yacc.data) * yacc.cap);
-		}
-		
-		yacc.data[yacc.n++] = state;
-	}
-	
-	void push_data(void* element)
-	{
-		if (data.n + 1 >= data.cap)
-		{
-			data.cap = data.cap << 1 ?: 1;
-			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
-		}
-		
-		data.data[data.n++] = element;
-	}
-	
-	for (char* line; (line = readline(">>> "));)
-	{
-		char* lexer = (void*) line;
-		
-		unsigned y, s, r, t;
-		
-		void* td;
-		
-		void read_token(unsigned l)
-		{
-			char escaped[10];
-			
-			char* begin = lexer, *f = NULL;
-			
-			unsigned a, b, c;
-			
-			while (1)
-			{
-				if ((c = *lexer))
-				{
-					escape(escaped, c);
-					
-					ddprintf("c = '%s' (0x%X)\n", escaped, c);
-					
-					a = 0
-						?: (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0)
-						?: (l < N(zebu_lexer_defaults) ? zebu_lexer_defaults[l] : 0);
-				}
-				else
-				{
-					ddprintf("c == <EOF>\n");
-					a = l < N(zebu_lexer_EOFs) ? zebu_lexer_EOFs[l] : 0;
-				}
-				
-				b = l < N(zebu_lexer_accepts) ? zebu_lexer_accepts[l] : 0;
-				
-				ddprintf("lexer: %u: a = %u, b = %u\n", l, a, b);
-				
-				if (a)
-				{
-					if (b)
-					{
-						l = a, t = b, f = lexer++;
-						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
-					}
-					else
-					{
-						l = a;
-						if (c) lexer++;
-						ddprintf("lexer: l == %u\n", l);
-					}
-				}
-				else if (b)
-				{
-					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
-					
-					struct token* token = malloc(sizeof(*token));
-					token->data = (void*) strndup(begin, lexer - begin);
-					t = b, td = token;
-					break;
-				}
-				else if (t)
-				{
-					assert(!"172");
-					#if 0
-					process_token(t);
-					l = zebu_starts[yacc.data[yacc.n - 1]], i = f, t = 0;
-					ddprintf("l == %u, i = %u, t = %u\n", l, i, t);
-					#endif
-				}
-				else
-				{
-					assert(!"TODO");
-				}
-			}
-		}
-		
-		yacc.n = 0, data.n = 0, y = 1, push_state(y);
-		
-		read_token(zebu_lexer_starts[y]);
-		
-		ddprintf("y = %u, t == %u\n", y, t);
-		
-		void* root;
-		
-		while (yacc.n)
-		{
-			if (y < N(zebu_shifts) && t < N(*zebu_shifts) && (s = zebu_shifts[y][t]))
-			{
-				y = s, push_state(y), push_data(td);
-				read_token(zebu_lexer_starts[y]);
-			}
-			else if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (r = zebu_reduces[y][t]))
-			{
-				unsigned g;
-				
-				void* d;
-				
-				ddprintf("r = %u\n", r);
-				
-				switch (r)
-{
-	case 2:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->multiple3), value->multiple3 = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
-	case 1:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->multiple2), value->multiple2 = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
-	case 4:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->multiple7), value->multiple7 = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
-	case 3:
-	{
-		struct __start__* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		free_token(data.data[--yacc.n, --data.n]);
-		free_token(value->multiple5), value->multiple5 = data.data[--yacc.n, --data.n];
-		d = value, g = 1;
-		break;
-	}
-}
-				
-				if (g == 1)
-				{
-					free_token(td);
-					yacc.n = 0, root = d;
-				}
-				else
-				{
-					y = yacc.data[yacc.n - 1];
-					
-					ddprintf("y = %u\n", y);
-					
-					assert(y < N(zebu_gotos) && g < N(*zebu_gotos));
-					
-					s = zebu_gotos[y][g];
-					
-					ddprintf("s = %u\n", s);
-					
-					y = s, push_state(y), push_data(d);
-				}
-			}
-			else
-			{
-				assert(!"190");
-			}
-		}
-		
-		assert(!data.n);
-		
-		puts("accepted!");
-		
-		print___start___tree(NULL, p_root, "start", root);
-		
-		free___start___tree(root);
-		
-		add_history(line);
-		
-		free(line);
-	}
-	
-	rl_clear_history();
-	
-	free(yacc.data);
-	
-	free(data.data);
-	
-	return 0;
-}
-
-
-
-
-
-
-
-
+// --yacc=fileio-graphviz
+	// creates a program that parses the contents of the file refered to by
+	// the first parameter, and builds a parser tree that it outputs as a
+	// DOT graphviz input file named by the second parameter.
 
 

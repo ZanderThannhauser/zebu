@@ -88,12 +88,12 @@ static struct {
 } lookup[number_of_parser_templates] = {
 	[pt_really_just_tables] = {&really_just_tables_source, &really_just_tables_header},
 	[pt_just_tables] = {&just_tables_source, &just_tables_header},
-	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},
-	[pt_readline] = {&readline_source, &readline_header},
+/*	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},*/
+/*	[pt_readline] = {&readline_source, &readline_header},*/
 	[pt_readline_debug] = {&readline_debug_source, &readline_debug_header},
 	[pt_fileio_debug] = {&fileio_debug_source, &fileio_debug_header},
-	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},
-	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},
+/*	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},*/
+/*	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},*/
 };
 
 void out(struct yacc_state* start)

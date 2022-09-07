@@ -43,7 +43,7 @@ char* structinfo_to_string(struct structinfo* this)
 					break;
 				
 				case sin_token_array:
-					TODO;
+					append("struct token* "), append(node->name->chars), append("[];\\l");
 					break;
 				
 				case sin_grammar_scalar:

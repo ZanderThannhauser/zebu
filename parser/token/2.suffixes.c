@@ -8,15 +8,15 @@
 #include <regex/dfa_to_nfa.h>
 #include <regex/dotout.h>
 #include <regex/clone.h>
-/*#include <regex/state/new.h>*/
-/*#include <regex/state/free.h>*/
+#include <regex/state/new.h>
+#include <regex/state/free.h>
 #include <regex/state/add_lambda_transition.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-/*#include "../tokenizer/machines/misc/numeric.h"*/
-/*#include "../tokenizer/machines/misc/comma.h"*/
-/*#include "../tokenizer/machines/misc/ccurly.h"*/
+#include "../tokenizer/machines/misc/numeric.h"
+#include "../tokenizer/machines/misc/comma.h"
+#include "../tokenizer/machines/misc/ccurly.h"
 #include "../tokenizer/machines/regex/after_suffix.h"
 
 #include "1.prefixes.h"
@@ -90,47 +90,28 @@ struct rbundle read_suffixes_token_expression(
 		
 		case t_ocurly:
 		{
-			TODO;
-			#if 0
 			struct rbundle original;
-			
 			// convert into nfa:
 			if (retval.is_nfa)
 				original = retval;
 			else
-			{
-				#ifdef WITH_ARENAS
-				original = regex_dfa_to_nfa(arena, retval.dfa);
-				#else
 				original = regex_dfa_to_nfa(retval.dfa);
-				#endif
-			}
-			
-			if (token_skip)
-			{
-				// oh boy...
-				TODO;
-			}
 			
 			read_token(tokenizer, numeric_machine);
 			dpvs(tokenizer->tokenchars.chars);
-			unsigned min = atoi(tokenizer->tokenchars.chars);
+			unsigned min = atoi((void*) tokenizer->tokenchars.chars);
 			dpv(min);
 			
 			read_token(tokenizer, comma_machine);
 			
 			read_token(tokenizer, numeric_machine);
 			dpv(tokenizer->tokenchars.chars);
-			unsigned max = atoi(tokenizer->tokenchars.chars);
+			unsigned max = atoi((void*) tokenizer->tokenchars.chars);
 			dpv(max);
 			
 			read_token(tokenizer, ccurly_machine);
 			
-			#ifdef WITH_ARENAS
-			struct regex* start = new_regex(arena);
-			#else
 			struct regex* start = new_regex();
-			#endif
 			
 			struct regex* moving = start;
 			
@@ -145,22 +126,14 @@ struct rbundle read_suffixes_token_expression(
 				TODO;
 			}
 			
-			#ifdef WITH_ARENAS
-			struct regex* end = new_regex(arena);
-			#else
 			struct regex* end = new_regex();
-			#endif
 			
 			regex_add_lambda_transition(moving, end);
 			
 			for (; i < max; i++)
 			{
 				// new_start, new_end = clone();
-				#ifdef WITH_ARENAS
-				struct clone_nfa_bundle clone = regex_clone_nfa(arena, original.nfa.start, original.nfa.end);
-				#else
 				struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
-				#endif
 				
 				// moving -> new_start
 				regex_add_lambda_transition(moving, clone.start);
@@ -180,12 +153,9 @@ struct rbundle read_suffixes_token_expression(
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			
-			read_token(
-				/* tokenizer: */ tokenizer,
-				/* machine:   */ regex_after_suffix_machine);
+			read_token(tokenizer, regex_after_suffix_machine);
 			
 			free_regex(original.nfa.start);
-			#endif
 			break;
 		}
 		

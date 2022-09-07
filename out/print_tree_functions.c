@@ -69,7 +69,7 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
 			"\n"
 		"", ele->name->chars, ele->name->chars);
 	};
@@ -79,7 +79,7 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s(struct link* links, enum prefix p, const char* name, struct %s* ptree)" "\n"
+			"void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree)" "\n"
 			"{" "\n"
 				"\t" "print_links(links);" "\n"
 				"\t" "\n"
@@ -129,7 +129,27 @@ void print_tree_functions(
 				
 				case sin_token_array:
 				{
-					TODO;
+					fprintf(stream, ""
+						"\t" "if (ptree->%s.n)" "\n"
+						"\t" "{" "\n"
+						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
+						"\t" "\t" "{" "\n"
+						"\t" "\t" "\t" "char label[%lu + 30];" "\n"
+						"\t" "\t" "\t" "snprintf(label, sizeof(label), \"%s[%%u]\", i);" "\n"
+						"\t" "\t" "\t" "print_token_leaf(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
+						"\t" "\t" "}" "\n"
+						"\t" "}" "\n"
+						"\t" "else" "\n"
+						"\t" "{" "\n"
+						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"token[]\", \"%s\");" "\n"
+						"\t" "}" "\n"
+					"", field,
+					field,
+					strlen(field),
+					field,
+					prefix, field,
+					prefix, field);
+					
 					break;
 				}
 				
@@ -139,7 +159,7 @@ void print_tree_functions(
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
-						"\t" "\t" "print_%s(new ?: links, %s, \"%s\", ptree->%s);" "\n"
+						"\t" "\t" "print_%s_ptree(new ?: links, %s, \"%s\", ptree->%s);" "\n"
 						"\t" "else" "\n"
 						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
 					"", field, grammar_chars, prefix, field, field, prefix, grammar_chars, field);
@@ -157,7 +177,7 @@ void print_tree_functions(
 						"\t" "\t" "{" "\n"
 						"\t" "\t" "\t" "char label[%lu + 30];" "\n"
 						"\t" "\t" "\t" "snprintf(label, sizeof(label), \"%s[%%u]\", i);" "\n"
-						"\t" "\t" "\t" "print_%s(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "print_%s_ptree(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
 						"\t" "\t" "}" "\n"
 						"\t" "}" "\n"
 						"\t" "else" "\n"

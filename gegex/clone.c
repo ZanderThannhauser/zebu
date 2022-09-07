@@ -106,13 +106,11 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			
 			struct avl_node_t* node = avl_search(mappings, &ele->to);
 			
-			TODO;
-			#if 0
 			if (node)
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_transition(new, ele->token, ele->tags, submapping->new);
+				gegex_add_transition(new, ele->token, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -120,13 +118,12 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				struct mapping* submapping = new_mapping(ele->to, subnew);
 				
-				gegex_add_transition(new, ele->token, ele->tags, subnew);
+				gegex_add_transition(new, ele->token, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				
 				quack_append(todo, submapping);
 			}
-			#endif
 		}
 		
 		for (unsigned i = 0, n = old->grammar_transitions.n; i < n; i++)
@@ -135,13 +132,11 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			
 			struct avl_node_t* node = avl_search(mappings, &ele->to);
 			
-			TODO;
-			#if 0
 			if (node)
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_grammar_transition(new, ele->grammar, ele->tags, submapping->new);
+				gegex_add_grammar_transition(new, ele->grammar, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -149,13 +144,12 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				struct mapping* submapping = new_mapping(ele->to, subnew);
 				
-				gegex_add_grammar_transition(new, ele->grammar, ele->tags, subnew);
+				gegex_add_grammar_transition(new, ele->grammar, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				
 				quack_append(todo, submapping);
 			}
-			#endif
 		}
 		
 		// for each lambda transition:

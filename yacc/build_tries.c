@@ -270,10 +270,6 @@ void build_tries(
 {
 	ENTER;
 	
-	#ifdef DEBUGGING
-	assert(structinfo->name);
-	#endif
-	
 	struct quack* explore = new_quack();
 	
 	struct quack* expand = new_quack();
@@ -383,10 +379,6 @@ void build_tries(
 				struct gegex* to)
 			{
 				ENTER;
-				
-				#ifdef DEBUGGING
-				assert(structinfo->name);
-				#endif
 				
 				struct reductioninfo* subreductioninfo = new_reductioninfo(grammar ? rik_grammar : rik_token, tags, grammar, reductioninfo);
 				

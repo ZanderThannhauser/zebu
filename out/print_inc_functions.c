@@ -26,7 +26,7 @@ void print_inc_functions(
 		const char* type = ele->name->chars;
 		
 		fprintf(stream, ""
-			"struct %s* inc_%s_tree(struct %s* ptree)" "\n"
+			"struct %s* inc_%s_ptree(struct %s* ptree)" "\n"
 			"{" "\n"
 				"\t" "if (ptree) ptree->refcount++;" "\n"
 				"\t" "return ptree;" "\n"

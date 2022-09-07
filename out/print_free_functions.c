@@ -27,7 +27,7 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s(struct %s* ptree);" "\n"
+			"void free_%s_ptree(struct %s* ptree);" "\n"
 			"" "\n"
 		"", ele->name->chars, ele->name->chars);
 	}
@@ -37,7 +37,7 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s(struct %s* ptree)" "\n"
+			"void free_%s_ptree(struct %s* ptree)" "\n"
 			"{" "\n"
 			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
@@ -58,12 +58,18 @@ void print_free_functions(
 					break;
 				
 				case sin_token_array:
-					TODO;
+				{
+					fprintf(stream, ""
+						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
+						"\t" "\t" "\t" "free_token(ptree->%s.data[i]);" "\n"
+						"\t" "\t" "free(ptree->%s.data);" "\n"
+					"", field, field, field);
 					break;
+				}
 				
 				case sin_grammar_scalar:
 					fprintf(stream, ""
-						"\t" "\t" "free_%s(ptree->%s);" "\n"
+						"\t" "\t" "free_%s_ptree(ptree->%s);" "\n"
 					"", ele->grammar->chars, field);
 					break;
 				
@@ -71,7 +77,7 @@ void print_free_functions(
 				{
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
-						"\t" "\t" "\t" "free_%s(ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "free_%s_ptree(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
 					"", field, ele->grammar->chars, field, field);
 					break;

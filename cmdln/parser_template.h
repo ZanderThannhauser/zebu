@@ -5,15 +5,16 @@ enum parser_template
 	
 	pt_just_tables,
 	
-	pt_buffer_driven,
-	
-	pt_readline,
+/*	pt_function_debug,*/
+/*	pt_function_passfail,*/
 	
 	pt_readline_debug,
+/*	pt_readline_passfail,*/
 	
 	pt_fileio_debug,
-	pt_fileio_passfail,
-	pt_fileio_graphviz,
+/*	pt_fileio_passfail_debug,*/
+/*	pt_fileio_passfail,*/
+/*	pt_fileio_graphviz,*/
 	
 	number_of_parser_templates,
 };

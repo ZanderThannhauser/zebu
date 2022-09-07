@@ -48,8 +48,27 @@ void reductioninfo_print_source(
 						
 						case sin_token_array:
 						{
-							// prepending one element
-							TODO;
+							if (once)
+							{
+								fprintf(stream, ""
+									"\t" "\t" "if (value->%s.n == value->%s.cap)" "\n"
+									"\t" "\t" "{" "\n"
+									"\t" "\t" "\t" "value->%s.cap = value->%s.cap << 1 ?: 1;" "\n"
+									"\t" "\t" "\t" "value->%s.data = realloc(value->%s.data, sizeof(*value->%s.data) * value->%s.cap);" "\n"
+									"\t" "\t" "}" "\n"
+									"\t" "\t" "memmove(value->%s.data + 1, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
+									"\t" "\t" "value->%s.data[0] = data.data[--yacc.n, --data.n], value->%s.n++;" "\n"
+								"", name->chars, name->chars,
+								name->chars, name->chars,
+								name->chars, name->chars, name->chars, name->chars,
+								name->chars, name->chars, name->chars, name->chars,
+								name->chars, name->chars);
+								once = false;
+							}
+							else
+							{
+								TODO;
+							}
 							break;
 						}
 						
@@ -86,7 +105,7 @@ void reductioninfo_print_source(
 							if (once)
 							{
 								fprintf(stream, ""
-									"\t" "\t" "free_%s(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+									"\t" "\t" "free_%s_ptree(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
 								"", type, name->chars, name->chars);
 								once = false;
 							}
@@ -140,7 +159,7 @@ void reductioninfo_print_source(
 			if (structinfo_is_empty(this->structinfo))
 			{
 				fprintf(stream, ""
-					"\t" "\t" "free_%s(data.data[--yacc.n, --data.n]);" "\n"
+					"\t" "\t" "free_%s_ptree(data.data[--yacc.n, --data.n]);" "\n"
 				"", type);
 			}
 			
@@ -161,29 +180,19 @@ void reductioninfo_print_source(
 			structinfo_foreach(structinfo, ({
 				void runme(struct string* name, enum structinfo_node_kind kind, struct string* grammar)
 				{
+					const char* const name_chars = name->chars;
+					
 					switch (kind)
 					{
 						case sin_token_scalar:
 						{
 							fprintf(stream, ""
-								"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = trie->%s; }" "\n"
-							"", name->chars, name->chars, name->chars, name->chars);
+								"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = inc_token(trie->%s); }" "\n"
+							"", name_chars, name_chars, name_chars, name_chars);
 							break;
 						}
 						
 						case sin_token_array:
-							TODO;
-							break;
-						
-						case sin_grammar_scalar:
-						{
-							fprintf(stream, ""
-								"\t" "\t" "\t" "if (trie->%s) { free_%s(value->%s); value->%s = trie->%s; }" "\n"
-							"", name->chars, grammar->chars, name->chars, name->chars, name->chars);
-							break;
-						}
-						
-						case sin_grammar_array:
 						{
 							fprintf(stream, ""
 								"\t" "\t" "\t" "if (trie->%s.n)"
@@ -194,16 +203,55 @@ void reductioninfo_print_source(
 								"\t" "\t" "\t" "\t" "\t" "value->%s.data = realloc(value->%s.data, sizeof(*value->%s.data) * value->%s.cap);" "\n"
 								"\t" "\t" "\t" "\t" "}" "\n"
 								"\t" "\t" "\t" "\t" "memmove(value->%s.data + trie->%s.n, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
-								"\t" "\t" "\t" "\t" "memcpy(value->%s.data, trie->%s.data, sizeof(*trie->%s.data) * trie->%s.n);" "\n"
+								"\t" "\t" "\t" "\t" "for (unsigned i = 0, n = trie->%s.n; i < n; i++)" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.data[i] = inc_token(trie->%s.data[i]);" "\n"
 								"\t" "\t" "\t" "\t" "value->%s.n += trie->%s.n;" "\n"
 								"\t" "\t" "\t" "}" "\n"
-							"", name->chars,
-							name->chars, name->chars, name->chars,
-							name->chars, name->chars,
-							name->chars, name->chars, name->chars, name->chars,
-							name->chars, name->chars, name->chars, name->chars, name->chars,
-							name->chars, name->chars, name->chars, name->chars,
-							name->chars, name->chars);
+							"", name_chars,
+							name_chars, name_chars, name_chars,
+							name_chars, name_chars,
+							name_chars, name_chars, name_chars, name_chars,
+							name_chars, name_chars, name_chars, name_chars, name_chars,
+							name_chars,
+							name_chars, name_chars,
+							name_chars, name_chars);
+							break;
+						}
+						
+						case sin_grammar_scalar:
+						{
+							const char* const grammar_chars = grammar->chars;
+							fprintf(stream, ""
+								"\t" "\t" "\t" "if (trie->%s) { free_%s_ptree(value->%s); value->%s = inc_%s_ptree(trie->%s); }" "\n"
+							"", name_chars, grammar_chars, name_chars, name_chars, grammar_chars, name_chars);
+							break;
+						}
+						
+						case sin_grammar_array:
+						{
+							const char* const grammar_chars = grammar->chars;
+							
+							fprintf(stream, ""
+								"\t" "\t" "\t" "if (trie->%s.n)" "\n"
+								"\t" "\t" "\t" "{" "\n"
+								"\t" "\t" "\t" "\t" "while (value->%s.n + trie->%s.n > value->%s.cap)" "\n"
+								"\t" "\t" "\t" "\t" "{" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.cap = value->%s.cap << 1 ?: 1;" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.data = realloc(value->%s.data, sizeof(*value->%s.data) * value->%s.cap);" "\n"
+								"\t" "\t" "\t" "\t" "}" "\n"
+								"\t" "\t" "\t" "\t" "memmove(value->%s.data + trie->%s.n, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
+								"\t" "\t" "\t" "\t" "for (unsigned i = 0, n = trie->%s.n; i < n; i++)" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.data[i] = inc_%s_ptree(trie->%s.data[i]);" "\n"
+								"\t" "\t" "\t" "\t" "value->%s.n += trie->%s.n;" "\n"
+								"\t" "\t" "\t" "}" "\n"
+							"", name_chars,
+							name_chars, name_chars, name_chars,
+							name_chars, name_chars,
+							name_chars, name_chars, name_chars, name_chars,
+							name_chars, name_chars, name_chars, name_chars, name_chars,
+							name_chars,
+							name_chars, grammar_chars, name_chars,
+							name_chars, name_chars);
 							break;
 						}
 					}
@@ -212,9 +260,9 @@ void reductioninfo_print_source(
 			}));
 			
 			fprintf(stream, ""
-				"\t" "\t" "\t" "free(trie);" "\n"
-				"\t" "\t" "};" "\n"
-			"");
+				"\t" "\t" "\t" "free_%s_ptree(trie);" "\n"
+				"\t" "\t" "}" "\n"
+			"", structinfo->name->chars);
 			break;
 		}
 		

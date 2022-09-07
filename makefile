@@ -76,34 +76,36 @@ ARGS += --verbose
 #ARGS += -l
 ARGS += --minimize-lexer
 
-#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-#ARGS += --yacc=readline-debug -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+#ARGS += --template=really-just-tables
+#ARGS += --template=just-tables
+#ARGS += --template=readline-debug
+ARGS += --template=fileio-debug
 
-#ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += --yacc=readline-debug -i ./-examples/math2/math.zb -o ./-examples/math2/math
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
-#ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
-#ARGS += --yacc=readline-debug -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/output
-#ARGS += --yacc=readline-debug -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
-#ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
-#ARGS += --yacc=readline-debug -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
-#ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
+#ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
-#ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
-#ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
-#ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+#ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
+#ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
+#ARGS += -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/expressions
+#ARGS += -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
+#ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
+#ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
+#ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
+#ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
-#ARGS += --yacc=readline-debug -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+#ARGS += -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+
+ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+#ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
+#ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
+
+#ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+
+#ARGS += -i ./-examples/csv/csv.zb -o ./-examples/csv/csv
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
