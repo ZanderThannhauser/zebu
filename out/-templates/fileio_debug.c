@@ -195,7 +195,7 @@ void* parse(FILE* stream)
 				
 				escape(escaped, c);
 				
-				printf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
 				
 				assert(!"163");
 				#if 0
@@ -233,7 +233,7 @@ void* parse(FILE* stream)
 			{
 				if (b)
 				{
-					l = a, t = b, f = i++;
+					l = a, t = b;
 					ddprintf("l = %u\n", l);
 				}
 				else

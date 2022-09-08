@@ -13,12 +13,12 @@
 
 %start: `
 	skip ".data" skip (
-		  ".string" skip label skip "," skip string
-		| ".float"  skip label skip "," skip float
-		| ".global" skip label skip "," skip int "," int
+		  ".string" skip label skip "," skip string skip
+		| ".float"  skip label skip "," skip float skip
+		| ".global" skip label skip "," skip int "," int skip
 	)*
-	".text" skip (
-		".frame" skip ['a' - 'z']+ skip "," skip int (
+	skip ".text" skip (
+		skip ".frame" skip ['a' - 'z']+ skip "," skip int skip (
 			(label skip ":"skip)? // optional label
 			(
 				// Integer Arithmetic Instructions:
@@ -101,7 +101,7 @@
 				// Undocumented Instructions:
 				| "nop"   skip
 				| "call"  skip label ("," skip register skip)* skip
-				| "icall" skip label ("," skip register skip)* skip "=>" skip register
+				| "icall" skip label ("," skip register skip)* skip "=>" skip register skip
 				| "iret"  skip                 register skip
 			)
 		)*
