@@ -76,52 +76,6 @@ struct cmdln* process_cmdln(int argc, char* const* argv)
 	return retval;
 }
 
-static void escape(char *out, unsigned char in)
-{
-	switch (in)
-	{
-		case ' ':
-		case '~':
-		case '!':
-		case '@':
-		case '#':
-		case '$':
-		case '%':
-		case '^':
-		case '&':
-		case '*':
-		case '-':
-		case '+':
-		case '=':
-		case '|':
-		case '<': case '>':
-		case '(': case ')':
-		case '{': case '}':
-		case '[': case ']':
-		case ':': case ';':
-		case ',': case '.':
-		case '_':
-		case '0' ... '9':
-		case 'a' ... 'z':
-		case 'A' ... 'Z':
-			*out++ = in;
-			*out = 0;
-			break;
-		
-		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
-		
-		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
-		
-		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
-		
-		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
-		
-		default:
-			sprintf(out, "\\x%02X", in);
-			break;
-	}
-}
-
 void* parse(FILE* stream)
 {
 	void* root;
@@ -149,19 +103,6 @@ void* parse(FILE* stream)
 		data.data[data.n++] = d;
 	}
 	
-	void ddprintf(const char* fmt, ...)
-	{
-		for (unsigned i = 0, n = yacc.n; i < n; i++)
-			printf("%u ", yacc.data[i]);
-		
-		printf("| ");
-		
-		va_list va;
-		va_start(va, fmt);
-		vprintf(fmt, va);
-		va_end(va);
-	}
-	
 	unsigned y, t, s, r;
 	void* td;
 	
@@ -172,7 +113,6 @@ void* parse(FILE* stream)
 			while (lexer.n + 1 >= lexer.cap)
 			{
 				lexer.cap = lexer.cap << 1 ?: 1;
-				ddprintf("lexer.cap == %u\n", lexer.cap);
 				lexer.data = realloc(lexer.data, lexer.cap);
 			}
 			
@@ -183,19 +123,11 @@ void* parse(FILE* stream)
 		
 		t = 0;
 		
-		ddprintf("l = %u\n", l);
-		
 		while (1)
 		{
 			if (i < lexer.n)
 			{
 				c = lexer.data[i];
-				
-				char escaped[10];
-				
-				escape(escaped, c);
-				
-				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
 				
 				assert(!"163");
 				#if 0
@@ -208,49 +140,28 @@ void* parse(FILE* stream)
 			{
 				append(c);
 				
-				char escaped[10];
-				
-				escape(escaped, c);
-				
-				ddprintf("c = '%s' (0x%X)\n", escaped, c);
-				
 				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 			}
 			else
 			{
 				c = EOF;
 				
-				ddprintf("c = <EOF>\n");
-				
 				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
 			}
 			
 			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 			
-			ddprintf("a = %u, b = %u\n", a, b);
-			
 			if (a)
 			{
 				if (b)
-				{
 					l = a, t = b, i++;
-					ddprintf("l = %u\n", l);
-				}
 				else
-				{
 					l = a, i++;
-					ddprintf("l = %u\n", l);
-				}
 			}
 			else if (b)
 			{
 				if (c != EOF)
-				{
 					lexer.n--, ungetc(c, stream);
-				}
-				
-				ddprintf("lexer.n == %u\n", lexer.n);
-				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
 				
 				struct token* token = malloc(sizeof(*token));
 				token->refcount = 1;
@@ -277,24 +188,16 @@ void* parse(FILE* stream)
 	
 	push_state(1), y = 1, read_token(1);
 	
-	ddprintf("y = %u, t = %u\n", y, t);
-	
 	while (yacc.n)
 	{
 		if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 		{
-			ddprintf("s == %u\n", s);
-			
 			y = s, push_state(y), push_data(td);
 			
 			read_token({{PREFIX}}_lexer_starts[y]);
-			
-			ddprintf("t = %u\n", t);
 		}
 		else if (y < N( {{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 		{
-			ddprintf("r == %u\n", r);
-			
 			unsigned g;
 			void* d;
 			
@@ -309,13 +212,9 @@ void* parse(FILE* stream)
 			{
 				y = yacc.data[yacc.n - 1];
 				
-				ddprintf("y = %u\n", y);
-				
 				assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
 				
 				s = {{PREFIX}}_gotos[y][g];
-				
-				ddprintf("s = %u\n", s);
 				
 				y = s, push_state(y), push_data(d);
 			}

@@ -23,6 +23,10 @@
 #include <set/gegex/contains.h>
 #endif
 
+#ifdef VERBOSE
+#include <misc/default_sighandler.h>
+#endif
+
 #include "reductioninfo/new.h"
 #include "reductioninfo/inc.h"
 #include "reductioninfo/to_string.h"
@@ -312,9 +316,35 @@ void build_tries(
 		avl_insert(named_tries, new);
 	}
 	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler1(int _)
+	{
+		char buffer[1000] = {};
+		
+		unsigned total = completed + quack_len(explore);
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: building tries (explore): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler1);
+	#endif
+	
 	// explore:
 	while (quack_len(explore))
 	{
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
 		struct gegex* state = quack_pop(explore);
 		
 		void process_to(struct gegex* to)
@@ -354,9 +384,35 @@ void build_tries(
 		#endif
 	}
 	
+	#ifdef VERBOSE
+	completed = 0;
+	
+	void handler2(int _)
+	{
+		char buffer[1000] = {};
+		
+		unsigned total = completed + quack_len(expand);
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: building tries (expand): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler1);
+	#endif
+	
 	// we have one pass that fills-out all the tries:
 	while (quack_len(expand))
 	{
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
 		struct expand_bundle* bundle = quack_pop(expand);
 		
 		void expand_helper(
@@ -446,6 +502,10 @@ void build_tries(
 		free(bundle);
 	}
 	
+	#if VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
+	
 	avl_free_tree(gegex_to_trie);
 	
 	free_gegexset(seen);
@@ -456,229 +516,6 @@ void build_tries(
 	
 	EXIT;
 }
-
-
-
-
-
-
-	#if 0
-	unsigned trie_id = 0;
-	
-	struct explore_bundle
-	{
-		struct gegex* gegex;
-		struct trie* trie;
-		struct trieinfo* trieinfo;
-		unsigned popcount;
-		struct reductioninfo* reductioninfo;
-	};
-	
-	struct explore_bundle* new_explore_bundle(const char* given_name, struct gegex* gegex)
-	{
-		char* name;
-		ENTER;
-		
-		if (given_name)
-			name = strdup(given_name);
-		else if (asprintf(&name, "(trie #%u)", trie_id++) < 0)
-			abort();
-		
-		dpvs(name);
-		
-		struct explore_bundle* new = smalloc(sizeof(*new));
-		
-		struct trie* trie = new_trie();
-		
-		struct trieinfo* trieinfo = new_trieinfo(name, trie);
-		
-		new->gegex = gegex;
-		new->trie = trie;
-		new->trieinfo = trieinfo;
-		new->popcount = 0;
-		new->reductioninfo = NULL;
-		
-		avl_insert(trieinfos, trieinfo);
-		
-		EXIT;
-		return new;
-	}
-	
-	struct explore_bundle* new_explore_bundle2(
-		struct gegex* gegex,
-		struct trie* trie,
-		struct trieinfo* trieinfo,
-		unsigned popcount,
-		struct reductioninfo* reductioninfo)
-	{
-		ENTER;
-		
-		struct explore_bundle* new = smalloc(sizeof(*new));
-		
-		new->gegex = gegex;
-		new->trie = trie;
-		new->trieinfo = trieinfo;
-		new->popcount = popcount;
-		new->reductioninfo = reductioninfo;
-		
-		EXIT;
-		return new;
-	}
-	
-	struct gegexset* seen = new_gegexset();
-	
-	struct quack* explore = new_quack();
-	
-	struct gegexset* roots = new_gegexset();
-	
-	struct quack* expand = new_quack();
-	
-	// gegex to trieinfo map?
-	
-	avl_tree_foreach(named_gegexes, ({
-		void runme(void* ptr)
-		{
-			struct named_gegex* const ng = ptr;
-			
-			struct gegex* const g = ng->gegex;
-			
-			gegexset_add(seen, g);
-			
-			quack_append(explore, g);
-			
-			gegexset_add(roots, g);
-			
-			quack_append(expand, new_explore_bundle(ng->name, g));
-		}
-		runme;
-	}));
-	
-	// explore loop:
-	while (quack_len(explore))
-	{
-		struct gegex* state = quack_pop(explore);
-		
-		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
-		{
-			struct gegex* const to = state->transitions.data[i]->to;
-			
-			if (gegexset_add(seen, to))
-				quack_append(explore, to);
-			else if (gegexset_add(roots, to))
-				quack_append(expand, new_explore_bundle(NULL, to));
-		}
-		
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
-		{
-			struct gegex* const to = state->grammar_transitions.data[i]->to;
-			
-			if (gegexset_add(seen, to))
-				quack_append(explore, to);
-			else if (gegexset_add(roots, to))
-				quack_append(expand, new_explore_bundle(NULL, to));
-		}
-		
-		#ifdef DOTOUT
-		explore_dotout(named_gegexes, seen, roots, state);
-		#endif
-	}
-	
-	// expand loop:
-	while (quack_len(expand))
-	{
-		struct explore_bundle* const bundle = quack_pop(expand);
-		
-		TODO;
-		#if 0
-		struct trie* const trie = bundle->trie;
-		
-		struct gegex* const gegex = bundle->gegex;
-		
-		struct reductioninfo* const reductioninfo = bundle->reductioninfo;
-		
-		dpv(bundle->popcount);
-		
-		if (gegex->is_reduction_point)
-		{
-			trie->reductioninfo = inc_reductioninfo(reductioninfo);
-		}
-		
-		for (unsigned i = 0, n = gegex->transitions.n; i < n; i++)
-		{
-			struct gegex_transition* const trans = gegex->transitions.data[i];
-			
-			struct gegex* const to = trans->to;
-			
-			TODO;
-			#if 0
-			struct reductioninfo* current_ri = inc_reductioninfo(reductioninfo);
-			
-			stringset_foreach(trans->tags, ({
-				void runme(const char* tag)
-				{
-					// add tag to trieinfo as a token
-					TODO;
-					
-					// add tag & current popcount to reductioninfo:
-					TODO;
-				}
-				runme;
-			}));
-			
-			if (gegexset_contains(roots, to) && (to->transitions.n || to->grammar_transitions.n))
-			{
-				// call the other trie
-				TODO;
-			}
-			else
-			{
-				struct trie* subtrie = new_trie();
-				
-				trie_add_transition(trie, trans->value, subtrie);
-				
-				// treat it like it's mine, submit expansion task
-				quack_append(expand, new_explore_bundle2(
-					/* gegex: */ to,
-					/* trie: */ subtrie,
-					/* trieinfo: */ trieinfo,
-					/* popcount: */ popcount + 1,
-					/* reductioninfo: */ current_ri));
-			}
-			#endif
-		}
-		
-		for (unsigned i = 0, n = gegex->grammar_transitions.n; i < n; i++)
-		{
-			TODO;
-		}
-		#endif
-		
-		#ifdef DOTOUT
-		expand_dotout();
-		#endif
-		
-		CHECK;
-		
-		free(bundle);
-	}
-	
-	TODO;
-	
-	free_gegexset(seen);
-	
-	free_quack(explore);
-	
-	free_gegexset(roots);
-	
-	free_quack(expand);
-	#endif
-
-
-
-
-
-
-
 
 
 

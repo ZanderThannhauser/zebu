@@ -79,7 +79,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		char buffer[1000] = {};
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[K" "zebu: regex simplify (build dependencies): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: regex simplify (building dependencies): %lu of %lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, buffer, len) != len)
@@ -148,7 +148,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 		char ptr[200] = {};
 		
 		size_t len = snprintf(ptr, 200,
-			"\e[K" "zebu: regex simplify (allocating dependency-trees): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: regex simplify (allocating sets): %lu of %lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)

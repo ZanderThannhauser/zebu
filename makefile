@@ -74,17 +74,18 @@ default: $(buildprefix)/zebu
 ARGS += --verbose
 
 #ARGS += -l
-#ARGS += --minimize-lexer
+ARGS += --minimize-lexer
 
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
-#ARGS += --template=readline-debug
-ARGS += --template=fileio-debug
+ARGS += --template=readline-debug
+#ARGS += --template=fileio-debug
+#ARGS += --template=fileio
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
-#ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
+ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
 #ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
@@ -99,7 +100,7 @@ ARGS += --template=fileio-debug
 
 #ARGS += -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
-ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
 #ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
@@ -140,12 +141,13 @@ include gen/srclist.mk
 
 srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
 srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
-srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
-srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
+#srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
+#srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
 srcs += ./out/escaped/readline_debug_source.c     ./out/escaped/readline_debug_header.c
 srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
-srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
-srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
+srcs += ./out/escaped/fileio_source.c             ./out/escaped/fileio_header.c
+#srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
+#srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
 
 endif
 

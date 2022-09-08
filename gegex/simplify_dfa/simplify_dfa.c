@@ -189,7 +189,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "zebu: grammar simplify (allocating dependency-trees): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (allocating sets): %lu of %lu (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)

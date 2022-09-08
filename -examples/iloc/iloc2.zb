@@ -11,102 +11,110 @@
 
 %skip: [' ', '\t', '\n'] | "#" [~'\n']+ "\n"; // bewteen-token skip
 
-%start:
-	".data" (
-		  ".string" `label` "," `'\"' char* '\"'`
-		| ".float"  `label` "," `float`
-		| ".global" `label` "," `int` "," `int`
-	)*
-	".text" (
-		".frame" `['a' - 'z']+` "," `int` (
-			(`label` ":")? // optional label
-			(
-				// Integer Arithmetic Instructions:
-				  "i2i"      `register`                "=>" `register`
-				| "add"      `register` "," `register` "=>" `register`
-				| "sub"      `register` "," `register` "=>" `register`
-				| "mult"     `register` "," `register` "=>" `register`
-				| "lshift"   `register` "," `register` "=>" `register`
-				| "rshift"   `register` "," `register` "=>" `register`
-				| "mod"      `register` "," `register` "=>" `register`
-				| "and"      `register` "," `register` "=>" `register`
-				| "or"       `register` "," `register` "=>" `register`
-				| "not"      `register`                "=>" `register`
-				| "addI"     `register` "," `int`      "=>" `register`
-				| "subI"     `register` "," `int`      "=>" `register`
-				| "multI"    `register` "," `int`      "=>" `register`
-				| "lshiftI"  `register` "," `int`      "=>" `register`
-				| "rshiftI"  `register` "," `int`      "=>" `register`
-				
-				// Integer Memory Operations:
-				| "loadI"    `int`                     "=>" `register`
-				| "load"     `register`                "=>" `register`
-				| "loadAI"   `register` "," `int`      "=>" `register`
-				| "loadAO"   `register` "," `register` "=>" `register`
-				| "store"    `register`                "=>" `register`
-				| "storeAI"  `register`                "=>" `register` "," `int`
-				| "storeAO"  `register`                "=>" `register` "," `register`
-				
-				// Compare Instructions:
-				| "cmp_LT"   `register` "," `register` "=>" `register`
-				| "cmp_LR"   `register` "," `register` "=>" `register`
-				| "cmp_GT"   `register` "," `register` "=>" `register`
-				| "cmp_GE"   `register` "," `register` "=>" `register`
-				| "cmp_EQ"   `register` "," `register` "=>" `register`
-				| "cmp_NE"   `register` "," `register` "=>" `register`
-				| "comp"     `register` "," `register` "=>" `register`
-				| "testeq"   `register`                "=>" `register`
-				| "testne"   `register`                "=>" `register`
-				| "testgt"   `register`                "=>" `register`
-				| "testge"   `register`                "=>" `register`
-				| "testlt"   `register`                "=>" `register`
-				| "testle"   `register`                "=>" `register`
-				
-				// Floating-point Operations:
-				| "f2i"      `register`                "=>" `register`
-				| "i2f"      `register`                "=>" `register`
-				| "f2f"      `register`                "=>" `register`
-				| "fadd"     `register` "," `register` "=>" `register`
-				| "fsub"     `register` "," `register` "=>" `register`
-				| "fmult"    `register` "," `register` "=>" `register`
-				| "fdiv"     `register` "," `register` "=>" `register`
-				| "fcomp"    `register` "," `register` "=>" `register`
-				| "fload"    `register`                "=>" `register`
-				| "floadAI"  `register` "," `int`      "=>" `register`
-				| "floadAO"  `register` "," `register` "=>" `register`
-				| "fstore"   `register`                "=>" `register`
-				| "fstoreAI" `register`                "=>" `register` "," `int`
-				| "fstoreAO" `register`                "=>" `register` "," `register`
-				
-				// I/O Instructions:
-				| "fread"    `register`
-				| "iread"    `register`
-				| "fwrite"   `register`
-				| "iwrite"   `register`
-				| "swrite"   `register`
-				
-				// Branch Instructions:
-				| "jumpI"                              "->" `label`
-				| "jump"                               "->" `register`
-				| "ret"
-				| "cbr"      `register`                "->" `label`
-				| "cbrne"    `register`                "->" `label`
-				| "cbr_LT"   `register` "," `register` "->" `label`
-				| "cbr_LE"   `register` "," `register` "->" `label`
-				| "cbr_GT"   `register` "," `register` "->" `label`
-				| "cbr_GE"   `register` "," `register` "->" `label`
-				| "cbr_EQ"   `register` "," `register` "->" `label`
-				| "cbr_NE"   `register` "," `register` "->" `label`
-				
-				// Undocumented Instructions:
-				| "nop"
-				| "call"  `label` ("," `register`)*
-				| "icall" `label` ("," `register`)* "=>" `register`
-				| "iret"                                 `register`
-			)
-		)*
-	)*
-;
+%start: data #data text #text;
+
+string_declare: ".string" `label` #label "," `'\"' char* '\"'` #text;
+
+float_declare: ".float"  `label` #label "," `float` #literal;
+
+global_declare: ".global" `label` #label "," `int` #size "," `int` #alignment;
+
+data: ".data" (
+	  string_declare #strings[]
+	| float_declare  #floats[]
+	| global_declare #globals[])*
+	;
+
+text: ".text" (frame #frames[])*;
+
+frame: ".frame" `['a' - 'z']+` #label "," `int` #stacksize (instruction #instructions[])*;
+
+instruction:
+	(`label` #label ":")? // optional label
+	(
+		// Integer Arithmetic Instructions:
+		  "i2i"      #op `register`                "=>" `register`
+		| "add"      #op `register` "," `register` "=>" `register`
+		| "sub"      #op `register` "," `register` "=>" `register`
+		| "mult"     #op `register` "," `register` "=>" `register`
+		| "lshift"   #op `register` "," `register` "=>" `register`
+		| "rshift"   #op `register` "," `register` "=>" `register`
+		| "mod"      #op `register` "," `register` "=>" `register`
+		| "and"      #op `register` "," `register` "=>" `register`
+		| "or"       #op `register` "," `register` "=>" `register`
+		| "not"      #op `register`                "=>" `register`
+		| "addI"     #op `register` "," `int`      "=>" `register`
+		| "subI"     #op `register` "," `int`      "=>" `register`
+		| "multI"    #op `register` "," `int`      "=>" `register`
+		| "lshiftI"  #op `register` "," `int`      "=>" `register`
+		| "rshiftI"  #op `register` "," `int`      "=>" `register`
+		
+		// Integer Memory Operations:
+		| "loadI"    #op `int`                     "=>" `register`
+		| "load"     #op `register`                "=>" `register`
+		| "loadAI"   #op `register` "," `int`      "=>" `register`
+		| "loadAO"   #op `register` "," `register` "=>" `register`
+		| "store"    #op `register`                "=>" `register`
+		| "storeAI"  #op `register`                "=>" `register` "," `int`
+		| "storeAO"  #op `register`                "=>" `register` "," `register`
+		
+		// Compare Instructions:
+		| "cmp_LT"   #op `register` "," `register` "=>" `register`
+		| "cmp_LR"   #op `register` "," `register` "=>" `register`
+		| "cmp_GT"   #op `register` "," `register` "=>" `register`
+		| "cmp_GE"   #op `register` "," `register` "=>" `register`
+		| "cmp_EQ"   #op `register` "," `register` "=>" `register`
+		| "cmp_NE"   #op `register` "," `register` "=>" `register`
+		| "comp"     #op `register` "," `register` "=>" `register`
+		| "testeq"   #op `register`                "=>" `register`
+		| "testne"   #op `register`                "=>" `register`
+		| "testgt"   #op `register`                "=>" `register`
+		| "testge"   #op `register`                "=>" `register`
+		| "testlt"   #op `register`                "=>" `register`
+		| "testle"   #op `register`                "=>" `register`
+		
+		// Floating-point Operations:
+		| "f2i"      #op `register`                "=>" `register`
+		| "i2f"      #op `register`                "=>" `register`
+		| "f2f"      #op `register`                "=>" `register`
+		| "fadd"     #op `register` "," `register` "=>" `register`
+		| "fsub"     #op `register` "," `register` "=>" `register`
+		| "fmult"    #op `register` "," `register` "=>" `register`
+		| "fdiv"     #op `register` "," `register` "=>" `register`
+		| "fcomp"    #op `register` "," `register` "=>" `register`
+		| "fload"    #op `register`                "=>" `register`
+		| "floadAI"  #op `register` "," `int`      "=>" `register`
+		| "floadAO"  #op `register` "," `register` "=>" `register`
+		| "fstore"   #op `register`                "=>" `register`
+		| "fstoreAI" #op `register`                "=>" `register` "," `int`
+		| "fstoreAO" #op `register`                "=>" `register` "," `register`
+		
+		// I/O Instructions:
+		| "fread"    #op `register`
+		| "iread"    #op `register`
+		| "fwrite"   #op `register`
+		| "iwrite"   #op `register`
+		| "swrite"   #op `register`
+		
+		// Branch Instructions:
+		| "jumpI"    #op                           "->" `label`
+		| "jump"     #op                           "->" `register`
+		| "ret"      #op 
+		| "cbr"      #op `register`                "->" `label`
+		| "cbrne"    #op `register`                "->" `label`
+		| "cbr_LT"   #op `register` "," `register` "->" `label`
+		| "cbr_LE"   #op `register` "," `register` "->" `label`
+		| "cbr_GT"   #op `register` "," `register` "->" `label`
+		| "cbr_GE"   #op `register` "," `register` "->" `label`
+		| "cbr_EQ"   #op `register` "," `register` "->" `label`
+		| "cbr_NE"   #op `register` "," `register` "->" `label`
+		
+		// Undocumented Instructions:
+		| "nop"      #op
+		| "call"     #op `label` ("," `register`)*
+		| "icall"    #op `label` ("," `register`)* "=>" `register`
+		| "iret"     #op                                `register`
+	);
 
 
 

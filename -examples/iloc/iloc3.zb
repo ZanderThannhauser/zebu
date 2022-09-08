@@ -24,7 +24,7 @@
 		| '.' 'g' 'l' 'o' 'b' 'a' 'l' skip label skip ',' skip int skip ',' skip int skip
 	)*
 	skip '.' 't' 'e' 'x' 't' skip (
-		'.' 'f' 'r' 'a' 'm' 'e' skip alpha+ skip ',' skip int skip (
+		skip '.' 'f' 'r' 'a' 'm' 'e' skip alpha+ skip ',' skip int skip (
 			(label skip ':' skip)? // optional label
 			(
 				// Integer Arithmetic Instructions:
@@ -106,9 +106,9 @@
 				
 				// Undocumented Instructions:
 				| 'n' 'o' 'p'         skip
-				| 'c' 'a' 'l' 'l'     skip label skip (',' skip register)* skip
-				| 'i' 'c' 'a' 'l' 'l' skip label skip (',' skip register)* skip '=' '>' skip register skip
-				| 'i' 'r' 'e' 't'     skip                                              skip register skip
+				| 'c' 'a' 'l' 'l'     skip label skip (',' skip register skip)* skip
+				| 'i' 'c' 'a' 'l' 'l' skip label skip (',' skip register skip)* skip '=' '>' skip register skip
+				| 'i' 'r' 'e' 't'     skip                                                   skip register skip
 			)
 		)*
 	)*

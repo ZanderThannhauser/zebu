@@ -176,7 +176,8 @@ int main()
 					
 					struct token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = (void*) strndup(begin, lexer - begin);
+					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+					token->len = lexer - begin;
 					t = b, td = token;
 					break;
 				}
