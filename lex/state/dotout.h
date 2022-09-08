@@ -1,3 +1,3 @@
 
 void lex_state_dotout(
-	struct lex_state* start);
+	struct lex_state* state);

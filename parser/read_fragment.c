@@ -5,19 +5,19 @@
 
 #include <debug.h>
 
-#include <enums/error.h>
+/*#include <enums/error.h>*/
 
 /*#include <avl/avl.h>*/
 /*#include <avl/safe_insert.h>*/
 
-#include <arena/memdup.h>
+/*#include <arena/memdup.h>*/
 
-#include <lex/regex/simplify_dfa/simplify_dfa.h>
-#include <lex/regex/nfa_to_dfa/nfa_to_dfa.h>
-#include <lex/regex/state/struct.h>
-#include <lex/regex/state/free.h>
+#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/nfa_to_dfa.h>
+#include <regex/state/struct.h>
+#include <regex/state/free.h>
 
-#include "scope/get_arena.h"
+/*#include "scope/get_arena.h"*/
 
 #include "scope/declare/fragment.h"
 
@@ -27,14 +27,11 @@
 #include "tokenizer/machines/regex/root.h"
 
 #include "token/root.h"
-#include "token/rbundle.h"
+/*#include "token/rbundle.h"*/
 
 #include "read_fragment.h"
 
-void read_fragment(
-	struct tokenizer* tokenizer,
-	struct scope* scope,
-	struct regex* token_skip)
+void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 {
 	ENTER;
 	
@@ -42,26 +39,13 @@ void read_fragment(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* const arena = scope_get_arena(scope);
-	char* name = arena_memdup(arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
-	
-	#else
-	
-	char* name = strdup(tokenizer->tokenchars.chars);
-	#endif
-	
-	dpvs(name);
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	read_token(tokenizer, colon_machine);
 	
 	read_token(tokenizer, regex_root_machine);
 	
-	#ifdef WITH_ARENAS
-	struct rbundle bun = read_root_token_expression(arena, tokenizer, scope, token_skip);
-	#else
-	struct rbundle bun = read_root_token_expression(tokenizer, scope, token_skip);
-	#endif
+	struct rbundle bun = read_root_token_expression(tokenizer, scope);
 	
 	if (bun.is_nfa)
 	{
@@ -69,13 +53,9 @@ void read_fragment(
 		
 		bun.nfa.end->is_accepting = true;
 		
-		#ifdef WITH_ARENAS
-		struct regex* dfa = regex_nfa_to_dfa(arena, nfa);
-		struct regex* simp = regex_simplify_dfa(arena, dfa);
-		#else
 		struct regex* dfa = regex_nfa_to_dfa(nfa);
+		
 		struct regex* simp = regex_simplify_dfa(dfa);
-		#endif
 		
 		scope_declare_fragment(scope, name, simp);
 		
@@ -94,9 +74,10 @@ void read_fragment(
 		exit(e_syntax_error);
 	}
 	
+	free_string(name);
+	
 	EXIT;
 }
-
 
 
 

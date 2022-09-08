@@ -5,8 +5,6 @@
 
 #include <avl/search.h>
 
-#include <arena/malloc.h>
-
 #include <avl/insert.h>
 
 #include "struct.h"
@@ -29,11 +27,7 @@ unsigned lstate_to_id(
 	}
 	else
 	{
-		#ifdef WITH_ARENAS
-		struct lstate_to_id_node* new = arena_malloc(this->arena, sizeof(*new));
-		#else
-		struct lstate_to_id_node* new = malloc(sizeof(*new));
-		#endif
+		struct lstate_to_id_node* new = smalloc(sizeof(*new));
 		
 		new->lstate = state;
 		new->id = retval = this->next++;
@@ -46,4 +40,3 @@ unsigned lstate_to_id(
 	EXIT;
 	return retval;
 }
-

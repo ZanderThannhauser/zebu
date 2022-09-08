@@ -11,9 +11,5 @@ struct dyntable
 	const char* name;
 	
 	unsigned width, height;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
 };
 

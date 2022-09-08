@@ -12,7 +12,9 @@
 
 #include "charset.h"
 
-struct charset* scope_lookup_charset(struct scope* this, const char* name)
+charset_t scope_lookup_charset(
+	struct scope* this,
+	const char* name)
 {
 	ENTER;
 	
@@ -26,10 +28,12 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 	{
 		dpv(layer);
 		
-		node = avl_search(layer->charsets, &name);
+		node = avl_search(layer->charsets, &(const char**){&name});
 		
 		if (!node)
+		{
 			layer = layer->prev;
+		}
 	}
 	
 	dpv(layer);
@@ -40,10 +44,10 @@ struct charset* scope_lookup_charset(struct scope* this, const char* name)
 		exit(1);
 	}
 	
-	struct named_charset* ntoken = node->item;
+	struct named_charset* ncs = node->item;
 	
 	EXIT;
-	return ntoken->charset;
+	return ncs->charset;
 }
 
 

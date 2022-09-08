@@ -15,11 +15,7 @@ void free_pragma_once(struct pragma_once* this)
 	
 	avl_free_tree(this->tree);
 	
-	#ifdef WITH_ARENAS
-	TODO;
-	#else
 	free(this);
-	#endif
 	
 	EXIT;
 }

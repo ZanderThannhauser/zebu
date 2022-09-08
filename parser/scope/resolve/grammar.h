@@ -1,4 +1,4 @@
 
-char* scope_resolve_grammar(
+struct string* scope_resolve_grammar(
 	struct scope* this,
-	char* full_name);
+	struct string* full_name);

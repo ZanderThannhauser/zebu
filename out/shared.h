@@ -1,4 +1,5 @@
 
+#if 0
 struct out_shared
 {
 	struct ystate_to_id* ytoi;
@@ -29,3 +30,4 @@ struct out_shared
 	// (tokenizer state) -> token
 	struct dynvector* accepts;
 };
+#endif

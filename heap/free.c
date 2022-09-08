@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <arena/dealloc.h>
-
 #include "struct.h"
 #include "free.h"
 

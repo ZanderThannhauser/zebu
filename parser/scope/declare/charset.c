@@ -13,26 +13,17 @@
 
 void scope_declare_charset(
 	struct scope* this,
-	char* name,
-	struct charset* charset)
+	struct string* name,
+	charset_t charset)
 {
 	ENTER;
 	
-	dpvs(name);
-	
-	dpv(charset);
-	
 	assert(this->layer);
 	
-	#ifdef WITH_ARENAS
-	avl_insert(this->layer->charsets, new_named_charset(this->layer->arena, name, charset));
-	#else
 	avl_insert(this->layer->charsets, new_named_charset(name, charset));
-	#endif
 	
 	EXIT;
 }
-
 
 
 

@@ -3,8 +3,6 @@
 
 #include <debug.h>
 
-#include <arena/realloc.h>
-
 #include "struct.h"
 #include "push.h"
 

@@ -1,75 +1,42 @@
 
-#include <stdlib.h>
-#include <string.h>
-
 #include <debug.h>
-
-#include <arena/malloc.h>
-#include <arena/realloc.h>
 
 #include "struct.h"
 #include "add_grammar_transition.h"
 
-struct gytransition* yacc_state_add_grammar_transition(
-	struct yacc_state* from,
-	char* grammar,
+void yacc_state_add_grammar_transition(
+	struct yacc_state* this,
+	struct string* grammar,
 	struct yacc_state* to)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* const arena = from->arena;
+	struct yacc_state_grammar_transition* transition = smalloc(sizeof(*transition));
 	
-	struct gytransition* gtransition = arena_malloc(arena, sizeof(*gtransition));
-	#else
-	struct gytransition* gtransition = malloc(sizeof(*gtransition));
-	#endif
+	transition->grammar = inc_string(grammar);
+	transition->to = to;
 	
-	gtransition->grammar = grammar;
-	gtransition->to = to;
-	
-	if (from->grammar_transitions.n + 1 > from->grammar_transitions.cap)
+	if (this->grammar_transitions.n == this->grammar_transitions.cap)
 	{
-		from->grammar_transitions.cap = from->grammar_transitions.cap * 2 ?: 1;
+		this->grammar_transitions.cap = this->grammar_transitions.cap << 1 ?: 1;
 		
-		dpv(from->grammar_transitions.cap);
+		dpv(this->grammar_transitions.cap);
 		
-		#ifdef WITH_ARENAS
-		from->grammar_transitions.data = arena_realloc(
-			arena, from->grammar_transitions.data,
-			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
-		#else
-		from->grammar_transitions.data = realloc(from->grammar_transitions.data,
-			sizeof(*from->grammar_transitions.data) * from->grammar_transitions.cap);
-		#endif
+		this->grammar_transitions.data = srealloc(
+			this->grammar_transitions.data,
+			sizeof(*this->grammar_transitions.data) * this->grammar_transitions.cap);
 	}
 	
-	size_t i;
-	struct gytransition** const gdata = from->grammar_transitions.data;
+	unsigned i;
+	struct yacc_state_grammar_transition** const data = this->grammar_transitions.data;
 	
-	for (i = from->grammar_transitions.n++ - 1;
-		0 + 1 <= i + 1 && strcmp(grammar, gdata[i]->grammar) < 0; i--)
+	for (i = this->grammar_transitions.n++ - 1;
+		0 + 1 <= i + 1 && compare_strings(grammar, data[i]->grammar) < 0; i--)
 	{
-		gdata[i + 1] = gdata[i];
+		data[i + 1] = data[i];
 	}
 	
-	gdata[i + 1] = gtransition;
+	data[i + 1] = transition;
 	
 	EXIT;
-	return gtransition;
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

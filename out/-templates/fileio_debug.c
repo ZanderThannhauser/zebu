@@ -1,12 +1,35 @@
 
 #define _GNU_SOURCE
 
+#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 #include <errno.h>
+
+{{SHIFT_TABLE}}
+
+{{REDUCE_TABLE}}
+
+{{GOTO_TABLE}}
+
+{{LEXER_TABLE}}
+
+{{LEXER_STARTS_TABLE}}
+
+{{LEXER_ACCEPTS_TABLE}}
+
+{{LEXER_EOF_TABLE}}
+
+{{PARSE_TREE_STRUCTS}}
+
+{{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
+
+{{PARSE_TREE_INC_FUNCTIONS}}
+
+{{PARSE_TREE_FREE_FUNCTIONS}}
 
 #define argv0 (program_invocation_name)
 
@@ -52,8 +75,6 @@ struct cmdln* process_cmdln(int argc, char* const* argv)
 	retval->input = input;
 	return retval;
 }
-
-struct lexer { unsigned char* data; unsigned n, cap; };
 
 static void escape(char *out, unsigned char in)
 {
@@ -101,155 +122,203 @@ static void escape(char *out, unsigned char in)
 	}
 }
 
-unsigned read_token(struct lexer* lexer, FILE* stream, unsigned state)
+void* parse(FILE* stream)
 {
-	void append(unsigned char c)
+	void* root;
+	struct { unsigned* data, n, cap; } yacc = {};
+	struct { void** data; unsigned n, cap; } data = {};
+	struct { unsigned char* data; unsigned n, cap; } lexer = {};
+	
+	void push_state(unsigned y)
 	{
-		while (lexer->n + 1 >= lexer->cap)
+		if (yacc.n + 1 >= yacc.cap)
 		{
-			lexer->cap = lexer->cap << 1 ?: 1;
-			printf("lexer->cap == %u\n", lexer->cap);
-			lexer->data = realloc(lexer->data, lexer->cap);
+			yacc.cap = yacc.cap << 1 ?: 1;
+			yacc.data = realloc(yacc.data, sizeof(*yacc.data) * yacc.cap);
 		}
-		
-		lexer->data[lexer->n++] = c;
+		yacc.data[yacc.n++] = y;
 	}
 	
-	unsigned i = 0;
-	
-	unsigned token = 0, fallback;
-	
-	printf("state = %u\n", state);
-	
-	while (1)
+	void push_data(void* d)
 	{
-		unsigned next, accept, c;
-		
-		if (i < lexer->n)
+		if (data.n + 1 >= data.cap)
 		{
-			c = lexer->data[i];
-			
-			char escaped[10];
-			
-			escape(escaped, c);
-			
-			printf("c = %s (0x%X)\n", escaped, c);
-			
-			next = 0
-				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
+			data.cap = data.cap << 1 ?: 1;
+			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
 		}
-		else if ((c = getc(stream)) != EOF)
-		{
-			append(c);
-			
-			char escaped[10];
-			
-			escape(escaped, c);
-			
-			printf("c = %s (0x%X)\n", escaped, c);
-			
-			next = 0
-				?: (state < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[state][c] : 0)
-				?: (state < N(<PREFIX>_defaults) ? <PREFIX>_defaults[state] : 0);
-		}
-		else
-		{
-			c = EOF;
-			
-			printf("c = <EOF>\n");
-			
-			next = state < N(<PREFIX>_EOFs) ? <PREFIX>_EOFs[state] : 0;
-		}
+		data.data[data.n++] = d;
+	}
+	
+	void ddprintf(const char* fmt, ...)
+	{
+		for (unsigned i = 0, n = yacc.n; i < n; i++)
+			printf("%u ", yacc.data[i]);
 		
-		accept = (state < N(<PREFIX>_accepts) ? <PREFIX>_accepts[state] : 0);
+		printf("| ");
 		
-		if (next)
+		va_list va;
+		va_start(va, fmt);
+		vprintf(fmt, va);
+		va_end(va);
+	}
+	
+	unsigned y, t, s, r;
+	void* td;
+	
+	void read_token(unsigned l)
+	{
+		void append(unsigned char c)
 		{
-			if (accept)
+			while (lexer.n + 1 >= lexer.cap)
 			{
-				state = next, token = accept, fallback = i++;
-				printf("state = %u\n", state);
+				lexer.cap = lexer.cap << 1 ?: 1;
+				ddprintf("lexer.cap == %u\n", lexer.cap);
+				lexer.data = realloc(lexer.data, lexer.cap);
 			}
-			else
-			{
-				state = next, i++;
-				printf("state = %u\n", state);
-			}
+			
+			lexer.data[lexer.n++] = c;
 		}
-		else if (accept)
-		{
-			lexer->n = 0;
-			if (c != EOF) lexer->data[lexer->n++] = c;
-			return accept;
-		}
-		else if (token)
-		{
-			memmove(lexer->data, lexer->data + fallback, lexer->n - fallback);
-			lexer->n -= fallback;
-			return token;
-		}
-		else
-		{
-			assert(!"168");
-		}
-	}
-}
-
-void parse(FILE* stream)
-{
-	struct { unsigned* data, n, cap; } stack = {};
-	struct lexer lexer = {};
-	
-	void push(unsigned y)
-	{
-		if (stack.n + 1 >= stack.cap)
-		{
-			stack.cap = stack.cap << 1 ?: 1;
-			stack.data = realloc(stack.data, sizeof(*stack.data) * stack.cap);
-		}
-		stack.data[stack.n++] = y;
-	}
-	
-	push(1);
-	
-	unsigned g = 0, t = read_token(&lexer, stream, 1);
-	
-	printf("t = %u (%s)\n", t, <PREFIX>_token_names[t]);
-	
-	while (stack.n)
-	{
-		unsigned y = stack.data[stack.n - 1], s, r;
 		
-		#if 0
+		unsigned i = 0, a, b, c;
+		
+		t = 0;
+		
+		ddprintf("l = %u\n", l);
+		
+		while (1)
 		{
-			for (unsigned i = 0, n = stack.n; i < n; i++)
+			if (i < lexer.n)
 			{
-				printf("%u", stack.data[i]);
+				c = lexer.data[i];
 				
-				if (i + 1 < n)
-					printf(" | ");
+				char escaped[10];
+				
+				escape(escaped, c);
+				
+				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				
+				assert(!"163");
+				#if 0
+				next = 0
+					?: (state < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[state][c] : 0)
+					?: (state < N({{PREFIX}}_defaults) ? {{PREFIX}}_defaults[state] : 0);
+				#endif
 			}
-			puts("");
-		}
-		#endif
-		
-		if (y < N(<PREFIX>_shifts) && t < N(*<PREFIX>_shifts) && (s = <PREFIX>_shifts[y][g ?: t]))
-		{
-			push(s);
-			if (g) g = 0;
+			else if ((c = getc(stream)) != EOF)
+			{
+				append(c);
+				
+				char escaped[10];
+				
+				escape(escaped, c);
+				
+				ddprintf("c = '%s' (0x%X)\n", escaped, c);
+				
+				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
+			}
 			else
 			{
-				t = read_token(&lexer, stream, <PREFIX>_starts[s]);
-				printf("t = %u (%s)\n", t, <PREFIX>_token_names[t]);
+				c = EOF;
+				
+				ddprintf("c = <EOF>\n");
+				
+				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
+			}
+			
+			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
+			
+			ddprintf("a = %u, b = %u\n", a, b);
+			
+			if (a)
+			{
+				if (b)
+				{
+					l = a, t = b, i++;
+					ddprintf("l = %u\n", l);
+				}
+				else
+				{
+					l = a, i++;
+					ddprintf("l = %u\n", l);
+				}
+			}
+			else if (b)
+			{
+				if (c != EOF)
+				{
+					lexer.n--, ungetc(c, stream);
+				}
+				
+				ddprintf("lexer.n == %u\n", lexer.n);
+				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
+				
+				struct token* token = malloc(sizeof(*token));
+				token->refcount = 1;
+				token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
+				token->len = lexer.n;
+				t = b, td = token, lexer.n = 0;
+				break;
+			}
+			else if (t)
+			{
+				assert(!"235");
+				#if 0
+				memmove(lexer.data, lexer.data + fallback, lexer.n - fallback);
+				lexer.n -= fallback;
+				return token;
+				#endif
+			}
+			else
+			{
+				assert(!"168");
 			}
 		}
-		else if (y < N(<PREFIX>_reduces) && t < N(*<PREFIX>_reduces) && (r = <PREFIX>_reduces[y][t]))
+	}
+	
+	push_state(1), y = 1, read_token(1);
+	
+	ddprintf("y = %u, t = %u\n", y, t);
+	
+	while (yacc.n)
+	{
+		if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 		{
-			if (r == start_grammar_id)
-				stack.n = 0;
+			ddprintf("s == %u\n", s);
+			
+			y = s, push_state(y), push_data(td);
+			
+			read_token({{PREFIX}}_lexer_starts[y]);
+			
+			ddprintf("t = %u\n", t);
+		}
+		else if (y < N( {{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
+		{
+			ddprintf("r == %u\n", r);
+			
+			unsigned g;
+			void* d;
+			
+			{{REDUCTIONRULE_SWITCH}}
+			
+			if (g == {{START_GRAMMAR_ID}})
+			{
+				free_token(td);
+				yacc.n = 0, root = d;
+			}
 			else
-				stack.n -= <PREFIX>_popcounts[y][t], g = r;
+			{
+				y = yacc.data[yacc.n - 1];
+				
+				ddprintf("y = %u\n", y);
+				
+				assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
+				
+				s = {{PREFIX}}_gotos[y][g];
+				
+				ddprintf("s = %u\n", s);
+				
+				y = s, push_state(y), push_data(d);
+			}
 		}
 		else
 		{
@@ -257,8 +326,11 @@ void parse(FILE* stream)
 		}
 	}
 	
-	free(stack.data);
+	free(yacc.data);
+	free(data.data);
 	free(lexer.data);
+	
+	return root;
 }
 
 int main(int argc, char* const* argv)
@@ -273,7 +345,11 @@ int main(int argc, char* const* argv)
 		exit(1);
 	}
 	
-	parse(input);
+	void* root = parse(input);
+	
+	print___start___ptree(NULL, p_root, "start", root);
+	
+	free___start___ptree(root);
 	
 	fclose(input);
 	

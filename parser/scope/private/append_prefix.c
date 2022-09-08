@@ -5,8 +5,6 @@
 
 #include <debug.h>
 
-#include <arena/realloc.h>
-
 #include "../struct.h"
 
 #include "append_prefix.h"
@@ -25,11 +23,7 @@ static void append_prefix(struct scope* this, const char* appendme)
 		
 		dpv(this->prefix.cap);
 		
-		#ifdef WITH_ARENAS
-		this->prefix.chars = arena_realloc(this->arena, this->prefix.chars, this->prefix.cap);
-		#else
-		this->prefix.chars = realloc(this->prefix.chars, this->prefix.cap);
-		#endif
+		this->prefix.chars = srealloc(this->prefix.chars, this->prefix.cap);
 	}
 	
 	memcpy(this->prefix.chars + this->prefix.n, appendme, len);
@@ -45,11 +39,20 @@ void private_scope_append_prefix(struct scope* this, const char* appendme)
 	
 	if (this->prefix.n)
 	{
-		append_prefix(this, ".");
+		append_prefix(this, "$");
 	}
 	
 	append_prefix(this, appendme);
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
 

@@ -1,6 +1,5 @@
-
-void yacc_stateinfo_add(
-	struct yacc_stateinfo* this,
-	struct gegex* state,
-	const char* grammar,
-	struct tokenset* lookaheads);
+struct stateinfo_node* stateinfo_add(
+	struct stateinfo* this,
+	struct trie* trie,
+	struct unsignedset* lookahead // you're giving this to me
+);

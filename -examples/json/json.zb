@@ -1,17 +1,36 @@
 
-%start: value;
+%start: value #value;
 
 %skip: ' ';
 
 `string`: '\"' ['a' - 'z']+ '\"';
 
+keyvalue: `string` #key ":" value #value;
+
 value
-	: "true"
-	| "false"
-	| `['0' - '9']+`
-	| `string`
-	| "[" value ("," value)* "]"
-	| "{" `string` ":" value ("," `string` ":" value)* "}";
+	: "true"  #boolean
+	| "false" #boolean
+	| `['0' - '9']+` #number
+	| `string` #string
+	| "[" value #elements[] ("," value #elements[])* "]"
+	| ("{" keyvalue #dict[] ("," keyvalue #dict[])* "}")
+	;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

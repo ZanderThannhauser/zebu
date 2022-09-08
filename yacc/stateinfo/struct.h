@@ -1,9 +1,7 @@
 
-struct yacc_stateinfo
+struct stateinfo
 {
 	struct avl_tree_t* tree;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
+	unsigned refcount;
 };
+

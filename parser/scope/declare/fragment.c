@@ -3,14 +3,9 @@
 
 #include <debug.h>
 
-/*#include <memory/sstrndup.h>*/
 #include <avl/insert.h>
 
-/*#include "../private/append_prefix.h"*/
-
-#include <named/token/new.h>
-
-/*#include <named/name/new.h>*/
+#include <named/regex/new.h>
 
 #include "../struct.h"
 
@@ -18,7 +13,7 @@
 
 void scope_declare_fragment(
 	struct scope* this,
-	char* name,
+	struct string* name,
 	struct regex* token)
 {
 	ENTER;
@@ -28,15 +23,10 @@ void scope_declare_fragment(
 	
 	assert(this->layer);
 	
-	#ifdef WITH_ARENAS
-	avl_insert(this->layer->fragments, new_named_token(this->layer->arena, name, token));
-	#else
-	avl_insert(this->layer->fragments, new_named_token(name, token));
-	#endif
+	avl_insert(this->layer->fragments, new_named_regex(name, token));
 	
 	EXIT;
 }
-
 
 
 

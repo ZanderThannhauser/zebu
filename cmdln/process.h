@@ -1,6 +1,2 @@
 
-struct cmdln* cmdln_process(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	int argc, char* const* argv);
+void cmdln_process(int argc, char* const* argv);

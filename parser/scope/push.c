@@ -6,18 +6,18 @@
 
 #include <avl/alloc_tree.h>
 
-#include <arena/malloc.h>
+/*#include <arena/malloc.h>*/
 
 #include <named/charset/compare.h>
 #include <named/charset/free.h>
 
-#include <named/token/compare.h>
-#include <named/token/free.h>
+#include <named/regex/compare.h>
+#include <named/regex/free.h>
 
-#include <named/gbundle/compare.h>
-#include <named/gbundle/free.h>
+#include <named/gegex/compare.h>
+#include <named/gegex/free.h>
 
-#include <arena/child/new.h>
+/*#include <arena/child/new.h>*/
 
 #include "private/append_prefix.h"
 
@@ -28,30 +28,11 @@ void scope_push(struct scope* this)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct scope_layer* new = arena_malloc(this->arena, sizeof(*new));
-	#else
-	struct scope_layer* new = malloc(sizeof(*new));
-	#endif
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena = new_child_arena(this->arena);
-	#endif
-	
-	#ifdef WITH_ARENAS
-	new->arena = arena;
-	
-	new->charsets       = avl_alloc_tree(arena, compare_named_charsets, free_named_charset);
-	new->fragments      = avl_alloc_tree(arena, compare_named_tokens,   free_named_token);
-	new->inline_grammar = avl_alloc_tree(arena, compare_named_gbundles, free_named_gbundle);
-	
-	#else
+	struct scope_layer* new = smalloc(sizeof(*new));
 	
 	new->charsets       = avl_alloc_tree(compare_named_charsets, free_named_charset);
-	new->fragments      = avl_alloc_tree(compare_named_tokens,   free_named_token);
-	new->inline_grammar = avl_alloc_tree(compare_named_gbundles, free_named_gbundle);
-	
-	#endif
+	new->fragments      = avl_alloc_tree(compare_named_regexes,  free_named_regex);
+	new->inline_grammar = avl_alloc_tree(compare_named_gegexes,  free_named_gegex);
 	
 	new->sublayer_counter = 0;
 	
@@ -63,7 +44,7 @@ void scope_push(struct scope* this)
 	{
 		char number[30];
 		
-		sprintf(number, "%u", this->layer->sublayer_counter++);
+		sprintf(number, "__%u", this->layer->sublayer_counter++);
 		
 		private_scope_append_prefix(this, number);
 	}
@@ -74,6 +55,7 @@ void scope_push(struct scope* this)
 	
 	EXIT;
 }
+
 
 
 

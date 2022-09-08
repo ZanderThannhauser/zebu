@@ -3,43 +3,100 @@
 
 #include <debug.h>
 
-#include <tree/of_lstates/add.h>
+#include <lex/state/struct.h>
 
-#include "../state/struct.h"
+#include <set/lexstate/new.h>
+#include <set/lexstate/add.h>
+
+#include <avl/foreach.h>
+
+#ifdef VERBOSE
+#include <quack/len.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#include "../struct.h"
+
+#include "../build_tokenizer/node/struct.h"
 
 #include "build_universe.h"
 
-void minimize_lexer_build_universe(
-	struct lstatetree* universe,
-	struct lex_state* node)
+struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 {
 	ENTER;
 	
-	dpv(node);
+	struct lexstateset* universe = new_lexstateset();
 	
-	if (lstatetree_add(universe, node))
+	struct quack* todo = new_quack();
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler2(int _)
 	{
-		size_t i, n;
+		char buffer[1000] = {};
 		
-		for (i = 0, n = node->transitions.n; i < n; i++)
-		{
-			minimize_lexer_build_universe(universe, node->transitions.data[i]->to);
-		}
+		unsigned total = completed + quack_len(todo);
 		
-		if (node->default_transition_to)
-		{
-			minimize_lexer_build_universe(universe, node->default_transition_to);
-		}
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: minimize tokenizer (build universe): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
 		
-		if (node->EOF_transition_to)
+		if (write(1, buffer, len) != len)
 		{
-			minimize_lexer_build_universe(universe, node->EOF_transition_to);
+			abort();
 		}
 	}
 	
+	signal(SIGALRM, handler2);
+	#endif
+	
+	avl_tree_foreach(this->tokenizer_cache, ({
+		void runme(void* ptr)
+		{
+			struct build_tokenizer_node* ele = ptr;
+			
+			lexstateset_add(universe, ele->start);
+			
+			quack_append(todo, ele->start);
+		}
+		runme;
+	}));
+	
+	while (quack_len(todo))
+	{
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
+		struct lex_state* state = quack_pop(todo);
+		
+		for (unsigned i = 0, n = 256; i < n; i++)
+		{
+			struct lex_state* const to = state->transitions[i];
+			
+			if (to && lexstateset_add(universe, to))
+				quack_append(todo, to);
+		}
+		
+		if (state->EOF_transition_to)
+		{
+			struct lex_state* const to = state->EOF_transition_to;
+			
+			if (lexstateset_add(universe, to))
+				quack_append(todo, to);
+		}
+	}
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
+	
+	free_quack(todo);
+	
 	EXIT;
+	return universe;
 }
-
 
 
 

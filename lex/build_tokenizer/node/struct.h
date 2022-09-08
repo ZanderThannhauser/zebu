@@ -1,10 +1,10 @@
 
 struct build_tokenizer_node
 {
-	struct tokenset* given; // free me, must be first
+	struct unsignedset* given; // "owned"
 	
-	struct tokensetset* matches; // free me
+	struct unsignedsetset* matches; // "owned"
 	
-	struct lex_state* start; // don't free me; freeing yacc_states frees these
+	struct lex_state* start; // yacc_state will free this
 };
 

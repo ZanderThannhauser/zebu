@@ -1,4 +1,5 @@
 
-#ifdef DOTOUT
+#if DOTOUT
 unsigned frame_counter = 0;
 #endif
+

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 extern const unsigned zebu_shifts[1500][169];
 extern const unsigned zebu_reduces[1501][150];
 extern const unsigned zebu_popcounts[1501][150];
@@ -12,3 +13,5 @@ extern const char* zebu_token_names[171];
 
 int main();
 
+=======
+>>>>>>> dev

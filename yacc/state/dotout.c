@@ -1,159 +1,23 @@
 
+#ifdef DOTOUT
+
 #include <debug.h>
+
+#include <set/unsigned/to_string.h>
+
+#include <set/yaccstate/new.h>
+#include <set/yaccstate/add.h>
+#include <set/yaccstate/free.h>
 
 #include <misc/frame_counter.h>
 
-/*#include <set/of_tokens/struct.h>*/
-#include <set/of_tokens/compare.h>
-
-#include <misc/phase_counters.h>
-
-/*#include <set/of_tokens/to_string.h>*/
-
-#include <lex/state/struct.h>
-#include <lex/state/subdotout.h>
+#include <yacc/reductioninfo/to_string.h>
 
 #include "struct.h"
 #include "dotout.h"
 
-#ifdef DOTOUT
-
-static void helper(FILE* out, struct yacc_state* state)
-{
-	ENTER;
-	
-	if (state->phase != yacc_phase_counter)
-	{
-		size_t i, n;
-		
-		state->phase = yacc_phase_counter;
-		
-		assert(state->tokenizer_start);
-		
-		lex_state_subdotout(out, state, state->tokenizer_start);
-		
-		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
-		{
-			struct ytransition* t = state->transitions.data[i];
-			
-			helper(out, t->to);
-			
-			void subhelper(struct lex_state* ls)
-			{
-				unsigned i, n;
-				
-				if (ls->phase != lex_phase_counter)
-				{
-					ls->phase = lex_phase_counter;
-					
-					if (ls->accepting && !compare_tokensets(t->value, ls->accepting))
-					{
-						fprintf(out, ""
-							"\"%p-%p\" -> \"%p-%p\" [" "\n"
-								"\t" "label = \"\"" "\n"
-								"\t" "color = \"black:white:black\"" "\n"
-							"]" "\n"
-						"", state, ls, t->to, t->to->tokenizer_start);
-					}
-					
-					// normal transitions:
-					for (i = 0, n = ls->transitions.n; i < n; i++)
-					{
-						struct ltransition* transition = ls->transitions.data[i];
-						subhelper(transition->to);
-					}
-					
-					// default transition?:
-					if (ls->default_transition_to)
-					{
-						subhelper(ls->default_transition_to);
-					}
-					
-					if (ls->EOF_transition_to)
-					{
-						subhelper(ls->EOF_transition_to);
-					}
-				}
-			}
-			
-			lex_phase_counter++, subhelper(state->tokenizer_start);
-		}
-		
-		// reduction transitions:
-		for (i = 0, n = state->reduction_transitions.n; i < n; i++)
-		{
-			struct rytransition* t = state->reduction_transitions.data[i];
-			
-			fprintf(out, ""
-				"\"%p-%p\" [" "\n"
-					"\t" "shape = box;" "\n"
-					"\t" "label = \"%s\";" "\n"
-				"]" "\n"
-			"", state, t->reduce_as, t->reduce_as);
-			
-			void subhelper(struct lex_state* ls)
-			{
-				unsigned i, n;
-				
-				if (ls->phase != lex_phase_counter)
-				{
-					ls->phase = lex_phase_counter;
-					
-					if (ls->accepting && !compare_tokensets(t->value, ls->accepting))
-					{
-						fprintf(out, ""
-							"\"%p-%p\" -> \"%p-%p\" [" "\n"
-								"\t" "label = \"popcount: %u\"" "\n"
-								"\t" "style = \"dashed\"" "\n"
-							"]" "\n"
-						"", state, ls, state, t->reduce_as, t->popcount);
-					}
-					
-					// normal transitions:
-					for (i = 0, n = ls->transitions.n; i < n; i++)
-					{
-						struct ltransition* transition = ls->transitions.data[i];
-						subhelper(transition->to);
-					}
-					
-					// default transition?:
-					if (ls->default_transition_to)
-					{
-						subhelper(ls->default_transition_to);
-					}
-					
-					if (ls->EOF_transition_to)
-					{
-						subhelper(ls->EOF_transition_to);
-					}
-				}
-			}
-			
-			lex_phase_counter++, subhelper(state->tokenizer_start);
-		}
-		
-		// grammar transitions:
-		for (i = 0, n = state->grammar_transitions.n; i < n; i++)
-		{
-			struct gytransition* t = state->grammar_transitions.data[i];
-			
-			helper(out, t->to);
-			
-			fprintf(out, ""
-				"\"%p-%p\" -> \"%p-%p\" [" "\n"
-					"\t" "label = \"%s\"" "\n"
-					"\t" "color = \"black:white:black\"" "\n"
-				"]" "\n"
-			"", state, state->tokenizer_start, t->to, t->to->tokenizer_start, t->grammar);
-			
-		}
-	}
-	
-	EXIT;
-}
-
-void yacc_state_dotout(struct yacc_state* state)
+void yacc_state_dotout(
+	struct yacc_state* start)
 {
 	ENTER;
 	
@@ -161,32 +25,126 @@ void yacc_state_dotout(struct yacc_state* state)
 	
 	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
 	
-	dpvs(path);
+	FILE* stream = fopen(path, "w");
 	
-	FILE* out = fopen(path, "w");
+	fprintf(stream, "digraph {\n");
 	
-	if (!out)
+	fprintf(stream, "rankdir = LR\n");
+	
+	struct yaccstateset* queued = new_yaccstateset();
+	
+	struct quack* todo = new_quack();
+	
+	quack_append(todo, start);
+	
+	unsigned reduce_counter = 0;
+	
+	while (quack_len(todo))
 	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
-		abort();
+		struct yacc_state* const state = quack_pop(todo);
+		
+		fprintf(stream, ""
+			"\"%p\" [" "\n"
+				"label = \"\"" "\n"
+				"shape = circle" "\n"
+			"]" "\n"
+		"", state);
+		
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			struct yacc_state_transition* const ele = state->transitions.data[i];
+			
+			char* label = unsignedset_to_string(ele->on);
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"label = \"%s\"" "\n"
+					"color = \"black:black\"" "\n"
+				"]" "\n"
+			"", state, ele->to, label);
+			
+			free(label);
+			
+			if (yaccstateset_add(queued, ele->to))
+				quack_append(todo, ele->to);
+		}
+		
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		{
+			struct yacc_state_grammar_transition* const ele = state->grammar_transitions.data[i];
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"label = \"%s\"" "\n"
+					"color = \"black:black\"" "\n"
+				"]" "\n"
+			"", state, ele->to, ele->grammar->chars);
+			
+			if (yaccstateset_add(queued, ele->to))
+				quack_append(todo, ele->to);
+		}
+		
+		for (unsigned i = 0, n = state->reduce_transitions.n; i < n; i++)
+		{
+			struct yacc_state_reduce_transition* const ele = state->reduce_transitions.data[i];
+			
+			char* label = unsignedset_to_string(ele->on);
+			
+			char* rinfo = reductioninfo_to_string(ele->reductioninfo);
+			
+			fprintf(stream, ""
+				"\"%p\" -> \"reduce_%u\" [" "\n"
+					"label = \"%s\"" "\n"
+					"style = dashed" "\n"
+				"]" "\n"
+			"", state, reduce_counter, label);
+			
+			fprintf(stream, ""
+				"\"reduce_%u\" [" "\n"
+					"label = \"{reduce_as = %s} | %s\"" "\n"
+					"shape = record" "\n"
+				"]" "\n"
+			"", reduce_counter, ele->reduce_as->chars, rinfo ?: "");
+			
+			reduce_counter++;
+			
+			free(label);
+			free(rinfo);
+		}
 	}
 	
-	fprintf(out, "digraph {" "\n");
+	free_quack(todo);
 	
-	fprintf(out, "\t" "rankdir = LR;" "\n");
+	free_yaccstateset(queued);
 	
-	fprintf(out, "\"%p-%p\" [ style = bold; ];" "\n", state, state->tokenizer_start);
+	fprintf(stream, "}\n");
 	
-	yacc_phase_counter++;
-	
-	helper(out, state);
-	
-	fprintf(out, "}" "\n");
-	
-	if (out)
-		fclose(out);
+	fclose(stream);
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif

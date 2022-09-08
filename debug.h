@@ -26,70 +26,63 @@
 	#include <time.h>
 	#include <pwd.h>
 	
-	#include <defines/argv0.h>
+	struct lex;
+	struct regex;
+	struct gegex;
+	struct options;
+	struct scope;
+	struct pragma_once;
+	struct unsignedset;
+	struct stringset;
+	struct tokenizer;
+	struct reductioninfo;
+	struct stateinfo;
+	struct regex_transition;
+	struct regexset;
+	struct dlink;
+	struct trie;
+	struct charset;
+	struct unsignedcharset;
+	struct gegexset;
+	struct structinfo;
+	struct lex_state;
+	struct unsignedsetset;
+	struct lexstateset;
+	struct yacc_state;
+	struct yaccstateset;
+	struct lex_pair;
+	struct reducerule_to_id;
+	struct string_to_id;
+	struct tags;
 	
 	#include <enums/error.h>
 	
 	#include <macros/strequals.h>
 	
-	#include <arena/memdup.h>
-	#include <arena/malloc.h>
-	#include <arena/calloc.h>
-	#include <arena/realloc.h>
-	#include <arena/dealloc.h>
-	#include <arena/strdup.h>
-	#include <arena/asprintf.h>
-	#include <arena/free.h>
+	#include <memory/smalloc.h>
+	#include <memory/srealloc.h>
+	
+	#include <string/struct.h>
+	#include <string/new.h>
+	#include <string/are_equal.h>
+	#include <string/compare.h>
+	#include <string/inc.h>
+	#include <string/free.h>
 	
 	#include <avl/alloc_tree.h>
 	#include <avl/insert.h>
 	#include <avl/search.h>
+	#include <avl/delete.h>
+	#include <avl/free_nodes.h>
 	#include <avl/free_tree.h>
 	
-	struct task;
-	struct heap;
-	struct options;
-	struct ptrset;
-	struct strset;
-	struct lex_state_ll;
-	struct tokensetset;
-	struct dyntable;
-	struct dynvector;
-	struct lstatetree;
-	struct ystatetree;
-	struct oldavl_tree_t;
-	struct oldregextree;
-	struct pragma_once;
-	struct charset;
-	struct ystate_to_id;
-	struct tokenset;
-	struct scope;
-	struct gegexset;
-	struct regexset;
-	struct lex_state;
-	struct lex;
-	struct gegextree;
-	struct tokenset_to_id;
-	struct grammar_to_id;
-	struct out_shared;
-	struct lstate_to_id;
-	struct tokenizer;
-	struct yacc_shared;
-	struct regex;
-	struct memory_arena;
-	struct avl_node_t;
-	struct avl_tree_t;
-	struct regex_ll;
-	struct gegex;
-	struct lookahead_deps;
-	struct yacc_stateinfo;
-	struct yacc_state;
-	struct pair;
-	struct memory_arena;
-	struct simplify_task;
-	struct set;
-	struct mmap_memory_arena;
-	struct regextree;
+	#include <quack/new.h>
+	#include <quack/len.h>
+	#include <quack/append.h>
+	#include <quack/pop.h>
+	#include <quack/push.h>
+	#include <quack/foreach.h>
+	#include <quack/free.h>
 	
 #endif
 
@@ -97,7 +90,9 @@
 	extern __thread int debug_depth;
 	
 	extern void real_dpvc(const char* e, char ch);
+	
 	extern void real_dpvsn(const char* e, const char* s, size_t n);
+	
 	extern void real_dpvwsn(const char* e, const wchar_t* s, size_t n);
 	
 	#define TODO \
@@ -176,6 +171,7 @@
 		_Generic(str, \
 			char*:          real_dpvsn (#str, ( char  *) (str), len), \
 			const char*:    real_dpvsn (#str, ( char  *) (str), len), \
+			struct string*: real_dpvsn(#str, ((struct string*) (str))->chars, len), \
 			wchar_t*:       real_dpvwsn(#str, (wchar_t*) (str), len), \
 			const wchar_t*: real_dpvwsn(#str, (wchar_t*) (str), len), \
 			default:        real_dpvsn (#str, (   void*) (str), len)); \

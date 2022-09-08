@@ -1,6 +1,4 @@
 
-struct yacc_stateinfo;
-
-int compare_yacc_stateinfos(
-	const struct yacc_stateinfo* a,
-	const struct yacc_stateinfo* b);
+int compare_stateinfo(
+	const struct stateinfo *a,
+	const struct stateinfo *b);

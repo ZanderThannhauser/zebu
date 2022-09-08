@@ -1,23 +1,23 @@
 
-%start: passwd_file;
+%start: passwd_file #root;
 
-passwd_file: passwd_record newline | passwd_file passwd_record newline ;
+passwd_file: passwd_record #r newline | passwd_file #f passwd_record #r newline ;
 
-passwd_record: name ":" password ":" uid ":" gid ":" gecos ":" directory ":" shell ;
+passwd_record: name #n ":" password #p ":" uid #u ":" gid #g ":" gecos #e ":" directory #d ":" shell #s;
 
-name: `['a'-'z', 'A'-'Z', '_'] ['-', 'a'-'z', 'A'-'Z', '0'-'9', '_']{0, 31}`;
+name: `['a'-'z', 'A'-'Z', '_'] ['-', 'a'-'z', 'A'-'Z', '0'-'9', '_']{0, 31}` #name;
 
-password: "*" | "x" ;
+password: "*" #password | "x" #password;
 
-uid: `['0'-'9']+`;
+uid: `['0'-'9']+` #uid;
 
-gid: `['0'-'9']+`;
+gid: `['0'-'9']+` #gid;
 
-gecos: `[~(':', '\n')]*`;
+gecos: `[~(':', '\n')]*` #gecos;
 
-directory: `[~(':', '\n')]+`;
+directory: `[~(':', '\n')]+` #directory;
 
-shell: `[~(':', '\n')]*` ;
+shell: `[~(':', '\n')]*` #shell;
 
 newline: "\n";
 

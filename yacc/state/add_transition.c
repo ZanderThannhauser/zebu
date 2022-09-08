@@ -1,55 +1,40 @@
 
-#include <stdlib.h>
 #include <debug.h>
 
-#include <arena/malloc.h>
-#include <arena/realloc.h>
-
-#include <set/of_tokens/compare.h>
+#include <set/unsigned/compare.h>
+#include <set/unsigned/inc.h>
 
 #include "struct.h"
 #include "add_transition.h"
 
-struct ytransition* yacc_state_add_transition(
-	struct yacc_state* from,
-	const struct tokenset* value,
+void yacc_state_add_transition(
+	struct yacc_state* this,
+	struct unsignedset* on,
 	struct yacc_state* to)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* const arena = from->arena;
+	struct yacc_state_transition* transition = smalloc(sizeof(*transition));
 	
-	struct ytransition* transition = arena_malloc(arena, sizeof(*transition));
-	#else
-	struct ytransition* transition = malloc(sizeof(*transition));
-	#endif
-	
-	transition->value = value;
+	transition->on = inc_unsignedset(on);
 	transition->to = to;
 	
-	if (from->transitions.n + 1 >= from->transitions.cap)
+	if (this->transitions.n == this->transitions.cap)
 	{
-		from->transitions.cap = from->transitions.cap * 2 ?: 1;
+		this->transitions.cap = this->transitions.cap << 1 ?: 1;
 		
-		dpv(from->transitions.cap);
+		dpv(this->transitions.cap);
 		
-		#ifdef WITH_ARENAS
-		from->transitions.data = arena_realloc(
-			arena, from->transitions.data,
-			sizeof(*from->transitions.data) * from->transitions.cap);
-		#else
-		from->transitions.data = realloc(
-			from->transitions.data,
-			sizeof(*from->transitions.data) * from->transitions.cap);
-		#endif
+		this->transitions.data = srealloc(
+			this->transitions.data,
+			sizeof(*this->transitions.data) * this->transitions.cap);
 	}
 	
-	size_t i;
-	struct ytransition** const data = from->transitions.data;
+	unsigned i;
+	struct yacc_state_transition** const data = this->transitions.data;
 	
-	for (i = from->transitions.n++ - 1;
-		0 + 1 <= i + 1 && compare_tokensets(value, data[i]->value) < 0; i--)
+	for (i = this->transitions.n++ - 1;
+		0 + 1 <= i + 1 && compare_unsignedsets(on, data[i]->on) < 0; i--)
 	{
 		data[i + 1] = data[i];
 	}
@@ -57,18 +42,5 @@ struct ytransition* yacc_state_add_transition(
 	data[i + 1] = transition;
 	
 	EXIT;
-	return transition;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 

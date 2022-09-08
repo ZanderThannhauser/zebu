@@ -11,9 +11,7 @@ struct tokenizer* new_tokenizer(int fd)
 {
 	ENTER;
 	
-	struct tokenizer* this = malloc(sizeof(*this));
-	
-	assert(this);
+	struct tokenizer* this = smalloc(sizeof(*this));
 	
 	this->fd = fd;
 	

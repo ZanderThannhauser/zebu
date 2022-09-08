@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const unsigned zebu_shifts[35][16] = {
 	[1][2] = 3,
 	[1][3] = 2,
@@ -187,29 +188,31 @@ const unsigned zebu_popcounts[37][11] = {
 	[36][8] = 1,
 };
 const unsigned zebu_lexer[16][58] = {
+=======
+#include "math.h"
+
+const unsigned zebu_lexer[10][58] = {
+>>>>>>> dev
 	[1][32] = 1,
-	[1][40] = 2,
-	[1][48] = 3,
-	[1][49] = 3,
-	[1][50] = 3,
-	[1][51] = 3,
-	[1][52] = 3,
-	[1][53] = 3,
-	[1][54] = 3,
-	[1][55] = 3,
-	[1][56] = 3,
-	[1][57] = 3,
-	[3][48] = 3,
-	[3][49] = 3,
-	[3][50] = 3,
-	[3][51] = 3,
-	[3][52] = 3,
-	[3][53] = 3,
-	[3][54] = 3,
-	[3][55] = 3,
-	[3][56] = 3,
-	[3][57] = 3,
+	[1][40] = 8,
+	[1][48] = 9,
+	[1][49] = 9,
+	[1][50] = 9,
+	[1][51] = 9,
+	[1][52] = 9,
+	[1][53] = 9,
+	[1][54] = 9,
+	[1][55] = 9,
+	[1][56] = 9,
+	[1][57] = 9,
+	[2][32] = 2,
+	[2][42] = 10,
+	[2][43] = 11,
+	[2][45] = 12,
+	[2][47] = 13,
+	[3][32] = 3,
 	[4][32] = 4,
+<<<<<<< HEAD
 	[4][42] = 5,
 	[4][43] = 6,
 	[4][45] = 7,
@@ -230,11 +233,40 @@ const unsigned zebu_lexer[16][58] = {
 	[15][32] = 15,
 	[15][43] = 6,
 	[15][45] = 7,
+=======
+	[4][43] = 11,
+	[4][45] = 12,
+	[5][32] = 5,
+	[5][41] = 15,
+	[5][42] = 10,
+	[5][43] = 11,
+	[5][45] = 12,
+	[5][47] = 13,
+	[6][32] = 6,
+	[6][41] = 15,
+	[7][32] = 7,
+	[7][41] = 15,
+	[7][43] = 11,
+	[7][45] = 12,
+	[9][48] = 9,
+	[9][49] = 9,
+	[9][50] = 9,
+	[9][51] = 9,
+	[9][52] = 9,
+	[9][53] = 9,
+	[9][54] = 9,
+	[9][55] = 9,
+	[9][56] = 9,
+	[9][57] = 9,
+>>>>>>> dev
 };
-const unsigned zebu_starts[37] = {
+
+
+const unsigned zebu_lexer_starts[33] = {
 	[1] = 1,
-	[2] = 4,
+	[2] = 2,
 	[3] = 1,
+<<<<<<< HEAD
 	[4] = 10,
 	[5] = 1,
 	[6] = 12,
@@ -296,333 +328,227 @@ const char* zebu_grammar_names[18] = {
 	[14] = "mul",
 	[12] = "root",
 };
-
-#include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-
-struct zebu_state
-{
-	struct { unsigned* data, n, cap; } y;
-	struct { unsigned char* data, n, cap; } l;
-	unsigned lstate, t;
+=======
+	[4] = 3,
+	[5] = 2,
+	[6] = 4,
+	[7] = 3,
+	[8] = 5,
+	[9] = 1,
+	[10] = 6,
+	[11] = 5,
+	[12] = 7,
+	[13] = 6,
+	[14] = 1,
+	[15] = 1,
+	[16] = 1,
+	[17] = 1,
+	[18] = 6,
+	[19] = 1,
+	[20] = 1,
+	[21] = 1,
+	[22] = 1,
+	[23] = 2,
+	[24] = 4,
+	[25] = 4,
+	[26] = 3,
+	[27] = 3,
+	[28] = 5,
+	[29] = 7,
+	[30] = 7,
+	[31] = 6,
+	[32] = 6,
 };
 
-static void ddprintf(struct zebu_state* this, const char* fmt, ...)
-{
-	for (unsigned i = 0, n = this->y.n; i < n; i++)
-		printf("%u ", this->y.data[i]);
+
+const unsigned zebu_lexer_accepts[16] = {
+	[8] = 3,
+	[9] = 2,
+	[10] = 4,
+	[11] = 6,
+	[12] = 7,
+	[13] = 5,
+	[14] = 8,
+	[15] = 9,
+};
+>>>>>>> dev
+
+
+const unsigned zebu_lexer_EOFs[5] = {
+	[2] = 14,
+	[3] = 14,
+	[4] = 14,
+};
+
+
+const unsigned zebu_shifts[23][10] = {
+	[1][2] = 2,
+	[1][3] = 3,
+	[3][2] = 8,
+	[3][3] = 9,
+	[5][4] = 14,
+	[5][5] = 15,
+	[6][6] = 16,
+	[6][7] = 17,
+	[9][2] = 8,
+	[9][3] = 9,
+	[11][4] = 19,
+	[11][5] = 20,
+	[12][6] = 21,
+	[12][7] = 22,
+	[13][9] = 23,
+	[14][2] = 2,
+	[14][3] = 3,
+	[15][2] = 2,
+	[15][3] = 3,
+	[16][2] = 2,
+	[16][3] = 3,
+	[17][2] = 2,
+	[17][3] = 3,
+	[18][9] = 28,
+	[19][2] = 8,
+	[19][3] = 9,
+	[20][2] = 8,
+	[20][3] = 9,
+	[21][2] = 8,
+	[21][3] = 9,
+	[22][2] = 8,
+	[22][3] = 9,
+};
+
+
+const unsigned zebu_reduces[33][10] = {
+	[2][4] = 1,
+	[2][5] = 1,
+	[2][6] = 1,
+	[2][7] = 1,
+	[2][8] = 1,
+	[4][8] = 2,
+	[5][6] = 3,
+	[5][7] = 3,
+	[5][8] = 3,
+	[6][8] = 4,
+	[7][8] = 5,
+	[8][4] = 1,
+	[8][5] = 1,
+	[8][6] = 1,
+	[8][7] = 1,
+	[8][9] = 1,
+	[10][9] = 2,
+	[11][6] = 3,
+	[11][7] = 3,
+	[11][9] = 3,
+	[12][9] = 4,
+	[23][4] = 6,
+	[23][5] = 6,
+	[23][6] = 6,
+	[23][7] = 6,
+	[23][8] = 6,
+	[24][6] = 7,
+	[24][7] = 7,
+	[24][8] = 7,
+	[25][6] = 8,
+	[25][7] = 8,
+	[25][8] = 8,
+	[26][8] = 9,
+	[27][8] = 10,
+	[28][4] = 6,
+	[28][5] = 6,
+	[28][6] = 6,
+	[28][7] = 6,
+	[28][9] = 6,
+	[29][6] = 7,
+	[29][7] = 7,
+	[29][9] = 7,
+	[30][6] = 8,
+	[30][7] = 8,
+	[30][9] = 8,
+	[31][9] = 9,
+	[32][9] = 10,
+};
+
+
+const unsigned zebu_gotos[23][5] = {
+	[1][1] = 4,
+	[1][2] = 5,
+	[1][3] = 6,
+	[1][4] = 7,
+	[3][1] = 10,
+	[3][2] = 11,
+	[3][3] = 12,
+	[3][4] = 13,
+	[9][1] = 10,
+	[9][2] = 11,
+	[9][3] = 12,
+	[9][4] = 18,
+	[14][2] = 5,
+	[14][3] = 24,
+	[15][2] = 5,
+	[15][3] = 25,
+	[16][1] = 26,
+	[16][2] = 5,
+	[16][3] = 6,
+	[17][1] = 27,
+	[17][2] = 5,
+	[17][3] = 6,
+	[19][2] = 11,
+	[19][3] = 29,
+	[20][2] = 11,
+	[20][3] = 30,
+	[21][1] = 31,
+	[21][2] = 11,
+	[21][3] = 12,
+	[22][1] = 32,
+	[22][2] = 11,
+	[22][3] = 12,
+};
+
+
+// expected more than just tables?
+
+// try these options to have zebu paste pre-constructed parsers into this file:
+
+// --yacc=just-tables:
+	// print tables and this message, this is the default.
+
+// --yacc=really-just-tables:
+	// generate just the tables, don't print this help message.
+
+// --yacc=buffer-driven
+	// generates functions to link into a larger program:
+		// struct <PREFIX>_state* new_<PREFIX>_state()
+			// allocates space using malloc() for maintaining the state of the
+			// parser
+		
+		// void <PREFIX>_reset(struct <PREFIX>_state* this);
+			// resets the state of the parser, this is useful in applications
+			// where the parser needs to switch to processing a new input stream.
+		
+		// void <PREFIX>_parse(struct <PREFIX>_state* this, const unsigned char* text, size_t length);
+			// makes the parser process the input buffer `text`, expected to be `length` long.
+		
+		// void <PREFIX>_parse_EOF(struct <PREFIX>_state* this);
+			// used to communicate the the parser that the input stream has ended
+			// performs all the final reductions.
+		
+		// void free_<PREFIX>_state(struct <PREFIX>_state* this);
+			// frees the struct and all internal datastructures.
 	
-	printf("| ");
-	
-	va_list va;
-	va_start(va, fmt);
-	vprintf(fmt, va);
-	va_end(va);
-}
+	// remember that <PREFIX> can be defined with the --prefix=<PREFIX>
+	// argument.
 
-static void push(struct zebu_state* this, unsigned ystate)
-{
-	if (this->y.n + 1 >= this->y.cap)
-	{
-		this->y.cap = this->y.cap << 1 ?: 1;
-		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
-	}
-	
-	this->y.data[this->y.n++] = ystate;
-}
+// --yacc=readline
+	// generates a bottom-up parser that uses the readline library to feed
+	// input strings into the parser. Bewteen each line the parser is reset.
 
-static void append(struct zebu_state* this, const unsigned char* text, size_t length)
-{
-	while (this->l.n + length >= this->l.cap)
-	{
-		this->l.cap = this->l.cap << 1 ?: 1;
-		this->l.data = realloc(this->l.data, this->l.cap);
-	}
-	memcpy(this->l.data + this->l.n, text, length);
-	this->l.n += length;
-}
+// --yacc=readline-debug
+	// generates a bottom-up parser that uses the readline library to feed
+	// input strings into the parser. Bewteen each line the parser is reset.
+	// variables internal to the parser are printed, along with the stack used.
 
-static struct zebu_state* new_zebu_state()
-{
-	struct zebu_state* this = malloc(sizeof(*this));
-	assert(this);
-	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
-	this->l.data = NULL, this->l.n = 0, this->l.cap = 0;
-	this->lstate = 1, this->t = 0;
-	push(this, 1);
-	return this;
-}
-
-static void zebu_reset(struct zebu_state* this)
-{
-	this->y.n = 0;
-	this->l.n = 0;
-	this->lstate = 1;
-	push(this, 1);
-	ddprintf(this, "y = %u, l == %u\n", 1, 1);
-}
-
-#define N(array) (sizeof(array) / sizeof(*array))
-
-static void process_token(struct zebu_state* this, unsigned t)
-{
-	unsigned b, d, p, y = this->y.data[this->y.n - 1];
-	
-	while (!(y < N(zebu_shifts) && t < N(*zebu_shifts) && (b = zebu_shifts[y][t])))
-	{
-		if (y < N(zebu_reduces) && t < N(*zebu_reduces) && (b = zebu_reduces[y][t]))
-		{
-			ddprintf(this, "b == %u\n", b);
-			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
-			
-			if (b == start_grammar_id)
-			{
-				this->y.n = 0;
-				return;
-			}
-			
-			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
-			
-			this->y.n -= p;
-			
-			y = this->y.data[this->y.n - 1];
-			ddprintf(this, "y = %u\n", y);
-			
-			assert(y < N(zebu_shifts) && b < N(*zebu_shifts));
-			
-			d = zebu_shifts[y][b];
-			ddprintf(this, "d = %u\n", d);
-			
-			push(this, d), y = d;
-		}
-		else
-		{
-			assert(!"TODO");
-			exit(1);
-		}
-	}
-	
-	push(this, b), y = b;
-}
-
-static void escape(char *out, unsigned char in)
-{
-	switch (in)
-	{
-		case ' ':
-		case '~':
-		case '!':
-		case '@':
-		case '#':
-		case '$':
-		case '%':
-		case '^':
-		case '&':
-		case '*':
-		case '-':
-		case '+':
-		case '=':
-		case '|':
-		case '<': case '>':
-		case '(': case ')':
-		case '{': case '}':
-		case '[': case ']':
-		case ':': case ';':
-		case ',': case '.':
-		case '_':
-		case '0' ... '9':
-		case 'a' ... 'z':
-		case 'A' ... 'Z':
-			*out++ = in;
-			*out = 0;
-			break;
-		
-		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
-		
-		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
-		
-		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
-		
-		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
-		
-		default:
-			sprintf(out, "\\x%02X", in);
-			break;
-	}
-}
-
-static void zebu_parse(struct zebu_state* this, const unsigned char* text, size_t length)
-{
-	unsigned c, l = this->lstate;
-	unsigned a, b, i, n, f, t = this->t;
-	
-	char escaped[10];
-	
-	i = this->l.n;
-	
-	append(this, text, length);
-	
-	for (n = this->l.n, f = 0; i < n;)
-	{
-		c = this->l.data[i];
-		
-		escape(escaped, c);
-		
-		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-		a = (l < N(zebu_lexer) && c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
-			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
-			}
-			else
-			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
-			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
-	}
-	
-	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
-	
-	this->t = t;
-	
-	this->lstate = l;
-}
-
-static void zebu_parse_EOF(struct zebu_state* this)
-{
-	unsigned i = this->l.n, n = i, l = this->lstate;
-	unsigned a, b, c, f = 0, t = this->t;
-	
-	char escaped[10];
-	
-	while (1)
-	{
-		assert(i <= n + 1);
-		
-		if (i < n)
-		{
-			c = this->l.data[i];
-			
-			escape(escaped, c);
-			
-			ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-			a = (c < N(*zebu_lexer) ? zebu_lexer[l][c] : 0) ?: (l < N( zebu_defaults) ? zebu_defaults[l] : 0);
-		}
-		else
-		{
-			ddprintf(this, "c == <EOF>\n");
-			a = l < N(zebu_EOFs) ? zebu_EOFs[l] : 0;
-		}
-		
-		b = (l < N(zebu_accepts) ? zebu_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
-			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
-			}
-			else
-			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
-			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			
-			if (!this->y.n) break;
-			
-			l = zebu_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = zebu_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
-	}
-}
-
-static void free_zebu_state(struct zebu_state* this)
-{
-	free(this->y.data);
-	free(this->l.data);
-	free(this);
-}
-
-int main()
-{
-	struct zebu_state* new = new_zebu_state();
-	
-	for (char* line; (line = readline(">>> "));)
-	{
-		zebu_reset(new);
-		
-		zebu_parse(new, (unsigned char*) line, strlen(line));
-		
-		zebu_parse_EOF(new);
-		
-		puts("accepted!");
-		
-		add_history(line);
-		
-		free(line);
-	}
-	
-	free_zebu_state(new);
-	
-	return 0;
-}
-
-
-
-
-
-
-
-
+// --yacc=fileio-graphviz
+	// creates a program that parses the contents of the file refered to by
+	// the first parameter, and builds a parser tree that it outputs as a
+	// DOT graphviz input file named by the second parameter.
 
 

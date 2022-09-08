@@ -3,41 +3,21 @@
 
 #include <debug.h>
 
-#include <arena/malloc.h>
-
 #include "struct.h"
 #include "new.h"
 
-struct lex_state* new_lex_state(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena
-	#endif
-) {
+struct lex_state* new_lex_state()
+{
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct lex_state* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct lex_state* this = malloc(sizeof(*this));
-	#endif
+	struct lex_state* this = smalloc(sizeof(*this));
 	
-	this->transitions.data = NULL;
-	this->transitions.n = 0;
-	this->transitions.cap = 0;
-	
-	this->default_transition_to = NULL;
+	memset(this->transitions, 0, sizeof(this->transitions));
 	
 	this->EOF_transition_to = NULL;
 	
-	this->phase = 0;
-	
-	this->accepting = NULL;
-	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
+	this->accepts = NULL;
 	
 	EXIT;
 	return this;
 }
-

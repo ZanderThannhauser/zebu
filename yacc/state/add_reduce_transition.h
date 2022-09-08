@@ -1,9 +1,7 @@
 
-struct memory_arena;
-
 void yacc_state_add_reduce_transition(
-	struct yacc_state* from,
-	const struct tokenset* value,
-	char* reduce_as,
-	unsigned pop_count);
-	
+	struct yacc_state* this,
+	struct unsignedset* on,
+	struct string* reduce_as,
+	struct reductioninfo* reductioninfo,
+	struct structinfo* structinfo);

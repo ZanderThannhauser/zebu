@@ -1,28 +1,18 @@
 
-#include <stdlib.h>
-
 #include <debug.h>
 
-#include <arena/dealloc.h>
-
-#include <set/of_tokens/free.h>
+#include <set/unsigned/free.h>
 
 #include "struct.h"
 #include "free.h"
 
-void free_yacc_stateinfo_node(void* ptr)
+void free_stateinfo_node(void* ptr)
 {
-	struct yacc_stateinfo_node* this = ptr;
-	ENTER;
+	struct stateinfo_node* node = ptr;
 	
-	free_tokenset(this->lookaheads);
+	free_unsignedset(node->lookaheads);
 	
-	#ifdef WITH_ARENAS
-	arena_dealloc(this->arena, this);
-	#else
-	free(this);
-	#endif
-	
-	EXIT;
+	free(node);
 }
+
 

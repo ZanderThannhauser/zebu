@@ -1,8 +1,6 @@
 
 %start: translation_unit;
 
-%disambiguate: literal > regex;
-
 %skip: [' ', '\t', '\n'] | "//" [~'\n'] '\n';
 
 `D`:  ['0' - '9'];

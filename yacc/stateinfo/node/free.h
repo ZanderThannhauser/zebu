@@ -1,2 +1,2 @@
 
-void free_yacc_stateinfo_node(void* ptr);
+void free_stateinfo_node(void* ptr);

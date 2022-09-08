@@ -1,12 +1,6 @@
 
-struct memory_arena;
-struct tokenizer;
-struct avl_tree_t;
-struct scope;
+#include "charset.h"
 
-struct charset* read_root_charset(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+charset_t read_root_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope);

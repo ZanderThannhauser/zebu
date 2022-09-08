@@ -3,15 +3,13 @@
 
 #include <avl/search.h>
 
-#include <named/gbundle/struct.h>
+#include <named/gegex/struct.h>
 
 #include "../struct.h"
 
 #include "inline_grammar.h"
 
-struct gbundle scope_lookup_inline_grammar(
-	struct scope* this,
-	const char* name)
+struct gegex* scope_lookup_inline_grammar(struct scope* this, const char* name)
 {
 	ENTER;
 	
@@ -25,7 +23,7 @@ struct gbundle scope_lookup_inline_grammar(
 	{
 		dpv(layer);
 		
-		node = avl_search(layer->inline_grammar, &name);
+		node = avl_search(layer->inline_grammar, &(const char**){&name});
 		
 		if (!node)
 			layer = layer->prev;
@@ -33,21 +31,18 @@ struct gbundle scope_lookup_inline_grammar(
 	
 	dpv(layer);
 	
-	struct gegex* start = NULL;
-	struct gegex* end = NULL;
+	struct gegex* gegex = NULL;
 	
-	if (layer)
+	if (node)
 	{
-		struct named_gbundle* ngbundle = node->item;
+		struct named_gegex* ngbundle = node->item;
 		
-		start = ngbundle->start;
-		end = ngbundle->end;
+		gegex = ngbundle->gegex;
 	}
 	
 	EXIT;
-	return (struct gbundle) {start, end};
+	return gegex;
 }
-
 
 
 

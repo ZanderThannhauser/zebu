@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#include <defines/argv0.h>
-
 #include <stdlib.h>
 
 #include <enums/error.h>
@@ -18,7 +16,7 @@ int sopenat(int dirfd, const char* path, int flags)
 	
 	if (fd < 0)
 	{
-		fprintf(stderr, "%s: open(): %m\n", argv0),
+		fprintf(stderr, "zebu: open(): %m\n"),
 		exit(e_syscall_failed);
 	}
 	

@@ -1,55 +1,48 @@
 
-#include <stdlib.h>
 #include <debug.h>
 
-#include <arena/malloc.h>
-#include <arena/realloc.h>
+#include <set/unsigned/compare.h>
+#include <set/unsigned/inc.h>
 
-#include <set/of_tokens/compare.h>
+#include <yacc/reductioninfo/inc.h>
+
+#include <yacc/structinfo/inc.h>
 
 #include "struct.h"
 #include "add_reduce_transition.h"
 
 void yacc_state_add_reduce_transition(
-	struct yacc_state* from,
-	const struct tokenset* value,
-	char* reduce_as,
-	unsigned popcount)
+	struct yacc_state* this,
+	struct unsignedset* on,
+	struct string* reduce_as,
+	struct reductioninfo* reductioninfo,
+	struct structinfo* structinfo)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct memory_arena* const arena = from->arena;
-	struct rytransition* transition = arena_malloc(arena, sizeof(*transition));
-	#else
-	struct rytransition* transition = malloc(sizeof(*transition));
-	#endif
+	struct yacc_state_reduce_transition* transition = smalloc(sizeof(*transition));
 	
-	transition->value = value;
-	transition->reduce_as = reduce_as;
-	transition->popcount = popcount;
+	transition->on = inc_unsignedset(on);
+	transition->reduce_as = inc_string(reduce_as);
+	transition->reductioninfo = inc_reductioninfo(reductioninfo);
+	transition->structinfo = inc_structinfo(structinfo);
 	
-	if (from->reduction_transitions.n + 1 >= from->reduction_transitions.cap)
+	if (this->reduce_transitions.n == this->reduce_transitions.cap)
 	{
-		from->reduction_transitions.cap = from->reduction_transitions.cap * 2 ?: 1;
+		this->reduce_transitions.cap = this->reduce_transitions.cap << 1 ?: 1;
 		
-		dpv(from->reduction_transitions.cap );
+		dpv(this->reduce_transitions.cap);
 		
-		#ifdef WITH_ARENAS
-		from->reduction_transitions.data = arena_realloc(
-			arena, from->reduction_transitions.data,
-			sizeof(*from->reduction_transitions.data) * from->reduction_transitions.cap);
-		#else
-		from->reduction_transitions.data = realloc(from->reduction_transitions.data,
-			sizeof(*from->reduction_transitions.data) * from->reduction_transitions.cap);
-		#endif
+		this->reduce_transitions.data = srealloc(
+			this->reduce_transitions.data,
+			sizeof(*this->reduce_transitions.data) * this->reduce_transitions.cap);
 	}
 	
-	size_t i;
-	struct rytransition** const data = from->reduction_transitions.data;
+	unsigned i;
+	struct yacc_state_reduce_transition** const data = this->reduce_transitions.data;
 	
-	for (i = from->reduction_transitions.n++ - 1;
-		0 + 1 <= i + 1 && compare_tokensets(value, data[i]->value) < 0; i--)
+	for (i = this->reduce_transitions.n++ - 1;
+		0 + 1 <= i + 1 && compare_unsignedsets(on, data[i]->on) < 0; i--)
 	{
 		data[i + 1] = data[i];
 	}
@@ -58,16 +51,4 @@ void yacc_state_add_reduce_transition(
 	
 	EXIT;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 

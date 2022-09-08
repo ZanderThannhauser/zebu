@@ -1,39 +1,22 @@
 
-#include <stdlib.h>
 #include <debug.h>
-
-#include <arena/malloc.h>
-
 
 #include "struct.h"
 #include "new.h"
 
-struct yacc_stateinfo_node* new_yacc_stateinfo_node(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct gegex* state,
-	const char* grammar,
-	struct tokenset* lookaheads)
-{
+struct stateinfo_node* new_stateinfo_node(
+	struct trie* trie,
+	struct unsignedset* lookaheads // you're givin this to me
+) {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct yacc_stateinfo_node* this = arena_malloc(arena, sizeof(*this));
-	#else
-	struct yacc_stateinfo_node* this = malloc(sizeof(*this));
-	#endif
+	struct stateinfo_node* this = smalloc(sizeof(*this));
 	
-	this->state = state;
-	this->grammar = grammar;
+	this->trie = trie;
+	
 	this->lookaheads = lookaheads;
-	
-	#ifdef WITH_ARENAS
-	this->arena = arena;
-	#endif
 	
 	EXIT;
 	return this;
-	
 }
 

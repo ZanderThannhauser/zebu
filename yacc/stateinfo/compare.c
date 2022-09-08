@@ -1,47 +1,47 @@
 
 #include <debug.h>
 
-#include <avl/tree_t.h>
-
-#include <set/of_tokens/compare.h>
+#include <set/unsigned/compare.h>
 
 #include "node/struct.h"
 
 #include "struct.h"
 #include "compare.h"
 
-int compare_yacc_stateinfos(
-	const struct yacc_stateinfo* a,
-	const struct yacc_stateinfo* b)
+int compare_stateinfo(
+	const struct stateinfo *a,
+	const struct stateinfo *b)
 {
-	struct avl_node_t* a_moving = a->tree->head;
-	struct avl_node_t* b_moving = b->tree->head;
+	struct avl_node_t *an = a->tree->head;
+	struct avl_node_t *bn = b->tree->head;
 	
-	while (a_moving && b_moving)
+	while (an && bn)
 	{
-		struct yacc_stateinfo_node* a_ele = a_moving->item;
-		struct yacc_stateinfo_node* b_ele = b_moving->item;
+		struct stateinfo_node* const ae = an->item;
+		struct stateinfo_node* const be = bn->item;
 		
-		if (a_ele->state > b_ele->state)
+		if (ae->trie > be->trie)
 			return +1;
-		else if (a_ele->state < b_ele->state)
+		else if (ae->trie < be->trie)
 			return -1;
-		
-		int cmp = compare_tokensets(a_ele->lookaheads, b_ele->lookaheads);
-		
-		if (cmp)
-			return cmp;
-		
-		a_moving = a_moving->next;
-		b_moving = b_moving->next;
+		else
+		{
+			int cmp = compare_unsignedsets(ae->lookaheads, be->lookaheads);
+			
+			if (cmp)
+				return cmp;
+			
+			an = an->next;
+			bn = bn->next;
+		}
 	}
 	
-	if (a_moving)
+	if (an)
 		return +1;
-	else if (b_moving)
+	else if (bn)
 		return -1;
 	else
-		return +0;
+		return 0;
 }
 
 

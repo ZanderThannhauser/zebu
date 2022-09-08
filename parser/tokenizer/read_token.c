@@ -100,9 +100,9 @@ enum token read_token(
 			
 			dpvsn(this->tokenchars.chars, this->tokenchars.n);
 			
-			char* s = this->tokenchars.chars;
+			unsigned char* s = this->tokenchars.chars;
 			
-			char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
+			unsigned char* w = s, *r = w + 1, *n = w + this->tokenchars.n - 1;
 			
 			while (r < n)
 			{
@@ -223,6 +223,36 @@ enum token read_token(
 			this->token = t_identifier;
 			dputs("t_identifier");
 			break;
+		
+		case ts_hashtag_scalar:
+		{
+			// remove #:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			
+			this->tokenchars.n -= 1;
+			
+			append(this, 0);
+			
+			this->token = t_hashtag_scalar;
+			dputs("t_hashtag");
+			break;
+		}
+		
+		case ts_hashtag_array:
+		{
+			// remove #:
+			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
+			
+			this->tokenchars.n -= 3;
+			
+			append(this, 0);
+			
+			dpvs(this->tokenchars.chars);
+			
+			this->token = t_hashtag_array;
+			dputs("t_hashtag");
+			break;
+		}
 		
 		case ts_colon:
 			this->token = t_colon;

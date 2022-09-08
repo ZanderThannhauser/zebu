@@ -1,6 +1,4 @@
 
-#ifdef WITHOUT_ARENAS
-
 #include <stdlib.h>
 
 #include <assert.h>
@@ -17,4 +15,3 @@ void free_dfa_from_id_node(void* this)
 	EXIT;
 }
 
-#endif

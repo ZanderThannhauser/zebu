@@ -2,10 +2,10 @@
 // vim: ts=4
 
 %start
-	: `"aa"+`      "1"
-	| `"aaa"+`     "2"
-	| `"aaaaa"+`   "3"
-	| `"aaaaaaa"+` "4"
+	:      `"aa"+` #multiple2 "2"
+	|     `"aaa"+` #multiple3 "3"
+	|   `"aaaaa"+` #multiple5 "5"
+	| `"aaaaaaa"+` #multiple7 "7"
 	;
 
 

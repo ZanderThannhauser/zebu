@@ -7,15 +7,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <defines/argv0.h>
-
 #include "default_sighandler.h"
 
 void default_sighandler(int _)
 {
 	char ptr[100] = {};
 	
-	size_t len = snprintf(ptr, 100, "\e[K" "%s:\r", argv0);
+	size_t len = snprintf(ptr, 100, "\e[K" "zebu: \r");
 	
 	if (write(1, ptr, len) != len)
 	{

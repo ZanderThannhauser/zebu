@@ -1,14 +1,8 @@
 
-struct yacc_stateinfo_node
+struct stateinfo_node
 {
-	struct gegex* state;
+	struct trie* trie;
 	
-	const char* grammar;
-	
-	struct tokenset* lookaheads; // "owns" the lookaheads
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
+	struct unsignedset* lookaheads; // owned
 };
 

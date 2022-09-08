@@ -1,4 +1,5 @@
 
+#if 0
 #include "../ANY.h"
 
 #include "identifier_or_string.h"
@@ -48,4 +49,4 @@ enum tokenizer_state identifier_or_string_machine[number_of_tokenizer_states][25
 
 
 
-
+#endif

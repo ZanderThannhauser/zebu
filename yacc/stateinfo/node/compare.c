@@ -4,15 +4,13 @@
 #include "struct.h"
 #include "compare.h"
 
-int compare_yacc_stateinfo_nodes(const void* a, const void* b)
+int compare_stateinfo_nodes(const void* a, const void* b)
 {
-	const struct yacc_stateinfo_node* A = a, *B = b;
-	
-	if (A->state > B->state)
+	const struct stateinfo_node *A = a, *B = b;
+	if (A->trie > B->trie)
 		return +1;
-	else if (A->state < B->state)
+	if (A->trie < B->trie)
 		return -1;
-	else
-		return +0;
+	return 0;
 }
 

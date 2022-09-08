@@ -1,0 +1,123 @@
+
+`int`: ['-', '+']? ['0'-'9']+;
+
+`float`: ['0'-'9']+ '.' ['0'-'9']+;
+
+`string`: '\"' ([~ '\\' '\"' ] | '\\' ['0' - '7']+)* '\"';
+
+`register`: "%vr"['0'-'9']+;
+
+`label`: '.' ['a'-'z', 'A'-'Z', '_'] ['a'-'z', 'A'-'Z', '_', '0'-'9']*;
+
+`skip`: (' ' | '\t' | '\n' | "#" ['a'-'z', '=', ':', ' ', '0'-'9']* "\n")*;
+
+%start: `
+	skip ".data" skip (
+		  ".string" skip label skip "," skip string skip
+		| ".float"  skip label skip "," skip float skip
+		| ".global" skip label skip "," skip int skip "," skip int skip
+	)*
+	skip ".text" skip (
+		skip ".frame" skip ['a' - 'z']+ skip "," skip int skip (
+			(label skip ":"skip)? // optional label
+			(
+				// Integer Arithmetic Instructions:
+				  "i2i"      skip register skip     skip          skip "=>" skip register skip
+				| "add"      skip register skip "," skip register skip "=>" skip register skip
+				| "sub"      skip register skip "," skip register skip "=>" skip register skip
+				| "mult"     skip register skip "," skip register skip "=>" skip register skip
+				| "lshift"   skip register skip "," skip register skip "=>" skip register skip
+				| "rshift"   skip register skip "," skip register skip "=>" skip register skip
+				| "mod"      skip register skip "," skip register skip "=>" skip register skip
+				| "and"      skip register skip "," skip register skip "=>" skip register skip
+				| "or"       skip register skip "," skip register skip "=>" skip register skip
+				| "not"      skip register skip     skip          skip "=>" skip register skip
+				| "addI"     skip register skip "," skip int      skip "=>" skip register skip
+				| "subI"     skip register skip "," skip int      skip "=>" skip register skip
+				| "multI"    skip register skip "," skip int      skip "=>" skip register skip
+				| "lshiftI"  skip register skip "," skip int      skip "=>" skip register skip
+				| "rshiftI"  skip register skip "," skip int      skip "=>" skip register skip
+				
+				// Integer Memory Operations:
+				| "loadI"    skip int      skip     skip          skip "=>" skip register skip
+				| "load"     skip register skip     skip          skip "=>" skip register skip
+				| "loadAI"   skip register skip "," skip int      skip "=>" skip register skip
+				| "loadAO"   skip register skip "," skip register skip "=>" skip register skip
+				| "store"    skip register skip     skip          skip "=>" skip register skip
+				| "storeAI"  skip register skip     skip          skip "=>" skip register skip "," skip int skip
+				| "storeAO"  skip register skip     skip          skip "=>" skip register skip "," skip register skip
+				
+				// Compare Instructions:
+				| "cmp_LT"   skip register skip "," skip register skip "=>" skip register skip
+				| "cmp_LR"   skip register skip "," skip register skip "=>" skip register skip
+				| "cmp_GT"   skip register skip "," skip register skip "=>" skip register skip
+				| "cmp_GE"   skip register skip "," skip register skip "=>" skip register skip
+				| "cmp_EQ"   skip register skip "," skip register skip "=>" skip register skip
+				| "cmp_NE"   skip register skip "," skip register skip "=>" skip register skip
+				| "comp"     skip register skip "," skip register skip "=>" skip register skip
+				| "testeq"   skip register skip     skip          skip "=>" skip register skip
+				| "testne"   skip register skip     skip          skip "=>" skip register skip
+				| "testgt"   skip register skip     skip          skip "=>" skip register skip
+				| "testge"   skip register skip     skip          skip "=>" skip register skip
+				| "testlt"   skip register skip     skip          skip "=>" skip register skip
+				| "testle"   skip register skip     skip          skip "=>" skip register skip
+				
+				// Floating-point Operations:
+				| "f2i"      skip register skip     skip          skip "=>" skip register skip
+				| "i2f"      skip register skip     skip          skip "=>" skip register skip
+				| "f2f"      skip register skip     skip          skip "=>" skip register skip
+				| "fadd"     skip register skip "," skip register skip "=>" skip register skip
+				| "fsub"     skip register skip "," skip register skip "=>" skip register skip
+				| "fmult"    skip register skip "," skip register skip "=>" skip register skip
+				| "fdiv"     skip register skip "," skip register skip "=>" skip register skip
+				| "fcomp"    skip register skip "," skip register skip "=>" skip register skip
+				| "fload"    skip register skip     skip          skip "=>" skip register skip
+				| "floadAI"  skip register skip "," skip int      skip "=>" skip register skip
+				| "floadAO"  skip register skip "," skip register skip "=>" skip register skip
+				| "fstore"   skip register skip     skip          skip "=>" skip register skip
+				| "fstoreAI" skip register skip     skip          skip "=>" skip register skip "," skip int skip
+				| "fstoreAO" skip register skip     skip          skip "=>" skip register skip "," skip register skip
+				
+				// I/O Instructions:
+				| "fread"    skip register skip     skip          skip      skip          skip
+				| "iread"    skip register skip     skip          skip      skip          skip
+				| "fwrite"   skip register skip     skip          skip      skip          skip
+				| "iwrite"   skip register skip     skip          skip      skip          skip
+				| "swrite"   skip register skip     skip          skip      skip          skip
+				
+				// Branch Instructions:
+				| "jumpI"    skip          skip     skip          skip "->" skip label    skip
+				| "jump"     skip          skip     skip          skip "->" skip register skip
+				| "ret"      skip
+				| "cbr"      skip register skip     skip          skip "->" skip label    skip
+				| "cbrne"    skip register skip     skip          skip "->" skip label    skip
+				| "cbr_LT"   skip register skip "," skip register skip "->" skip label    skip
+				| "cbr_LE"   skip register skip "," skip register skip "->" skip label    skip
+				| "cbr_GT"   skip register skip "," skip register skip "->" skip label    skip
+				| "cbr_GE"   skip register skip "," skip register skip "->" skip label    skip
+				| "cbr_EQ"   skip register skip "," skip register skip "->" skip label    skip
+				| "cbr_NE"   skip register skip "," skip register skip "->" skip label    skip
+				
+				// Undocumented Instructions:
+				| "nop"      skip
+				| "call"     skip label ("," skip register skip)* skip
+				| "icall"    skip label ("," skip register skip)* skip "=>" skip register skip
+				| "iret"     skip                 register skip
+			)
+		)*
+	)*
+	skip
+`;
+
+
+
+
+
+
+
+
+
+
+
+
+

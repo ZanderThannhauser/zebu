@@ -1,0 +1,144 @@
+
+%skip: ' ' | '\n';
+
+`D`:  ['0' - '9'];
+`L`:  ['a' - 'z', 'A' - 'Z', '_'];
+`H`:  ['a' - 'f', 'A' - 'F', '0' - '9'];
+`E`:  ['E', 'e'] ['+', '-']? D+ ;
+`FS`: ('f'|'F'|'l'|'L');
+`IS`: ('u'|'U'|'l'|'L')*;
+
+`identifier`: L (L | D)*;
+
+`constant`
+	: '0' ['x', 'X'] H+ IS? // hexadecimal
+	| '0'            D+ IS? // octal
+	|                D+ IS? // decimal
+	;
+
+`string_literal`: '\"' ( "\\" . | [~('\"', '\\')] )* '\"' ;
+
+primary_expression
+	: `identifier & !"sizeof"` #variable
+	| `constant` #literal
+	| `string_literal` #string
+	| "(" expression #subexpression ")"
+	;
+
+postfix_expression
+	: primary_expression #expression
+	| postfix_expression #pexpression "[" expression #index_expression "]"
+	| postfix_expression #pexpression "(" #call ")"
+	| postfix_expression #pexpression "(" #call argument_expression_list #arguments ")"
+	| postfix_expression #pexpression "."  `identifier` #field_name
+	| postfix_expression #pexpression "->" `identifier` #field_name
+	| postfix_expression #pexpression "++" #postfix_increment
+	| postfix_expression #pexpression "--" #postfix_decrement
+	;
+
+argument_expression_list
+	: conditional_expression #expression
+	| argument_expression_list #left ',' conditional_expression #right
+	;
+
+unary_expression
+	:          postfix_expression #expression
+	|     "++"   unary_expression #increment
+	|     "--"   unary_expression #decrement
+	|      "&"   unary_expression #address_of
+	|      "*"   unary_expression #dereference
+	|      "+"   unary_expression #positive
+	|      "-"   unary_expression #negative
+	|      "~"   unary_expression #bitwise_not
+	|      "!"   unary_expression #logical_not
+	| "sizeof"   unary_expression #sizeof_
+	;
+
+multiplicative_expression
+	: unary_expression #expression
+	| multiplicative_expression #left '*' #times  unary_expression #right
+	| multiplicative_expression #left '/' #divide unary_expression #right
+	| multiplicative_expression #left '%' #remain unary_expression #right
+	;
+
+additive_expression
+	: multiplicative_expression #expression
+	| additive_expression #left '+' #add multiplicative_expression #right
+	| additive_expression #left '-' #sub multiplicative_expression #right
+	;
+
+shift_expression
+	: additive_expression #expression
+	| shift_expression #left "<<" #leftshift additive_expression #right
+	| shift_expression #left ">>" #righshift additive_expression #right
+	;
+
+relational_expression
+	: shift_expression #expression
+	| relational_expression #left '<'  #le   shift_expression #right
+	| relational_expression #left '>'  #gt   shift_expression #right
+	| relational_expression #left "<=" #leeq shift_expression #right
+	| relational_expression #left ">=" #gteq shift_expression #right
+	;
+
+equality_expression
+	: relational_expression #expression
+	| equality_expression #left "==" #equal_to relational_expression #right
+	| equality_expression #left "!=" #no_equal_to relational_expression #right
+	;
+
+and_expression
+	: equality_expression #expression
+	| and_expression #left '&' #bitwise_and equality_expression #right
+	;
+
+exclusive_or_expression
+	: and_expression #expression
+	| exclusive_or_expression #left '^' #bitwise_xor and_expression #right
+	;
+
+inclusive_or_expression
+	: exclusive_or_expression #expression
+	| inclusive_or_expression #left '|' #bitwise_or exclusive_or_expression #right
+	;
+
+logical_and_expression
+	: inclusive_or_expression #expression
+	| logical_and_expression #left "&&" #logical_and inclusive_or_expression #right
+	;
+
+logical_or_expression
+	: logical_and_expression #expression
+	| logical_or_expression #left "||" #logical_or logical_and_expression #right
+	;
+
+conditional_expression
+	: logical_or_expression #expression 
+	| logical_or_expression #expression '?' expression #true_case ':' conditional_expression #false_case
+	;
+
+expression
+	: conditional_expression #expression
+	| expression #left ',' #comma conditional_expression #right
+	;
+
+%start: expression #root;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

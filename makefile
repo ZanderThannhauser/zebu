@@ -49,15 +49,6 @@ else
 $(error "invalid verbose!");
 endif
 
-arenas ?= without
-ifeq ($(arenas), with)
-CPPFLAGS += -D WITH_ARENAS
-else ifeq ($(arenas), without)
-CPPFLAGS += -D WITHOUT_ARENAS
-else
-$(error "invalid arenas!");
-endif
-
 dotout ?= no
 ifeq ($(dotout), yes)
 CPPFLAGS += -D DOTOUT
@@ -75,7 +66,7 @@ else
 $(error "invalid on_error option!");
 endif
 
-buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(arenas)-arenas/$(dotout)-dotout
+buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 
 default: $(buildprefix)/zebu
 
@@ -85,31 +76,37 @@ ARGS += --verbose
 #ARGS += -l
 ARGS += --minimize-lexer
 
-#ARGS += --yacc=readline-debug -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += --template=really-just-tables
+#ARGS += --template=just-tables
+ARGS += --template=readline-debug
+#ARGS += --template=fileio-debug
+#ARGS += --template=fileio
 
-#ARGS += --yacc=readline -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += --yacc=readline-debug -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
-#ARGS += --yacc=fileio-graphviz -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += --yacc=fileio-passfail -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += --yacc=readline-debug -i ./-examples/json/json.zb -o ./-examples/json/json
-#ARGS += --yacc=readline-debug -i ./-examples/C-expressions/C.zb -o ./-examples/C-expressions/output
-#ARGS += --yacc=readline-debug -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
-#ARGS += --yacc=readline-debug -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
-#ARGS += --yacc=readline-debug -i ./-examples/hard/hard.zb -o ./-examples/hard/output
+ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
-#ARGS += --yacc=fileio-graphviz -i ./-examples/C/C.zb -o ./-examples/C/C
-#ARGS += --yacc=readline-debug -i ./-examples/C/C.zb -o ./-examples/C/C
-#ARGS += --yacc=readline-debug -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+#ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
+#ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
+#ARGS += -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/expressions
+#ARGS += -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
+#ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
+#ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
+#ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-passfail -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
-#ARGS += --yacc=fileio-debug -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc
+#ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
-#ARGS += --yacc=readline-debug -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+#ARGS += -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
+
+#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+#ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
+#ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
+
+#ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+
+#ARGS += -i ./-examples/csv/csv.zb -o ./-examples/csv/csv
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
@@ -142,13 +139,15 @@ gen/srclist.mk: | gen/%/
 ifneq "$(MAKECMDGOALS)" "clean"
 include gen/srclist.mk
 
-srcs += ./out/escaped/just_tables_source.c     ./out/escaped/just_tables_header.c
-srcs += ./out/escaped/buffer_driven_source.c   ./out/escaped/buffer_driven_header.c
-srcs += ./out/escaped/readline_source.c        ./out/escaped/readline_header.c
-srcs += ./out/escaped/readline_debug_source.c  ./out/escaped/readline_debug_header.c
-srcs += ./out/escaped/fileio_debug_source.c    ./out/escaped/fileio_debug_header.c
-srcs += ./out/escaped/fileio_passfail_source.c ./out/escaped/fileio_passfail_header.c
-srcs += ./out/escaped/fileio_graphviz_source.c ./out/escaped/fileio_graphviz_header.c
+srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
+srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
+#srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
+#srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
+srcs += ./out/escaped/readline_debug_source.c     ./out/escaped/readline_debug_header.c
+srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
+srcs += ./out/escaped/fileio_source.c             ./out/escaped/fileio_header.c
+#srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
+#srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
 
 endif
 

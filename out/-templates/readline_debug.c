@@ -1,124 +1,39 @@
 
-#include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <stdlib.h>
-#include <stddef.h>
+
 #include <assert.h>
-#include <stdio.h>
-#include <string.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
 
-struct <PREFIX>_state
-{
-	struct { unsigned* data, n, cap; } y;
-	struct { unsigned char* data, n, cap; } l;
-	unsigned lstate, t;
-};
+{{LEXER_TABLE}}
 
-static void ddprintf(struct zebu_state* this, const char* fmt, ...)
-{
-	for (unsigned i = 0, n = this->y.n; i < n; i++)
-		printf("%u ", this->y.data[i]);
-	
-	printf("| ");
-	
-	va_list va;
-	va_start(va, fmt);
-	vprintf(fmt, va);
-	va_end(va);
-}
+{{LEXER_STARTS_TABLE}}
 
-static void push(struct <PREFIX>_state* this, unsigned ystate)
-{
-	if (this->y.n + 1 >= this->y.cap)
-	{
-		this->y.cap = this->y.cap << 1 ?: 1;
-		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
-	}
-	
-	this->y.data[this->y.n++] = ystate;
-}
+{{LEXER_ACCEPTS_TABLE}}
 
-static void append(struct <PREFIX>_state* this, const unsigned char* text, size_t length)
-{
-	while (this->l.n + length >= this->l.cap)
-	{
-		this->l.cap = this->l.cap << 1 ?: 1;
-		this->l.data = realloc(this->l.data, this->l.cap);
-	}
-	memcpy(this->l.data + this->l.n, text, length);
-	this->l.n += length;
-}
+{{LEXER_EOF_TABLE}}
 
-static struct <PREFIX>_state* new_<PREFIX>_state()
-{
-	struct <PREFIX>_state* this = malloc(sizeof(*this));
-	assert(this);
-	this->y.data = NULL, this->y.n = 0, this->y.cap = 0;
-	this->l.data = NULL, this->l.n = 0, this->l.cap = 0;
-	this->lstate = 1, this->t = 0;
-	push(this, 1);
-	return this;
-}
+{{SHIFT_TABLE}}
 
-static void <PREFIX>_reset(struct <PREFIX>_state* this)
-{
-	this->y.n = 0;
-	this->l.n = 0;
-	this->lstate = 1;
-	push(this, 1);
-	ddprintf(this, "y = %u, l == %u\n", 1, 1);
-}
+{{REDUCE_TABLE}}
+
+{{GOTO_TABLE}}
+
+{{PARSE_TREE_STRUCTS}}
+
+{{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
+
+{{PARSE_TREE_INC_FUNCTIONS}}
+
+{{PARSE_TREE_FREE_FUNCTIONS}}
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
-static void process_token(struct <PREFIX>_state* this, unsigned t)
-{
-	unsigned b, d, p, y = this->y.data[this->y.n - 1];
-	
-	while (!(y < N(<PREFIX>_shifts) && t < N(*<PREFIX>_shifts) && (b = <PREFIX>_shifts[y][t])))
-	{
-		if (y < N(<PREFIX>_reduces) && t < N(*<PREFIX>_reduces) && (b = <PREFIX>_reduces[y][t]))
-		{
-			ddprintf(this, "b == %u\n", b);
-			ddprintf(this, "g == \"%s\"\n", zebu_grammar_names[b]);
-			
-			if (b == start_grammar_id)
-			{
-				this->y.n = 0;
-				return;
-			}
-			
-			ddprintf(this, "p == %u\n", p = zebu_popcounts[y][t]);
-			
-			this->y.n -= p;
-			
-			y = this->y.data[this->y.n - 1];
-			ddprintf(this, "y = %u\n", y);
-			
-			assert(y < N(<PREFIX>_shifts) && b < N(*<PREFIX>_shifts));
-			
-			d = <PREFIX>_shifts[y][b];
-			ddprintf(this, "d = %u\n", d);
-			
-			push(this, d), y = d;
-		}
-		else
-		{
-			assert(!"TODO");
-			exit(1);
-		}
-	}
-	
-	push(this, b), y = b;
-}
-
-static void escape(char *out, unsigned char in)
+static void escape(char *out, char in)
 {
 	switch (in)
 	{
@@ -164,157 +79,193 @@ static void escape(char *out, unsigned char in)
 	}
 }
 
-static void <PREFIX>_parse(struct <PREFIX>_state* this, const unsigned char* text, size_t length)
-{
-	unsigned c, l = this->lstate;
-	unsigned a, b, i, n, f, t = this->t;
-	
-	char escaped[10];
-	
-	i = this->l.n;
-	
-	append(this, text, length);
-	
-	for (n = this->l.n, f = 0; i < n;)
-	{
-		c = this->l.data[i];
-		
-		escape(escaped, c);
-		
-		ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-		a = (l < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
-		b = (l < N(<PREFIX>_accepts) ? <PREFIX>_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
-			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
-			}
-			else
-			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
-			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
-	}
-	
-	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
-	
-	this->t = t;
-	
-	this->lstate = l;
-}
-
-static void <PREFIX>_parse_EOF(struct <PREFIX>_state* this)
-{
-	unsigned i = this->l.n, n = i, l = this->lstate;
-	unsigned a, b, c, f = 0, t = this->t;
-	
-	char escaped[10];
-	
-	while (1)
-	{
-		assert(i <= n + 1);
-		
-		if (i < n)
-		{
-			c = this->l.data[i];
-			
-			escape(escaped, c);
-			
-			ddprintf(this, "c = %s (0x%X)\n", escaped, c);
-		
-			a = (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
-		}
-		else
-		{
-			ddprintf(this, "c == <EOF>\n");
-			a = l < N(<PREFIX>_EOFs) ? <PREFIX>_EOFs[l] : 0;
-		}
-		
-		b = (l < N(<PREFIX>_accepts) ? <PREFIX>_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
-			{
-				l = a, t = b, f = i++;
-				ddprintf(this, "l = %u, t == %u, f = %u (saved)\n", l, t, f);
-			}
-			else
-			{
-				l = a, i++;
-				ddprintf(this, "l == %u\n", l);
-			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			
-			if (!this->y.n) break;
-			
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-			ddprintf(this, "l == %u, f = %u, t = %u\n", l, f, t);
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-			ddprintf(this, "l == %u, i = %u, t = %u\n", l, i, t);
-		}
-		else
-		{
-			assert(!"TODO");
-		}
-	}
-}
-
-static void free_<PREFIX>_state(struct <PREFIX>_state* this)
-{
-	free(this->y.data);
-	free(this->l.data);
-	free(this);
-}
-
 int main()
 {
-	struct zebu_state* new = new_zebu_state();
+	struct { unsigned* data, n, cap; } yacc = {};
+	
+	struct { void** data; unsigned n, cap; } data = {};
+	
+	void ddprintf(const char* fmt, ...)
+	{
+		for (unsigned i = 0, n = yacc.n; i < n; i++)
+			printf("%u ", yacc.data[i]);
+		
+		printf("| ");
+		
+		va_list va;
+		va_start(va, fmt);
+		vprintf(fmt, va);
+		va_end(va);
+	}
+
+	void push_state(unsigned state)
+	{
+		if (yacc.n + 1 >= yacc.cap)
+		{
+			yacc.cap = yacc.cap << 1 ?: 1;
+			yacc.data = realloc(yacc.data, sizeof(*yacc.data) * yacc.cap);
+		}
+		
+		yacc.data[yacc.n++] = state;
+	}
+	
+	void push_data(void* element)
+	{
+		if (data.n + 1 >= data.cap)
+		{
+			data.cap = data.cap << 1 ?: 1;
+			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
+		}
+		
+		data.data[data.n++] = element;
+	}
 	
 	for (char* line; (line = readline(">>> "));)
 	{
-		zebu_reset(new);
+		char* lexer = (void*) line;
 		
-		zebu_parse(new, (unsigned char*) line, strlen(line));
+		unsigned y, s, r, t;
 		
-		zebu_parse_EOF(new);
+		void* td;
+		
+		void read_token(unsigned l)
+		{
+			char escaped[10];
+			
+			char* begin = lexer, *f = NULL;
+			
+			unsigned a, b, c;
+			
+			while (1)
+			{
+				if ((c = *lexer))
+				{
+					escape(escaped, c);
+					
+					ddprintf("c = '%s' (0x%X)\n", escaped, c);
+					
+					a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
+				}
+				else
+				{
+					ddprintf("c == <EOF>\n");
+					a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
+				}
+				
+				b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
+				
+				ddprintf("lexer: %u: a = %u, b = %u\n", l, a, b);
+				
+				if (a)
+				{
+					if (b)
+					{
+						l = a, t = b, f = lexer++;
+						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
+					}
+					else
+					{
+						l = a;
+						if (c) lexer++;
+						ddprintf("lexer: l == %u\n", l);
+					}
+				}
+				else if (b)
+				{
+					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
+					
+					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
+					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+					token->len = lexer - begin;
+					t = b, td = token;
+					break;
+				}
+				else if (t)
+				{
+					assert(!"172");
+					#if 0
+					process_token(t);
+					l = {{PREFIX}}_starts[yacc.data[yacc.n - 1]], i = f, t = 0;
+					ddprintf("l == %u, i = %u, t = %u\n", l, i, t);
+					#endif
+				}
+				else
+				{
+					assert(!"TODO");
+				}
+			}
+		}
+		
+		yacc.n = 0, data.n = 0, y = 1, push_state(y);
+		
+		read_token({{PREFIX}}_lexer_starts[y]);
+		
+		ddprintf("y = %u, t == %u\n", y, t);
+		
+		void* root;
+		
+		while (yacc.n)
+		{
+			if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
+			{
+				y = s, push_state(y), push_data(td);
+				read_token({{PREFIX}}_lexer_starts[y]);
+			}
+			else if (y < N({{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
+			{
+				unsigned g;
+				
+				void* d;
+				
+				ddprintf("r = %u\n", r);
+				
+				{{REDUCTIONRULE_SWITCH}}
+				
+				if (g == {{START_GRAMMAR_ID}})
+				{
+					free_token(td);
+					yacc.n = 0, root = d;
+				}
+				else
+				{
+					y = yacc.data[yacc.n - 1];
+					
+					ddprintf("y = %u\n", y);
+					
+					assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
+					
+					s = {{PREFIX}}_gotos[y][g];
+					
+					ddprintf("s = %u\n", s);
+					
+					y = s, push_state(y), push_data(d);
+				}
+			}
+			else
+			{
+				assert(!"190");
+			}
+		}
+		
+		assert(!data.n);
 		
 		puts("accepted!");
+		
+		print___start__(NULL, p_root, "start", root);
+		
+		free___start__(root);
 		
 		add_history(line);
 		
 		free(line);
 	}
 	
-	free_zebu_state(new);
+	rl_clear_history();
+	
+	free(yacc.data);
+	
+	free(data.data);
 	
 	return 0;
 }

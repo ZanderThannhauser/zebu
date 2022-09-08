@@ -6,18 +6,15 @@
 
 #include <debug.h>
 
-#include <arena/memdup.h>
+/*#include <enums/error.h>*/
 
-#include <enums/error.h>
+#include <gegex/state/struct.h>
+/*#include <gegex/state/new.h>*/
+#include <gegex/nfa_to_dfa.h>
+#include <gegex/simplify_dfa/simplify_dfa.h>
+#include <gegex/state/free.h>
 
-#include <yacc/gegex/state/struct.h>
-#include <yacc/gegex/state/new.h>
-#include <yacc/gegex/nfa_to_dfa/nfa_to_dfa.h>
-#include <yacc/gegex/simplify_dfa/simplify_dfa.h>
-#include <yacc/gegex/state/free.h>
-
-#include "grammar/root.h"
-#include "grammar/gbundle.h"
+#include "production/root.h"
 
 #include "scope/declare/grammar.h"
 
@@ -29,10 +26,6 @@
 #include "read_grammar.h"
 
 void read_grammar(
-	#ifdef WITH_ARENAS
-	struct memory_arena* grammar_arena,
-	struct memory_arena* token_arena,
-	#endif
 	struct tokenizer* tokenizer,
 	struct options* options,
 	struct scope* scope,
@@ -42,11 +35,7 @@ void read_grammar(
 	
 	assert(tokenizer->token == t_identifier);
 	
-	#ifdef WITH_ARENAS
-	char* name = arena_memdup(grammar_arena, tokenizer->tokenchars.chars, tokenizer->tokenchars.n + 1);
-	#else
-	char* name = strdup(tokenizer->tokenchars.chars);
-	#endif
+	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	dpvs(name);
 	
@@ -58,10 +47,6 @@ void read_grammar(
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
-		#ifdef WITH_ARENAS
-		/* grammar_arena: */ grammar_arena,
-		/* token_arena:   */ token_arena,
-		#endif
 		/* tokenizer:     */ tokenizer,
 		/* options:       */ options,
 		/* scope:         */ scope,
@@ -71,18 +56,11 @@ void read_grammar(
 	
 	struct gegex* nfa_start = bundle.start;
 	
-	#ifdef WITH_ARENAS
-	struct gegex* dfa_start = gegex_nfa_to_dfa(grammar_arena, nfa_start);
-	struct gegex* simp_start = gegex_simplify_dfa(grammar_arena, dfa_start);
-	#else
 	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	
 	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
-	#endif
 	
-	// add grammar rule to scope
 	scope_declare_grammar(scope, name, simp_start);
-	
-	free_gegex(nfa_start), free_gegex(dfa_start);
 	
 	if (true
 		&& tokenizer->token != t_semicolon
@@ -92,9 +70,13 @@ void read_grammar(
 		exit(e_syntax_error);
 	}
 	
+	free_gegex(nfa_start);
+	free_gegex(dfa_start);
+	
+	free_string(name);
+	
 	EXIT;
 }
-
 
 
 

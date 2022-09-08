@@ -1,14 +1,17 @@
 
 
-%start: root;
+%start: root #root;
 
 %skip: ' ';
 
-lit: `['0'-'9']+` | '(' root ')';
+highest: `['0' - '9']+` #literal | '(' root #subexpression ')' ;
 
-mul: lit (('*' | '/') mul)?;
+multiply: highest #left ('*' multiply #times | '/' multiply #divide)?;
 
-add: mul (('+' | '-') add)?;
+addition: multiply #left ('+' addition #add | '-' addition #minus)?;
 
-root: add;
+root: addition #root;
+
+
+
 

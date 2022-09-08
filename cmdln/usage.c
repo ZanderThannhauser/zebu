@@ -4,13 +4,11 @@
 
 #include <debug.h>
 
-#include <defines/argv0.h>
-
 #include "usage.h"
 
 void usage(int code)
 {
-	printf("usage: [-iopylMvh] %s -i <path/to/input.zb> -o <path/to/output/base>\n", argv0);
+	printf("usage: zebu -i <path/to/input.zb> -o <path/to/output/base>\n");
 	
 	exit(code);
 }

@@ -11,71 +11,49 @@ const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_sta
 	
 	// highest:
 		// character literal:
-		[ts_start]['\''] = ts_read_character_literal1,
-			[ts_read_character_literal1][ANY] = ts_read_character_literal2,
-			[ts_read_character_literal1]['\\'] = ts_read_character_escape,
-				[ts_read_character_escape]['\\'] = ts_read_character_literal2,
-				[ts_read_character_escape]['n'] = ts_read_character_literal2,
-				[ts_read_character_escape]['t'] = ts_read_character_literal2,
-				[ts_read_character_escape]['\''] = ts_read_character_literal2,
-				[ts_read_character_escape]['\"'] = ts_read_character_literal2,
-			[ts_read_character_literal2]['\''] = ts_read_character_literal3,
-			[ts_read_character_literal3][ANY] = ts_character_literal,
+		#include "../fragments/character_literal.h"
 		
 		// identifier:
-		[ts_start]['a' ... 'z'] = ts_reading_identifier,
-			[ts_reading_identifier][ANY] = ts_identifier,
-			[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
-			[ts_reading_identifier]['_'] = ts_reading_identifier,
+		#include "../fragments/identifier.h"
 		
 		// open paren:
-		[ts_start]['('] = ts_after_oparen,
-			[ts_after_oparen][ANY] = ts_oparen,
+		#include "../fragments/oparen.h"
 		
 	// prefixes:
 		// tilda:
-		[ts_start]['~'] = ts_after_tilda,
-			[ts_after_tilda][ANY] = ts_tilda,
+		#include "../fragments/tilda.h"
 	
 	// range:
 		// hypen:
-		[ts_start]['-'] = ts_after_hypen,
-			[ts_after_hypen][ANY] = ts_hypen,
+		#include "../fragments/hypen.h"
 	
 	// intersect:
 		// ampersand:
-		[ts_start]['&'] = ts_after_ampersand,
-			[ts_after_ampersand][ANY] = ts_ampersand,
+		#include "../fragments/ampersand.h"
 	
 	// symmetric difference:
 		// caret:
-		[ts_start]['^'] = ts_after_caret,
-			[ts_after_caret][ANY] = ts_caret,
+		#include "../fragments/caret.h"
 	
 	// union:
 		// vertical bar:
-		[ts_start]['|'] = ts_after_vertical_bar,
-			[ts_after_vertical_bar][ANY] = ts_vertical_bar,
+		#include "../fragments/vertical_bar.h"
+		
 		// comma:
-		[ts_start][','] = ts_after_comma,
-			[ts_after_comma][ANY] = ts_comma,
+		#include "../fragments/comma.h"
 	
 	// end of expression:
 	
 		// semicolon:
-		[ts_start][';'] = ts_after_semicolon,
-			[ts_after_semicolon][ANY] = ts_semicolon,
+		#include "../fragments/semicolon.h"
 		
 		// close paren:
-		[ts_start][')'] = ts_after_cparen,
-			[ts_after_cparen][ANY] = ts_cparen,
+		#include "../fragments/cparen.h"
 		
 		// close square:
-		[ts_start][']'] = ts_after_csquare,
-			[ts_after_csquare][ANY] = ts_csquare,
+		#include "../fragments/csquare.h"
 	
 };
-
 
 
 

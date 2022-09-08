@@ -1,25 +1,17 @@
 
 #include <debug.h>
 
-#include "complement.h"
+#include "4.complement.h"
 #include "root.h"
 
-struct charset* read_root_charset(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
+charset_t read_root_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct charset* retval = read_complement_charset(arena, tokenizer, scope);
-	#else
-	struct charset* retval = read_complement_charset(tokenizer, scope);
-	#endif
+	charset_t retval = read_complement_charset(tokenizer, scope);
 	
 	EXIT;
 	return retval;
 }
-

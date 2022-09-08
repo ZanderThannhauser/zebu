@@ -5,8 +5,6 @@
 struct lex_pair
 {
 	struct lex_state *a, *b;
-	
-	struct memory_arena* arena;
 };
 
 #endif

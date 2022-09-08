@@ -3,15 +3,9 @@
 
 #include <debug.h>
 
-/*#include <memory/sstrndup.h>*/
-
-/*#include "../private/append_prefix.h"*/
-
 #include <avl/insert.h>
 
-#include <named/gbundle/new.h>
-
-/*#include <named/name/new.h>*/
+#include <named/gegex/new.h>
 
 #include "../struct.h"
 
@@ -19,27 +13,19 @@
 
 void scope_declare_inline_grammar(
 	struct scope* this,
-	char* name,
-	struct gegex* start,
-	struct gegex* end)
+	struct string* name,
+	struct gegex* start)
 {
 	ENTER;
 	
 	dpvs(name);
-	dpv(start);
-	dpv(end);
 	
 	assert(this->layer);
 	
-	#ifdef WITH_ARENAS
-	avl_insert(this->layer->inline_grammar, new_named_gbundle(this->layer->arena, name, start, end));
-	#else
-	avl_insert(this->layer->inline_grammar, new_named_gbundle(name, start, end));
-	#endif
+	avl_insert(this->layer->inline_grammar, new_named_gegex(name, start));
 	
 	EXIT;
 }
-
 
 
 

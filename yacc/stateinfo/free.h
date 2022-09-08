@@ -1,4 +1,2 @@
 
-struct yacc_stateinfo;
-
-void free_yacc_stateinfo(struct yacc_stateinfo* this);
+void free_stateinfo(struct stateinfo* this);

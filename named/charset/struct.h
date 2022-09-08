@@ -1,14 +1,9 @@
 
-struct charset;
+#include <parser/charset/charset.h>
 
 struct named_charset
 {
-	char* name;
-	
-	struct charset* charset;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
+	struct string* name;
+	charset_t charset;
 };
 

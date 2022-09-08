@@ -1,4 +1,5 @@
 
+#if 0
 #include "../ANY.h"
 
 #include "comparision.h"
@@ -44,4 +45,4 @@ enum tokenizer_state comparision_machine[number_of_tokenizer_states][256] = {
 
 
 
-
+#endif

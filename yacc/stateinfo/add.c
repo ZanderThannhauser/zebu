@@ -1,29 +1,43 @@
 
 #include <debug.h>
 
-#include <avl/insert.h>
+#include <set/unsigned/update.h>
+#include <set/unsigned/free.h>
 
+#include "node/struct.h"
 #include "node/new.h"
 
 #include "struct.h"
 #include "add.h"
 
-void yacc_stateinfo_add(
-	struct yacc_stateinfo* this,
-	struct gegex* state,
-	const char* grammar,
-	struct tokenset* lookaheads)
-{
+struct stateinfo_node* stateinfo_add(
+	struct stateinfo* this,
+	struct trie* trie,
+	struct unsignedset* lookaheads // you're giving this to me
+) {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct yacc_stateinfo_node* node = new_yacc_stateinfo_node(this->arena, state, grammar, lookaheads);
-	#else
-	struct yacc_stateinfo_node* node = new_yacc_stateinfo_node(state, grammar, lookaheads);
-	#endif
+	struct avl_node_t* node = avl_search(this->tree, &trie);
 	
-	avl_insert(this->tree, node);
-	
-	EXIT;
+	if (node)
+	{
+		struct stateinfo_node* ele = node->item;
+		
+		unsignedset_update(ele->lookaheads, lookaheads);
+		
+		free_unsignedset(lookaheads);
+		
+		EXIT;
+		return NULL;
+	}
+	else
+	{
+		struct stateinfo_node* node = new_stateinfo_node(trie, lookaheads);
+		
+		avl_insert(this->tree, node);
+		
+		EXIT;
+		return node;
+	}
 }
 

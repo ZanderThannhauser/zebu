@@ -1,8 +1,7 @@
 
-struct charset;
-struct scope;
+#include <parser/charset/charset.h>
 
 void scope_declare_charset(
 	struct scope* this,
-	char* name,
-	struct charset* charset);
+	struct string* name,
+	charset_t charset);

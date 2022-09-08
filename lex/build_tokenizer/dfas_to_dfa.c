@@ -1,397 +1,240 @@
 
 #include <debug.h>
 
-#include <assert.h>
-#include <stdlib.h>
+#include <regex/state/struct.h>
+#include <regex/dotout.h>
 
-#include <arena/malloc.h>
-#include <arena/dealloc.h>
-#include <arena/calloc.h>
+#include <set/regex/foreach.h>
 
-#include <avl/alloc_tree.h>
-#include <avl/search.h>
-#include <avl/insert.h>
-#include <avl/free_tree.h>
-
-#include <lex/regex/state/struct.h>
-#include <lex/regex/dotout.h>
-
-#include <lex/state/add_transition.h>
-#include <lex/state/dotout.h>
 #include <lex/state/struct.h>
-#include <lex/state/set_default_transition.h>
-#include <lex/state/set_EOF_transition.h>
+#include <lex/state/new.h>
+#include <lex/state/dotout.h>
 
-#include <set/of_regexes/struct.h>
-#include <set/of_regexes/new.h>
-#include <set/of_regexes/add.h>
-#include <set/of_regexes/clear.h>
-#include <set/of_regexes/clone.h>
-#include <set/of_regexes/free.h>
-#include <set/of_regexes/foreach.h>
-#include <set/of_regexes/compare.h>
+#include <set/regex/new.h>
+#include <set/regex/compare.h>
+#include <set/regex/add.h>
+#include <set/regex/inc.h>
+#include <set/regex/free.h>
+#include <set/regex/len.h>
 
-#include <set/of_tokens/struct.h>
-#include <set/of_tokens/new.h>
-#include <set/of_tokens/add.h>
-#include <set/of_tokens/clear.h>
-#include <set/of_tokens/free.h>
+#include <heap/struct.h>
+#include <heap/len.h>
+#include <heap/new.h>
+#include <heap/push.h>
+#include <heap/pop.h>
+#include <heap/free.h>
 
-#include <set/of_tokensets/add.h>
+#include <set/unsigned/new.h>
+#include <set/unsigned/add.h>
+#include <set/unsigned/inc.h>
+#include <set/unsigned/len.h>
+#include <set/unsigned/clear.h>
+#include <set/unsigned/free.h>
 
-#include "../state/new.h"
+#include <set/unsignedset/new.h>
+#include <set/unsignedset/add.h>
 
 #include "dfas_to_dfa.h"
 
-struct dfas_to_dfa_node
+struct mapping
 {
-	struct regexset* states; // must be first
-	
-	struct lex_state* result;
-	
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena;
-	#endif
+	struct regexset* regexset; // must be first
+	struct lex_state* state;
 };
 
-static struct dfas_to_dfa_node* new_dfas_to_dfa_node(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	const struct regexset* const original_states,
-	struct lex_state* result)
+static struct mapping* new_mapping(
+	struct regexset* regexset,
+	struct lex_state* state)
 {
 	ENTER;
 	
-	#ifdef WITH_ARENAS
-	struct dfas_to_dfa_node* node = arena_malloc(arena, sizeof(*node));
-	#else
-	struct dfas_to_dfa_node* node = malloc(sizeof(*node));
-	#endif
+	struct mapping* this = smalloc(sizeof(*this));
 	
-	#ifdef WITH_ARENAS
-	node->states = regexset_clone(arena, original_states);
-	#else
-	node->states = regexset_clone(original_states);
-	#endif
+	this->regexset = inc_regexset(regexset);
 	
-	node->result = result;
-	
-	#ifdef WITH_ARENAS
-	node->arena = arena;
-	#endif
+	this->state = state;
 	
 	EXIT;
-	return node;
+	return this;
 }
 
-static int compare_dfas_to_dfa_nodes(
-	const void* a, const void* b)
+static int compare_mappings(const void* a, const void* b)
 {
-	int cmp = 0;
-	const struct dfas_to_dfa_node* A = a, *B = b;
+	const struct mapping *A = a, *B = b;
 	
-	cmp = compare_regexsets(A->states, B->states);
-	
-	return cmp;
+	return compare_regexsets(A->regexset, B->regexset);
 }
 
-static void free_dfas_to_dfa_node(void* ptr)
+static void free_mapping(void* ptr)
 {
-	struct dfas_to_dfa_node* const this = ptr;
-	ENTER;
+	struct mapping* mapping = ptr;
 	
-	free_regexset(this->states);
-	
-	#ifdef WITH_ARENAS
-	arena_dealloc(this->arena, this);
-	#else
-	free(this);
-	#endif
-	
-	EXIT;
+	free_regexset(mapping->regexset);
+	free(mapping);
 }
 
-static struct lex_state* helper(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct tokensetset* accepting,
-	struct avl_tree_t* cache,
-	struct regexset* states)
-{
-	struct lex_state* state;
-	ENTER;
-	
-	struct avl_node_t* node = avl_search(cache, &states);
-	
-	if (node)
-	{
-		struct dfas_to_dfa_node* cached = node->item;
-		assert(cached);
-		state = cached->result;
-	}
-	else
-	{
-		#ifdef WITH_ARENAS
-		state = new_lex_state(arena);
-		#else
-		state = new_lex_state();
-		#endif
-		
-		#ifdef WITH_ARENAS
-		avl_insert(cache, new_dfas_to_dfa_node(arena, states, state));
-		#else
-		avl_insert(cache, new_dfas_to_dfa_node(states, state));
-		#endif
-		
-		// accepting?
-		{
-			#ifdef WITH_ARENAS
-			struct tokenset* ts = new_tokenset(arena);
-			#else
-			struct tokenset* ts = new_tokenset();
-			#endif
-			unsigned prority;
-			
-			regexset_foreach(states, ({
-				void runme(struct regex* ele) {
-					if (ele->is_accepting)
-					{
-						if (!ts->n || prority < ele->priority)
-						{
-							prority = ele->priority;
-							tokenset_clear(ts);
-							tokenset_add(ts, ele->is_accepting);
-						}
-						else if (prority == ele->priority)
-						{
-							tokenset_add(ts, ele->is_accepting);
-						}
-					}
-					
-				}
-				runme;
-			}));
-			
-			if (ts->n)
-			{
-				struct tokenset* st;
-				
-				if ((st = tokensetset_add(accepting, ts)))
-					state->accepting = st;
-				else
-					state->accepting = ts, ts = NULL;
-			}
-			
-			free_tokenset(ts);
-		}
-		
-		// merge transitions and sub-states:
-		{
-			#ifdef WITH_ARENAS
-			unsigned *positions = arena_calloc(arena, states->n, sizeof(unsigned));
-			#else
-			unsigned *positions = calloc(states->n, sizeof(unsigned));
-			#endif
-			
-			unsigned value;
-			#ifdef WITH_ARENAS
-			struct regexset* subset = new_regexset(arena);
-			#else
-			struct regexset* subset = new_regexset();
-			#endif
-			
-			while (({
-				value = -1, regexset_clear(subset);
-				
-				for (unsigned i = 0, n = states->n; i < n; i++)
-				{
-					dpv(i);
-					
-					struct regex* ele = states->data[i];
-					
-					dpv(positions[i]);
-					dpv(ele->transitions.n);
-					
-					unsigned pi = positions[i];
-					if (pi < ele->transitions.n)
-					{
-						dpv(ele->transitions.data[pi]);
-						
-						unsigned evalue = ele->transitions.data[pi]->value;
-						
-						dpv(evalue);
-						
-						if (evalue < value)
-						{
-							dpv(ele->transitions.data[pi]->to);
-							
-							regexset_clear(subset);
-							regexset_add(subset, ele->transitions.data[pi]->to);
-							
-							value = evalue;
-						}
-						else if (evalue == value)
-						{
-							dpv(ele->transitions.data[pi]->to);
-							regexset_add(subset, ele->transitions.data[pi]->to);
-						}
-					}
-				}
-				
-				dpv(subset->n);
-				
-				subset->n;
-			}))
-			{
-				dpv(value);
-				
-				// call myself:
-				#ifdef WITH_ARENAS
-				struct lex_state* substate = helper(arena, accepting, cache, subset);
-				#else
-				struct lex_state* substate = helper(accepting, cache, subset);
-				#endif
-				
-				// create new transition:
-				lex_state_add_transition(state, value, substate);
-				
-				// move positions:
-				for (unsigned i = 0, n = states->n; i < n; i++)
-				{
-					if (true
-						&& positions[i] < states->data[i]->transitions.n
-						&& states->data[i]->transitions.data[positions[i]]->value == value)
-					{
-						positions[i]++;
-					}
-				}
-			}
-			
-			free_regexset(subset);
-			#ifdef WITH_ARENAS
-			arena_dealloc(arena, positions);
-			#else
-			free(positions);
-			#endif
-		}
-		
-		// handle default_transition_to:
-		{
-			#ifdef WITH_ARENAS
-			struct regexset* rs = new_regexset(arena);
-			#else
-			struct regexset* rs = new_regexset();
-			#endif
-			
-			regexset_foreach(states, ({
-				void runme(struct regex* ele) {
-					if (ele->default_transition_to) {
-						regexset_add(rs, ele->default_transition_to);
-					}
-				}
-				runme;
-			}));
-			
-			if (rs->n)
-			{
-				// call myself:
-				#ifdef WITH_ARENAS
-				struct lex_state* substate = helper(arena, accepting, cache, rs);
-				#else
-				struct lex_state* substate = helper(accepting, cache, rs);
-				#endif
-				
-				// create new transition:
-				lex_state_set_default_transition(state, substate);
-			}
-			
-			free_regexset(rs);
-		}
-		
-		// handle EOF transitions:
-		{
-			#ifdef WITH_ARENAS
-			struct regexset* rs = new_regexset(arena);
-			#else
-			struct regexset* rs = new_regexset();
-			#endif
-			
-			regexset_foreach(states, ({
-				void runme(struct regex* ele) {
-					if (ele->EOF_transition_to) {
-						regexset_add(rs, ele->EOF_transition_to);
-					}
-				}
-				runme;
-			}));
-			
-			if (rs->n)
-			{
-				// call myself:
-				#ifdef WITH_ARENAS
-				struct lex_state* substate = helper(arena, accepting, cache, rs);
-				#else
-				struct lex_state* substate = helper(accepting, cache, rs);
-				#endif
-				
-				// create new transition:
-				lex_state_set_EOF_transition(state, substate);
-			}
-			
-			free_regexset(rs);
-		}
-	}
-	
-	EXIT;
-	return state;
-}
-
-struct lex_state* dfas_to_dfa(
-	#ifdef WITH_ARENAS
-	struct memory_arena* arena,
-	#endif
-	struct tokensetset* accepting,
+struct unsignedsetset* dfas_to_dfa(
+	struct lex_state** outgoing,
 	struct regexset* starts)
 {
 	ENTER;
 	
 	#ifdef DOTOUT
-	regex_dotout_set(starts);
+	regex_dotout_set(starts, __PRETTY_FUNCTION__);
 	#endif
 	
-	#ifdef WITH_ARENAS
-	struct avl_tree_t* cache = avl_alloc_tree(arena, compare_dfas_to_dfa_nodes, free_dfas_to_dfa_node);
-	#else
-	struct avl_tree_t* cache = avl_alloc_tree(compare_dfas_to_dfa_nodes, free_dfas_to_dfa_node);
-	#endif
+	struct quack* todo = new_quack();
 	
-	#ifdef WITH_ARENAS
-	struct lex_state* new = helper(arena, accepting, cache, starts);
-	#else
-	struct lex_state* new = helper(accepting, cache, starts);
-	#endif
+	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
+	
+	struct unsignedsetset* all_accepts = new_unsignedsetset();
+	
+	struct lex_state* start = new_lex_state();
+	
+	{
+		struct mapping* new = new_mapping(starts, start);
+		
+		quack_append(todo, new);
+		
+		avl_insert(mappings, new);
+	}
 	
 	#ifdef DOTOUT
-	lex_state_dotout(new);
+	lex_state_dotout(start);
 	#endif
 	
-	avl_free_tree(cache);
+	while (quack_len(todo))
+	{
+		struct mapping* const mapping = quack_pop(todo);
+		
+		struct regexset* const stateset = mapping->regexset;
+		
+		struct lex_state* const state = mapping->state;
+		
+		bool is_literal = false;
+		
+		struct unsignedset* accepts = new_unsignedset();
+		
+		regexset_foreach(stateset, ({
+			void runme(struct regex* substate)
+			{
+				if (substate->is_accepting)
+				{
+					if (substate->is_literal > is_literal)
+					{
+						unsignedset_clear(accepts);
+						unsignedset_add(accepts, substate->is_accepting);
+						is_literal = substate->is_literal;
+					}
+					else if (substate->is_literal == is_literal)
+					{
+						unsignedset_add(accepts, substate->is_accepting);
+					}
+				}
+			}
+			runme;
+		}));
+		
+		if (unsignedset_len(accepts))
+		{
+			unsignedsetset_add(all_accepts, accepts);
+			
+			state->accepts = inc_unsignedset(accepts);
+		}
+		
+		// normal transitions:
+		for (unsigned i = 0, n = 256; i < n; i++)
+		{
+			struct regexset* subregexset = new_regexset();
+			
+			regexset_foreach(stateset, ({
+				void runme(struct regex* substate) {
+					struct regex* to = substate->transitions[i];
+					if (to) regexset_add(subregexset, to);
+				}
+				runme;
+			}));
+			
+			if (regexset_len(subregexset))
+			{
+				struct avl_node_t* node = avl_search(mappings, &subregexset);
+				
+				if (node)
+				{
+					struct mapping* old = node->item;
+					
+					state->transitions[i] = old->state;
+				}
+				else
+				{
+					struct lex_state* substate = new_lex_state();
+					
+					struct mapping* new = new_mapping(subregexset, substate);
+					
+					state->transitions[i] = substate;
+					
+					quack_append(todo, new);
+					
+					avl_insert(mappings, new);
+				}
+			}
+			
+			free_regexset(subregexset);
+		}
+		
+		// EOF transitions:
+		{
+			struct regexset* subregexset = new_regexset();
+			
+			regexset_foreach(stateset, ({
+				void runme(struct regex* substate) {
+					struct regex* to = substate->EOF_transition_to;
+					if (to) regexset_add(subregexset, to);
+				}
+				runme;
+			}));
+			
+			if (regexset_len(subregexset))
+			{
+				struct avl_node_t* node = avl_search(mappings, &subregexset);
+				
+				if (node)
+				{
+					struct mapping* old = node->item;
+					
+					state->EOF_transition_to = old->state;
+				}
+				else
+				{
+					struct lex_state* substate = new_lex_state();
+					
+					struct mapping* new = new_mapping(subregexset, substate);
+					
+					state->EOF_transition_to = substate;
+					
+					quack_append(todo, new);
+					
+					avl_insert(mappings, new);
+				}
+			}
+			
+			free_regexset(subregexset);
+		}
+		
+		#ifdef DOTOUT
+		lex_state_dotout(start);
+		#endif
+	}
+	
+	avl_free_tree(mappings);
+	
+	free_quack(todo);
+	
+	*outgoing = start;
 	
 	EXIT;
-	return new;
+	return all_accepts;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

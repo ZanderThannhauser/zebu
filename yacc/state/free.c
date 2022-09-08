@@ -1,113 +1,100 @@
 
-#ifdef WITHOUT_ARENAS
-
-#include <assert.h>
-#include <stdlib.h>
 #include <debug.h>
+
+#include <set/yaccstate/new.h>
+#include <set/yaccstate/add.h>
+#include <set/yaccstate/free.h>
+
+#include <set/lexstate/new.h>
+#include <set/lexstate/free.h>
 
 #include <lex/state/free.h>
 
-#include <arena/dealloc.h>
+#include <set/unsigned/free.h>
 
-#include <tree/of_ystates/new.h>
-#include <tree/of_ystates/add.h>
-#include <tree/of_ystates/free.h>
+#include <yacc/reductioninfo/free.h>
 
-#include <tree/of_lstates/new.h>
-#include <tree/of_lstates/free.h>
+#include <yacc/structinfo/free.h>
 
 #include "struct.h"
 #include "free.h"
 
-static void helper(
-	struct ystatetree* yfreed,
-	struct lstatetree* lfreed,
-	struct yacc_state* this)
+void free_yacc_state(struct yacc_state* start)
 {
 	ENTER;
 	
-	if (ystatetree_add(yfreed, this))
+	struct yaccstateset* yacc_queued = new_yaccstateset();
+	
+	struct lexstateset* lex_queued = new_lexstateset();
+	
+	struct quack* todo = new_quack();
+	
+	yaccstateset_add(yacc_queued, start);
+	
+	quack_append(todo, start);
+	
+	while (quack_len(todo))
 	{
-		for (unsigned i = 0, n = this->transitions.n; i < n; i++)
+		struct yacc_state* state = quack_pop(todo);
+		
+		free_lex_state(lex_queued, state->tokenizer_start);
+		
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
-			struct ytransition* ele = this->transitions.data[i];
+			struct yacc_state_transition* const ele = state->transitions.data[i];
 			
-			helper(yfreed, lfreed, ele->to);
+			free_unsignedset(ele->on);
+			
+			if (yaccstateset_add(yacc_queued, ele->to))
+				quack_append(todo, ele->to);
 			
 			free(ele);
 		}
 		
-		for (unsigned i = 0, n = this->reduction_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
 		{
-			struct rytransition* ele = this->reduction_transitions.data[i];
+			struct yacc_state_grammar_transition* const ele = state->grammar_transitions.data[i];
 			
-			free(ele->reduce_as);
+			free_string(ele->grammar);
+			
+			if (yaccstateset_add(yacc_queued, ele->to))
+				quack_append(todo, ele->to);
 			
 			free(ele);
 		}
 		
-		for (unsigned i = 0, n = this->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->reduce_transitions.n; i < n; i++)
 		{
-			struct gytransition* ele = this->grammar_transitions.data[i];
+			struct yacc_state_reduce_transition* const ele = state->reduce_transitions.data[i];
 			
-			helper(yfreed, lfreed, ele->to);
+			free_unsignedset(ele->on);
 			
-			free(ele->grammar);
+			free_string(ele->reduce_as);
+			
+			free_reductioninfo(ele->reductioninfo);
+			
+			free_structinfo(ele->structinfo);
+			
 			free(ele);
 		}
 		
-		if (this->tokenizer_start)
-		{
-			free_lex_state(lfreed, this->tokenizer_start);
-		}
+		free(state->transitions.data);
 		
-		free(this->transitions.data);
-		free(this->reduction_transitions.data);
-		free(this->grammar_transitions.data);
-		free(this);
+		free(state->grammar_transitions.data);
+		
+		free(state->reduce_transitions.data);
+		
+		free(state);
 	}
+	
+	free_yaccstateset(yacc_queued);
+	
+	free_lexstateset(lex_queued);
+	
+	free_quack(todo);
 	
 	EXIT;
 }
-
-void free_yacc_state(
-	struct yacc_state* this)
-{
-	ENTER;
-	
-	if (this)
-	{
-		struct ystatetree* yfreed = new_ystatetree();
-		struct lstatetree* lfreed = new_lstatetree();
-		
-		helper(yfreed, lfreed, this);
-		
-		free_ystatetree(yfreed);
-		free_lstatetree(lfreed);
-	}
-	
-	EXIT;
-}
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -50,6 +50,9 @@ enum token
 	t_parenthesised_identifier,
 	t_directive,
 	
+	t_hashtag_scalar,
+	t_hashtag_array,
+	
 	t_identifier,
 	
 	number_of_tokens,
