@@ -3,13 +3,6 @@
 
 #include <avl/tree_t.h>
 
-#ifdef VERBOSE
-#include <unistd.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <misc/default_sighandler.h>
-#endif
-
 #include "struct.h"
 #include "print_source.h"
 

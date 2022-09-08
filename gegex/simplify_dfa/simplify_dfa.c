@@ -1,16 +1,22 @@
 
-#include <string.h>
-#include <inttypes.h>
-#include <stdio.h>
-#include <assert.h>
-#include <unistd.h>
-#include <stdlib.h>
+/*#include <string.h>*/
+/*#include <inttypes.h>*/
+/*#include <stdio.h>*/
+/*#include <assert.h>*/
+/*#include <unistd.h>*/
+/*#include <stdlib.h>*/
 
 #include <debug.h>
 
-#include <avl/foreach.h>
+#include <string/are_equal.h>
 
-#include <set/gegex/struct.h>
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/foreach.h>
+#include <avl/free_tree.h>
+
+/*#include <set/gegex/struct.h>*/
 #include <set/gegex/new.h>
 #include <set/gegex/foreach.h>
 #include <set/gegex/clone.h>
@@ -22,10 +28,10 @@
 #include <heap/push.h>
 #include <heap/free.h>
 
-#include <yacc/structinfo/are_equal.h>
-
 #include <gegex/state/struct.h>
-#include <gegex/dotout.h>
+/*#include <gegex/dotout.h>*/
+
+#include <yacc/structinfo/are_equal.h>
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/compare.h"
@@ -39,17 +45,6 @@
 #include "task/new.h"
 #include "task/compare.h"
 #include "task/free.h"
-
-#ifdef VERBOSE
-/*#include <unistd.h>*/
-/*#include <signal.h>*/
-/*#include <string.h>*/
-/*#include <stdlib.h>*/
-/*#include <tree/of_gegexes/struct.h>*/
-/*#include <macros/N.h>*/
-/*#include <macros/max.h>*/
-#include <misc/default_sighandler.h>
-#endif
 
 #include "mark_as_unequal.h"
 #include "dotout.h"

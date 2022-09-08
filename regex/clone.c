@@ -9,15 +9,11 @@
 /*#include <avl/free_tree.h>*/
 /*#include <avl/alloc_tree.h>*/
 
-#include <set/regex/foreach.h>
+/*#include <set/regex/foreach.h>*/
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
-
-#include "state/struct.h"
-#include "state/new.h"
-#include "state/add_lambda_transition.h"
+/*#include "state/struct.h"*/
+/*#include "state/new.h"*/
+/*#include "state/add_lambda_transition.h"*/
 
 #include "clone.h"
 

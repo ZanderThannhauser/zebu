@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <debug.h>
 
+#include <memory/smalloc.h>
+#include <memory/srealloc.h>
+
 #include <yacc/structinfo/inc.h>
 
 #include "struct.h"

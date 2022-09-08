@@ -1,6 +1,9 @@
 
 #include <debug.h>
 
+#include <avl/search.h>
+#include <avl/insert.h>
+
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/new.h"
 

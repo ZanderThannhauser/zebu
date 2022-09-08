@@ -4,19 +4,10 @@
 
 #include <debug.h>
 
-/*#include <avl/search.h>*/
-/*#include <avl/free_tree.h>*/
-/*#include <avl/alloc_tree.h>*/
-/*#include <avl/insert.h>*/
+/*#include "state/struct.h"*/
+/*#include "state/new.h"*/
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
-
-#include "state/struct.h"
-#include "state/new.h"
-
-#include "dotout.h"
+/*#include "dotout.h"*/
 
 #include "intersect_dfas.h"
 

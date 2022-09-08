@@ -1,38 +1,52 @@
 
+#include <stdbool.h>
+#include <stdlib.h>
+
 #include <debug.h>
 
-#include <regex/state/struct.h>
-#include <regex/dotout.h>
+#include <memory/smalloc.h>
 
-#include <set/regex/foreach.h>
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
 
-#include <lex/state/struct.h>
-#include <lex/state/new.h>
-#include <lex/state/dotout.h>
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
+/*#include <heap/len.h>*/
+/*#include <heap/new.h>*/
+/*#include <heap/push.h>*/
+/*#include <heap/pop.h>*/
+/*#include <heap/free.h>*/
 
 #include <set/regex/new.h>
 #include <set/regex/compare.h>
 #include <set/regex/add.h>
 #include <set/regex/inc.h>
 #include <set/regex/free.h>
+#include <set/regex/foreach.h>
 #include <set/regex/len.h>
-
-#include <heap/struct.h>
-#include <heap/len.h>
-#include <heap/new.h>
-#include <heap/push.h>
-#include <heap/pop.h>
-#include <heap/free.h>
 
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/inc.h>
 #include <set/unsigned/len.h>
 #include <set/unsigned/clear.h>
-#include <set/unsigned/free.h>
+/*#include <set/unsigned/free.h>*/
 
 #include <set/unsignedset/new.h>
 #include <set/unsignedset/add.h>
+
+#include <lex/state/struct.h>
+#include <lex/state/new.h>
+/*#include <lex/state/dotout.h>*/
+
+#include <regex/state/struct.h>
+/*#include <regex/dotout.h>*/
 
 #include "dfas_to_dfa.h"
 

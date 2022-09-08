@@ -4,10 +4,18 @@
 
 #include <debug.h>
 
-/*#include <avl/alloc_tree.h>*/
-/*#include <avl/search.h>*/
-/*#include <avl/insert.h>*/
-/*#include <avl/free_tree.h>*/
+#include <memory/smalloc.h>
+
+#include <avl/alloc_tree.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <set/lexstate/struct.h>
 
@@ -16,10 +24,6 @@
 #include <set/yaccstate/free.h>
 
 #include <yacc/state/struct.h>
-
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
 
 #include "../state/struct.h"
 #include "../state/new.h"

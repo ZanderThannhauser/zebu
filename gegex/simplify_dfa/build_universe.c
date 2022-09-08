@@ -3,11 +3,13 @@
 
 #include <debug.h>
 
-#include <set/gegex/add.h>
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
+#include <set/gegex/add.h>
 
 #include "../state/struct.h"
 

@@ -5,52 +5,34 @@
 
 #include <debug.h>
 
-#include <avl/foreach.h>
+/*#include <avl/foreach.h>*/
 
-#include <set/regex/new.h>
+/*#include <set/regex/new.h>*/
+/*#include <set/regex/clone.h>*/
+/*#include <set/regex/foreach.h>*/
 /*#include <set/regex/free.h>*/
-#include <set/regex/clone.h>
-#include <set/regex/foreach.h>
-#include <set/regex/free.h>
 
-#include <heap/new.h>
-#include <heap/pop.h>
-#include <heap/push.h>
-#include <heap/is_nonempty.h>
-#include <heap/free.h>
+/*#include <heap/new.h>*/
+/*#include <heap/pop.h>*/
+/*#include <heap/push.h>*/
+/*#include <heap/is_nonempty.h>*/
+/*#include <heap/free.h>*/
 
-/*#include <regex/state/struct.h>*/
-/*#include <regex/dotout.h>*/
+/*#include "../dotout.h"*/
+/*#include "../state/struct.h"*/
 
-#ifdef VERBOSE
-/*#include <unistd.h>*/
-/*#include <signal.h>*/
-/*#include <string.h>*/
-/*#include <stdlib.h>*/
-#include <set/regex/struct.h>
-#include <heap/len.h>
-#include <macros/N.h>
-/*#include <macros/max.h>*/
-/*#include <defines/argv0.h>*/
-#include <misc/default_sighandler.h>
-#include <misc/colors.h>
-#endif
+/*#include "dependent_of_node/struct.h"*/
+/*#include "dependent_of_node/compare.h"*/
+/*#include "dependent_of_node/free.h"*/
 
-#include "../dotout.h"
-#include "../state/struct.h"
+/*#include "same_as_node/new.h"*/
+/*#include "same_as_node/compare.h"*/
+/*#include "same_as_node/free.h"*/
 
-#include "dependent_of_node/struct.h"
-#include "dependent_of_node/compare.h"
-#include "dependent_of_node/free.h"
-
-#include "same_as_node/new.h"
-#include "same_as_node/compare.h"
-#include "same_as_node/free.h"
-
-#include "task/struct.h"
-#include "task/new.h"
-#include "task/compare.h"
-#include "task/free.h"
+/*#include "task/struct.h"*/
+/*#include "task/new.h"*/
+/*#include "task/compare.h"*/
+/*#include "task/free.h"*/
 
 #include "mark_as_unequal.h"
 #include "dotout.h"

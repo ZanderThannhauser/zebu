@@ -12,7 +12,6 @@
 #include <enums/error.h>
 
 #include "usage.h"
-#include "minimize_lexer.h"
 #include "verbose.h"
 #include "input_path.h"
 #include "output_path.h"

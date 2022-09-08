@@ -1,15 +1,7 @@
 
 #include <debug.h>
 
-#include <avl/tree_t.h>
-
-#ifdef VERBOSE
-/*#include <unistd.h>*/
-/*#include <stdlib.h>*/
-/*#include <cmdln/verbose.h>*/
-/*#include <signal.h>*/
-#include <misc/default_sighandler.h>
-#endif
+/*#include <avl/tree_t.h>*/
 
 #include "struct.h"
 #include "print_source.h"

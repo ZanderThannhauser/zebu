@@ -1,28 +1,24 @@
 
-#include <stdlib.h>
-#include <assert.h>
+/*#include <stdlib.h>*/
+/*#include <assert.h>*/
 
 #include <debug.h>
 
 /*#include <memory/smalloc.h>*/
 
-#include <set/regex/struct.h>
+/*#include <set/regex/struct.h>*/
 
-#include <avl/alloc_tree.h>
-#include <avl/search.h>
-#include <avl/insert.h>
-#include <avl/free_tree.h>
+/*#include <avl/alloc_tree.h>*/
+/*#include <avl/search.h>*/
+/*#include <avl/insert.h>*/
+/*#include <avl/free_tree.h>*/
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
+/*#include "../state/struct.h"*/
+/*#include "../state/new.h"*/
 
-#include "../state/struct.h"
-#include "../state/new.h"
+/*#include "../dotout.h"*/
 
-#include "../dotout.h"
-
-#include "same_as_node/struct.h"
+/*#include "same_as_node/struct.h"*/
 
 #include "clone.h"
 

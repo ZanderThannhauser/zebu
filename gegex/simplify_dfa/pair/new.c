@@ -4,12 +4,13 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include "struct.h"
 #include "new.h"
 
-struct gegex_pair* new_gegex_pair(
-	struct gegex* a, struct gegex* b
-) {
+struct gegex_pair* new_gegex_pair(struct gegex* a, struct gegex* b)
+{
 	ENTER;
 	
 	struct gegex_pair* this = smalloc(sizeof(*this));

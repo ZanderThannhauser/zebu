@@ -1,6 +1,9 @@
 
 #include <stdlib.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
 
 #include <set/unsigned/inc.h>
 

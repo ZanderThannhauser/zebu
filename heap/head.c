@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include "struct.h"
@@ -6,6 +8,7 @@
 
 void* heap_head(const struct heap* this)
 {
-	TODO;
+	assert(this->n);
+	return this->data[0];
 }
 

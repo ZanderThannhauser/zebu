@@ -5,15 +5,15 @@
 
 #include <debug.h>
 
-/*#include <avl/alloc_tree.h>*/
+#include <avl/alloc_tree.h>
 #include <avl/foreach.h>
-/*#include <avl/insert.h>*/
-/*#include <avl/search.h>*/
-/*#include <avl/free_tree.h>*/
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
 
 #include <heap/new.h>
-#include <heap/is_nonempty.h>
 #include <heap/push.h>
+#include <heap/len.h>
 #include <heap/pop.h>
 #include <heap/free.h>
 
@@ -24,22 +24,10 @@
 
 #include <set/unsigned/compare.h>
 
-#ifdef VERBOSE
-#include <heap/len.h>
-/*#include <cmdln/verbose.h>*/
-/*#include <defines/argv0.h>*/
-/*#include <unistd.h>*/
-/*#include <signal.h>*/
-/*#include <stdlib.h>*/
-/*#include <misc/colors.h>*/
-/*#include <macros/N.h>*/
-#include <misc/default_sighandler.h>
-#include <set/lexstate/len.h>
-#endif
-
 /*#include "../struct.h"*/
 #include "../state/struct.h"
 #include "../state/free.h"
+
 /*#include "../build_tokenizer/node/struct.h"*/
 
 #include "dependent_of_node/struct.h"
@@ -208,7 +196,7 @@ void lex_minimize_lexer(
 	signal(SIGALRM, handler2);
 	#endif
 	
-	while (is_heap_nonempty(todo))
+	while (heap_len(todo))
 	{
 		struct lex_simplify_task* task = heap_pop(todo);
 		

@@ -1,8 +1,5 @@
 
 #include <assert.h>
-#include <signal.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 
 #include <debug.h>
@@ -20,12 +17,11 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
+#include <gegex/state/struct.h>
+#include <gegex/state/new.h>
 
-#include "state/struct.h"
-#include "state/new.h"
+/*#include "state/struct.h"*/
+/*#include "state/new.h"*/
 #include "state/add_transition.h"
 #include "state/add_grammar_transition.h"
 

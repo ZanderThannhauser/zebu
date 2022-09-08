@@ -1,19 +1,22 @@
 
-#include <assert.h>
+/*#include <assert.h>*/
 
 #include <debug.h>
+
+#include <avl/foreach.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <lex/state/struct.h>
 
 #include <set/lexstate/new.h>
 #include <set/lexstate/add.h>
 
-#include <avl/foreach.h>
-
-#ifdef VERBOSE
-#include <quack/len.h>
-#include <misc/default_sighandler.h>
-#endif
+/*#include <avl/foreach.h>*/
 
 #include "../struct.h"
 

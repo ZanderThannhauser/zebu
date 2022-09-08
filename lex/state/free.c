@@ -1,9 +1,14 @@
 
 #include <stdlib.h>
-
 #include <assert.h>
 
 #include <debug.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <set/lexstate/add.h>
 

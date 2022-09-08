@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <avl/alloc_tree.h>
 
 #include "../pair/compare.h"

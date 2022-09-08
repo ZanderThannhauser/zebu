@@ -3,38 +3,22 @@
 
 #include <debug.h>
 
-/*#include <avl/alloc_tree.h>*/
-/*#include <avl/free_tree.h>*/
+/*#include <heap/len.h>*/
+/*#include <heap/new.h>*/
+/*#include <heap/push.h>*/
+/*#include <heap/pop.h>*/
+/*#include <heap/free.h>*/
 
-#include <heap/struct.h>
-#include <heap/len.h>
-#include <heap/new.h>
-#include <heap/push.h>
-#include <heap/pop.h>
-#include <heap/free.h>
+/*#include <set/regex/new.h>*/
+/*#include <set/regex/add.h>*/
+/*#include <set/regex/foreach.h>*/
+/*#include <set/regex/compare.h>*/
+/*#include <set/regex/free.h>*/
+/*#include <set/regex/len.h>*/
+/*#include <set/regex/inc.h>*/
 
-#include <set/regex/new.h>
-#include <set/regex/add.h>
-#include <set/regex/foreach.h>
-#include <set/regex/compare.h>
-#include <set/regex/free.h>
-#include <set/regex/len.h>
-#include <set/regex/inc.h>
-
-/*#include <named/regexset/compare.h>*/
-/*#include <named/regexset/free.h>*/
-
-#ifdef VERBOSE
-/*#include <stdio.h>*/
-/*#include <unistd.h>*/
-/*#include <stdlib.h>*/
-/*#include <signal.h>*/
-/*#include <string.h>*/
-#include <misc/default_sighandler.h>
-#endif
-
-#include "state/struct.h"
-#include "state/new.h"
+/*#include "state/struct.h"*/
+/*#include "state/new.h"*/
 
 #ifdef DOTOUT
 #include "dotout.h"

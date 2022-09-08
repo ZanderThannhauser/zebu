@@ -1,22 +1,17 @@
 
-
 #include <assert.h>
 
 #include <debug.h>
 
-#include <set/regex/contains.h>
-#include <set/regex/add.h>
+/*#include <set/regex/contains.h>*/
+/*#include <set/regex/add.h>*/
 
-#include <quack/new.h>
-#include <quack/append.h>
-#include <quack/pop.h>
-#include <quack/free.h>
+/*#include <quack/new.h>*/
+/*#include <quack/append.h>*/
+/*#include <quack/pop.h>*/
+/*#include <quack/free.h>*/
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
-
-#include "../state/struct.h"
+/*#include "../state/struct.h"*/
 
 #include "build_universe.h"
 

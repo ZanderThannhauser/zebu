@@ -64,16 +64,7 @@ int main(int argc, char* argv[])
 	
 	out(parser);
 	
-<<<<<<< HEAD
-	struct yacc_state* parser = yacc(
-		#ifdef WITH_ARENAS
-		grammar_arena, token_arena,
-		tokenizer_arena, parser_arena,
-		#endif
-		lex, grammar);
-=======
 	free_yacc_state(parser);
->>>>>>> dev
 	
 	avl_free_tree(grammar);
 	

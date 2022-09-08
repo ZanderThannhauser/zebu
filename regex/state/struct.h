@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 struct regex
 {
 	struct regex* transitions[256];

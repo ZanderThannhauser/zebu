@@ -1,8 +1,5 @@
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
 
 #include <debug.h>
 
@@ -16,17 +13,18 @@
 #include <avl/search.h>
 #include <avl/free_tree.h>
 
+#include <heap/new.h>
+#include <heap/push.h>
+#include <heap/len.h>
+#include <heap/head.h>
+#include <heap/pop.h>
+#include <heap/free.h>
+
 #include <quack/new.h>
 #include <quack/append.h>
 #include <quack/len.h>
 #include <quack/pop.h>
 #include <quack/free.h>
-
-#include <gegex/state/struct.h>
-#include <gegex/state/new.h>
-#include <gegex/state/add_transition.h>
-#include <gegex/state/add_grammar_transition.h>
-#include <gegex/dotout.h>
 
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
@@ -34,20 +32,15 @@
 #include <set/gegex/compare.h>
 #include <set/gegex/free.h>
 
-#include <heap/struct.h>
-#include <heap/len.h>
-#include <heap/new.h>
-#include <heap/push.h>
-#include <heap/pop.h>
-#include <heap/free.h>
+#include <gegex/state/struct.h>
+#include <gegex/state/new.h>
+#include <gegex/state/add_transition.h>
+#include <gegex/state/add_grammar_transition.h>
+/*#include <gegex/dotout.h>*/
 
 #include <yacc/structinfo/new.h>
 #include <yacc/structinfo/update.h>
 #include <yacc/structinfo/free.h>
-
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
 
 #include "nfa_to_dfa.h"
 
@@ -240,7 +233,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				
 				struct gegex_transition* transition;
 				
-				unsigned min_token = (transition = (iterator = heap->data[0])->i[0])->token;
+				unsigned min_token = (transition = (iterator = heap_head(heap))->i[0])->token;
 				
 				dpv(min_token);
 				
@@ -248,7 +241,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				
 				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 				
-				while (heap->n && (transition = (iterator = heap->data[0])->i[0])->token == min_token)
+				while (heap_len(heap) && (transition = (iterator = heap_head(heap))->i[0])->token == min_token)
 				{
 					heap_pop(heap);
 					
@@ -337,19 +330,19 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				runme;
 			}));
 			
-			while (heap->n)
+			while (heap_len(heap))
 			{
 				struct iterator* iterator;
 				
 				struct gegex_grammar_transition* transition;
 				
-				struct string* min_grammar = (transition = (iterator = heap->data[0])->i[0])->grammar;
+				struct string* min_grammar = (transition = (iterator = heap_head(heap))->i[0])->grammar;
 				
 				struct gegexset* subgegexset = new_gegexset();
 				
 				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 				
-				while (heap->n && strings_are_equal((transition = (iterator = heap->data[0])->i[0])->grammar, min_grammar))
+				while (heap_len(heap) && strings_are_equal((transition = (iterator = heap_head(heap))->i[0])->grammar, min_grammar))
 				{
 					heap_pop(heap);
 					

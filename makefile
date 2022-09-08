@@ -34,9 +34,6 @@ CFLAGS += -Wno-unused-function
 CFLAGS += -Wno-unused-but-set-variable
 CFLAGS += -Wno-unused-label
 
-#CFLAGS += -pg
-#LDFLAGS += -pg
-
 else
 $(error "invalid buildtype!");
 endif

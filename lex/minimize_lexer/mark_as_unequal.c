@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <avl/search.h>
+
 #include <set/lexstate/contains.h>
 #include <set/lexstate/discard.h>
 

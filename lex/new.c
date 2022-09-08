@@ -3,7 +3,7 @@
 
 #include <debug.h>
 
-/*#include <avl/alloc_tree.h>*/
+#include <avl/alloc_tree.h>
 
 #include <memory/smalloc.h>
 

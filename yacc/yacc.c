@@ -1,67 +1,52 @@
 
 #include <debug.h>
 
-#include <avl/foreach.h>
+/*#include <avl/foreach.h>*/
 
-#include <cmdln/minimize_lexer.h>
+/*#include <cmdln/minimize_lexer.h>*/
 
-<<<<<<< HEAD
-#include <cmdln/minimize_lexer.h>
+/*#include <named/gegex/struct.h>*/
 
-#include <lex/struct.h>
-=======
-#include <named/gegex/struct.h>
->>>>>>> dev
+/*#include <lex/struct.h>*/
+/*#include <lex/build_tokenizer/build_tokenizer.h>*/
+/*#include <lex/minimize_lexer/minimize_lexer.h>*/
 
-#include <lex/struct.h>
-#include <lex/build_tokenizer/build_tokenizer.h>
-#include <lex/minimize_lexer/minimize_lexer.h>
+/*#include <set/unsigned/head.h>*/
+/*#include <set/unsigned/new.h>*/
+/*#include <set/unsigned/add.h>*/
+/*#include <set/unsigned/clone.h>*/
+/*#include <set/unsigned/foreach.h>*/
+/*#include <set/unsigned/free.h>*/
 
-#include <set/unsigned/head.h>
-#include <set/unsigned/new.h>
-#include <set/unsigned/add.h>
-#include <set/unsigned/clone.h>
-#include <set/unsigned/foreach.h>
-#include <set/unsigned/free.h>
+/*#include <set/unsignedset/foreach.h>*/
+/*#include <set/unsignedset/free.h>*/
 
-#include <set/unsignedset/foreach.h>
-#include <set/unsignedset/free.h>
+/*#include "named/trie/struct.h"*/
+/*#include "named/trie/compare.h"*/
+/*#include "named/trie/free.h"*/
 
-#ifdef VERBOSE
-#include <quack/len.h>
-#include <misc/default_sighandler.h>
-#endif
+/*#include "structinfo/compare.h"*/
+/*#include "structinfo/free.h"*/
 
-#include "named/trie/struct.h"
-#include "named/trie/compare.h"
-#include "named/trie/free.h"
+/*#include "build_structinfo.h"*/
+/*#include "build_tries.h"*/
+/*#include "calc_firsts.h"*/
 
-#include "structinfo/compare.h"
-#include "structinfo/free.h"
+/*#include "trie/struct.h"*/
 
-<<<<<<< HEAD
-#include <lex/minimize_lexer/minimize_lexer.h>
-=======
-#include "build_structinfo.h"
-#include "build_tries.h"
-#include "calc_firsts.h"
->>>>>>> dev
+/*#include "state/struct.h"*/
+/*#include "state/new.h"*/
+/*#include "state/add_transition.h"*/
+/*#include "state/add_grammar_transition.h"*/
+/*#include "state/add_reduce_transition.h"*/
+/*#include "state/dotout.h"*/
 
-#include "trie/struct.h"
-
-#include "state/struct.h"
-#include "state/new.h"
-#include "state/add_transition.h"
-#include "state/add_grammar_transition.h"
-#include "state/add_reduce_transition.h"
-#include "state/dotout.h"
-
-#include "stateinfo/new.h"
-#include "stateinfo/add.h"
-#include "stateinfo/inc.h"
-#include "stateinfo/compare.h"
-#include "stateinfo/foreach.h"
-#include "stateinfo/free.h"
+/*#include "stateinfo/new.h"*/
+/*#include "stateinfo/add.h"*/
+/*#include "stateinfo/inc.h"*/
+/*#include "stateinfo/compare.h"*/
+/*#include "stateinfo/foreach.h"*/
+/*#include "stateinfo/free.h"*/
 
 #include "expand_stateinfo.h"
 
@@ -113,17 +98,6 @@ struct shift_node
 	struct stateinfo* stateinfo; // "owned" by struct
 };
 
-<<<<<<< HEAD
-struct yacc_state* yacc(
-	#ifdef WITH_ARENAS
-	struct memory_arena* grammar_arena,
-	struct memory_arena* token_arena,
-	struct memory_arena* tokenizer_arena,
-	struct memory_arena* parser_arena,
-	#endif
-	struct lex* lex,
-	struct avl_tree_t* grammar)
-=======
 struct reduce_node
 {
 	unsigned token; // must be the first
@@ -144,7 +118,6 @@ struct subgrammar_node
 
 static struct shift_node* new_shift_node(
 	unsigned token)
->>>>>>> dev
 {
 	ENTER;
 	
@@ -424,15 +397,6 @@ struct yacc_state* yacc(
 	signal(SIGALRM, handler2);
 	#endif
 	
-<<<<<<< HEAD
-	if (minimize_lexer)
-	{
-		#ifdef WITH_ARENAS
-		lex_minimize_lexer(tokenizer_arena, lex, start);
-		#else
-		lex_minimize_lexer(lex, start);
-		#endif
-=======
 	while (quack_len(todo))
 	{
 		struct mapping* const mapping = quack_pop(todo);
@@ -499,7 +463,6 @@ struct yacc_state* yacc(
 			/* (in)     struct unsignedset* tokens:    */ all_tokens);
 		
 		state->tokenizer_start = tokenizer_start;
->>>>>>> dev
 		
 		unsignedsetset_foreach(tokens, ({
 			void runme(struct unsignedset* ele)

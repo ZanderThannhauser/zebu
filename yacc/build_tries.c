@@ -1,50 +1,37 @@
 
 #include <debug.h>
 
-#include <avl/foreach.h>
+/*#include <avl/foreach.h>*/
 
-#include <named/gegex/struct.h>
+/*#include <named/gegex/struct.h>*/
 
-#include <named/trie/new.h>
-#include <named/trie/compare.h>
-#include <named/trie/free.h>
+/*#include <named/trie/new.h>*/
+/*#include <named/trie/compare.h>*/
+/*#include <named/trie/free.h>*/
 
-#include <set/gegex/new.h>
-#include <set/gegex/add.h>
-#include <set/gegex/free.h>
+/*#include <set/gegex/new.h>*/
+/*#include <set/gegex/add.h>*/
+/*#include <set/gegex/free.h>*/
 
-#include <set/string/new.h>
-#include <set/string/foreach.h>
+/*#include <set/string/new.h>*/
+/*#include <set/string/foreach.h>*/
 
-#include <gegex/state/struct.h>
+/*#include <gegex/state/struct.h>*/
 
-#ifdef DOTOUT
-#include <misc/frame_counter.h>
-#include <set/gegex/contains.h>
-#endif
+/*#include "reductioninfo/new.h"*/
+/*#include "reductioninfo/inc.h"*/
+/*#include "reductioninfo/to_string.h"*/
+/*#include "reductioninfo/free.h"*/
 
-#ifdef VERBOSE
-#include <misc/default_sighandler.h>
-#endif
+/*#include "structinfo/inc.h"*/
+/*#include "structinfo/to_hashtagstring.h"*/
 
-#include "reductioninfo/new.h"
-#include "reductioninfo/inc.h"
-#include "reductioninfo/to_string.h"
-#include "reductioninfo/free.h"
-
-#include "structinfo/inc.h"
-#include "structinfo/to_hashtagstring.h"
-
-#include "trie/struct.h"
-#include "trie/add_transition.h"
-#include "trie/add_grammar_transition.h"
-#include "trie/new.h"
+/*#include "trie/struct.h"*/
+/*#include "trie/add_transition.h"*/
+/*#include "trie/add_grammar_transition.h"*/
+/*#include "trie/new.h"*/
 
 #include "build_tries.h"
-
-#ifdef DOTOUT
-#include "structinfo/struct.h"
-#endif
 
 struct expand_bundle
 {
