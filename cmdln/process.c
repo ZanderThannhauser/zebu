@@ -37,7 +37,7 @@ void cmdln_process(int argc, char* const* argv)
 		{ 0,                            0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t" "l" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "l" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)

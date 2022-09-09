@@ -252,9 +252,9 @@ int main()
 		
 		puts("accepted!");
 		
-		print___start__(NULL, p_root, "start", root);
+		print___start___ptree(NULL, p_root, "start", root);
 		
-		free___start__(root);
+		free___start___ptree(root);
 		
 		add_history(line);
 		

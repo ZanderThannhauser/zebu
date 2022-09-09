@@ -68,21 +68,22 @@ buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 default: $(buildprefix)/zebu
 
 #ARGS += -v
-ARGS += --verbose
+#ARGS += --verbose
 
 #ARGS += -l
-ARGS += --minimize-lexer
+#ARGS += --minimize-lexer
 
+ARGS += -t readline-debug
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
-ARGS += --template=readline-debug
+#ARGS += --template=readline-debug
 #ARGS += --template=fileio-debug
 #ARGS += --template=fileio
 
-#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
-ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
+#ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
 #ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
