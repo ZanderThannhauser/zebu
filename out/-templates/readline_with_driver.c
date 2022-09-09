@@ -169,9 +169,9 @@ int main()
 		
 		puts("accepted!");
 		
-		print___start___ptree(NULL, p_root, "start", root);
+		print_$start_ptree(NULL, p_root, "start", root);
 		
-		free___start___ptree(root);
+		free_$start_ptree(root);
 		
 		add_history(line);
 		

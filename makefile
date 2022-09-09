@@ -77,14 +77,14 @@ default: $(buildprefix)/zebu
 #ARGS += --template=just-tables
 
 #ARGS += --template=readline-debug
-ARGS += --template=readline
+#ARGS += --template=readline
 #ARGS += --template=readline-with-driver-debug
-#ARGS += --template=readline-with-driver
+ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio-debug
 #ARGS += --template=fileio
 
-ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
@@ -98,7 +98,7 @@ ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-#ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
+ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
 #ARGS += -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
