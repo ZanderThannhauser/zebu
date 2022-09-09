@@ -9,6 +9,30 @@
 
 #include "print_inc_functions.h"
 
+void print_inc_function_prototypes(
+	struct avl_tree_t* structinfos,
+	FILE* stream)
+{
+	ENTER;
+	
+	fprintf(stream, ""
+		"extern struct token* inc_token(struct token* this);" "\n"
+	"");
+	
+	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
+	{
+		struct structinfo* const ele = node->item;
+		
+		const char* type = ele->name->chars;
+		
+		fprintf(stream, ""
+			"extern struct %s* inc_%s_ptree(struct %s* ptree);" "\n"
+		"", type, type, type);
+	}
+	
+	EXIT;
+}
+
 void print_inc_functions(
 	struct avl_tree_t* structinfos,
 	FILE* stream)

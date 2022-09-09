@@ -394,7 +394,7 @@ struct yacc_state* yacc(
 		
 		struct unsignedset* lookahead = new_unsignedset();
 		
-		struct named_trie* start_trie = avl_search(named_tries, &(const char**){(const char*[]) {"__start__"}})->item;
+		struct named_trie* start_trie = avl_search(named_tries, &(const char**){(const char*[]) {"$start"}})->item;
 		
 		unsignedset_add(lookahead, lex->EOF_token_id);
 		

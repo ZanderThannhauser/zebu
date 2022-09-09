@@ -35,7 +35,7 @@ void read_start_directive(
 	// prep production-rule reader:
 	read_token(tokenizer, production_root_machine);
 	
-	struct string* name = new_string("__start__");
+	struct string* name = new_string("$start");
 	
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(

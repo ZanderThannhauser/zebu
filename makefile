@@ -73,10 +73,14 @@ default: $(buildprefix)/zebu
 #ARGS += -l
 #ARGS += --minimize-lexer
 
-ARGS += -t readline-debug
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
+
 #ARGS += --template=readline-debug
+ARGS += --template=readline
+#ARGS += --template=readline-with-driver-debug
+#ARGS += --template=readline-with-driver
+
 #ARGS += --template=fileio-debug
 #ARGS += --template=fileio
 
@@ -139,11 +143,16 @@ include gen/srclist.mk
 
 srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
 srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
+
 #srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
-#srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
+
+srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
 srcs += ./out/escaped/readline_debug_source.c     ./out/escaped/readline_debug_header.c
-srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
+srcs += ./out/escaped/readline_with_driver_source.c       ./out/escaped/readline_with_driver_header.c
+srcs += ./out/escaped/readline_with_driver_debug_source.c ./out/escaped/readline_with_driver_debug_header.c
+
 srcs += ./out/escaped/fileio_source.c             ./out/escaped/fileio_header.c
+srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
 #srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
 #srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
 

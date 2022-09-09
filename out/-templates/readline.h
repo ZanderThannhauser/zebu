@@ -1,3 +1,9 @@
 
-int main();
+{{PARSE_TREE_STRUCTS}}
+
+{{PARSE_TREE_INC_FUNCTIONS}}
+
+{{PARSE_TREE_FREE_FUNCTIONS}}
+
+extern struct $start* {{PREFIX}}_parse();
 

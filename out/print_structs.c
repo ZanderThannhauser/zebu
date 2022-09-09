@@ -19,9 +19,10 @@ void print_structs(
 	fprintf(stream, ""
 		"struct token" "\n"
 		"{" "\n"
-			"unsigned char* data;" "\n"
-			"unsigned len, refcount;" "\n"
+			"\t" "unsigned char* data;" "\n"
+			"\t" "unsigned len, refcount;" "\n"
 		"};" "\n"
+		"\n"
 	"");
 	
 	struct stringset* done = new_stringset();

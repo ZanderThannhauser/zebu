@@ -1,5 +1,11 @@
 const char* readline_header = ""
 	"" "\n"
-	"int main();" "\n"
+	"{{PARSE_TREE_STRUCTS}}" "\n"
+	"" "\n"
+	"{{PARSE_TREE_INC_FUNCTIONS}}" "\n"
+	"" "\n"
+	"{{PARSE_TREE_FREE_FUNCTIONS}}" "\n"
+	"" "\n"
+	"extern struct $start* {{PREFIX}}_parse();" "\n"
 	"" "\n"
 	"";

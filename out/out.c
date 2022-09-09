@@ -47,11 +47,17 @@
 /*#include "escaped/buffer_driven_source.h"*/
 /*#include "escaped/buffer_driven_header.h"*/
 
-/*#include "escaped/readline_source.h"*/
-/*#include "escaped/readline_header.h"*/
+#include "escaped/readline_source.h"
+#include "escaped/readline_header.h"
 
 #include "escaped/readline_debug_source.h"
 #include "escaped/readline_debug_header.h"
+
+#include "escaped/readline_with_driver_source.h"
+#include "escaped/readline_with_driver_header.h"
+
+#include "escaped/readline_with_driver_debug_source.h"
+#include "escaped/readline_with_driver_debug_header.h"
 
 #include "escaped/fileio_debug_source.h"
 #include "escaped/fileio_debug_header.h"
@@ -108,9 +114,14 @@ static struct {
 } lookup[number_of_parser_templates] = {
 	[pt_really_just_tables] = {&really_just_tables_source, &really_just_tables_header},
 	[pt_just_tables] = {&just_tables_source, &just_tables_header},
+	
 /*	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},*/
-/*	[pt_readline] = {&readline_source, &readline_header},*/
+	
+	[pt_readline] = {&readline_source, &readline_header},
 	[pt_readline_debug] = {&readline_debug_source, &readline_debug_header},
+	[pt_readline_with_driver] = {&readline_with_driver_source, &readline_with_driver_header},
+	[pt_readline_with_driver_debug] = {&readline_with_driver_debug_source, &readline_with_driver_debug_header},
+	
 	[pt_fileio_debug] = {&fileio_debug_source, &fileio_debug_header},
 	[pt_fileio] = {&fileio_source, &fileio_header},
 /*	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},*/
@@ -284,26 +295,67 @@ void out(struct yacc_state* start)
 		
 		while ((moving = strstr(last, "{{")))
 		{
-			TODO;
-			// {{PREFIX}}
+			fwrite(last, 1, moving - last, stream), moving += 2;
 			
-			// {{SHIFT_TABLE}}
+			const char* old = moving;
 			
-			// {{REDUCE_TABLE}}
+			moving = strstr(moving, "}}");
 			
-			// {{GOTO_TABLE}}
+			unsigned len = moving - old;
 			
-			// {{LEXER_TABLE}}
+			if (!strncmp(old, "PREFIX", len))
+			{
+				fputs(output_prefix, stream);
+			}
+			else if (!strncmp(old, "SHIFT_TABLE", len))
+			{
+				TODO;
+/*				dyntable_print_source(shifts, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "REDUCE_TABLE", len))
+			{
+				TODO;
+/*				dyntable_print_source(reduces, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "GOTO_TABLE", len))
+			{
+				TODO;
+/*				dyntable_print_source(gotos, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "LEXER_TABLE", len))
+			{
+				TODO;
+/*				dyntable_print_source(lexer, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "LEXER_ACCEPTS_TABLE", len))
+			{
+				TODO;
+/*				dynvector_print_source(accepts, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "LEXER_EOF_TABLE", len))
+			{
+				TODO;
+/*				dynvector_print_source(EOFs, output_prefix, stream);*/
+			}
+			else if (!strncmp(old, "PARSE_TREE_STRUCTS", len))
+			{
+				print_structs(structinfos, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_INC_FUNCTIONS", len))
+			{
+				print_inc_function_prototypes(structinfos, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
+			{
+				print_free_function_prototypes(structinfos, stream);
+			}
+			else
+			{
+				dpvsn(old, len);
+				TODO;
+			}
 			
-			// {{STARTS_TABLE}}
-			
-			// {{ACCEPTS_TABLE}}
-			
-			// {{PARSE_TREE_TYPES}}
-			
-			// {{PARSE_TREE_DESTRUCTORS}}
-			
-			last = moving;
+			last = moving + 2;
 		}
 		
 		fwrite(last, 1, end - last, stream);
@@ -378,7 +430,7 @@ void out(struct yacc_state* start)
 			}
 			else if (!strncmp(old, "START_GRAMMAR_ID", len))
 			{
-				struct string* start = new_string("__start__");
+				struct string* start = new_string("$start");
 				
 				fprintf(stream, "%u", string_to_id(stoi, start));
 				

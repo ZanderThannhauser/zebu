@@ -12,6 +12,30 @@
 
 #include "print_tree_functions.h"
 
+void print_tree_function_prototypes(
+	struct avl_tree_t* structinfos,
+	FILE* stream)
+{
+	ENTER;
+	
+	fprintf(stream, ""
+		"extern void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token);" "\n"
+		"extern void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name);" "\n"
+	"");
+	
+	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
+	{
+		struct structinfo* const ele = node->item;
+		
+		fprintf(stream, ""
+			"extern void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"\n"
+		"", ele->name->chars, ele->name->chars);
+	}
+	
+	EXIT;
+}
+
 void print_tree_functions(
 	struct avl_tree_t* structinfos,
 	FILE* stream)
@@ -27,7 +51,7 @@ void print_tree_functions(
 			"\t" "struct link* prev;" "\n"
 		"};" "\n"
 		"\n"
-		"void print_links(struct link* link)" "\n"
+		"static void print_links(struct link* link)" "\n"
 		"{" "\n"
 			"\t" "if (!link) return;" "\n"
 			"\t" "\n"

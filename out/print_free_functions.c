@@ -11,6 +11,29 @@
 
 #include "print_free_functions.h"
 
+void print_free_function_prototypes(
+	struct avl_tree_t* structinfos,
+	FILE* stream)
+{
+	ENTER;
+	
+	fprintf(stream, ""
+		"extern void free_token(struct token* this);" "\n"
+	"");
+	
+	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
+	{
+		struct structinfo* const ele = node->item;
+		
+		fprintf(stream, ""
+			"extern void free_%s_ptree(struct %s* ptree);" "\n"
+			"" "\n"
+		"", ele->name->chars, ele->name->chars);
+	}
+	
+	EXIT;
+}
+
 void print_free_functions(
 	struct avl_tree_t* structinfos,
 	FILE* stream)

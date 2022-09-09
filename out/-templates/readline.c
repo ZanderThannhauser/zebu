@@ -1,210 +1,180 @@
 
-#include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <assert.h>
-#include <string.h>
-
 #include <readline/readline.h>
 #include <readline/history.h>
 
-struct <PREFIX>_state
-{
-	struct { unsigned* data, n, cap; } y;
-	struct { unsigned char* data, n, cap; } l;
-	unsigned lstate, t;
-};
+#include <assert.h>
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
 
-static void push(struct <PREFIX>_state* this, unsigned ystate)
-{
-	if (this->y.n + 1 >= this->y.cap)
-	{
-		this->y.cap = this->y.cap << 1 ?: 1;
-		this->y.data = realloc(this->y.data, sizeof(*this->y.data) * this->y.cap);
-	}
-	
-	this->y.data[this->y.n++] = ystate;
-}
+{{LEXER_TABLE}}
 
-static void append(struct <PREFIX>_state* this, const unsigned char* text, size_t length)
-{
-	while (this->l.n + length >= this->l.cap)
-	{
-		this->l.cap = this->l.cap << 1 ?: 1;
-		this->l.data = realloc(this->l.data, this->l.cap);
-	}
-	memcpy(this->l.data + this->l.n, text, length);
-	this->l.n += length;
-}
+{{LEXER_STARTS_TABLE}}
+
+{{LEXER_ACCEPTS_TABLE}}
+
+{{LEXER_EOF_TABLE}}
+
+{{SHIFT_TABLE}}
+
+{{REDUCE_TABLE}}
+
+{{GOTO_TABLE}}
+
+{{PARSE_TREE_INC_FUNCTIONS}}
+
+{{PARSE_TREE_FREE_FUNCTIONS}}
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
-static void process_token(struct <PREFIX>_state* this, unsigned t)
+struct $start* {{PREFIX}}_parse()
 {
-	unsigned b, d, y = this->y.data[this->y.n - 1];
+	struct { unsigned* data, n, cap; } yacc = {};
 	
-	while (!(y < N(<PREFIX>_shifts) && t < N(*<PREFIX>_shifts) && (b = <PREFIX>_shifts[y][t])))
+	struct { void** data; unsigned n, cap; } data = {};
+	
+	void push_state(unsigned state)
 	{
-		if (y < N(<PREFIX>_reduces) && t < N(*<PREFIX>_reduces) && (b = <PREFIX>_reduces[y][t]))
+		if (yacc.n + 1 >= yacc.cap)
 		{
-			this->y.n -= <PREFIX>_popcounts[y][t];
-			
-			if (!this->y.n) return;
-			
-			y = this->y.data[this->y.n - 1];
-			
-			assert(y < N(<PREFIX>_shifts) && b < N(*<PREFIX>_shifts));
-			
-			d = <PREFIX>_shifts[y][b];
-			
-			push(this, d), y = d;
+			yacc.cap = yacc.cap << 1 ?: 1;
+			yacc.data = realloc(yacc.data, sizeof(*yacc.data) * yacc.cap);
 		}
-		else
-		{
-			assert(!"TODO");
-			exit(1);
-		}
+		
+		yacc.data[yacc.n++] = state;
 	}
 	
-	push(this, b), y = b;
-}
-
-static void <PREFIX>_parse(struct <PREFIX>_state* this, const unsigned char* text, size_t length)
-{
-	unsigned c, l = this->lstate;
-	unsigned a, b, i, n, f, t = this->t;
-	
-	i = this->l.n;
-	
-	append(this, text, length);
-	
-	for (n = this->l.n, f = 0; i < n;)
+	void push_data(void* element)
 	{
-		c = this->l.data[i];
-		
-		a = (l < N(<PREFIX>_lexer) && c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
-		b = (l < N(<PREFIX>_accepts) ? <PREFIX>_accepts[l] : 0);
-		
-		if (a)
+		if (data.n + 1 >= data.cap)
 		{
-			if (b)
+			data.cap = data.cap << 1 ?: 1;
+			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
+		}
+		
+		data.data[data.n++] = element;
+	}
+	
+	char* line = readline(">>> ");
+	
+	if (!line) return NULL;
+	
+	char* lexer = line;
+	
+	unsigned y, s, r, t;
+	
+	void* td;
+	
+	void read_token(unsigned l)
+	{
+		char* begin = lexer, *f = NULL;
+		
+		unsigned a, b, c;
+		
+		while (1)
+		{
+			if ((c = *lexer))
+				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
+			else
 			{
-				l = a, t = b, f = i++;
+				// it would be cool if it would read another line
+				// if there wasn't an EOF transition
+				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
+			}
+			
+			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
+			
+			if (a)
+			{
+				if (b)
+				{
+					l = a, t = b, f = lexer++;
+				}
+				else
+				{
+					l = a;
+					if (c) lexer++;
+				}
+			}
+			else if (b)
+			{
+				struct token* token = malloc(sizeof(*token));
+				token->refcount = 1;
+				token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+				token->len = lexer - begin;
+				t = b, td = token;
+				break;
+			}
+			else if (t)
+			{
+				assert(!"172" || f);
+				#if 0
+				process_token(t);
+				l = {{PREFIX}}_starts[yacc.data[yacc.n - 1]], i = f, t = 0;
+				#endif
 			}
 			else
 			{
-				l = a, i++;
+				assert(!"TODO");
 			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
-		}
-		else
-		{
-			assert(!"TODO");
 		}
 	}
 	
-	memcpy(this->l.data, this->l.data + f, this->l.n = n - f);
+	y = 1, push_state(y);
 	
-	this->t = t;
+	read_token({{PREFIX}}_lexer_starts[y]);
 	
-	this->lstate = l;
-}
-
-static void <PREFIX>_parse_EOF(struct <PREFIX>_state* this)
-{
-	unsigned i = this->l.n, n = i, l = this->lstate;
-	unsigned a, b, c, f = 0, t = this->t;
+	void* root;
 	
-	while (1)
+	while (yacc.n)
 	{
-		assert(i <= n + 1);
-		
-		if (i < n)
+		if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 		{
-			c = this->l.data[i];
+			y = s, push_state(y), push_data(td);
+			read_token({{PREFIX}}_lexer_starts[y]);
+		}
+		else if (y < N({{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
+		{
+			unsigned g;
 			
-			a = (c < N(*<PREFIX>_lexer) ? <PREFIX>_lexer[l][c] : 0) ?: (l < N( <PREFIX>_defaults) ? <PREFIX>_defaults[l] : 0);
-		}
-		else
-		{
-			a = l < N(<PREFIX>_EOFs) ? <PREFIX>_EOFs[l] : 0;
-		}
-		
-		b = (l < N(<PREFIX>_accepts) ? <PREFIX>_accepts[l] : 0);
-		
-		if (a)
-		{
-			if (b)
+			void* d;
+			
+			{{REDUCTIONRULE_SWITCH}}
+			
+			if (g == {{START_GRAMMAR_ID}})
 			{
-				l = a, t = b, f = i++;
+				free_token(td);
+				yacc.n = 0, root = d;
 			}
 			else
 			{
-				l = a, i++;
+				y = yacc.data[yacc.n - 1];
+				
+				assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
+				
+				s = {{PREFIX}}_gotos[y][g];
+				
+				y = s, push_state(y), push_data(d);
 			}
-		}
-		else if (b)
-		{
-			process_token(this, b);
-			
-			if (!this->y.n) break;
-			
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], f = i, t = 0;
-		}
-		else if (t)
-		{
-			process_token(this, t);
-			l = <PREFIX>_starts[this->y.data[this->y.n - 1]], i = f, t = 0;
 		}
 		else
 		{
-			assert(!"TODO");
+			assert(!"190");
 		}
 	}
-}
-
-int main()
-{
-	struct <PREFIX>_state this = {};
 	
-	this->lstate = 1, this->t = 0;
+	assert(!data.n);
 	
-	push(this, 1);
+	add_history(line);
 	
-	for (char* line; (line = readline(">>> "));)
-	{
-		this->y.n = 0;
-		this->l.n = 0;
-		this->lstate = 1;
-		push(this, 1);
-		
-		zebu_parse(new, (unsigned char*) line, strlen(line));
-		
-		zebu_parse_EOF(new);
-		
-		puts("accepted!");
-		
-		add_history(line);
-		
-		free(line);
-	}
+	free(line);
 	
-	free(this.y.data);
-	free(this.l.data);
-	free(this);
+	free(yacc.data);
+	free(data.data);
 	
-	return 0;
+	return root;
 }
 
 
