@@ -1,0 +1,4 @@
+*.o
+parser.c
+parser.h
+main

@@ -1,0 +1,20 @@
+
+%skip: ' ';
+
+highest
+	: `['0' - '9']+` #number
+	| '(' root #subexpression ')'
+	| "pi" #pi
+	| `"sin" | "cos" | "tan" | "sqrt"` #function '(' root #arg ')'
+	;
+
+expo: highest #base ("**" highest #expomes[])*;
+
+multiply: expo #base ('*' expo #multiplymes[] | '/' expo #dividemes[])*;
+
+add: multiply #base ('+' multiply #addmes[] | '-' multiply #submes[])*;
+
+root: add #add;
+
+%start: root #root | "exit" #exit;
+
