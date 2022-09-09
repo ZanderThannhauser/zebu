@@ -76,12 +76,18 @@ struct $start* {{PREFIX}}_parse()
 		while (1)
 		{
 			if ((c = *lexer))
+			{
 				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
+			}
 			else
 			{
-				// it would be cool if it would read another line
-				// if there wasn't an EOF transition
 				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
+				
+				if (!a)
+				{
+					// it would be cool if it would read another line
+					// if there wasn't an EOF transition
+				}
 			}
 			
 			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
