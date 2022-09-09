@@ -23,6 +23,14 @@
 #include <set/unsigned/add.h>
 #include <set/unsigned/update.h>
 
+#ifdef DOTOUT
+#include <limits.h>
+#include <stdio.h>
+#include <misc/frame_counter.h>
+#include <string/struct.h>
+#include <set/unsigned/to_string.h>
+#endif
+
 #include "trie/struct.h"
 
 #include "stateinfo/node/struct.h"

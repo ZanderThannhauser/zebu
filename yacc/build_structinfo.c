@@ -1,4 +1,5 @@
 
+
 #include <debug.h>
 
 #include <avl/foreach.h>
@@ -18,6 +19,16 @@
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
 #include <set/gegex/clear.h>
+
+#ifdef DOTOUT
+#include <stdio.h>
+#include <limits.h>
+#include <misc/frame_counter.h>
+#include <stdlib.h>
+#include <set/gegex/contains.h>
+#include <string/struct.h>
+#include <quack/free.h>
+#endif
 
 #include "structinfo/new.h"
 #include "structinfo/update.h"

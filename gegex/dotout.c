@@ -7,6 +7,12 @@
 
 #include <debug.h>
 
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>

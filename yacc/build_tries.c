@@ -35,13 +35,26 @@
 
 #include <gegex/state/struct.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <limits.h>
+#include <stdio.h>
+#include <misc/frame_counter.h>
+#include <string/struct.h>
+#include <set/gegex/contains.h>
+#endif
+
 #include "reductioninfo/new.h"
 #include "reductioninfo/inc.h"
-/*#include "reductioninfo/to_string.h"*/
 #include "reductioninfo/free.h"
 
 #include "structinfo/inc.h"
-/*#include "structinfo/to_hashtagstring.h"*/
 
 #include "trie/struct.h"
 #include "trie/new.h"
@@ -49,6 +62,12 @@
 #include "trie/add_grammar_transition.h"
 
 #include "build_tries.h"
+
+#ifdef DOTOUT
+#include "structinfo/struct.h"
+#include "reductioninfo/to_string.h"
+#include "structinfo/to_hashtagstring.h"
+#endif
 
 struct expand_bundle
 {
@@ -407,7 +426,7 @@ void build_tries(
 		}
 	}
 	
-	signal(SIGALRM, handler1);
+	signal(SIGALRM, handler2);
 	#endif
 	
 	// we have one pass that fills-out all the tries:

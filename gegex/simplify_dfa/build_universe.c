@@ -11,6 +11,14 @@
 
 #include <set/gegex/add.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
 #include "../state/struct.h"
 
 #include "build_universe.h"

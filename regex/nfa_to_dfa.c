@@ -11,12 +11,6 @@
 #include <avl/search.h>
 #include <avl/free_tree.h>
 
-/*#include <heap/len.h>*/
-/*#include <heap/new.h>*/
-/*#include <heap/push.h>*/
-/*#include <heap/pop.h>*/
-/*#include <heap/free.h>*/
-
 #include <quack/new.h>
 #include <quack/append.h>
 #include <quack/len.h>
@@ -30,6 +24,17 @@
 #include <set/regex/free.h>
 #include <set/regex/len.h>
 #include <set/regex/inc.h>
+
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#endif
 
 #include "state/struct.h"
 #include "state/new.h"

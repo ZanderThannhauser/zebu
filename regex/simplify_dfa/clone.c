@@ -19,6 +19,17 @@
 
 #include <set/regex/struct.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#endif
+
 #include "../state/struct.h"
 #include "../state/new.h"
 

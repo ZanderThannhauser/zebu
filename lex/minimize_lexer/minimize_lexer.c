@@ -24,11 +24,16 @@
 
 #include <set/unsigned/compare.h>
 
-/*#include "../struct.h"*/
+#ifdef VERBOSE
+#include <set/lexstate/len.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
 #include "../state/struct.h"
 #include "../state/free.h"
-
-/*#include "../build_tokenizer/node/struct.h"*/
 
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/compare.h"

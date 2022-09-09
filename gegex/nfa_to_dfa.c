@@ -42,6 +42,17 @@
 #include <yacc/structinfo/update.h>
 #include <yacc/structinfo/free.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include "dotout.h"
+#endif
+
 #include "nfa_to_dfa.h"
 
 struct mapping

@@ -17,12 +17,6 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-/*#include <heap/len.h>*/
-/*#include <heap/new.h>*/
-/*#include <heap/push.h>*/
-/*#include <heap/pop.h>*/
-/*#include <heap/free.h>*/
-
 #include <set/regex/new.h>
 #include <set/regex/compare.h>
 #include <set/regex/add.h>
@@ -47,6 +41,11 @@
 
 #include <regex/state/struct.h>
 /*#include <regex/dotout.h>*/
+
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#include <lex/state/dotout.h>
+#endif
 
 #include "dfas_to_dfa.h"
 

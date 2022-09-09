@@ -1,7 +1,16 @@
 
 #ifdef DOTOUT
 
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
 
 #include <set/lexstate/new.h>
 #include <set/lexstate/add.h>

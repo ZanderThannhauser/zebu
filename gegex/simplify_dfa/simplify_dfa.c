@@ -33,6 +33,19 @@
 
 #include <yacc/structinfo/are_equal.h>
 
+#ifdef VERBOSE
+#include <set/gegex/struct.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <gegex/dotout.h>
+#endif
+
 #include "dependent_of_node/struct.h"
 #include "dependent_of_node/compare.h"
 #include "dependent_of_node/free.h"
@@ -66,14 +79,14 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 	struct heap* todo = new_heap(compare_gegex_simplify_tasks);
 	
 	#ifdef VERBOSE
-	uintmax_t count = 0, n = universe->n * universe->n / 2;
+	unsigned count = 0, n = universe->n * universe->n / 2;
 	
 	void handler1(int _)
 	{
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "zebu: grammar simplify (build dependencies) %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (build dependencies) %u of %u (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -184,7 +197,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, sizeof(ptr),
-			"\e[K" "zebu: grammar simplify (allocating sets): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: grammar simplify (allocating sets): %u of %u (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)

@@ -17,10 +17,19 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#endif
+
 #include "state/struct.h"
 #include "state/new.h"
-
-/*#include "dotout.h"*/
 
 #include "intersect_dfas.h"
 

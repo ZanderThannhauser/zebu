@@ -17,7 +17,12 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-/*#include <set/regex/foreach.h>*/
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
 
 #include "state/struct.h"
 #include "state/new.h"

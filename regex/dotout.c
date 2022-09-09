@@ -1,6 +1,7 @@
 
 #ifdef DOTOUT
 
+#include <assert.h>
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -10,6 +11,12 @@
 #include <misc/frame_counter.h>
 
 #include <misc/escape.h>
+
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/append.h>
+#include <quack/new.h>
+#include <quack/free.h>
 
 #include <set/regex/new.h>
 #include <set/regex/add.h>

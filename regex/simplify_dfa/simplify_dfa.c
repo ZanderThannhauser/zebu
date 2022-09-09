@@ -22,6 +22,18 @@
 #include <heap/len.h>
 #include <heap/free.h>
 
+#ifdef VERBOSE
+#include <unistd.h>
+#include <stdlib.h>
+#include <set/regex/struct.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#endif
+
 /*#include "../dotout.h"*/
 
 #include "../state/struct.h"

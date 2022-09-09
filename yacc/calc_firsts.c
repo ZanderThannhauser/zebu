@@ -31,7 +31,15 @@
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/update.h>
-/*#include <set/unsigned/to_string.h>*/
+
+#ifdef DOTOUT
+#include <limits.h>
+#include <stdio.h>
+#include <misc/frame_counter.h>
+#include <set/unsigned/to_string.h>
+#include <string/struct.h>
+#include <stdlib.h>
+#endif
 
 #include <set/string/new.h>
 #include <set/string/add.h>

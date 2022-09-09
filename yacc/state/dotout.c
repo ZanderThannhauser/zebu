@@ -1,7 +1,19 @@
 
 #ifdef DOTOUT
 
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <string/struct.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <set/unsigned/to_string.h>
 

@@ -28,6 +28,20 @@
 
 #include <yacc/state/free.h>
 
+#ifdef VERBOSE
+#include <unistd.h>
+#include <stdlib.h>
+#endif
+
+#ifdef DOTOUT
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/stat.h>
+
+#include <enums/error.h>
+#endif
+
 int main(int argc, char* argv[])
 {
 	ENTER;

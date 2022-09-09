@@ -50,6 +50,17 @@
 #include <named/trie/compare.h>
 #include <named/trie/free.h>
 
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <misc/default_sighandler.h>
+#endif
+
+#ifdef DOTOUT
+#include "state/dotout.h"
+#endif
+
 #include "structinfo/compare.h"
 #include "structinfo/free.h"
 
@@ -60,7 +71,6 @@
 #include "state/add_transition.h"
 #include "state/add_grammar_transition.h"
 #include "state/add_reduce_transition.h"
-/*#include "state/dotout.h"*/
 
 #include "stateinfo/new.h"
 #include "stateinfo/add.h"

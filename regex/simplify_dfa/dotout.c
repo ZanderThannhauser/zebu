@@ -8,6 +8,14 @@
 
 #include <debug.h>
 
+#include <avl/search.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
 #include <misc/frame_counter.h>
 
 #include <misc/escape.h>
