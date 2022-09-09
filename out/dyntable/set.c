@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <avl/insert.h>
 
 #include "struct.h"

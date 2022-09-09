@@ -1,4 +1,9 @@
 
+struct pragma_once;
+struct options;
+struct scope;
+struct lex;
+
 void recursive_parse(
 	struct pragma_once* pragma_once,
 	struct options* options,

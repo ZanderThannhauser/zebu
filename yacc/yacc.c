@@ -1,55 +1,79 @@
 
+#include <assert.h>
+
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <string/inc.h>
+#include <string/compare.h>
+#include <string/are_equal.h>
+#include <string/free.h>
+
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/foreach.h>
+#include <avl/alloc_tree.h>
+#include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 /*#include <avl/foreach.h>*/
 
-/*#include <cmdln/minimize_lexer.h>*/
+#include <cmdln/minimize_lexer.h>
 
 /*#include <named/gegex/struct.h>*/
 
-/*#include <lex/struct.h>*/
-/*#include <lex/build_tokenizer/build_tokenizer.h>*/
-/*#include <lex/minimize_lexer/minimize_lexer.h>*/
+#include <lex/struct.h>
+#include <lex/build_tokenizer/build_tokenizer.h>
+#include <lex/minimize_lexer/minimize_lexer.h>
 
-/*#include <set/unsigned/head.h>*/
-/*#include <set/unsigned/new.h>*/
-/*#include <set/unsigned/add.h>*/
-/*#include <set/unsigned/clone.h>*/
-/*#include <set/unsigned/foreach.h>*/
-/*#include <set/unsigned/free.h>*/
+#include <set/unsigned/head.h>
+#include <set/unsigned/new.h>
+#include <set/unsigned/add.h>
+#include <set/unsigned/clone.h>
+#include <set/unsigned/foreach.h>
+#include <set/unsigned/free.h>
 
-/*#include <set/unsignedset/foreach.h>*/
-/*#include <set/unsignedset/free.h>*/
+#include <set/unsignedset/foreach.h>
+#include <set/unsignedset/free.h>
 
-/*#include "named/trie/struct.h"*/
-/*#include "named/trie/compare.h"*/
-/*#include "named/trie/free.h"*/
+#include <named/gegex/struct.h>
 
-/*#include "structinfo/compare.h"*/
-/*#include "structinfo/free.h"*/
+#include <named/trie/struct.h>
+#include <named/trie/compare.h>
+#include <named/trie/free.h>
 
-/*#include "build_structinfo.h"*/
-/*#include "build_tries.h"*/
-/*#include "calc_firsts.h"*/
+#include "structinfo/compare.h"
+#include "structinfo/free.h"
 
-/*#include "trie/struct.h"*/
+#include "trie/struct.h"
 
-/*#include "state/struct.h"*/
-/*#include "state/new.h"*/
-/*#include "state/add_transition.h"*/
-/*#include "state/add_grammar_transition.h"*/
-/*#include "state/add_reduce_transition.h"*/
+#include "state/struct.h"
+#include "state/new.h"
+#include "state/add_transition.h"
+#include "state/add_grammar_transition.h"
+#include "state/add_reduce_transition.h"
 /*#include "state/dotout.h"*/
 
-/*#include "stateinfo/new.h"*/
-/*#include "stateinfo/add.h"*/
-/*#include "stateinfo/inc.h"*/
-/*#include "stateinfo/compare.h"*/
-/*#include "stateinfo/foreach.h"*/
-/*#include "stateinfo/free.h"*/
+#include "stateinfo/new.h"
+#include "stateinfo/add.h"
+#include "stateinfo/inc.h"
+#include "stateinfo/compare.h"
+#include "stateinfo/foreach.h"
+#include "stateinfo/free.h"
 
 #include "expand_stateinfo.h"
 
+#include "calc_firsts.h"
+#include "build_tries.h"
+#include "build_structinfo.h"
 #include "yacc.h"
 
 struct mapping

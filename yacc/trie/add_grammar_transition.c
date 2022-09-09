@@ -1,6 +1,12 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+#include <memory/srealloc.h>
+
+#include <string/inc.h>
+#include <string/compare.h>
+
 #include "struct.h"
 #include "add_grammar_transition.h"
 

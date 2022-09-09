@@ -7,6 +7,8 @@
 
 #include <avl/insert.h>
 
+#include <memory/smalloc.h>
+
 #include <set/unsigned/inc.h>
 
 #include "struct.h"

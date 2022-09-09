@@ -6,13 +6,15 @@
 
 #include <debug.h>
 
+#include <string/new.h>
+#include <string/free.h>
+
 #include <enums/error.h>
 
 #include "charset/root.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-/*#include "tokenizer/machines/root.h"*/
 #include "tokenizer/machines/misc/colon.h"
 #include "tokenizer/machines/charset/root.h"
 

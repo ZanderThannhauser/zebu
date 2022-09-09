@@ -5,6 +5,9 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+#include <memory/srealloc.h>
+
 #include "../struct.h"
 
 #include "append_prefix.h"

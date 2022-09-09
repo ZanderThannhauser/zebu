@@ -1,35 +1,52 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
-/*#include <avl/foreach.h>*/
+#include <memory/smalloc.h>
+
+#include <string/new.h>
+#include <string/inc.h>
+#include <string/free.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
 
 /*#include <named/gegex/struct.h>*/
 
-/*#include <named/trie/new.h>*/
+#include <named/trie/new.h>
 /*#include <named/trie/compare.h>*/
 /*#include <named/trie/free.h>*/
 
-/*#include <set/gegex/new.h>*/
-/*#include <set/gegex/add.h>*/
-/*#include <set/gegex/free.h>*/
+#include <set/gegex/new.h>
+#include <set/gegex/add.h>
+#include <set/gegex/free.h>
 
 /*#include <set/string/new.h>*/
 /*#include <set/string/foreach.h>*/
 
-/*#include <gegex/state/struct.h>*/
+#include <gegex/state/struct.h>
 
-/*#include "reductioninfo/new.h"*/
-/*#include "reductioninfo/inc.h"*/
+#include "reductioninfo/new.h"
+#include "reductioninfo/inc.h"
 /*#include "reductioninfo/to_string.h"*/
-/*#include "reductioninfo/free.h"*/
+#include "reductioninfo/free.h"
 
-/*#include "structinfo/inc.h"*/
+#include "structinfo/inc.h"
 /*#include "structinfo/to_hashtagstring.h"*/
 
-/*#include "trie/struct.h"*/
-/*#include "trie/add_transition.h"*/
-/*#include "trie/add_grammar_transition.h"*/
-/*#include "trie/new.h"*/
+#include "trie/struct.h"
+#include "trie/new.h"
+#include "trie/add_transition.h"
+#include "trie/add_grammar_transition.h"
 
 #include "build_tries.h"
 

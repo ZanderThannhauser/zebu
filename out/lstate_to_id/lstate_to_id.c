@@ -3,8 +3,9 @@
 
 #include <debug.h>
 
-#include <avl/search.h>
+#include <memory/smalloc.h>
 
+#include <avl/search.h>
 #include <avl/insert.h>
 
 #include "struct.h"

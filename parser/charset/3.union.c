@@ -1,4 +1,6 @@
 
+#include <stdbool.h>
+
 #include <assert.h>
 
 #include <debug.h>

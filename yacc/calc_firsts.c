@@ -1,7 +1,20 @@
 
+#include <stdbool.h>
+#include <assert.h>
+
 #include <debug.h>
 
+#include <avl/search.h>
 #include <avl/foreach.h>
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <named/unsignedset/struct.h>
 #include <named/unsignedset/new.h>
@@ -18,15 +31,11 @@
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/update.h>
-#include <set/unsigned/to_string.h>
+/*#include <set/unsigned/to_string.h>*/
 
 #include <set/string/new.h>
 #include <set/string/add.h>
 #include <set/string/foreach.h>
-
-#ifdef DOTOUT
-#include <misc/frame_counter.h>
-#endif
 
 #include "trie/struct.h"
 

@@ -1,5 +1,13 @@
 
+#include <assert.h>
+#include <string.h>
+#include <stddef.h>
+
 #include <debug.h>
+
+#include <string/struct.h>
+
+#include <memory/srealloc.h>
 
 #include <avl/foreach.h>
 

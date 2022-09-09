@@ -1,5 +1,12 @@
 
+#include <string.h>
+#include <stddef.h>
+
 #include <debug.h>
+
+#include <avl/tree_t.h>
+
+#include <memory/srealloc.h>
 
 #include <string/struct.h>
 

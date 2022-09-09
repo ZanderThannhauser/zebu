@@ -13,7 +13,6 @@
 #include <misc/break_and_open_path.h>
 
 #include "options/struct.h"
-
 #include "options/new.h"
 #include "options/free.h"
 

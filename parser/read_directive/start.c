@@ -1,6 +1,9 @@
 
 #include <debug.h>
 
+#include <string/new.h>
+#include <string/free.h>
+
 #include <parser/tokenizer/read_token.h>
 #include <parser/tokenizer/machines/misc/colon.h>
 #include <parser/tokenizer/machines/production/root.h>

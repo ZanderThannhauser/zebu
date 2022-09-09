@@ -1,6 +1,12 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+#include <avl/insert.h>
+
+#include <string/compare.h>
+#include <string/inc.h>
+
 #include "struct.h"
 #include "update.h"
 

@@ -4,9 +4,9 @@
 
 #include <debug.h>
 
-#include <avl/alloc_tree.h>
+#include <memory/smalloc.h>
 
-/*#include <arena/malloc.h>*/
+#include <avl/alloc_tree.h>
 
 #include <named/charset/compare.h>
 #include <named/charset/free.h>

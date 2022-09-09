@@ -1,5 +1,10 @@
 
+#include <stddef.h>
+
 #include <debug.h>
+
+#include <avl/insert.h>
+#include <avl/search.h>
 
 #include <set/unsigned/update.h>
 #include <set/unsigned/free.h>

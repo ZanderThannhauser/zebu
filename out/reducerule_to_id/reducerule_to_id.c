@@ -1,6 +1,13 @@
 
 #include <debug.h>
 
+#include <string/inc.h>
+
+#include <memory/smalloc.h>
+
+#include <avl/insert.h>
+#include <avl/search.h>
+
 #include <yacc/reductioninfo/inc.h>
 
 #include <yacc/structinfo/inc.h>

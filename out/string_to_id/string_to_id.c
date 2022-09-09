@@ -1,6 +1,13 @@
 
 #include <debug.h>
 
+#include <string/inc.h>
+
+#include <memory/smalloc.h>
+
+#include <avl/insert.h>
+#include <avl/search.h>
+
 #include "struct.h"
 #include "string_to_id.h"
 

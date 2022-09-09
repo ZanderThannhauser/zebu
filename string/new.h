@@ -1,4 +1,5 @@
 
+struct tokenizer;
 
 struct string* new_string_without_copy(char* str);
 

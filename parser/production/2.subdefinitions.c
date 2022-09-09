@@ -8,7 +8,7 @@
 #include "../tokenizer/machines/subroot.h"
 #include "../tokenizer/machines/production/inside_subdefinitions.h"
 
-#include "../options/struct.h"
+/*#include "../options/struct.h"*/
 
 #include "../scope/push.h"
 #include "../scope/pop.h"

@@ -5,7 +5,10 @@
 
 #include <debug.h>
 
-/*#include <enums/error.h>*/
+#include <string/new.h>
+#include <string/free.h>
+
+#include <enums/error.h>
 
 /*#include <avl/avl.h>*/
 /*#include <avl/safe_insert.h>*/

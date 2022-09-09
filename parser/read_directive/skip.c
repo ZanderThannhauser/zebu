@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include <debug.h>
 
 #include <regex/dfa_to_nfa.h>

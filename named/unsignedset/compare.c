@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <string/compare.h>
+
 #include "struct.h"
 #include "compare.h"
 

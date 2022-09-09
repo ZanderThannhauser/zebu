@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+
+#include <string/are_equal.h>
+
 #include "struct.h"
 #include "are_equal.h"
 

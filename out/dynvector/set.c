@@ -5,6 +5,8 @@
 
 #include <avl/insert.h>
 
+#include <memory/smalloc.h>
+
 #include "struct.h"
 #include "set.h"
 

@@ -4,7 +4,10 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <string/struct.h>
+#include <string/new.h>
 
 #include "struct.h"
 #include "build_absolute_name.h"

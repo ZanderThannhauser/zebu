@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <avl/alloc_tree.h>
+
+#include <memory/smalloc.h>
+
 #include "struct.h"
 #include "new.h"
 

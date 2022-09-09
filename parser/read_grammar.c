@@ -6,7 +6,10 @@
 
 #include <debug.h>
 
-/*#include <enums/error.h>*/
+#include <string/new.h>
+#include <string/free.h>
+
+#include <enums/error.h>
 
 #include <gegex/state/struct.h>
 /*#include <gegex/state/new.h>*/

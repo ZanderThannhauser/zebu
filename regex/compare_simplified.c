@@ -5,6 +5,11 @@
 
 #include <debug.h>
 
+#include <avl/alloc_tree.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
 #include "state/struct.h"
 
 #include "compare_simplified.h"

@@ -3,9 +3,18 @@
 
 #include <debug.h>
 
+#include <string/free.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
 #include <gegex/state/struct.h>
 
 #include <named/gegex/struct.h>
+
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>

@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+
 #include "node/struct.h"
 
 #include "struct.h"

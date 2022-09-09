@@ -1,8 +1,16 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
-#include <yacc/reductioninfo/free.h>
+#include <memory/smalloc.h>
 
+#include <avl/alloc_tree.h>
+
+#include <string/compare.h>
+#include <string/free.h>
+
+#include <yacc/reductioninfo/free.h>
 #include <yacc/structinfo/free.h>
 
 #include "struct.h"

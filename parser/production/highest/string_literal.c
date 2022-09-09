@@ -1,5 +1,10 @@
 
+#include <assert.h>
+
 #include <debug.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
@@ -37,7 +42,6 @@ struct gbundle read_string_literal_production(
 	struct scope* scope,
 	struct lex* lex)
 {
-	struct gbundle retval;
 	ENTER;
 	
 	dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);

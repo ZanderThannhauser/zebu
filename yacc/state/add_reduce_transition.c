@@ -1,6 +1,11 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+#include <memory/srealloc.h>
+
+#include <string/inc.h>
+
 #include <set/unsigned/compare.h>
 #include <set/unsigned/inc.h>
 

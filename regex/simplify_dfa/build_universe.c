@@ -4,14 +4,15 @@
 #include <debug.h>
 
 /*#include <set/regex/contains.h>*/
-/*#include <set/regex/add.h>*/
+#include <set/regex/add.h>
 
-/*#include <quack/new.h>*/
-/*#include <quack/append.h>*/
-/*#include <quack/pop.h>*/
-/*#include <quack/free.h>*/
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+#include <quack/len.h>
 
-/*#include "../state/struct.h"*/
+#include "../state/struct.h"
 
 #include "build_universe.h"
 

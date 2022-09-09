@@ -1,5 +1,14 @@
 
+#include <assert.h>
+
 #include <debug.h>
+
+#include <string/inc.h>
+
+#include <avl/search.h>
+#include <avl/insert.h>
+
+#include <memory/smalloc.h>
 
 #include "struct.h"
 #include "add_grammar_array_field.h"

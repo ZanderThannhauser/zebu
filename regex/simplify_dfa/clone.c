@@ -1,24 +1,30 @@
 
-/*#include <stdlib.h>*/
-/*#include <assert.h>*/
+#include <stdlib.h>
+#include <assert.h>
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <memory/smalloc.h>
 
-/*#include <set/regex/struct.h>*/
+#include <avl/alloc_tree.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
 
-/*#include <avl/alloc_tree.h>*/
-/*#include <avl/search.h>*/
-/*#include <avl/insert.h>*/
-/*#include <avl/free_tree.h>*/
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
-/*#include "../state/struct.h"*/
-/*#include "../state/new.h"*/
+#include <set/regex/struct.h>
+
+#include "../state/struct.h"
+#include "../state/new.h"
 
 /*#include "../dotout.h"*/
 
-/*#include "same_as_node/struct.h"*/
+#include "same_as_node/struct.h"
 
 #include "clone.h"
 

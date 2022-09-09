@@ -1,5 +1,17 @@
 
+#include <stdlib.h>
+
+#include <assert.h>
+
 #include <debug.h>
+
+#include <avl/alloc_tree.h>
+
+#include <memory/smalloc.h>
+
+#include <string/inc.h>
+#include <string/compare.h>
+#include <string/free.h>
 
 #include "struct.h"
 #include "new.h"

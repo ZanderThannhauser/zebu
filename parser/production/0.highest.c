@@ -7,8 +7,6 @@
 
 /*#include <lex/lookup/add_token.h>*/
 
-/*#include <memory/arena/malloc.h>*/
-
 /*#include <regex/from_literal.h>*/
 /*#include <regex/from_charset.h>*/
 /*#include <regex/clone.h>*/
@@ -47,7 +45,7 @@
 /*#include "../token/root.h"*/
 
 #include "../tokenizer/struct.h"
-/*#include "../tokenizer/read_token.h"*/
+#include "../tokenizer/read_token.h"
 
 /*#include "../tokenizer/machines/subroot.h"*/
 /*#include "../tokenizer/machines/production/root.h"*/

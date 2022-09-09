@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+
+#include <string/struct.h>
+
 #include <yacc/structinfo/struct.h>
 
 #include "print_inc_functions.h"

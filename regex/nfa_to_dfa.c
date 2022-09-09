@@ -1,7 +1,15 @@
 
+#include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
 
 /*#include <heap/len.h>*/
 /*#include <heap/new.h>*/
@@ -9,20 +17,22 @@
 /*#include <heap/pop.h>*/
 /*#include <heap/free.h>*/
 
-/*#include <set/regex/new.h>*/
-/*#include <set/regex/add.h>*/
-/*#include <set/regex/foreach.h>*/
-/*#include <set/regex/compare.h>*/
-/*#include <set/regex/free.h>*/
-/*#include <set/regex/len.h>*/
-/*#include <set/regex/inc.h>*/
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
-/*#include "state/struct.h"*/
-/*#include "state/new.h"*/
+#include <set/regex/new.h>
+#include <set/regex/add.h>
+#include <set/regex/foreach.h>
+#include <set/regex/compare.h>
+#include <set/regex/free.h>
+#include <set/regex/len.h>
+#include <set/regex/inc.h>
 
-#ifdef DOTOUT
-#include "dotout.h"
-#endif
+#include "state/struct.h"
+#include "state/new.h"
 
 #include "nfa_to_dfa.h"
 

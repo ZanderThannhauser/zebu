@@ -7,17 +7,17 @@
 
 #include <named/gegex/struct.h>
 
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+
 #include <set/string/foreach.h>
 
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/free.h>
 #include <set/gegex/clear.h>
-
-#ifdef DOTOUT
-#include <set/gegex/contains.h>
-#include <misc/frame_counter.h>
-#endif
 
 #include "structinfo/new.h"
 #include "structinfo/update.h"

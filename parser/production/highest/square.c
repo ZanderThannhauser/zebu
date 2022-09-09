@@ -1,5 +1,11 @@
 
+#include <stdlib.h>
+#include <assert.h>
+
 #include <debug.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include <parser/charset/root.h>
 

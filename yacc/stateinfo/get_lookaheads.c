@@ -1,5 +1,8 @@
 
+#include <assert.h>
 #include <debug.h>
+
+#include <avl/search.h>
 
 #include "node/struct.h"
 

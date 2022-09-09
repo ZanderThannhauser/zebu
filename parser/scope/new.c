@@ -3,6 +3,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 /*#include <avl/new.h>*/
 
 /*#include <avl/init_tree.h>*/

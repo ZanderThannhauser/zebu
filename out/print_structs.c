@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+
 #include <set/string/new.h>
 #include <set/string/free.h>
 

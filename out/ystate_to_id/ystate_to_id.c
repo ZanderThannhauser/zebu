@@ -3,6 +3,11 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
+#include <avl/search.h>
+#include <avl/insert.h>
+
 #include "struct.h"
 #include "ystate_to_id.h"
 

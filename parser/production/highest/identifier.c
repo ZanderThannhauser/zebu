@@ -1,5 +1,11 @@
 
+#include <assert.h>
+#include <stdbool.h>
+
 #include <debug.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>

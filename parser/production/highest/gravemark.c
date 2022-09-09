@@ -1,13 +1,17 @@
 
+#include <assert.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
 #include <parser/tokenizer/machines/regex/root.h>
 #include <parser/tokenizer/machines/production/after_highest.h>
-
 #include <parser/token/root.h>
-
 #include <parser/options/struct.h>
 
 #include <gegex/state/new.h>
@@ -38,7 +42,6 @@ struct gbundle read_gravemark_production(
 	struct scope* scope,
 	struct lex* lex)
 {
-	struct gbundle retval;
 	ENTER;
 	
 	read_token(tokenizer, regex_root_machine);

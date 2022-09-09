@@ -1,5 +1,14 @@
 
+#include <assert.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <string/inc.h>
+
+#include <avl/insert.h>
+#include <avl/search.h>
 
 #include "struct.h"
 #include "add_token_scalar_field.h"

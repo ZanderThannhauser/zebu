@@ -1,13 +1,17 @@
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <strings.h>
 #include <string.h>
 
-#include <avl/search.h>
-
 #include <debug.h>
 
+#include <string/struct.h>
+#include <string/inc.h>
+#include <string/new.h>
+
+#include <avl/search.h>
 /*#include <memory/smalloc.h>*/
 
 #include "../struct.h"

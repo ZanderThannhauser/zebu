@@ -4,6 +4,8 @@
 
 #include <debug.h>
 
+#include <macros/strequals.h>
+
 /*#include <enums/error.h>*/
 
 /*#include <macros/strequals.h>*/

@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/free_nodes.h>
+
 #include "struct.h"
 #include "clear.h"
 

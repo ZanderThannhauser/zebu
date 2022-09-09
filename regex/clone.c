@@ -4,16 +4,24 @@
 
 #include <debug.h>
 
-/*#include <avl/search.h>*/
-/*#include <avl/insert.h>*/
-/*#include <avl/free_tree.h>*/
-/*#include <avl/alloc_tree.h>*/
+#include <memory/smalloc.h>
+
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+#include <avl/alloc_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 /*#include <set/regex/foreach.h>*/
 
-/*#include "state/struct.h"*/
-/*#include "state/new.h"*/
-/*#include "state/add_lambda_transition.h"*/
+#include "state/struct.h"
+#include "state/new.h"
+#include "state/add_lambda_transition.h"
 
 #include "clone.h"
 

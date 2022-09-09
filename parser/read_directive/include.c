@@ -1,4 +1,7 @@
 
+#include <assert.h>
+#include <unistd.h>
+
 #include <debug.h>
 
 #include <misc/break_and_open_path.h>

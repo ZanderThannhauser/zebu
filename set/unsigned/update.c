@@ -1,6 +1,11 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
+#include <avl/insert.h>
+#include <avl/tree_t.h>
+
 #include "struct.h"
 #include "update.h"
 

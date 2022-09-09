@@ -1,5 +1,10 @@
 
+#include <assert.h>
+
 #include <debug.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
@@ -20,6 +25,7 @@
 #include <lex/lookup/add_token.h>
 
 #include <gegex/dotout.h>
+
 #include <gegex/state/new.h>
 #include <gegex/state/add_transition.h>
 
@@ -36,7 +42,6 @@ struct gbundle read_character_literal_production(
 	struct scope* scope,
 	struct lex* lex)
 {
-	struct gbundle retval;
 	ENTER;
 	
 	dpvc(tokenizer->tokenchars.chars[0]);

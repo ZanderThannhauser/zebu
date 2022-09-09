@@ -4,6 +4,9 @@
 
 #include <debug.h>
 
+#include <string/struct.h>
+#include <string/new.h>
+
 #include <named/gegex/new.h>
 
 #include <avl/insert.h>

@@ -5,34 +5,39 @@
 
 #include <debug.h>
 
-/*#include <avl/foreach.h>*/
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/foreach.h>
+#include <avl/free_tree.h>
 
-/*#include <set/regex/new.h>*/
-/*#include <set/regex/clone.h>*/
-/*#include <set/regex/foreach.h>*/
-/*#include <set/regex/free.h>*/
+#include <set/regex/new.h>
+#include <set/regex/clone.h>
+#include <set/regex/foreach.h>
+#include <set/regex/free.h>
 
-/*#include <heap/new.h>*/
-/*#include <heap/pop.h>*/
-/*#include <heap/push.h>*/
-/*#include <heap/is_nonempty.h>*/
-/*#include <heap/free.h>*/
+#include <heap/new.h>
+#include <heap/pop.h>
+#include <heap/push.h>
+#include <heap/len.h>
+#include <heap/free.h>
 
 /*#include "../dotout.h"*/
-/*#include "../state/struct.h"*/
 
-/*#include "dependent_of_node/struct.h"*/
-/*#include "dependent_of_node/compare.h"*/
-/*#include "dependent_of_node/free.h"*/
+#include "../state/struct.h"
 
-/*#include "same_as_node/new.h"*/
-/*#include "same_as_node/compare.h"*/
-/*#include "same_as_node/free.h"*/
+#include "dependent_of_node/struct.h"
+#include "dependent_of_node/compare.h"
+#include "dependent_of_node/free.h"
 
-/*#include "task/struct.h"*/
-/*#include "task/new.h"*/
-/*#include "task/compare.h"*/
-/*#include "task/free.h"*/
+#include "same_as_node/new.h"
+#include "same_as_node/compare.h"
+#include "same_as_node/free.h"
+
+#include "task/struct.h"
+#include "task/new.h"
+#include "task/compare.h"
+#include "task/free.h"
 
 #include "mark_as_unequal.h"
 #include "dotout.h"
@@ -193,7 +198,7 @@ struct regex* regex_simplify_dfa(struct regex* original_start)
 /*	simplify_dfa_dotout(universe, connections, 0);*/
 /*	#endif*/
 	
-	while (is_heap_nonempty(todo))
+	while (heap_len(todo))
 	{
 		#ifdef VERBOSE
 		completed++;

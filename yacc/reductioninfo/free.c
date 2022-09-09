@@ -1,5 +1,9 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <string/free.h>
 
 #include <yacc/structinfo/free.h>
 

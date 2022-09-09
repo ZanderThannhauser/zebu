@@ -1,16 +1,27 @@
 
+#include <assert.h>
+#include <stdlib.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <avl/search.h>
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <named/trie/struct.h>
 
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/update.h>
-
-#ifdef DOTOUT
-#include <misc/frame_counter.h>
-#include <set/unsigned/to_string.h>
-#endif
 
 #include "trie/struct.h"
 

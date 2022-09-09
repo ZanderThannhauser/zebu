@@ -4,8 +4,21 @@
 
 #include <debug.h>
 
-/*#include "state/struct.h"*/
-/*#include "state/new.h"*/
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/search.h>
+#include <avl/free_tree.h>
+
+#include <memory/smalloc.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
+
+#include "state/struct.h"
+#include "state/new.h"
 
 /*#include "dotout.h"*/
 

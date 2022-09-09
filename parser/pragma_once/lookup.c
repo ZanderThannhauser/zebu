@@ -8,10 +8,10 @@
 
 /*#include <defines/argv0.h>*/
 
-/*#include <enums/error.h>*/
+#include <enums/error.h>
 
-/*#include <avl/search.h>*/
-/*#include <avl/insert.h>*/
+#include <avl/search.h>
+#include <avl/insert.h>
 
 #include "node/struct.h"
 #include "node/new.h"

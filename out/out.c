@@ -1,5 +1,22 @@
 
+#include <assert.h>
+#include <limits.h>
+#include <string.h>
+
 #include <debug.h>
+
+#include <avl/alloc_tree.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
+#include <string/new.h>
+#include <string/free.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/len.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <cmdln/output_path.h>
 #include <cmdln/output_prefix.h>

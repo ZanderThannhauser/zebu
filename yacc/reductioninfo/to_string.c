@@ -1,5 +1,12 @@
 
+#include <stdio.h>
+#include <string.h>
+
 #include <debug.h>
+
+#include <memory/srealloc.h>
+
+#include <string/struct.h>
 
 #include "struct.h"
 #include "to_string.h"

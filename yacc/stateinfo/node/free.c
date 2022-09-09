@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+
 #include <debug.h>
 
 #include <set/unsigned/free.h>
