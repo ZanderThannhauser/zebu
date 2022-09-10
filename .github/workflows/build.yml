@@ -8,36 +8,45 @@ on:
     branches: [ "main" ]
 
 jobs:
-  debug-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     
     - name: Build Debug
-      run: make buildtype=debug dotout=no verbose=no
+      run: make buildtype=test dotout=no verbose=no
 
-  debug-iloc-example:
+  iloc-example:
     runs-on: ubuntu-latest
-    needs: [debug-build]
+    needs: [build]
     steps:
     - uses: actions/checkout@v3
     
-    - name: Run Iloc Example
-      run: make buildtype=debug dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+    - name: Install Dependences
+      run: apt install -y valgrind
 
-  debug-json-example:
+    - name: Generate Iloc Example
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+
+    - name: Compile Iloc Example
+      run: gcc -Wall -Werror ./-examples/iloc/iloc2 -o /tmp/test
+
+    - name: Run Iloc Example
+      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
+
+  json-example:
     runs-on: ubuntu-latest
-    needs: [debug-build]
+    needs: [build]
     steps:
     - uses: actions/checkout@v3
     
     - name: Run JSON Example
-      run: make buildtype=debug dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
 
   release-build:
     runs-on: ubuntu-latest
-    needs: [debug-iloc-example, debug-json-example]
+    needs: [iloc-example, json-example]
     steps:
     - uses: actions/checkout@v3
     
@@ -50,8 +59,17 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Run Iloc Example
+    - name: Install Dependences
+      run: apt install valgrind
+
+    - name: Generate Iloc Example
       run: make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+
+    - name: Compile Iloc Example
+      run: gcc -Wall -Werror ./-examples/iloc/iloc2 -o /tmp/test
+
+    - name: Run Iloc Example
+      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
   release-json-example:
     runs-on: ubuntu-latest
