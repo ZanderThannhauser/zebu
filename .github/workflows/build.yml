@@ -27,7 +27,7 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate Iloc Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
     - name: Compile Iloc Example
       run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
@@ -45,7 +45,7 @@ jobs:
       run: sudo apt install valgrind
 
     - name: Generate JSON Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-debug -i ./-examples/json/json.zb -o ./-examples/json/json"
 
     - name: Compile Iloc Example
       run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
