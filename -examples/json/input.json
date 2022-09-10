@@ -1,0 +1,14 @@
+
+{
+	"true": true,
+	"false": false,
+	"string": "abc",
+	"array": [1, "b", 3],
+	"nestedarrays": [[1], [[2]], [[[3]]]],
+	"dictionaries": {
+		"x": 1,
+		"y": {"a": {"b": {"c": [2]}}},
+		"z": 3
+	}
+}
+

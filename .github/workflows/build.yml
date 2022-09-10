@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Build Debug
-      run: make buildtype=test dotout=no verbose=no
+      run: make buildtype=test verbose=no
 
   iloc-example:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate Iloc Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
     - name: Compile Iloc Example
       run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
@@ -41,8 +41,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Run JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+    - name: Generate JSON Example
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+
+    - name: Compile Iloc Example
+      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
+
+    - name: Run Iloc Example
+      run: valgrind /tmp/test ./-examples/json/input.json
 
   release-build:
     runs-on: ubuntu-latest
@@ -77,8 +83,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Run JSON Example
+    - name: Generate JSON Example
       run: make run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+      
+    - name: Compile Iloc Example
+      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
+
+    - name: Run Iloc Example
+      run: valgrind /tmp/test ./-examples/json/input.json
+
 
 
 

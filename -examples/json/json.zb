@@ -1,7 +1,7 @@
 
-%start: value #value;
+%skip: ' ' | '\t' | '\n';
 
-%skip: ' ';
+%start: value #value;
 
 `string`: '\"' ['a' - 'z']+ '\"';
 
