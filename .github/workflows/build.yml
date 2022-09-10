@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  debug_build:
+  debug-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +16,14 @@ jobs:
     
     - name: Build Debug
       run: make buildtype=debug dotout=no verbose=no
-
-  test_build:
+	
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Debug
+      run: make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+	
+  test-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +32,7 @@ jobs:
     - name: Build Testing
       run: make buildtype=test dotout=no verbose=no
 
-  release_build:
+  release-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +41,7 @@ jobs:
     - name: Build Release
       run: make buildtype=release dotout=no verbose=no
 
-  verbose_debug_build:
+  verbose-debug-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +50,7 @@ jobs:
     - name: Build Debug
       run: make buildtype=debug dotout=no verbose=yes
 
-  verbose_test_build:
+  verbose-test-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -53,7 +59,7 @@ jobs:
     - name: Build Testing
       run: make buildtype=test dotout=no verbose=yes
 
-  verbose_release_build:
+  verbose-release-build:
     runs-on: ubuntu-latest
 
     steps:
