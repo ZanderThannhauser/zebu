@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  debug_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
     - name: Build Debug
       run: make buildtype=debug dotout=no verbose=no
 
-  build:
+  test_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
     - name: Build Testing
       run: make buildtype=test dotout=no verbose=no
 
-  build:
+  release_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
     - name: Build Release
       run: make buildtype=release dotout=no verbose=no
 
-  build:
+  verbose_debug_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +44,7 @@ jobs:
     - name: Build Debug
       run: make buildtype=debug dotout=no verbose=yes
 
-  build:
+  verbose_test_build:
     runs-on: ubuntu-latest
 
     steps:
@@ -53,7 +53,7 @@ jobs:
     - name: Build Testing
       run: make buildtype=test dotout=no verbose=yes
 
-  build:
+  verbose_release_build:
     runs-on: ubuntu-latest
 
     steps:
