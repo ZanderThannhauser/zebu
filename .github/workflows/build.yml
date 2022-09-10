@@ -64,31 +64,6 @@ jobs:
     - name: Run JSON Example
       run: make run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-on:
-  release:
-    action: [published]
-
-jobs:
-  upload-release-artifacts:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build Static Release
-      run: make LDFLAGS="-static"
-      
-    - uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ github.token }}
-      with:
-          name: zebu-linux
-          upload_url: ${{ steps.release.upload_url }}
-          asset_path: gen/release-build/yes-verbose/no-dotout/zebu
-          asset_name: zebu-linux
-          asset_content_type: application/octet-stream
-
-
-
 
 
 
