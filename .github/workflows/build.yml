@@ -41,6 +41,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install valgrind
+
     - name: Generate JSON Example
       run: make buildtype=test verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
 
@@ -83,6 +86,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install valgrind
+
     - name: Generate JSON Example
       run: make run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
       
