@@ -47,10 +47,10 @@ jobs:
     - name: Generate JSON Example
       run: make buildtype=test verbose=no run ARGS="-vl -t fileio-debug -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-    - name: Compile Iloc Example
+    - name: Compile JSON Example
       run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
 
-    - name: Run Iloc Example
+    - name: Run JSON Example
       run: valgrind /tmp/test ./-examples/json/input.json
 
   release-build:
@@ -92,10 +92,10 @@ jobs:
     - name: Generate JSON Example
       run: make run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
       
-    - name: Compile Iloc Example
+    - name: Compile JSON Example
       run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
 
-    - name: Run Iloc Example
+    - name: Run JSON Example
       run: valgrind /tmp/test ./-examples/json/input.json
 
 
