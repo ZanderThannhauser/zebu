@@ -24,8 +24,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Run Iloc Example
-      run: true
-      # make buildtype=debug dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+      run: make buildtype=debug dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
   debug-json-example:
     runs-on: ubuntu-latest
@@ -52,8 +51,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Run Iloc Example
-      run: true
-      # make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+      run: make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
   release-json-example:
     runs-on: ubuntu-latest
