@@ -1,6 +1,8 @@
 
 # vim: set noai ts=4 sw=4 expandtab:
 
+name: Build Artifacts & Create Release Page
+
 on:
   push:
     tags:
