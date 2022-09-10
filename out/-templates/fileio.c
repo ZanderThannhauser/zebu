@@ -246,9 +246,9 @@ int main(int argc, char* const* argv)
 	
 	void* root = parse(input);
 	
-	print___start___ptree(NULL, p_root, "start", root);
+	print_$start_ptree(NULL, p_root, "start", root);
 	
-	free___start___ptree(root);
+	free_$start_ptree(root);
 	
 	fclose(input);
 	

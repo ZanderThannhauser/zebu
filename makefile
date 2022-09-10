@@ -68,10 +68,10 @@ buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 default: $(buildprefix)/zebu
 
 #ARGS += -v
-#ARGS += --verbose
+ARGS += --verbose
 
 #ARGS += -l
-#ARGS += --minimize-lexer
+ARGS += --minimize-lexer
 
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
@@ -79,10 +79,10 @@ default: $(buildprefix)/zebu
 #ARGS += --template=readline-debug
 #ARGS += --template=readline
 #ARGS += --template=readline-with-driver-debug
-ARGS += --template=readline-with-driver
+#ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio-debug
-#ARGS += --template=fileio
+ARGS += --template=fileio
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
@@ -98,12 +98,12 @@ ARGS += --template=readline-with-driver
 #ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
+#ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
 #ARGS += -i ./-examples/lisp/lisp.zb -o ./-examples/lisp/lisp
 
 #ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
-#ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
+ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
 #ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
 #ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
