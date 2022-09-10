@@ -17,9 +17,6 @@ jobs:
     - name: Build Debug
       run: make buildtype=debug dotout=no verbose=no
 	
-    steps:
-    - uses: actions/checkout@v3
-    
     - name: Build Debug
       run: make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 	
