@@ -30,7 +30,7 @@ jobs:
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
     - name: Compile Iloc Example
-      run: gcc -Wall -Werror ./-examples/iloc/iloc2 -o /tmp/test
+      run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
 
     - name: Run Iloc Example
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
@@ -66,7 +66,7 @@ jobs:
       run: make run ARGS="-vl -t fileio -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
     - name: Compile Iloc Example
-      run: gcc -Wall -Werror ./-examples/iloc/iloc2 -o /tmp/test
+      run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
 
     - name: Run Iloc Example
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
