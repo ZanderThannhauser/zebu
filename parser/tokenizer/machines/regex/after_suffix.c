@@ -26,12 +26,11 @@ const enum tokenizer_state regex_after_suffix_machine[number_of_tokenizer_states
 		// dot:
 		#include "../fragments/dot.h"
 		
-	// prefixes:
-		// exclamation mark:
-		#include "../fragments/emark.h"
-	
 	// and operator:
 		#include "../fragments/ampersand.h"
+	
+	// xor operator:
+		#include "../fragments/caret.h"
 	
 	// or operator:
 		#include "../fragments/vertical_bar.h"

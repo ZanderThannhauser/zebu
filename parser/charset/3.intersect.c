@@ -7,8 +7,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_intersect.h"
 
-#include "1.range.h"
-#include "2.intersect.h"
+#include "2.range.h"
+#include "3.intersect.h"
 
 charset_t read_intersect_charset(
 	struct tokenizer* tokenizer,
@@ -24,14 +24,11 @@ charset_t read_intersect_charset(
 		
 		charset_t right = read_range_charset(tokenizer, scope);
 		
-		EXIT;
-		return left & right;
+		left &= right;
 	}
-	else
-	{
-		EXIT;
-		return left;
-	}
+	
+	EXIT;
+	return left;
 }
 
 

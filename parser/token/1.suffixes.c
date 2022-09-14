@@ -19,8 +19,8 @@
 #include "../tokenizer/machines/misc/ccurly.h"
 #include "../tokenizer/machines/regex/after_suffix.h"
 
-#include "1.prefixes.h"
-#include "2.suffixes.h"
+#include "0.highest.h"
+#include "1.suffixes.h"
 
 struct rbundle read_suffixes_token_expression(
 	struct tokenizer* tokenizer,
@@ -28,7 +28,7 @@ struct rbundle read_suffixes_token_expression(
 ) {
 	ENTER;
 	
-	struct rbundle retval = read_prefixes_token_expression(tokenizer, scope);
+	struct rbundle retval = read_highest_token_expression(tokenizer, scope);
 	
 	switch (tokenizer->token)
 	{

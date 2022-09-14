@@ -5,8 +5,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/root.h"
 
-#include "3.union.h"
-#include "4.complement.h"
+#include "0.highest.h"
+#include "1.complement.h"
 
 charset_t read_complement_charset(
 	struct tokenizer* tokenizer,
@@ -18,14 +18,14 @@ charset_t read_complement_charset(
 	{
 		read_token(tokenizer, charset_root_machine);
 		
-		charset_t inner = read_union_charset(tokenizer, scope);
+		charset_t inner = read_highest_charset(tokenizer, scope);
 		
 		EXIT;
 		return ~inner;
 	}
 	else
 	{
-		charset_t inner = read_union_charset(tokenizer, scope);
+		charset_t inner = read_highest_charset(tokenizer, scope);
 		EXIT;
 		return inner;
 	}

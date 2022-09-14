@@ -7,14 +7,15 @@
 #include <regex/state/free.h>
 #include <regex/intersect_dfas.h>
 #include <regex/nfa_to_dfa.h>
+#include <regex/complement.h>
 #include <regex/simplify_dfa/simplify_dfa.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/regex/inside_and.h"
 
-#include "3.concat.h"
-#include "4.and.h"
+#include "2.concat.h"
+#include "3.and.h"
 
 struct rbundle read_and_token_expression(
 	struct tokenizer* tokenizer,
@@ -22,23 +23,30 @@ struct rbundle read_and_token_expression(
 ) {
 	ENTER;
 	
-	struct rbundle retval = read_concat_token_expression(tokenizer, scope);
+	struct rbundle left = read_concat_token_expression(tokenizer, scope);
 	
 	while (tokenizer->token == t_ampersand)
 	{
 		read_token(tokenizer, regex_inside_and_machine);
 		
+		bool take_complement = false;
+		while (tokenizer->token == t_emark)
+		{
+			take_complement = !take_complement;
+			read_token(tokenizer, regex_inside_and_machine);
+		}
+		
 		struct rbundle right = read_concat_token_expression(tokenizer, scope);
 		
 		struct regex* left_machine, *right_machine;
 		
-		if (retval.is_nfa)
+		if (left.is_nfa)
 		{
 			TODO;
 		}
 		else
 		{
-			left_machine = retval.dfa;
+			left_machine = left.dfa;
 		}
 		
 		if (right.is_nfa)
@@ -58,8 +66,8 @@ struct rbundle read_and_token_expression(
 			right_machine = right.dfa;
 		}
 		
-		dpv(left_machine);
-		dpv(right_machine);
+		if (take_complement)
+			regex_complement(right_machine);
 		
 		struct regex* intersected = regex_intersect_dfas(left_machine, right_machine);
 		
@@ -67,15 +75,25 @@ struct rbundle read_and_token_expression(
 		
 		free_regex(intersected);
 		
-		retval = (struct rbundle) {
+		left = (struct rbundle) {
 			.is_nfa = false,
 			.dfa = outgoing,
 		};
 	}
 	
 	EXIT;
-	return retval;
+	return left;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

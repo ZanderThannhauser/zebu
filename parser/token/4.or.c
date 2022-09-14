@@ -11,8 +11,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/regex/inside_or.h"
 
-#include "4.and.h"
-#include "5.or.h"
+#include "3.and.h"
+#include "4.or.h"
 
 struct rbundle read_or_token_expression(
 	struct tokenizer* tokenizer,

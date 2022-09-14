@@ -28,7 +28,7 @@ const enum tokenizer_state regex_inside_and_machine[number_of_tokenizer_states][
 		// dot:
 		#include "../fragments/dot.h"
 	
-	// prefixes:
+	// difference:
 		// exclamation mark:
 		#include "../fragments/emark.h"
 	

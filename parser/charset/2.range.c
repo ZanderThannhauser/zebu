@@ -9,8 +9,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_range.h"
 
-#include "0.highest.h"
-#include "1.range.h"
+#include "1.complement.h"
+#include "2.range.h"
 
 static unsigned char max(charset_t value)
 {
@@ -34,13 +34,13 @@ charset_t read_range_charset(
 {
 	ENTER;
 	
-	charset_t left = read_highest_charset(tokenizer, scope);
+	charset_t left = read_complement_charset(tokenizer, scope);
 	
 	if (tokenizer->token == t_hypen)
 	{
 		read_token(tokenizer, charset_inside_range_machine);
 		
-		charset_t right = read_highest_charset(tokenizer, scope);
+		charset_t right = read_complement_charset(tokenizer, scope);
 		
 		unsigned char l = min(left), r = max(right);
 		

@@ -27,6 +27,11 @@ const enum tokenizer_state regex_inside_emark_machine[number_of_tokenizer_states
 		
 		// dot:
 		#include "../fragments/dot.h"
+	
+	// difference:
+		// exclamation mark:
+		#include "../fragments/emark.h"
+	
 };
 
 

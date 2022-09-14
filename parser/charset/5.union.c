@@ -9,8 +9,8 @@
 #include "../tokenizer/read_token.h"
 #include "../tokenizer/machines/charset/inside_union.h"
 
-#include "2.intersect.h"
-#include "3.union.h"
+#include "4.xor.h"
+#include "5.union.h"
 
 charset_t read_union_charset(
 	struct tokenizer* tokenizer,
@@ -18,7 +18,7 @@ charset_t read_union_charset(
 {
 	ENTER;
 	
-	charset_t left = read_intersect_charset(tokenizer, scope);
+	charset_t left = read_xor_charset(tokenizer, scope);
 	
 	while (false
 		|| tokenizer->token == t_oparen
@@ -33,7 +33,7 @@ charset_t read_union_charset(
 			read_token(tokenizer, charset_inside_union_machine);
 		}
 		
-		charset_t right = read_intersect_charset(tokenizer, scope);
+		charset_t right = read_xor_charset(tokenizer, scope);
 		
 		left |= right;
 	}

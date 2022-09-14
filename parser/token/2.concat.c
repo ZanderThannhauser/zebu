@@ -10,8 +10,8 @@
 
 #include "../tokenizer/struct.h"
 
-#include "2.suffixes.h"
-#include "3.concat.h"
+#include "1.suffixes.h"
+#include "2.concat.h"
 
 struct rbundle read_concat_token_expression(
 	struct tokenizer* tokenizer,

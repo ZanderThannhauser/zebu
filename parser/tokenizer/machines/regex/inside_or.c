@@ -28,10 +28,6 @@ const enum tokenizer_state regex_inside_or_machine[number_of_tokenizer_states][2
 		// dot:
 		#include "../fragments/dot.h"
 	
-	// prefixes:
-		// exclamation mark:
-		#include "../fragments/emark.h"
-	
 };
 
 

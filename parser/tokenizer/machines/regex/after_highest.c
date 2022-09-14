@@ -27,10 +27,6 @@ const enum tokenizer_state regex_after_highest_machine[number_of_tokenizer_state
 		// dot:
 		#include "../fragments/dot.h"
 		
-	// prefixes:
-		// exclamation mark:
-		#include "../fragments/emark.h"
-	
 	// suffixes:
 		// question mark:
 		#include "../fragments/qmark.h"
@@ -46,6 +42,9 @@ const enum tokenizer_state regex_after_highest_machine[number_of_tokenizer_state
 	
 	// and operator:
 		#include "../fragments/ampersand.h"
+	
+	// xor operator:
+		#include "../fragments/caret.h"
 	
 	// or operator:
 		#include "../fragments/vertical_bar.h"
