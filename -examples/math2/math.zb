@@ -1,7 +1,5 @@
 
 
-%start: root #root;
-
 %skip: ' ';
 
 highest: `['0' - '9']+` #literal | '(' root #subexpression ')' ;
@@ -11,6 +9,8 @@ multiply: highest #base ('*' highest #multiplymes[] | '/' highest #dividemes[])*
 addition: multiply #base ('+' multiply #addmes[] | '-' multiply #subtractmes[])*;
 
 root: addition #root;
+
+%start: root #root;
 
 
 

@@ -44,10 +44,10 @@ cannot have the same name, even if defined in seperate files.
     the tokenizer when scanning for tokens. Note that the specified "skip"
     pattern will only be effective to the tokens described *after* the
     directive is given. Common usages are listed below:
-   - `%skip: [' ', '\t', '\n];` (Ignores space, tab and newline characters)
-   - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores characters listed
-     above, in addition to skipping anything bewteen a pound (#) and a newline)
-   - `%skip: [128 - 255];` (Ignores a bytes with their high-bit set)
+    - `%skip: [' ', '\t', '\n];` (Ignores space, tab and newline characters)
+    - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores characters listed
+       above, in addition to skipping anything bewteen a pound (#) and a newline)
+    - `%skip: [128 - 255];` (Ignores a bytes with their high-bit set)
  - `%include`: Gives a path to read using either `"path"` or `<path>` syntax.
     The former will resolve the path relative to the current file, and the latter
     will resolve the path relative to the file zebu was given on the command-line.
@@ -118,14 +118,15 @@ A list of operators and their meaning is listed below. Remember that parenthesis
 ### Regular Expression Language
 
 Inside of a grammar-rule context, one can enter the regular-expression context
-using gravemarks ('`'). One can also define a name as representing the value
-of a regular-expression to using ``[name]`: value;` syntax.
+using gravemarks ('\`'). One can also define a name as representing the value
+of a regular-expression to using `\`\[name\]\`: value;` syntax.
 
 Either C-style character-literals, integer-literals, or string-literals can be
 used in regular-expressions. The dot ('.') literal can be used as a shorthand
 for `[0 - 255]`, matching any valid next character.
 
-Square-brackets ('[]') can be used to describe a character-set, described above.
+Square-brackets ('[ ]') can be used to inclose a character-set expression,
+described above.
 
 Remember that one can also refer to the value of a defined regular-expression by
 name, inside of other regular expressions. The referenced regular-expression
@@ -185,29 +186,79 @@ A list of operators and their meaning is listed below. Remember that parenthesis
  - `'a'+'b'+'c'+ &! "abc"`: Describes all strings with one-or-more
     'a's, one-or-more 'b's, and one-or-more 'c's, but at least one letter must
     be repeated more than once.
+ - `'a'? 'b'? 'c'?`: Describes all the alphabetically-sorted strings made only
+   from 'a', 'b' and 'c' where no letter can be repeated.
  - Describes all UTF8-encoded strings:
-		( [0x00 - 0x7F] [0x80 - 0xBF]{0}
-		| [0xC0 - 0xDF] [0x80 - 0xBF]{1}
-		| [0xE0 - 0xEF] [0x80 - 0xBF]{2}
-		| [0xF0 - 0xF7] [0x80 - 0xBF]{3}
-		| [0xF8 - 0xFB] [0x80 - 0xBF]{4}
-		| [0xFC - 0xFD] [0x80 - 0xBF]{5} )*
+```C
+( [0x00 - 0x7F] [0x80 - 0xBF]{0}
+| [0xC0 - 0xDF] [0x80 - 0xBF]{1}
+| [0xE0 - 0xEF] [0x80 - 0xBF]{2}
+| [0xF0 - 0xF7] [0x80 - 0xBF]{3}
+| [0xF8 - 0xFB] [0x80 - 0xBF]{4}
+| [0xFC - 0xFD] [0x80 - 0xBF]{5} )*
+```
 
 ### Grammar Rule Expressions
 
-Talk about tags.
+Also Talk about tags.
 
 #### Operators
 
 #### Examples
 
-### Languages
+ - `A: ('!' | '(' A ')')+;`
+ - `B: ('a' 'b' 'c')* 'a' 'b'`
+
+### Example Languages
+
+This section provides a small catalog of sample input files for zebu.
 
 #### JSON
 
+```C
+%skip: ' ' | '\t' | '\n';
+
+%start: value #value;
+
+`string`: '\"' ['a' - 'z']+ '\"';
+
+keyvalue: `string` #key ":" value #value;
+
+value
+	: "true"  #boolean
+	| "false" #boolean
+	| `['0' - '9']+` #number
+	| `string` #string
+	| "[" value #elements[] ("," value #elements[])* "]"
+	| ("{" keyvalue #dict[] ("," keyvalue #dict[])* "}")
+	;
+```
+
 #### CSV
 
+```C
+`cell`: [~',','\"','\n']* ([~',','\"','\n']* '\"' (('\"' '\"') | [~'\"','\n'])* '\"')* [~',','\"','\n']*;
+
+row: `cell` #cells[] (',' `cell` #cells[])* `'\n'+`;
+
+%start: (row #rows[])+;
+```
+
 #### Math Expressions
+
+```C
+%skip: ' ';
+
+highest: `['0' - '9']+` #literal | '(' root #subexpression ')' ;
+
+multiply: highest #base ('*' highest #multiplymes[] | '/' highest #dividemes[])*;
+
+addition: multiply #base ('+' multiply #addmes[] | '-' multiply #subtractmes[])*;
+
+root: addition #root;
+
+%start: root #root;
+```
 
 ## Implementation Details: Tokenizer
 
