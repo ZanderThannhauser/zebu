@@ -31,7 +31,6 @@ void cmdln_process(int argc, char* const* argv)
 		{"prefix",   required_argument, 0, 'p'},
 		{"template", required_argument, 0, 't'},
 		{"minimize-lexer", no_argument, 0, 'l'},
-		{"simplify", required_argument, 0, 's'},
 		{"verbose",        no_argument, 0, 'v'},
 		{"help",           no_argument, 0, 'h'},
 		{ 0,                            0, 0,  0 },
