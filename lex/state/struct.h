@@ -10,6 +10,6 @@ struct lex_state
 	
 	struct unsignedset* accepts; // free me
 	
-	bool is_whitespace;
+	enum token_kind kind;
 };
 

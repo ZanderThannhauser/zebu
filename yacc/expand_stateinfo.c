@@ -22,6 +22,7 @@
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
 #include <set/unsigned/update.h>
+#include <set/unsigned/free.h>
 
 #ifdef DOTOUT
 #include <limits.h>
@@ -192,7 +193,7 @@ static void dotout(
 	
 	FILE* stream = fopen(path, "w");
 	
-	void trie_dotout(struct trie* prefix, struct trie* trie, char* lookaheads)
+	void trie_dotout(struct trie* prefix, struct trie* trie, const char* lookahead_whitespace, const char* lookahead_tokens)
 	{
 		ENTER;
 		
@@ -200,24 +201,30 @@ static void dotout(
 			"\"%p_%p\" [" "\n"
 				"shape = box" "\n"
 				"style = \"%s\"" "\n"
-				"label = \"%s\"" "\n"
+				"label = \"%s | %s\"" "\n"
 				"peripheries = %u" "\n"
 			"]" "\n"
 		"", prefix, trie,
 			trie == focus ? "bold" : "",
-			trie->reduce_as ? lookaheads : "", trie->reduce_as ? 2 : 1);
+			trie->reduce_as ? lookahead_whitespace : "",
+			trie->reduce_as ? lookahead_tokens : "",
+			trie->reduce_as ? 2 : 1);
 		
 		for (unsigned i = 0, n = trie->transitions.n; i < n; i++)
 		{
 			const struct trie_transition* const trans = trie->transitions.data[i];
 			
+			char* whitespace = unsignedset_to_string(trans->whitespace);
+			
 			fprintf(stream, ""
 				"\"%p_%p\" -> \"%p_%p\" [" "\n"
-					"label = \"#%u token\"" "\n"
+					"label = \"%s | #%u token\"" "\n"
 				"]" "\n"
-			"", prefix, trie, prefix, trans->to, trans->token);
+			"", prefix, trie, prefix, trans->to, whitespace, trans->token);
 			
-			trie_dotout(prefix, trans->to, lookaheads);
+			trie_dotout(prefix, trans->to, lookahead_whitespace, lookahead_tokens);
+			
+			free(whitespace);
 		}
 		
 		for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
@@ -230,7 +237,7 @@ static void dotout(
 				"]" "\n"
 			"", prefix, trie, prefix, trans->to, trans->grammar->chars);
 			
-			trie_dotout(prefix, trans->to, lookaheads);
+			trie_dotout(prefix, trans->to, lookahead_whitespace, lookahead_tokens);
 		}
 		
 		EXIT;
@@ -241,11 +248,12 @@ static void dotout(
 	fprintf(stream, "rankdir = LR;");
 	
 	stateinfo_foreach(stateinfo, ({
-		void runme(struct trie* trie, struct unsignedset* lookaheads)
+		void runme(struct trie* trie, struct unsignedset* whitespace, struct unsignedset* tokens)
 		{
-			char* label = unsignedset_to_string(lookaheads);
+			char* whitespace_label = unsignedset_to_string(whitespace);
+			char* tokens_label = unsignedset_to_string(tokens);
 			
-			trie_dotout(trie, trie, label ?: "");
+			trie_dotout(trie, trie, whitespace_label ?: "", tokens_label ?: "");
 			
 			trieset_foreach(get_deps(dependent_on, trie), ({
 				void runme(struct trie* subtrie)
@@ -261,7 +269,7 @@ static void dotout(
 				runme;
 			}));
 			
-			free(label);
+			free(whitespace_label), free(tokens_label);
 		}
 		runme;
 	}));
@@ -328,21 +336,21 @@ void expand_stateinfo(
 			
 			struct unsignedset* whitespace = new_unsignedset();
 			
-			struct unsignedset* lookaheads = new_unsignedset();
+			struct unsignedset* tokens = new_unsignedset();
 			
 			for (unsigned i = 0, n = to->transitions.n; i < n; i++)
 			{
 				unsignedset_update(whitespace, to->transitions.data[i]->whitespace);
 				
-				unsignedset_add(lookaheads, to->transitions.data[i]->token);
+				unsignedset_add(tokens, to->transitions.data[i]->token);
 			}
 			
 			for (unsigned i = 0, n = to->grammar_transitions.n; i < n; i++)
 			{
-				TODO;
-				#if 0
-				unsignedset_update(lookaheads, get_firsts(named_firsts, to->grammar_transitions.data[i]->grammar));
-				#endif
+				struct firsts_node* node = get_firsts(named_firsts, to->grammar_transitions.data[i]->grammar);
+				
+				unsignedset_update(whitespace, node->whitespace);
+				unsignedset_update(tokens, node->tokens);
 			}
 			
 			if (to->reduce_as)
@@ -351,7 +359,7 @@ void expand_stateinfo(
 				add_dep(dependent_of, trie, subgrammar_start);
 			}
 			
-			struct stateinfo_node* node = stateinfo_add(stateinfo, subgrammar_start, whitespace, lookaheads);
+			struct stateinfo_node* node = stateinfo_add(stateinfo, subgrammar_start, whitespace, tokens);
 			
 			if (node)
 			{
@@ -363,24 +371,29 @@ void expand_stateinfo(
 			#ifdef DOTOUT
 			dotout(stateinfo, dependent_on, trie);
 			#endif
+			
+			free_unsignedset(whitespace), free_unsignedset(tokens);
 		}
 	}
 	
-	TODO;
-	#if 0
 	// percolate lookaheads:
 	while (quack_len(percolate))
 	{
 		struct trie* const trie = quack_pop(percolate);
 		
-		struct unsignedset* lookaheads = stateinfo_get_lookaheads(stateinfo, trie);
+		struct stateinfo_node* node = stateinfo_get_lookaheads(stateinfo, trie);
 		
 		bool has_changed = false;
 		
 		trieset_foreach(get_deps(dependent_on, trie), ({
 			void runme(struct trie* dep)
 			{
-				has_changed = unsignedset_update(lookaheads, stateinfo_get_lookaheads(stateinfo, dep));
+				struct stateinfo_node* dep_on = stateinfo_get_lookaheads(stateinfo, dep);
+				
+				bool have_whitespace_changed = unsignedset_update(node->whitespace, dep_on->whitespace);
+				bool have_tokens_changed = unsignedset_update(node->tokens, dep_on->tokens);
+				
+				has_changed |= have_whitespace_changed || have_tokens_changed;
 			}
 			runme;
 		}));
@@ -406,7 +419,6 @@ void expand_stateinfo(
 	
 	free_quack(percolate);
 	free_quack(explore);
-	#endif
 	
 	EXIT;
 }

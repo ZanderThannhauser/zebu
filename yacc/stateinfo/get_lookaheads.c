@@ -9,7 +9,7 @@
 #include "struct.h"
 #include "get_lookaheads.h"
 
-struct unsignedset* stateinfo_get_lookaheads(
+struct stateinfo_node* stateinfo_get_lookaheads(
 	struct stateinfo* this,
 	struct trie* trie)
 {
@@ -22,6 +22,6 @@ struct unsignedset* stateinfo_get_lookaheads(
 	struct stateinfo_node* ele = node->item;
 	
 	EXIT;
-	return ele->lookaheads;
+	return ele;
 }
 

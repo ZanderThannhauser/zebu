@@ -14,7 +14,7 @@ void free_stateinfo_node(void* ptr)
 	
 	free_unsignedset(node->whitespace);
 	
-	free_unsignedset(node->lookaheads);
+	free_unsignedset(node->tokens);
 	
 	free(node);
 }

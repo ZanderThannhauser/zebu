@@ -39,6 +39,7 @@
 #include <set/unsigned/add.h>
 #include <set/unsigned/clone.h>
 #include <set/unsigned/foreach.h>
+#include <set/unsigned/update.h>
 #include <set/unsigned/free.h>
 
 #include <set/unsignedset/foreach.h>
@@ -262,29 +263,33 @@ static void add_shift(
 	struct avl_tree_t* shift_tokens,
 	unsigned token,
 	struct trie* to,
-	struct unsignedset* lookaheads)
+	struct unsignedset* whitespace,
+	struct unsignedset* tokens)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(shift_tokens, &token);
+	
+	struct unsignedset* whitespace_dup = unsignedset_clone(whitespace);
+	
+	struct unsignedset* tokens_dup = unsignedset_clone(tokens);
 	
 	if (node)
 	{
 		struct shift_node* old = node->item;
 		
-		stateinfo_add(old->stateinfo, to, unsignedset_clone(lookaheads));
+		stateinfo_add(old->stateinfo, to, whitespace_dup, tokens_dup);
 	}
 	else
 	{
 		struct shift_node* new = new_shift_node(token);
 		
-		stateinfo_add(new->stateinfo, to, unsignedset_clone(lookaheads));
+		stateinfo_add(new->stateinfo, to, whitespace_dup, tokens_dup);
 		
 		avl_insert(shift_tokens, new);
 	}
-	#endif
+	
+	free_unsignedset(whitespace_dup), free_unsignedset(tokens_dup);
 	
 	EXIT;
 }
@@ -334,31 +339,35 @@ static void add_subgrammar(
 	struct avl_tree_t* subgrammars,
 	struct string* grammar,
 	struct trie* to,
-	struct unsignedset* lookaheads)
+	struct unsignedset* whitespace,
+	struct unsignedset* tokens)
 {
 	ENTER;
 	
 	dpvs(grammar);
 	
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(subgrammars, &grammar);
+	
+	struct unsignedset* whitespace_dup = unsignedset_clone(whitespace);
+	
+	struct unsignedset* tokens_dup = unsignedset_clone(tokens);
 	
 	if (node)
 	{
 		struct subgrammar_node* old = node->item;
 		
-		stateinfo_add(old->stateinfo, to, unsignedset_clone(lookaheads));
+		stateinfo_add(old->stateinfo, to, whitespace_dup, tokens_dup);
 	}
 	else
 	{
 		struct subgrammar_node* new = new_subgrammar_node(grammar);
 		
-		stateinfo_add(new->stateinfo, to, unsignedset_clone(lookaheads));
+		stateinfo_add(new->stateinfo, to, whitespace_dup, tokens_dup);
 		
 		avl_insert(subgrammars, new);
 	}
-	#endif
+	
+	free_unsignedset(whitespace_dup), free_unsignedset(tokens_dup);
 	
 	EXIT;
 }
@@ -400,37 +409,32 @@ struct yacc_state* yacc(
 		
 		struct named_trie* start_trie = avl_search(named_tries, &(const char**){(const char*[]) {"$start"}})->item;
 		
-		struct unsignedset* whitespace = new_unsignedset();
+		struct unsignedset* lookahead_whitespace = new_unsignedset();
 		
 		if (lex->whitespace_token_id)
 		{
-			unsignedset_add(whitespace, lex->whitespace_token_id);
+			unsignedset_add(lookahead_whitespace, lex->whitespace_token_id);
 		}
 		
-		struct unsignedset* lookahead = new_unsignedset();
+		struct unsignedset* lookahead_tokens = new_unsignedset();
 		
-		unsignedset_add(lookahead, lex->EOF_token_id);
+		unsignedset_add(lookahead_tokens, lex->EOF_token_id);
 		
-		stateinfo_add(stateinfo, start_trie->trie, whitespace, lookahead);
+		stateinfo_add(stateinfo, start_trie->trie, lookahead_whitespace, lookahead_tokens);
 		
 		expand_stateinfo(stateinfo, named_tries, named_firsts);
 		
-		TODO;
-		#if 0
 		quack_append(todo, new_mapping(stateinfo, start));
 		
 		avl_insert(mappings, stateinfo);
-		#endif
 		
-		free_unsignedset(lookahead);
+		free_unsignedset(lookahead_tokens);
 		
-		free_unsignedset(whitespace);
+		free_unsignedset(lookahead_whitespace);
 		
 		free_stateinfo(stateinfo);
 	}
 	
-	TODO;
-	#if 0
 	
 	#ifdef VERBOSE
 	unsigned completed = 0;
@@ -462,8 +466,6 @@ struct yacc_state* yacc(
 		
 		struct yacc_state* const state = mapping->state;
 		
-		struct unsignedset* all_whitespace = new_unsignedset();
-		
 		struct unsignedset* all_tokens = new_unsignedset();
 		
 		struct avl_tree_t* shift_tokens = avl_alloc_tree(compare_shift_nodes, free_shift_node);
@@ -473,12 +475,14 @@ struct yacc_state* yacc(
 		struct avl_tree_t* subgrammars = avl_alloc_tree(compare_subgrammar_nodes, free_subgrammar_node);
 		
 		stateinfo_foreach(stateinfo, ({
-			void runme(struct trie* trie, struct unsignedset* lookaheads)
+			void runme(struct trie* trie, struct unsignedset* whitespace, struct unsignedset* tokens)
 			{
 				ENTER;
 				
 				if (trie->reduce_as)
 				{
+					TODO;
+					#if 0
 					unsignedset_foreach(lookaheads, ({
 						void runme(unsigned token)
 						{
@@ -488,16 +492,16 @@ struct yacc_state* yacc(
 						}
 						runme;
 					}));
+					#endif
 				}
 				
 				for (unsigned i = 0, n = trie->transitions.n; i < n; i++)
 				{
 					const struct trie_transition* const ele = trie->transitions.data[i];
 					
-					add_shift(shift_tokens, ele->token, ele->to, lookaheads);
+					add_shift(shift_tokens, ele->token, ele->to, whitespace, tokens);
 					
-					if (ele->whitespace)
-						unsignedset_add(all_whitespace, ele->whitespace);
+					unsignedset_update(all_tokens, ele->whitespace);
 					
 					unsignedset_add(all_tokens, ele->token);
 				}
@@ -508,7 +512,7 @@ struct yacc_state* yacc(
 					
 					dpvs(ele->grammar);
 					
-					add_subgrammar(subgrammars, ele->grammar, ele->to, lookaheads);
+					add_subgrammar(subgrammars, ele->grammar, ele->to, whitespace, tokens);
 				}
 				
 				EXIT;
@@ -518,15 +522,14 @@ struct yacc_state* yacc(
 		
 		struct lex_state* tokenizer_start;
 		
-		TODO;
-		#if 0
 		// don't free 'tokens', lex will do that
 		struct unsignedsetset* tokens = lex_build_tokenzer(
 			/* (in/out) struct lex* lex:            */ lex,
 			/* (   out) struct lex_state* start:    */ &tokenizer_start,
-			/* (in)     struct unsignedset* whitespace: */ whitespace,
 			/* (in)     struct unsignedset* tokens: */ all_tokens);
 		
+		TODO;
+		#if 0
 		state->tokenizer_start = tokenizer_start;
 		
 		unsignedsetset_foreach(tokens, ({
@@ -737,7 +740,6 @@ struct yacc_state* yacc(
 	
 	EXIT;
 	return start;
-	#endif
 }
 
 

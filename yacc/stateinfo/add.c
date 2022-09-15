@@ -19,7 +19,7 @@ struct stateinfo_node* stateinfo_add(
 	struct stateinfo* this,
 	struct trie* trie,
 	struct unsignedset* whitespace,
-	struct unsignedset* lookaheads)
+	struct unsignedset* tokens)
 {
 	ENTER;
 	
@@ -31,14 +31,14 @@ struct stateinfo_node* stateinfo_add(
 		
 		unsignedset_update(ele->whitespace, whitespace);
 		
-		unsignedset_update(ele->lookaheads, lookaheads);
+		unsignedset_update(ele->tokens, tokens);
 		
 		EXIT;
 		return NULL;
 	}
 	else
 	{
-		struct stateinfo_node* node = new_stateinfo_node(trie, whitespace, lookaheads);
+		struct stateinfo_node* node = new_stateinfo_node(trie, whitespace, tokens);
 		
 		avl_insert(this->tree, node);
 		

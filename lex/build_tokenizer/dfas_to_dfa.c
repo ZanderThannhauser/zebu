@@ -30,7 +30,7 @@
 #include <set/unsigned/inc.h>
 #include <set/unsigned/len.h>
 #include <set/unsigned/clear.h>
-/*#include <set/unsigned/free.h>*/
+#include <set/unsigned/free.h>
 
 #include <set/unsignedset/new.h>
 #include <set/unsignedset/add.h>
@@ -124,17 +124,17 @@ struct unsignedsetset* dfas_to_dfa(
 		
 		struct lex_state* const state = mapping->state;
 		
-		bool is_literal = false;
+		enum token_kind kind = 0;
 		
 		struct unsignedset* accepts = new_unsignedset();
 		
-		TODO;
-		#if 0
 		regexset_foreach(stateset, ({
 			void runme(struct regex* substate)
 			{
 				if (substate->is_accepting)
 				{
+					TODO;
+					#if 0
 					if (substate->is_literal > is_literal)
 					{
 						unsignedset_clear(accepts);
@@ -145,6 +145,7 @@ struct unsignedsetset* dfas_to_dfa(
 					{
 						unsignedset_add(accepts, substate->is_accepting);
 					}
+					#endif
 				}
 			}
 			runme;
@@ -155,8 +156,8 @@ struct unsignedsetset* dfas_to_dfa(
 			unsignedsetset_add(all_accepts, accepts);
 			
 			state->accepts = inc_unsignedset(accepts);
+			state->kind = kind;
 		}
-		#endif
 		
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)
@@ -240,6 +241,8 @@ struct unsignedsetset* dfas_to_dfa(
 		#ifdef DOTOUT
 		lex_state_dotout(start);
 		#endif
+		
+		free_unsignedset(accepts);
 	}
 	
 	avl_free_tree(mappings);

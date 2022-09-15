@@ -14,6 +14,8 @@ int compare_stateinfo(
 	const struct stateinfo *a,
 	const struct stateinfo *b)
 {
+	TODO;
+	#if 0
 	struct avl_node_t *an = a->tree->head;
 	struct avl_node_t *bn = b->tree->head;
 	
@@ -44,6 +46,7 @@ int compare_stateinfo(
 		return -1;
 	else
 		return 0;
+	#endif
 }
 
 

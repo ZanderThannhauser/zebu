@@ -11,8 +11,8 @@
 struct stateinfo_node* new_stateinfo_node(
 	struct trie* trie,
 	struct unsignedset* whitespace,
-	struct unsignedset* lookaheads
-) {
+	struct unsignedset* tokens)
+{
 	ENTER;
 	
 	struct stateinfo_node* this = smalloc(sizeof(*this));
@@ -21,7 +21,7 @@ struct stateinfo_node* new_stateinfo_node(
 	
 	this->whitespace = inc_unsignedset(whitespace);
 	
-	this->lookaheads = inc_unsignedset(lookaheads);
+	this->tokens = inc_unsignedset(tokens);
 	
 	EXIT;
 	return this;
