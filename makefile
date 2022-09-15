@@ -81,8 +81,8 @@ ARGS += --minimize-lexer
 #ARGS += --template=readline-with-driver-debug
 #ARGS += --template=readline-with-driver
 
-ARGS += --template=fileio-debug
-#ARGS += --template=fileio
+#ARGS += --template=fileio-debug
+ARGS += --template=fileio
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox

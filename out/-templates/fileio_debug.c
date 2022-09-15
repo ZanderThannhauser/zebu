@@ -167,8 +167,6 @@ void* parse(FILE* stream)
 	
 	void read_token(unsigned l)
 	{
-		unsigned original_l = l;
-		
 		void append(unsigned char c)
 		{
 			while (lexer.n + 1 >= lexer.cap)
@@ -181,7 +179,7 @@ void* parse(FILE* stream)
 			lexer.data[lexer.n++] = c;
 		}
 		
-		unsigned i = 0, a, b, c;
+		unsigned original_l = l, i = 0, a, b, c;
 		
 		t = 0;
 		

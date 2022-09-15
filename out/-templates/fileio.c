@@ -119,7 +119,7 @@ void* parse(FILE* stream)
 			lexer.data[lexer.n++] = c;
 		}
 		
-		unsigned i = 0, a, b, c;
+		unsigned original_l = l, i = 0, a, b, c;
 		
 		t = 0;
 		
@@ -163,12 +163,17 @@ void* parse(FILE* stream)
 				if (c != EOF)
 					lexer.n--, ungetc(c, stream);
 				
-				struct token* token = malloc(sizeof(*token));
-				token->refcount = 1;
-				token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
-				token->len = lexer.n;
-				t = b, td = token, lexer.n = 0;
-				break;
+				if (b == 1)
+					l = original_l, t = 0, lexer.n = 0;
+				else
+				{
+					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
+					token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
+					token->len = lexer.n;
+					t = b, td = token, lexer.n = 0;
+					break;
+				}
 			}
 			else if (t)
 			{
