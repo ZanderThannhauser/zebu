@@ -9,7 +9,7 @@ description. The parser and the tokenizer(s) are generated simultaneously,
 resulting in a **context-sensitive** tokenizer. A tokenizer is generated to
 recognize only the tokens that would be valid to read next for each parser state.
 This enables reading multiple languages with the same parser, with perhaps
-different keywords or comment-style. (CSS embded in HTML, for instance)
+different keywords or comment-style. (CSS embedded in HTML, for instance)
 
 ## Command-Line Arguments (Usage):
 
@@ -23,17 +23,17 @@ different keywords or comment-style. (CSS embded in HTML, for instance)
  - `-t` (`--template`): Sets which parser-template zebu should use when
    generating it's output. The default value is "just-tables".
  - `-l` (`--minimize-lexer`): Tells zebu to combine and simplify all tokenizers
-   generated accross all parser-contexts. This operation may take some time
+   generated across all parser-contexts. This operation may take some time
    depending on the language. This option is disabled by default.
  - `-v` (`--verbose`): Enables status-update/progress-percentage print-outs
-  for the most time-consuming algorthims: NFA-to-DFA, DFA-simplification,
+  for the most time-consuming algorithms: NFA-to-DFA, DFA-simplification,
   Lexer-Minimization and LL parser-generation.
  - `-h` (`--help`): Prints this help message.
 
 ## Input file Specification
 
 The input file lists a series of grammar rules and directives. Two grammars
-cannot have the same name, even if defined in seperate files.
+cannot have the same name, even if defined in separate files.
 
 ### List of Directives
 
@@ -45,9 +45,11 @@ cannot have the same name, even if defined in seperate files.
     pattern will only be effective to the tokens described *after* the
     directive is given. Common usages are listed below:
     - `%skip: [' ', '\t', '\n];` (Ignores space, tab and newline characters)
-    - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores characters listed
-       above, in addition to skipping anything bewteen a pound (#) and a newline)
-    - `%skip: [128 - 255];` (Ignores a bytes with their high-bit set)
+    - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores whitespace characters
+       above, in addition to skipping shell-style comments)
+    - `%skip: [' ', '\t', '\n] | "//"[!"\n"]*"\n"` (Ignores whitespace characters
+       above, in addition to skipping C-style comments)
+    - `%skip: [128 - 255];` (Ignores all bytes with their high-bit set)
  - `%include`: Gives a path to read using either `"path"` or `<path>` syntax.
     The former will resolve the path relative to the current file, and the latter
     will resolve the path relative to the file zebu was given on the command-line.
@@ -78,7 +80,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
 
 1. `!$1`: Unary operator. Returns the complement of the given character-set.
 2. `$1 - $2`: Binary operator, not associative. If given two Literals, returns a
-   character-set containing all of the characters bewteen the first character
+   character-set containing all of the characters between the first character
    literal up-to-and-including the second character literal. If the first
    operand is a character-set, it will use the minimum character contained in
    the set. If the second operand is a is character-set, it will use the
@@ -97,7 +99,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
 5. `$1 | $2` or `$1, $2` or `$1 $2`: Binary operator, union, left-associative.
    Returns a character-set of all elements that
    are contained in *either* given character-set. This is also the default
-   behavior if no operator is given bewteen two character-sets.
+   behavior if no operator is given between two character-sets.
    Example: `[('a','b','c') | ('b','c','d')]` yields `['a', 'b', 'c', 'd']`.
 
 #### Examples:
@@ -113,7 +115,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
     the character-set containing 'b' and 'c'.
  - `['a'-'z' & !('a','e','i','o','u')]`: Describes a character-set containing
     all English consonants.
- - `[0 - 127]`: Describes any ascii character.
+ - `[0 - 127]`: Describes any ASCII character.
 
 ### Regular Expression Language
 
@@ -125,7 +127,7 @@ Either C-style character-literals, integer-literals, or string-literals can be
 used in regular-expressions. The dot ('.') literal can be used as a shorthand
 for `[0 - 255]`, matching any valid next character.
 
-Square-brackets ('[ ]') can be used to inclose a character-set expression,
+Square-brackets ('[ ]') can be used to enclose a character-set expression,
 described above.
 
 Remember that one can also refer to the value of a defined regular-expression by
@@ -141,7 +143,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
    Operators, indicates repetition. Returns a regular expression that would match
    strings that would match the given regular-expression to repeat 0 or 1 times,
    0 or more times, 1 or more times, `N` times ('N' must be a numeric literal),
-   `N` or more times, up to `N` times (inclusive), bewteen `N` to `M` times
+   `N` or more times, up to `N` times (inclusive), between `N` to `M` times
    (inclusive, 'M' must be a numeric literal), respectively.
    Example: `'a'?` would match "", "a".
    Example: `'a'*` would match "", "a", "aa", "aaa", etc.
@@ -268,13 +270,23 @@ root: addition #root;
 
 ## Future Features
 
+ - There should be an option (enabled by default) to skip the strings matched
+   by the `%skip` pattern, **without** prepending them to the next token.
+   Possible approaches:
+   - Describe whitespace as it's own token to the tokenizer-generator, marking
+     the token_id to be included in each tokenizer featuring the tokens declared
+     after the `%skip`, and making a new table for run-time to be able to check
+     if the matched token is whitespace and it should rerun for the next token.
+   - Include whitespace as part of the state machines for the token, but mark
+     the states that return back from processing as ones that should clear
+     the tokenizer's buffer.
  - Way of articulating in the input file how to handle shift-reduce errors,
    perhaps something not unlike the way GNU Bison or Yacc deals with them:
    (Tokens having a "precedence", if the last token of a production rule has a
-    higher precedence than the lookahead token: reduce, otherwise shift.)
+    higher precedence than the look-ahead token: reduce, otherwise shift.)
  - Something to let you insert custom C code into the tokenizer to change which
    token the tokenizer reports detecting, an application for this would be to
-   get Zebu to differentiate bewteen C variable usage and a `typedef`-ed type usage.
+   get Zebu to differentiate between C variable usage and a `typedef`-ed type usage.
 
 
 
