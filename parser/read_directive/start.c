@@ -22,7 +22,6 @@
 void read_start_directive(
 	struct pragma_once* pragma_once,
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,
@@ -40,7 +39,6 @@ void read_start_directive(
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
 		/*     tokenizer: */ tokenizer,
-		/*       options: */ options,
 		/*         scope: */ scope,
 		/*           lex: */ lex);
 	

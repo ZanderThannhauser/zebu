@@ -10,6 +10,7 @@ struct trie
 	struct {
 		struct trie_transition {
 			unsigned token;
+			struct unsignedset* whitespace;
 			struct trie* to;
 		}** data;
 		unsigned n, cap;

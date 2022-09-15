@@ -6,7 +6,6 @@ struct lex;
 
 void recursive_parse(
 	struct pragma_once* pragma_once,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,

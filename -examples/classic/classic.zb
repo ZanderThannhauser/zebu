@@ -30,7 +30,7 @@
 // state. When the state returns a token enum value, it's done, feed it
 // to parser state machine.
 
-%skip: [' ', 'g'];
+%skip: [' ', 'g']+;
 
 // %token_skip: '-';
 
@@ -38,16 +38,17 @@
 
 // abc?
 // abcc:yy.
+// abcc : wxy .
 // aabbcc::x!
 // baccabgccbbaa
 // ABCCBA
 
 %start
-	: "abc"          #abc1                                       "?"?
+	: "abc"          #abc1                                                      "?"?
 	
-	| `abc & (..)*`  #abc2  ":"        [wy]*                     "."
+	| `abc & (..)*`  #abc2  ":" #colons[]     `[wy]*` #wxy                      "."
 	
-	| `abc & (...)*` #abc3 (":")+ [!(!wy & !('x'-'z')) & (!'w')] "!"
+	| `abc & (...)*` #abc3 (":" #colons[])+ [!(!wy & !('x'-'z')) & (!'w')] #xyz "!"
 	
 	| %[b]: 'b';
 	   `b`: [b,          'B'];

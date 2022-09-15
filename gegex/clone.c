@@ -122,7 +122,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_transition(new, ele->token, ele->structinfo, submapping->new);
+				gegex_add_transition(new, ele->token, ele->whitespace, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -130,7 +130,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				struct mapping* submapping = new_mapping(ele->to, subnew);
 				
-				gegex_add_transition(new, ele->token, ele->structinfo, subnew);
+				gegex_add_transition(new, ele->token, ele->whitespace, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				

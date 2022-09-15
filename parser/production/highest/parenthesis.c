@@ -15,7 +15,6 @@
 
 struct gbundle read_parenthesis_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -24,7 +23,7 @@ struct gbundle read_parenthesis_production(
 	
 	read_token(tokenizer, production_root_machine);
 	
-	retval = read_root_production(tokenizer, options, scope, lex);
+	retval = read_root_production(tokenizer, scope, lex);
 	
 	if (tokenizer->token != t_cparen)
 	{

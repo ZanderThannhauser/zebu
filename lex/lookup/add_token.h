@@ -1,10 +1,10 @@
 
-#include <stdbool.h>
+#include <enums/token_kind.h>
 
 struct lex;
 struct regex;
 
-unsigned lex_add_token(
+unsigned lex_add_token2(
 	struct lex* this,
 	struct regex* token,
-	bool is_literal);
+	enum token_kind token_kind);

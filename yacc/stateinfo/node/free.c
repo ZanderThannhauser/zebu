@@ -12,6 +12,8 @@ void free_stateinfo_node(void* ptr)
 {
 	struct stateinfo_node* node = ptr;
 	
+	free_unsignedset(node->whitespace);
+	
 	free_unsignedset(node->lookaheads);
 	
 	free(node);

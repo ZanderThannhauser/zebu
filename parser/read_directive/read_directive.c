@@ -52,7 +52,6 @@
 void read_directive(
 	struct pragma_once* pragma_once,
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,
@@ -66,15 +65,15 @@ void read_directive(
 	
 	if (strequals(token, "%""start"))
 	{
-		read_start_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
+		read_start_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
 	}
 	else if (strequals(token, "%""skip"))
 	{
-		read_skip_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
+		read_skip_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
 	}
 	else if (strequals(token, "%""include"))
 	{
-		read_include_directive(pragma_once, tokenizer, options, scope, lex, absolute_dirfd, relative_dirfd);
+		read_include_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
 	}
 	else
 	{

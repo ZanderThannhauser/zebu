@@ -35,7 +35,6 @@
 
 void read_inline_grammar(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -54,7 +53,6 @@ void read_inline_grammar(
 	// read a prodution rule:
 	struct gbundle bundle = read_root_production(
 		/* tokenizer:  */ tokenizer,
-		/* options:    */ options,
 		/* scope:      */ scope,
 		/* lex:        */ lex);
 	

@@ -15,13 +15,12 @@
 
 struct gbundle read_suffixes_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle retval = read_highest_production(tokenizer, options, scope, lex);
+	struct gbundle retval = read_highest_production(tokenizer, scope, lex);
 	
 	switch (tokenizer->token)
 	{

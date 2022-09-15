@@ -6,13 +6,12 @@
 
 struct gbundle read_root_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle inner = read_or_production(tokenizer, options, scope, lex);
+	struct gbundle inner = read_or_production(tokenizer, scope, lex);
 	
 	EXIT;
 	return inner;

@@ -4,12 +4,15 @@
 #include <memory/smalloc.h>
 #include <memory/srealloc.h>
 
+#include <set/unsigned/inc.h>
+
 #include "struct.h"
 #include "add_transition.h"
 
 void trie_add_transition(
 	struct trie* this,
 	unsigned token,
+	struct unsignedset* whitespace,
 	struct trie* to)
 {
 	ENTER;
@@ -25,7 +28,7 @@ void trie_add_transition(
 	struct trie_transition* transition = smalloc(sizeof(*transition));
 	
 	transition->token = token;
-	
+	transition->whitespace = inc_unsignedset(whitespace);
 	transition->to = to;
 	
 	unsigned i;
@@ -35,12 +38,8 @@ void trie_add_transition(
 	
 	for (i = this->transitions.n - 1; 0 + 1 <= i + 1 && token < data[i]->token; i--)
 	{
-		dpv(i);
-		
 		data[i + 1] = data[i];
 	}
-	
-	dpv(i);
 	
 	data[i + 1] = transition, this->transitions.n++;
 	

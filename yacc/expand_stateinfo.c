@@ -326,16 +326,23 @@ void expand_stateinfo(
 			
 			struct trie* const to = ele->to;
 			
+			struct unsignedset* whitespace = new_unsignedset();
+			
 			struct unsignedset* lookaheads = new_unsignedset();
 			
 			for (unsigned i = 0, n = to->transitions.n; i < n; i++)
 			{
+				unsignedset_update(whitespace, to->transitions.data[i]->whitespace);
+				
 				unsignedset_add(lookaheads, to->transitions.data[i]->token);
 			}
 			
 			for (unsigned i = 0, n = to->grammar_transitions.n; i < n; i++)
 			{
+				TODO;
+				#if 0
 				unsignedset_update(lookaheads, get_firsts(named_firsts, to->grammar_transitions.data[i]->grammar));
+				#endif
 			}
 			
 			if (to->reduce_as)
@@ -344,7 +351,7 @@ void expand_stateinfo(
 				add_dep(dependent_of, trie, subgrammar_start);
 			}
 			
-			struct stateinfo_node* node = stateinfo_add(stateinfo, subgrammar_start, lookaheads);
+			struct stateinfo_node* node = stateinfo_add(stateinfo, subgrammar_start, whitespace, lookaheads);
 			
 			if (node)
 			{
@@ -359,6 +366,8 @@ void expand_stateinfo(
 		}
 	}
 	
+	TODO;
+	#if 0
 	// percolate lookaheads:
 	while (quack_len(percolate))
 	{
@@ -397,6 +406,7 @@ void expand_stateinfo(
 	
 	free_quack(percolate);
 	free_quack(explore);
+	#endif
 	
 	EXIT;
 }

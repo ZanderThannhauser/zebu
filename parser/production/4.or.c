@@ -13,19 +13,18 @@
 
 struct gbundle read_or_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
 	ENTER;
 	
-	struct gbundle retval = read_concat_production(tokenizer, options, scope, lex);
+	struct gbundle retval = read_concat_production(tokenizer, scope, lex);
 	
 	while (tokenizer->token == t_vertical_bar)
 	{
 		read_token(tokenizer, production_inside_or_machine);
 		
-		struct gbundle sub = read_concat_production(tokenizer, options, scope, lex);
+		struct gbundle sub = read_concat_production(tokenizer, scope, lex);
 		
 		gegex_add_lambda_transition(retval.start, sub.start);
 		

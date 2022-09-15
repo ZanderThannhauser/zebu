@@ -10,7 +10,9 @@
 #include <parser/tokenizer/read_token.h>
 #include <parser/tokenizer/machines/production/after_highest.h>
 
-#include <parser/options/struct.h>
+#include <set/unsigned/new.h>
+#include <set/unsigned/add.h>
+#include <set/unsigned/free.h>
 
 #include <gegex/from_token.h>
 #include <gegex/dotout.h>
@@ -27,6 +29,7 @@
 #include <regex/nfa_to_dfa.h>
 #include <regex/simplify_dfa/simplify_dfa.h>
 
+#include <lex/struct.h>
 #include <lex/lookup/add_token.h>
 
 #include <yacc/structinfo/new.h>
@@ -38,7 +41,6 @@
 
 struct gbundle read_string_literal_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -50,32 +52,7 @@ struct gbundle read_string_literal_production(
 		/* chars:  */ tokenizer->tokenchars.chars,
 		/* strlen: */ tokenizer->tokenchars.n);
 	
-	if (options->skip)
-	{
-		struct rbundle nfa = regex_dfa_to_nfa(regex_start);
-		
-		struct regex* clone = regex_clone(options->skip);
-		
-		regex_add_lambda_transition(clone, regex_start);
-		
-		#ifdef DOTOUT
-		regex_dotout(clone, __PRETTY_FUNCTION__);
-		#endif
-		
-		nfa.nfa.end->is_accepting = true;
-		
-		struct regex* dfa = regex_nfa_to_dfa(clone);
-		
-		regex_start = regex_simplify_dfa(dfa);
-		
-		#ifdef DOTOUT
-		regex_dotout(regex_start, __PRETTY_FUNCTION__);
-		#endif
-		
-		free_regex(clone), free_regex(dfa);
-	}
-	
-	unsigned token_id = lex_add_token(lex, regex_start, /* is_literal: */ true);
+	unsigned token_id = lex_add_token2(lex, regex_start, tk_literal);
 	
 	dpv(token_id);
 	
@@ -113,13 +90,22 @@ struct gbundle read_string_literal_production(
 	
 	struct gegex* gegex_end = new_gegex();
 	
-	gegex_add_transition(gegex_start, token_id, structinfo, gegex_end);
+	struct unsignedset* whitespace = new_unsignedset();
 	
-	free_structinfo(structinfo);
+	if (lex->whitespace_token_id)
+	{
+		unsignedset_add(whitespace, lex->whitespace_token_id);
+	}
+	
+	gegex_add_transition(gegex_start, token_id, whitespace, structinfo, gegex_end);
 	
 	#ifdef DOTOUT
 	gegex_dotout(gegex_start, gegex_end, __PRETTY_FUNCTION__);
 	#endif
+	
+	free_unsignedset(whitespace);
+	
+	free_structinfo(structinfo);
 	
 	EXIT;
 	return (struct gbundle) {gegex_start, gegex_end};

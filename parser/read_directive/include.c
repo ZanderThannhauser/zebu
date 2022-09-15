@@ -17,7 +17,6 @@
 void read_include_directive(
 	struct pragma_once* pragma_once,
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,
@@ -48,7 +47,6 @@ void read_include_directive(
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
-		/* options: */ options,
 		/* scope: */ scope,
 		/* lex: */ lex,
 		/* absolute_dirfd: */ absolute_dirfd,

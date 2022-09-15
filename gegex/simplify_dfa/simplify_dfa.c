@@ -28,6 +28,8 @@
 #include <heap/push.h>
 #include <heap/free.h>
 
+#include <set/unsigned/compare.h>
+
 #include <gegex/state/struct.h>
 /*#include <gegex/dotout.h>*/
 
@@ -122,7 +124,7 @@ struct gegex* gegex_simplify_dfa(struct gegex* original_start)
 								const struct gegex_transition* const at = a->transitions.data[a_i];
 								const struct gegex_transition* const bt = b->transitions.data[b_i];
 								
-								if (at->token != bt->token)
+								if (at->token != bt->token || compare_unsignedsets(at->whitespace, bt->whitespace))
 								{
 									unequal = true;
 								}

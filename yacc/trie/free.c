@@ -26,6 +26,8 @@ void free_trie(struct trie* this)
 	{
 		struct trie_transition* ele = this->transitions.data[i];
 		
+		TODO;
+		
 		free_trie(ele->to);
 		
 		free(ele);

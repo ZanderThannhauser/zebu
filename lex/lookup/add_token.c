@@ -21,6 +21,10 @@
 #include <set/regex/add.h>
 #include <set/regex/free.h>
 
+#ifdef DOTOUT
+#include <regex/dotout.h>
+#endif
+
 #include "../struct.h"
 
 #include "to_node/struct.h"
@@ -30,7 +34,7 @@
 
 #include "add_token.h"
 
-static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
+static void helper(struct regex* start, unsigned is_accepting, enum token_kind token_kind)
 {
 	struct regexset* queued = new_regexset();
 	
@@ -47,7 +51,7 @@ static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
 		if (state->is_accepting)
 		{
 			state->is_accepting = is_accepting;
-			state->is_literal = is_literal;
+			state->token_kind = token_kind;
 		}
 		
 		for (unsigned i = 0, n = 256; i < n; i++)
@@ -72,17 +76,17 @@ static void helper(struct regex* start, unsigned is_accepting, bool is_literal)
 	free_quack(todo);
 }
 
-unsigned lex_add_token(
+unsigned lex_add_token2(
 	struct lex* this,
 	struct regex* token,
-	bool is_literal)
+	enum token_kind token_kind)
 {
 	unsigned retval;
 	ENTER;
 	
 	dpv(token);
 	
-	dpvb(is_literal);
+	dpv(token_kind);
 	
 	struct avl_node_t* node;
 	
@@ -96,7 +100,11 @@ unsigned lex_add_token(
 	}
 	else
 	{
-		helper(token, retval = this->next_id++, is_literal);
+		helper(token, retval = this->next_id++, token_kind);
+		
+		#ifdef DOTOUT
+		regex_dotout(token, __PRETTY_FUNCTION__);
+		#endif
 		
 		struct dfa_to_id_node*   to   =   new_dfa_to_id_node(retval, token);
 		struct dfa_from_id_node* from = new_dfa_from_id_node(retval, token);

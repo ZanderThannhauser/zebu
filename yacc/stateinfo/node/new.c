@@ -3,12 +3,15 @@
 
 #include <memory/smalloc.h>
 
+#include <set/unsigned/inc.h>
+
 #include "struct.h"
 #include "new.h"
 
 struct stateinfo_node* new_stateinfo_node(
 	struct trie* trie,
-	struct unsignedset* lookaheads // you're givin this to me
+	struct unsignedset* whitespace,
+	struct unsignedset* lookaheads
 ) {
 	ENTER;
 	
@@ -16,7 +19,9 @@ struct stateinfo_node* new_stateinfo_node(
 	
 	this->trie = trie;
 	
-	this->lookaheads = lookaheads;
+	this->whitespace = inc_unsignedset(whitespace);
+	
+	this->lookaheads = inc_unsignedset(lookaheads);
 	
 	EXIT;
 	return this;

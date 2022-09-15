@@ -7,12 +7,15 @@
 
 #include <yacc/structinfo/inc.h>
 
+#include <set/unsigned/inc.h>
+
 #include "struct.h"
 #include "add_transition.h"
 
 void gegex_add_transition(
 	struct gegex* from,
 	unsigned token,
+	struct unsignedset* whitespace,
 	struct structinfo* structinfo,
 	struct gegex* to)
 {
@@ -21,6 +24,7 @@ void gegex_add_transition(
 	struct gegex_transition* transition = smalloc(sizeof(*transition));
 	
 	transition->token = token;
+	transition->whitespace = inc_unsignedset(whitespace);
 	transition->structinfo = inc_structinfo(structinfo);
 	transition->to = to;
 	

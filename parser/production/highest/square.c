@@ -7,14 +7,16 @@
 #include <string/new.h>
 #include <string/free.h>
 
+#include <set/unsigned/new.h>
+#include <set/unsigned/add.h>
+#include <set/unsigned/free.h>
+
 #include <parser/charset/root.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
 #include <parser/tokenizer/machines/charset/root.h>
 #include <parser/tokenizer/machines/production/after_highest.h>
-
-#include <parser/options/struct.h>
 
 #include <yacc/structinfo/new.h>
 #include <yacc/structinfo/add_token_scalar_field.h>
@@ -31,6 +33,7 @@
 #include <regex/state/add_lambda_transition.h>
 #include <regex/state/free.h>
 
+#include <lex/struct.h>
 #include <lex/lookup/add_token.h>
 
 #include <gegex/state/new.h>
@@ -41,7 +44,6 @@
 
 struct gbundle read_square_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -59,32 +61,7 @@ struct gbundle read_square_production(
 	
 	struct regex* regex_start = regex_from_charset(charset);
 	
-	if (options->skip)
-	{
-		struct rbundle nfa = regex_dfa_to_nfa(regex_start);
-		
-		struct regex* clone = regex_clone(options->skip);
-		
-		regex_add_lambda_transition(clone, regex_start);
-		
-		#ifdef DOTOUT
-		regex_dotout(clone, __PRETTY_FUNCTION__);
-		#endif
-		
-		nfa.nfa.end->is_accepting = true;
-		
-		struct regex* dfa = regex_nfa_to_dfa(clone);
-		
-		regex_start = regex_simplify_dfa(dfa);
-		
-		#ifdef DOTOUT
-		regex_dotout(regex_start, __PRETTY_FUNCTION__);
-		#endif
-		
-		free_regex(clone), free_regex(dfa);
-	}
-	
-	unsigned token_id = lex_add_token(lex, regex_start, false);
+	unsigned token_id = lex_add_token2(lex, regex_start, tk_regex);
 	
 	dpv(token_id);
 	
@@ -121,13 +98,20 @@ struct gbundle read_square_production(
 	struct gegex* start = new_gegex();
 	struct gegex* end = new_gegex();
 	
-	gegex_add_transition(start, token_id, structinfo, end);
+	struct unsignedset* whitespace = new_unsignedset();
 	
-	free_structinfo(structinfo);
+	if (lex->whitespace_token_id)
+	{
+		unsignedset_add(whitespace, lex->whitespace_token_id);
+	}
+	
+	gegex_add_transition(start, token_id, whitespace, structinfo, end);
 	
 	#ifdef DOTOUT
 	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
+	
+	free_structinfo(structinfo), free_unsignedset(whitespace);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

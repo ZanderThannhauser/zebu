@@ -21,6 +21,8 @@ struct lex_state* new_lex_state()
 	
 	this->accepts = NULL;
 	
+	this->is_whitespace = false;
+	
 	EXIT;
 	return this;
 }

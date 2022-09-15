@@ -128,6 +128,8 @@ struct unsignedsetset* dfas_to_dfa(
 		
 		struct unsignedset* accepts = new_unsignedset();
 		
+		TODO;
+		#if 0
 		regexset_foreach(stateset, ({
 			void runme(struct regex* substate)
 			{
@@ -154,6 +156,7 @@ struct unsignedsetset* dfas_to_dfa(
 			
 			state->accepts = inc_unsignedset(accepts);
 		}
+		#endif
 		
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)

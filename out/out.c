@@ -248,7 +248,17 @@ void out(struct yacc_state* start)
 			dpv(tid);
 			
 			dynvector_set(accepts, lid, tid);
+			
+			TODO;
+			#if 0
+			if (state->is_whitespace)
+			{
+				add state id to table of 'is-whitespace' or something,
+				so runtime can tell
+			}
+			#endif
 		}
+		
 		
 		for (unsigned i = 0, n = 256; i < n; i++)
 		{

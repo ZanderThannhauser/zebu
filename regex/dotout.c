@@ -67,7 +67,7 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 				"\t" "peripheries = %u;" "\n"
 			"]" "\n"
 		"", state, state->is_accepting ? "doublecircle" : "circle",
-		           state->is_accepting ? 2 + state->is_literal : 1);
+		           state->is_accepting ? 2 + state->token_kind : 1);
 		
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)

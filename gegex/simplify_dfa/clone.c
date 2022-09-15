@@ -145,7 +145,7 @@ struct gegex* gegex_simplify_dfa_clone(
 			{
 				struct mapping* submapping = node->item;
 				
-				gegex_add_transition(new, ele->token, ele->structinfo, submapping->new);
+				gegex_add_transition(new, ele->token, ele->whitespace, ele->structinfo, submapping->new);
 			}
 			else
 			{
@@ -153,7 +153,7 @@ struct gegex* gegex_simplify_dfa_clone(
 				
 				struct mapping* submapping = new_mapping(cloneme, subnew);
 				
-				gegex_add_transition(new, ele->token, ele->structinfo, subnew);
+				gegex_add_transition(new, ele->token, ele->whitespace, ele->structinfo, subnew);
 				
 				avl_insert(mappings, submapping);
 				
@@ -189,10 +189,14 @@ struct gegex* gegex_simplify_dfa_clone(
 			}
 		}
 		
-		#ifdef DOTOUT
-		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
-		#endif
+/*		#ifdef DOTOUT*/
+/*		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);*/
+/*		#endif*/
 	}
+	
+	#ifdef DOTOUT
+	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
+	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);

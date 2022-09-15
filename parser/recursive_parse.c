@@ -8,8 +8,6 @@
 
 /*#include <misc/sopenat.h>*/
 
-#include "options/struct.h"
-
 #include "tokenizer/struct.h"
 #include "tokenizer/new.h"
 #include "tokenizer/read_char.h"
@@ -29,7 +27,6 @@
 
 void recursive_parse(
 	struct pragma_once* pragma_once,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,
@@ -59,7 +56,6 @@ void recursive_parse(
 					read_directive(
 						/* pragma_once:    */ pragma_once,
 						/* tokenizer:      */ tokenizer,
-						/* options:        */ options,
 						/* scope:          */ scope,
 						/* lex:            */ lex,
 						/* absolute_dirfd: */ absolute_dirfd,
@@ -88,7 +84,6 @@ void recursive_parse(
 				{
 					read_inline_grammar(
 						/* tokenizer: */ tokenizer,
-						/* options: */ options,
 						/* scope: */ scope,
 						/* lex: */ lex);
 					break;
@@ -98,7 +93,6 @@ void recursive_parse(
 				{
 					read_grammar(
 						/* tokenizer:   */ tokenizer,
-						/* options:     */ options,
 						/* scope        */ scope,
 						/* lex:         */ lex);
 					break;

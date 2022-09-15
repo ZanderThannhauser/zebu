@@ -13,5 +13,5 @@ struct lex
 	
 	unsigned next_id;
 	
-	unsigned EOF_token_id;
+	unsigned whitespace_token_id, EOF_token_id;
 };

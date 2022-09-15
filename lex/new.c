@@ -35,6 +35,8 @@ struct lex* new_lex()
 	
 	this->next_id = 1; // because token 0 is for error
 	
+	this->whitespace_token_id = 0; // 0 means no skip token
+	
 	this->EOF_token_id = 0;
 	
 	EXIT;

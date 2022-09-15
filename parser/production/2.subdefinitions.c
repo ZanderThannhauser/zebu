@@ -23,7 +23,6 @@
 
 struct gbundle read_subdefinitions_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -54,13 +53,13 @@ struct gbundle read_subdefinitions_production(
 				
 				case t_parenthesised_identifier:
 				{
-					read_inline_grammar(tokenizer, options, scope, lex);
+					read_inline_grammar(tokenizer, scope, lex);
 					break;
 				}
 				
 				case t_identifier:
 				{
-					read_grammar(tokenizer, options, scope, lex);
+					read_grammar(tokenizer, scope, lex);
 					break;
 				}
 				
@@ -78,13 +77,13 @@ struct gbundle read_subdefinitions_production(
 		// read production rule:
 		read_token(tokenizer, production_inside_subdefinitions_machine);
 		
-		retval = read_suffixes_production(tokenizer, options, scope, lex);
+		retval = read_suffixes_production(tokenizer, scope, lex);
 		
 		scope_pop(scope);
 	}
 	else
 	{
-		retval = read_suffixes_production(tokenizer, options, scope, lex);
+		retval = read_suffixes_production(tokenizer, scope, lex);
 	}
 	
 	EXIT;

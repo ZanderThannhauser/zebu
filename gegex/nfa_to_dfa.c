@@ -26,6 +26,10 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <set/unsigned/new.h>
+#include <set/unsigned/update.h>
+#include <set/unsigned/free.h>
+
 #include <set/gegex/new.h>
 #include <set/gegex/add.h>
 #include <set/gegex/foreach.h>
@@ -240,23 +244,25 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 			
 			while (heap_len(heap))
 			{
-				struct iterator* iterator;
+				struct iterator* iterator = heap_head(heap);
 				
-				struct gegex_transition* transition;
+				struct gegex_transition* transition = iterator->i[0];
 				
-				unsigned min_token = (transition = (iterator = heap_head(heap))->i[0])->token;
+				unsigned min_token = transition->token;
 				
-				dpv(min_token);
+				struct unsignedset* whitespace = new_unsignedset();
 				
 				struct gegexset* subgegexset = new_gegexset();
 				
 				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 				
-				while (heap_len(heap) && (transition = (iterator = heap_head(heap))->i[0])->token == min_token)
+				do
 				{
 					heap_pop(heap);
 					
 					add_lambda_states(subgegexset, transition->to);
+					
+					unsignedset_update(whitespace, transition->whitespace);
 					
 					structinfo_update(structinfo, transition->structinfo);
 					
@@ -265,6 +271,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					else
 						free(iterator);
 				}
+				while (heap_len(heap) && (transition = (iterator = heap_head(heap))->i[0])->token == min_token);
 				
 				struct avl_node_t* node = avl_search(mappings, &subgegexset);
 				
@@ -272,7 +279,7 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 				{
 					struct mapping* old = node->item;
 					
-					gegex_add_transition(state, min_token, structinfo, old->combined_state);
+					gegex_add_transition(state, min_token, whitespace, structinfo, old->combined_state);
 					
 					free_gegexset(subgegexset);
 				}
@@ -282,14 +289,14 @@ struct gegex* gegex_nfa_to_dfa(struct gegex* original_start)
 					
 					struct mapping* new = new_mapping(subgegexset, substate);
 					
-					gegex_add_transition(state, min_token, structinfo, substate);
+					gegex_add_transition(state, min_token, whitespace, structinfo, substate);
 					
 					quack_append(todo, new);
 					
 					avl_insert(mappings, new);
 				}
 				
-				free_structinfo(structinfo);
+				free_structinfo(structinfo), free_unsignedset(whitespace);
 			}
 			
 			free_heap(heap);

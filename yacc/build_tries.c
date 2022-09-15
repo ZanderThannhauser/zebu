@@ -22,6 +22,8 @@
 
 /*#include <named/gegex/struct.h>*/
 
+#include <set/unsigned/to_string.h>
+
 #include <named/trie/new.h>
 /*#include <named/trie/compare.h>*/
 /*#include <named/trie/free.h>*/
@@ -256,11 +258,15 @@ static void expand_dotout(struct trie* start)
 		{
 			struct trie_transition* trans = trie->transitions.data[i];
 			
+			char* whitespace = unsignedset_to_string(trans->whitespace);
+			
 			fprintf(stream, ""
-				"\"%p\" -> \"%p\" [ label = \"#%u token\" ];" "\n"
-			"", trie, trans->to, trans->token);
+				"\"%p\" -> \"%p\" [ label = \"%s #%u token\" ];" "\n"
+			"", trie, trans->to, whitespace, trans->token);
 			
 			helper(trans->to);
+			
+			free(whitespace);
 		}
 		
 		for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
@@ -501,7 +507,7 @@ void build_tries(
 				
 				struct trie* to = process_transition(transition->structinfo, NULL, transition->to);
 				
-				trie_add_transition(trie, transition->token, to);
+				trie_add_transition(trie, transition->token, transition->whitespace, to);
 			}
 			
 			for (unsigned i = 0, n = gegex->grammar_transitions.n; i < n; i++)

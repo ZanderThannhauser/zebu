@@ -29,7 +29,6 @@
 	struct lex;
 	struct regex;
 	struct gegex;
-	struct options;
 	struct scope;
 	struct pragma_once;
 	struct unsignedset;
@@ -56,6 +55,7 @@
 	struct tags;
 	
 	#include <enums/error.h>
+	#include <enums/token_kind.h>
 	
 	#include <macros/strequals.h>
 	

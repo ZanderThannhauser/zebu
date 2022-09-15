@@ -180,6 +180,8 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* named_firsts = avl_alloc_tree(compare_named_unsignedsets, free_named_unsignedset);
 	
 	struct avl_tree_t* dependent_on = avl_alloc_tree(compare_named_stringsets, free_named_stringset);
@@ -264,6 +266,7 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 	
 	EXIT;
 	return named_firsts;
+	#endif
 }
 
 

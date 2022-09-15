@@ -65,7 +65,6 @@
 
 struct gbundle read_highest_production(
 	struct tokenizer* tokenizer,
-	struct options* options,
 	struct scope* scope,
 	struct lex* lex)
 {
@@ -75,27 +74,27 @@ struct gbundle read_highest_production(
 	switch (tokenizer->token)
 	{
 		case t_oparen:
-			retval = read_parenthesis_production(tokenizer, options, scope, lex);
+			retval = read_parenthesis_production(tokenizer, scope, lex);
 			break;
 		
 		case t_character_literal:
-			retval = read_character_literal_production(tokenizer, options, scope, lex);
+			retval = read_character_literal_production(tokenizer, scope, lex);
 			break;
 		
 		case t_string_literal:
-			retval = read_string_literal_production(tokenizer, options, scope, lex);
+			retval = read_string_literal_production(tokenizer, scope, lex);
 			break;
 		
 		case t_osquare:
-			retval = read_square_production(tokenizer, options, scope, lex);
+			retval = read_square_production(tokenizer, scope, lex);
 			break;
 		
 		case t_gravemark:
-			retval = read_gravemark_production(tokenizer, options, scope, lex);
+			retval = read_gravemark_production(tokenizer, scope, lex);
 			break;
 		
 		case t_identifier:
-			retval = read_identifier_production(tokenizer, options, scope, lex);
+			retval = read_identifier_production(tokenizer, scope, lex);
 			break;
 		
 		default:
