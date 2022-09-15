@@ -73,7 +73,7 @@ jobs:
 
   release-build:
     runs-on: ubuntu-latest
-    needs: [iloc-example, json-example]
+    needs: [iloc-example, json-example, zebu-example]
     steps:
     - uses: actions/checkout@v3
     
