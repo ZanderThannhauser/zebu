@@ -14,7 +14,7 @@ charset_t read_complement_charset(
 {
 	ENTER;
 	
-	if (tokenizer->token == t_tilda)
+	if (tokenizer->token == t_emark)
 	{
 		read_token(tokenizer, charset_root_machine);
 		

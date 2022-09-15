@@ -26,7 +26,7 @@ cannot have the same name, even if defined in seperate files.
     pattern will only be effective to the tokens described *after* the
     directive is given. Common usages are listed below:
    - `%skip: [' ', '\t', '\n];` (Ignores space, tab and newline characters)
-   - `%skip: [' ', '\t', '\n] | "#"[~"\n"]*"\n"` (Ignores characters listed
+   - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores characters listed
      above, in addition to skipping anything bewteen a pound (#) and a newline)
  - `%include`: Gives a path to read using either `"path"` or `<path>` syntax.
     The former will resolve the path relative to the current file, and the latter
@@ -56,7 +56,7 @@ must be defined before it can be used.
 A list of operators and their meaning is listed below. Remember that parenthesis
 (`(` & `)`) can be used to raise the precedence of low-precedence operators.
 
-1. `~ $1`: Unary operator. Returns the complement of the given character-set.
+1. `!$1`: Unary operator. Returns the complement of the given character-set.
 2. `$1 - $2`: Binary operator, not associative. If given two Literals, returns a
    character-set containing all of the characters bewteen the first character
    literal up-to-and-including the second character literal. If the first
@@ -69,7 +69,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
    Returns a character-set of all the elements
    that are contained in *both* of the two given character-sets.
    Example: `[('a','b','c') & ('b','c','d')]` yields `['b', 'c']`.
-   Example: `[('a','b','c') & ~'a']` yields `['b', 'c']`.
+   Example: `[('a','b','c') & !'a']` yields `['b', 'c']`.
 4. `$1 ^ $2`: Binary operator, symmetric-difference, Left-associative.
    Returns a character-set of all the elements that are
    contained in *only one* of the two given character-sets.
@@ -87,14 +87,15 @@ A list of operators and their meaning is listed below. Remember that parenthesis
     and 'c'.
  - `[('a', 'b') ^ ('b', 'c')]`: Describes a character-set containing the letters
     'a' and 'c'.
- - `[~(~('a' - 'c') & ~('b' - 'd'))]` or `['a' - 'c' | 'b' - 'd']`: Describes
+ - `[!(!('a' - 'c') & !('b' - 'd'))]` or `['a' - 'c' | 'b' - 'd']`: Describes
     the character-set containing 'a', 'b', 'c' and 'd'.
- - `[~(~('a' - 'c') | ~('b' - 'd'))]` or `['a' - 'c' & 'b' - 'd']`: Describes
+ - `[!(!('a' - 'c') | !('b' - 'd'))]` or `['a' - 'c' & 'b' - 'd']`: Describes
     the character-set containing 'b' and 'c'.
- - `['a'-'z' & ~('a','e','i','o','u')]`: Describes a character-set containing
+ - `['a'-'z' & !('a','e','i','o','u')]`: Describes a character-set containing
     all consonants.
+ - `[0 - 127]`: Describes any ascii character.
 
-### Regular Expression Context
+### Regular Expression Language
 
 Inside of a grammar-rule context, one can enter the regular-expression context
 using gravemarks ('`'). One can also define a name as representing the value
@@ -134,7 +135,7 @@ A list of operators and their meaning is listed below. Remember that parenthesis
    the strings that would match the first given regular-expression with all
    the strings that would match the second given regular-expression.
    Example: `'a'+ 'b'+` would match "ab", "aab", "abb", etc.
-3. `$1 & $2` or `$1 &! $2`: Binary operators, intersection and difference
+3. `$1 & $2` or `$1 & !$2`: Binary operators, intersection and difference
    respectively, left-associative. If the intersection operator was used, this
    expression returns a regular expression that matches the strings that would
    be matched by *both* the first and the second given regular expressions. If
@@ -151,20 +152,31 @@ A list of operators and their meaning is listed below. Remember that parenthesis
 
 #### Examples:
 
- - `[~'b']* 'b' [~'b']* 'b' [~'b']*`: Would match any string containing exactly
+ - `[!'b']* 'b' [!'b']* 'b' [!'b']*`: Would match any string containing exactly
     two 'b's.
  - `['0'-'9']+ ('.' ['0'-'9']*)?`: Would match any decimal digits with possibly
     digits past the decimal-point.
  - `'a'+'b'+'c'+ & (..)*`: Describes all even-length strings with one-or-more
     'a's, one-or-more 'b's, and one-or-more 'c's, consecutively.
  - `'a'+'b'+'c'+ &! 'a''b'+'c'`: Describes all strings with one-or-more
-    'a's, one-or-more 'b's, and one-or-more 'c's, but with the additional
-    requirement that either there needs to be more than one 'a' or more than one
+    'a's, one-or-more 'b's, and one-or-more 'c's, but that either 'a' or 'c'
+    must be repeated more than once.
     'c'.
  - `'a'+'b'+'c'+ &! "abc"`: Describes all strings with one-or-more
-    'a's, one-or-more 'b's, and one-or-more 'c's, besides "abc".
+    'a's, one-or-more 'b's, and one-or-more 'c's, but at least one letter must
+    be repeated more than once.
+ - Describes all UTF8-encoded strings:
+		( [0x0 - 0x7F]
+		| [0x00000080 - 0x000007FF] [0x80 - 0xBF]{1}
+		| [0x00000800 - 0x0000FFFF] [0x80 - 0xBF]{2}
+		| [0x00010000 - 0x001FFFFF] [0x80 - 0xBF]{3}
+		| [0x00200000 - 0x03FFFFFF] [0x80 - 0xBF]{4}
+		| [0x04000000 - 0x7FFFFFFF] [0x80 - 0xBF]{5} )*
 
 ### Grammar Rule Expressions
+
+
+#### Operators
 
 #### Examples
 

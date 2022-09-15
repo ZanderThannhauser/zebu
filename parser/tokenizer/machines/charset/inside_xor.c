@@ -24,8 +24,8 @@ const enum tokenizer_state charset_inside_xor_machine[number_of_tokenizer_states
 		#include "../fragments/oparen.h"
 		
 	// prefixes:
-		// set not:
-		#include "../fragments/tilda.h"
+		// set complement:
+		#include "../fragments/emark.h"
 };
 
 

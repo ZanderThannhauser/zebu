@@ -1,10 +1,13 @@
 
+#include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
 
-/*#include "regex/state/new.h"*/
+#include <enums/error.h>
+
 #include <regex/dfa_to_nfa.h>
 #include <regex/dotout.h>
 #include <regex/clone.h>
@@ -14,8 +17,9 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/misc/numeric.h"
-#include "../tokenizer/machines/misc/comma.h"
+#include "../tokenizer/machines/misc/numeric_or_comma.h"
+#include "../tokenizer/machines/misc/comma_or_ccurly.h"
+#include "../tokenizer/machines/misc/numeric_or_ccurly.h"
 #include "../tokenizer/machines/misc/ccurly.h"
 #include "../tokenizer/machines/regex/after_suffix.h"
 
@@ -91,58 +95,134 @@ struct rbundle read_suffixes_token_expression(
 		case t_ocurly:
 		{
 			struct rbundle original;
+			
 			// convert into nfa:
 			if (retval.is_nfa)
 				original = retval;
 			else
 				original = regex_dfa_to_nfa(retval.dfa);
 			
-			read_token(tokenizer, numeric_machine);
-			dpvs(tokenizer->tokenchars.chars);
-			unsigned min = atoi((void*) tokenizer->tokenchars.chars);
-			dpv(min);
+			struct limit {
+				bool has;
+				unsigned value;
+			} min = {}, max = {};
 			
-			read_token(tokenizer, comma_machine);
+			void set_limit(struct limit* l)
+			{
+				switch (tokenizer->token)
+				{
+					case t_octal_literal:
+						TODO;
+						break;
+					
+					case t_decimal_literal:
+					{
+						errno = 0;
+						
+						const char* start = (void*) tokenizer->tokenchars.chars;
+						unsigned long int value = strtoul(start, NULL, 10);
+						
+						if (errno)
+						{
+							fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
+							exit(e_syntax_error);
+						}
+						
+						l->has = true;
+						l->value = value;
+						break;
+					}
+					
+					case t_hexadecimal_literal:
+						TODO;
+						break;
+					
+					default:
+						TODO;
+						break;
+				}
+			}
 			
-			read_token(tokenizer, numeric_machine);
-			dpv(tokenizer->tokenchars.chars);
-			unsigned max = atoi((void*) tokenizer->tokenchars.chars);
-			dpv(max);
+			read_token(tokenizer, numeric_or_comma_machine);
 			
-			read_token(tokenizer, ccurly_machine);
+			if (false
+				|| tokenizer->token == t_octal_literal
+				|| tokenizer->token == t_decimal_literal
+				|| tokenizer->token == t_hexadecimal_literal)
+			{
+				set_limit(&min);
+				read_token(tokenizer, comma_or_ccurly_machine);
+			}
+			
+			if (tokenizer->token == t_comma)
+			{
+				read_token(tokenizer, numeric_or_ccurly_machine);
+			}
+			else
+			{
+				max = min;
+			}
+			
+			if (false
+				|| tokenizer->token == t_octal_literal
+				|| tokenizer->token == t_decimal_literal
+				|| tokenizer->token == t_hexadecimal_literal)
+			{
+				set_limit(&max);
+				read_token(tokenizer, ccurly_machine);
+			}
+			
+			if (!min.has && !max.has)
+			{
+				TODO;
+				exit(1);
+			}
+			
+			if (min.has) { dpv(min.value); }
+			if (max.has) { dpv(max.value); }
 			
 			struct regex* start = new_regex();
 			
 			struct regex* moving = start;
 			
-			unsigned i;
-			for (i = 0; i < min; i++)
+			unsigned i = 0;
+			
+			if (min.has)
 			{
-				// new_start, new_end = clone();
-				
-				// moving -> new_start
-				
-				// moving = new_end
-				TODO;
+				for (; i < min.value; i++)
+				{
+					struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+					
+					regex_add_lambda_transition(moving, clone.start);
+					
+					moving = clone.end;
+				}
 			}
 			
 			struct regex* end = new_regex();
 			
 			regex_add_lambda_transition(moving, end);
 			
-			for (; i < max; i++)
+			if (max.has)
 			{
-				// new_start, new_end = clone();
+				for (; i < max.value; i++)
+				{
+					struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+					
+					regex_add_lambda_transition(moving, clone.start);
+					
+					moving = clone.end;
+					
+					regex_add_lambda_transition(moving, end);
+				}
+			}
+			else
+			{
 				struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
 				
-				// moving -> new_start
 				regex_add_lambda_transition(moving, clone.start);
 				
-				// moving = new_end
-				moving = clone.end;
-				
-				// moving -> end
-				regex_add_lambda_transition(moving, end);
+				regex_add_lambda_transition(clone.end, moving);
 			}
 			
 			retval.is_nfa = true;

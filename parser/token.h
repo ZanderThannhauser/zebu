@@ -26,7 +26,6 @@ enum token
 	t_lthan_eq,
 	t_equal_to,
 	t_ampersand,
-	t_tilda,
 	t_not_equal_to,
 	t_hypen,
 	t_caret,

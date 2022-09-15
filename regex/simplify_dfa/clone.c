@@ -193,10 +193,14 @@ struct regex* regex_simplify_dfa_clone(
 			}
 		}
 		
-		#ifdef DOTOUT
-		regex_dotout(new_start, __PRETTY_FUNCTION__);
-		#endif
+/*		#ifdef DOTOUT*/
+/*		regex_dotout(new_start, __PRETTY_FUNCTION__);*/
+/*		#endif*/
 	}
+	
+	#ifdef DOTOUT
+	regex_dotout(new_start, __PRETTY_FUNCTION__);
+	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);

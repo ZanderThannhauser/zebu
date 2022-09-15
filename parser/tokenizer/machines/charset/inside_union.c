@@ -24,8 +24,8 @@ const enum tokenizer_state charset_inside_union_machine[number_of_tokenizer_stat
 		#include "../fragments/oparen.h"
 		
 	// prefixes:
-		// set not:
-		#include "../fragments/tilda.h"
+		// set complement:
+		#include "../fragments/emark.h"
 };
 
 

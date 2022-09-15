@@ -309,11 +309,6 @@ enum token read_token(
 			dputs("t_oparen");
 			break;
 		
-		case ts_tilda:
-			this->token = t_tilda;
-			dputs("t_tilda");
-			break;
-		
 		case ts_dot:
 			this->token = t_dot;
 			dputs("t_dot");
