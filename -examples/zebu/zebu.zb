@@ -1,0 +1,101 @@
+
+%skip: [' ', '\t', '\n'];
+
+`numeric`
+	: ['1' - '9'] ['0' - '9']*
+	| '0' 'x' ['0' - '9', 'a' - 'f', 'A' - 'F']+
+	| '0' ['0' - '7']*
+	;
+
+`escape`
+	: ['a'-'z', '0'-'9', 'A'-'Z',
+		' ', '(', ')', '[', ']',
+		'<', '>', '!', '-', '&',
+		'^', '|', '`', ',', '+',
+		'*', '?', ';', '_', '.',
+		':', '%', '/', '#'
+	] | "\\" ['t', 'n', '\"', '\'', '\\']
+	;
+
+`char`: '\'' escape '\'';
+
+`string`: '\"' escape* '\"';
+
+`identifier`: ['a'-'z', 'A'-'Z'] ['a'-'z', 'A'-'Z' '0'-'9', '_']*;
+
+charset_highest
+	: `numeric` #numeric
+	| `char` #character
+	| `identifier` #name
+	| '(' charset #subcharset ')'
+	;
+
+charset_complement: ('!' #complement)? charset_highest #subcharset;
+
+charset_range: charset_complement #low ('-' charset_complement #high)?;
+
+charset_intersect: charset_range #subcharset ('&' charset_range #intersects[])*;
+
+charset_xor: charset_intersect #subcharset ('^' charset_intersect #xors[])*;
+
+charset: charset_xor #subcharset (('|' | ',')? charset_xor #unions[])*;
+
+regex_highest
+	: `char` #character
+	| `string` #string
+	| '.' #dot
+	| `identifier` #identifier
+	| '(' regex #subregex ')'
+	| '[' charset #charset ']'
+	;
+
+regex_suffixes: regex_highest #subregex ('+' #plus | '*' #asterisk | '?' #qmark)?;
+
+regex_concat: (regex_suffixes #concats[])+;
+
+regex_and: regex_concat #subregex ('&' regex_concat #intersects[])*;
+
+regex: regex_and #subregex ('|' regex_and #unions[])*;
+
+grammar_highest
+	: `char` #character (`'#' ['a'-'z','_']+` #tagname "[]"?)?
+	| `string` #string (`'#' ['a'-'z','_']+` #tagname "[]"?)?
+	| `identifier` #nonterminal (`'#' ['a'-'z','_']+` #tagname "[]"?)?
+	| '`' regex #regex '`' (`'#' ['a'-'z','_']+` #tagname "[]"?)?
+	| '[' charset #charset ']' (`'#' ['a'-'z','_']+` #tagname "[]"?)?
+	| '(' grammar #subgrammar ')'
+	;
+
+grammar_suffixes: grammar_highest #subgrammar ('+' #plus | '*' #asterisk | '?' #qmark)?;
+
+grammar_concat: (grammar_suffixes #concats[]) +;
+
+grammar: grammar_concat #rules[] ('|' grammar_concat #rules[])*;
+
+entry
+	: `'[' identifier ']'` #charset_name ':' charset #charset ';'
+	| `'`' identifier '`'` #regex_name ':' regex #regex ';'
+	| `identifier` #grammar_name ':' grammar #grammar ';'
+	| "%" "start" #start ':' grammar #grammar ';'
+	| "%" "skip" #skip ':' regex #regex ';'
+	| "%" "include" #include `'\"' ['a'-'z', '/']* '\"' | '<' ['a'-'z', '/']* '>'` #path
+	;
+
+root: (entry #entries[])+;
+
+%start: root #root;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

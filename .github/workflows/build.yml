@@ -53,6 +53,24 @@ jobs:
     - name: Run JSON Example
       run: valgrind /tmp/test ./-examples/json/input.json
 
+  zebu-example:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Dependences
+      run: sudo apt install valgrind
+
+    - name: Generate Zebu Example
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-debug -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
+
+    - name: Compile Zebu Example
+      run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
+
+    - name: Run Zebu Example
+      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
+
   release-build:
     runs-on: ubuntu-latest
     needs: [iloc-example, json-example]
@@ -97,6 +115,24 @@ jobs:
 
     - name: Run JSON Example
       run: valgrind /tmp/test ./-examples/json/input.json
+
+  release-zebu-example:
+    runs-on: ubuntu-latest
+    needs: [release-build]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Dependences
+      run: sudo apt install valgrind
+
+    - name: Generate zebu Example
+      run: make run ARGS="-vl -t fileio -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
+      
+    - name: Compile zebu Example
+      run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
+
+    - name: Run zebu Example
+      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
 
 
 
