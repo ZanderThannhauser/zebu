@@ -1,8 +1,12 @@
 
+#include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
@@ -48,12 +52,12 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
 			{
-				fprintf(stderr, "zebu: octal literal '%lu' must be bewteen 0 and 255\n", value);
+				fprintf(stderr, "zebu: error when reading character-set: literal '%lu' must be bewteen 0 and 255\n", value);
 				exit(e_syntax_error);
 			}
 			
@@ -77,12 +81,12 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
 			{
-				fprintf(stderr, "zebu: decimal literal '%lu' must be bewteen 0 and 255\n", value);
+				fprintf(stderr, "zebu: error when reading character-set: literal '%lu' must be bewteen 0 and 255\n", value);
 				exit(e_syntax_error);
 			}
 			
@@ -106,12 +110,12 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
 			{
-				fprintf(stderr, "zebu: hexadecimal literal '0x%lX' must be bewteen 0 and 255\n", value);
+				fprintf(stderr, "zebu: error when reading character-set: literal '0x%lX' must be bewteen 0 and 255\n", value);
 				exit(e_syntax_error);
 			}
 			
