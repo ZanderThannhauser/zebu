@@ -270,16 +270,6 @@ root: addition #root;
 
 ## Future Features
 
- - There should be an option (enabled by default) to skip the strings matched
-   by the `%skip` pattern, **without** prepending them to the next token.
-   Possible approaches:
-   - Describe whitespace as it's own token to the tokenizer-generator, marking
-     the token_id to be included in each tokenizer featuring the tokens declared
-     after the `%skip`, and making a new table for run-time to be able to check
-     if the matched token is whitespace and it should rerun for the next token.
-   - Include whitespace as part of the state machines for the token, but mark
-     the states that return back from processing as ones that should clear
-     the tokenizer's buffer.
  - Way of articulating in the input file how to handle shift-reduce errors,
    perhaps something not unlike the way GNU Bison or Yacc deals with them:
    (Tokens having a "precedence", if the last token of a production rule has a
