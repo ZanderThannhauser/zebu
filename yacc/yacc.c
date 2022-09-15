@@ -481,18 +481,16 @@ struct yacc_state* yacc(
 				
 				if (trie->reduce_as)
 				{
-					TODO;
-					#if 0
-					unsignedset_foreach(lookaheads, ({
+					unsignedset_foreach(tokens, ({
 						void runme(unsigned token)
 						{
 							add_reduce(reduce_tokens, token, trie->reduce_as, trie->reductioninfo, trie->structinfo);
-							
-							unsignedset_add(all_tokens, token);
 						}
 						runme;
 					}));
-					#endif
+					
+					unsignedset_update(all_tokens, whitespace);
+					unsignedset_update(all_tokens, tokens);
 				}
 				
 				for (unsigned i = 0, n = trie->transitions.n; i < n; i++)
@@ -528,8 +526,6 @@ struct yacc_state* yacc(
 			/* (   out) struct lex_state* start:    */ &tokenizer_start,
 			/* (in)     struct unsignedset* tokens: */ all_tokens);
 		
-		TODO;
-		#if 0
 		state->tokenizer_start = tokenizer_start;
 		
 		unsignedsetset_foreach(tokens, ({
@@ -558,18 +554,14 @@ struct yacc_state* yacc(
 								exit(1);
 							}
 							
-							struct shift_node* shift;
-							{
-								struct avl_node_t* snode = avl_search(shift_tokens, &token);
-								
-								assert(snode);
-								
-								shift = snode->item;
-							}
+							struct shift_node* shift = avl_search(shift_tokens, &token)->item;
 							
 							stateinfo_foreach(shift->stateinfo, ({
-								void runme(struct trie* subtrie, struct unsignedset* sublookaheads) {
-									stateinfo_add(subinfo, subtrie, unsignedset_clone(sublookaheads));
+								void runme(struct trie* subtrie, struct unsignedset* subwhitespace, struct unsignedset* subtokens) {
+									struct unsignedset* dup1 = unsignedset_clone(subwhitespace);
+									struct unsignedset* dup2 = unsignedset_clone(subtokens);
+									stateinfo_add(subinfo, subtrie, dup1, dup2);
+									free_unsignedset(dup1), free_unsignedset(dup2);
 								}
 								runme;
 							}));
@@ -664,9 +656,12 @@ struct yacc_state* yacc(
 				struct stateinfo* subinfo = new_stateinfo();
 				
 				stateinfo_foreach(ele->stateinfo, ({
-					void runme(struct trie* subtrie, struct unsignedset* sublookaheads)
+					void runme(struct trie* subtrie, struct unsignedset* subwhitespace, struct unsignedset* subtokens)
 					{
-						stateinfo_add(subinfo, subtrie, unsignedset_clone(sublookaheads));
+						struct unsignedset* dup1 = unsignedset_clone(subwhitespace);
+						struct unsignedset* dup2 = unsignedset_clone(subtokens);
+						stateinfo_add(subinfo, subtrie, dup1, dup2);
+						free_unsignedset(dup1), free_unsignedset(dup2);
 					}
 					runme;
 				}));
@@ -716,7 +711,6 @@ struct yacc_state* yacc(
 		avl_free_tree(reduce_tokens);
 		
 		avl_free_tree(subgrammars);
-		#endif
 	}
 	
 	#ifdef VERBOSE

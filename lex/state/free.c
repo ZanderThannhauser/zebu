@@ -12,6 +12,8 @@
 
 #include <set/lexstate/add.h>
 
+#include <set/unsigned/free.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -27,6 +29,8 @@ void free_lex_state(struct lexstateset* freed, struct lex_state* start)
 	while (quack_len(todo))
 	{
 		struct lex_state* state = quack_pop(todo);
+		
+		free_unsignedset(state->accepts);
 		
 		for (unsigned i = 0, n = 256; i < n; i++)
 		{

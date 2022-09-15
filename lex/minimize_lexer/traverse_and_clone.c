@@ -25,6 +25,8 @@
 
 #include <yacc/state/struct.h>
 
+#include <set/unsigned/inc.h>
+
 #ifdef VERBOSE
 #include <stdio.h>
 #include <unistd.h>
@@ -171,7 +173,9 @@ void lex_minimize_traverse_and_clone(
 		struct lex_state* const old = mapping->old;
 		struct lex_state* const new = mapping->new;
 		
-		new->accepts = old->accepts;
+		new->accepts = inc_unsignedset(old->accepts);
+		
+		new->kind = old->kind;
 		
 		// for each transition:
 		for (unsigned i = 0, n = 256; i < n; i++)

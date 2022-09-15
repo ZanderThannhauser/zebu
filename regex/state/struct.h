@@ -14,6 +14,6 @@ struct regex
 	
 	unsigned is_accepting;
 	
-	enum token_kind token_kind;
+	enum token_kind kind;
 };
 

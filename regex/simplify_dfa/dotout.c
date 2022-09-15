@@ -88,7 +88,7 @@ void simplify_dfa_dotout(
 				"\t" "peripheries = %u;" "\n"
 			"]" "\n"
 		"", state, state->is_accepting ? "doublecircle" : "circle",
-		           state->is_accepting ? 2 + state->token_kind : 1);
+		           state->is_accepting ? 2 + state->kind : 1);
 		
 		regexset_add(drawn, state);
 		

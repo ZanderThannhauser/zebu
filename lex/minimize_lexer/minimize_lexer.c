@@ -104,7 +104,7 @@ void lex_minimize_lexer(
 						
 						if (!a->accepts != !b->accepts)
 							unequal = true;
-						else if (a->accepts && b->accepts && compare_unsignedsets(a->accepts, b->accepts))
+						else if (a->accepts && b->accepts && (a->kind != b->kind || compare_unsignedsets(a->accepts, b->accepts)))
 							unequal = true;
 						else if (!a->EOF_transition_to != !b->EOF_transition_to)
 							unequal = true;

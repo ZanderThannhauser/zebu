@@ -9,6 +9,8 @@
 
 #include <yacc/structinfo/free.h>
 
+#include <set/unsigned/free.h>
+
 #include "struct.h"
 #include "free.h"
 
@@ -26,7 +28,7 @@ void free_trie(struct trie* this)
 	{
 		struct trie_transition* ele = this->transitions.data[i];
 		
-		TODO;
+		free_unsignedset(ele->whitespace);
 		
 		free_trie(ele->to);
 		

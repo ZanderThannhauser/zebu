@@ -167,6 +167,8 @@ void* parse(FILE* stream)
 	
 	void read_token(unsigned l)
 	{
+		unsigned original_l = l;
+		
 		void append(unsigned char c)
 		{
 			while (lexer.n + 1 >= lexer.cap)
@@ -249,15 +251,22 @@ void* parse(FILE* stream)
 					lexer.n--, ungetc(c, stream);
 				}
 				
-				ddprintf("lexer.n == %u\n", lexer.n);
 				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
 				
-				struct token* token = malloc(sizeof(*token));
-				token->refcount = 1;
-				token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
-				token->len = lexer.n;
-				t = b, td = token, lexer.n = 0;
-				break;
+				if (b == 1)
+				{
+					ddprintf("lexer: whitespace.\n");
+					l = original_l, t = 0, lexer.n = 0;
+				}
+				else
+				{
+					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
+					token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
+					token->len = lexer.n;
+					t = b, td = token, lexer.n = 0;
+					break;
+				}
 			}
 			else if (t)
 			{

@@ -24,7 +24,7 @@ struct regex* new_regex()
 	
 	this->is_accepting = 0;
 	
-	this->token_kind = 0;
+	this->kind = 0;
 	
 	EXIT;
 	return this;

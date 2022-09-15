@@ -9,6 +9,12 @@
 #include <stddef.h>
 #include <string.h>
 
+{{SHIFT_TABLE}}
+
+{{REDUCE_TABLE}}
+
+{{GOTO_TABLE}}
+
 {{LEXER_TABLE}}
 
 {{LEXER_STARTS_TABLE}}
@@ -17,11 +23,7 @@
 
 {{LEXER_EOF_TABLE}}
 
-{{SHIFT_TABLE}}
-
-{{REDUCE_TABLE}}
-
-{{GOTO_TABLE}}
+{{TOKEN_IDS_TO_SETS}}
 
 {{PARSE_TREE_STRUCTS}}
 
@@ -132,6 +134,8 @@ int main()
 		{
 			char escaped[10];
 			
+			unsigned original_l = l;
+			
 			char* begin = lexer, *f = NULL;
 			
 			unsigned a, b, c;
@@ -176,14 +180,22 @@ int main()
 				{
 					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
 					
-					struct token* token = malloc(sizeof(*token));
-					token->refcount = 1;
-					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
-					token->len = lexer - begin;
-					t = b, td = token;
-					break;
+					if (b == 1)
+					{
+						ddprintf("lexer: whitespace\n");
+						l = original_l, begin = lexer, f = NULL;
+					}
+					else
+					{
+						struct token* token = malloc(sizeof(*token));
+						token->refcount = 1;
+						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+						token->len = lexer - begin;
+						t = b, td = token;
+						break;
+					}
 				}
-				else if (t)
+				else if (f)
 				{
 					assert(!"172" || f);
 					#if 0
@@ -203,7 +215,7 @@ int main()
 		
 		read_token({{PREFIX}}_lexer_starts[y]);
 		
-		ddprintf("y = %u, t == %u\n", y, t);
+		ddprintf("y = %u, t == %u (%s)\n", y, t, {{PREFIX}}_token_names[t]);
 		
 		void* root;
 		
@@ -212,7 +224,10 @@ int main()
 			if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 			{
 				y = s, push_state(y), push_data(td);
+				
 				read_token({{PREFIX}}_lexer_starts[y]);
+				
+				ddprintf("t == %u (%s)\n", t, {{PREFIX}}_token_names[t]);
 			}
 			else if (y < N({{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 			{
@@ -252,9 +267,9 @@ int main()
 		
 		assert(!data.n);
 		
-		print___start___ptree(NULL, p_root, "start", root);
+		print_$start_ptree(NULL, p_root, "start", root);
 		
-		free___start___ptree(root);
+		free_$start_ptree(root);
 		
 		add_history(line);
 		

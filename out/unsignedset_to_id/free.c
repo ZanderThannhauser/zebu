@@ -6,8 +6,6 @@
 
 #include <avl/free_tree.h>
 
-#include <set/unsigned/free.h>
-
 #include "struct.h"
 #include "free.h"
 
@@ -16,8 +14,6 @@ void free_unsignedset_to_id(struct unsignedset_to_id* this)
 	ENTER;
 	
 	avl_free_tree(this->tree);
-	
-	free_unsignedset(this->eof);
 	
 	free(this);
 	

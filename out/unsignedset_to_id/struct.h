@@ -12,7 +12,5 @@ struct unsignedset_to_id
 {
 	struct avl_tree_t* tree;
 	
-	struct unsignedset* eof;
-	
 	unsigned next;
 };

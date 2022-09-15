@@ -90,6 +90,7 @@
 
 #include "unsignedset_to_id/new.h"
 #include "unsignedset_to_id/unsignedset_to_id.h"
+#include "unsignedset_to_id/print_source.h"
 #include "unsignedset_to_id/free.h"
 
 #include "dyntable/new.h"
@@ -243,22 +244,19 @@ void out(struct yacc_state* start)
 		
 		if (state->accepts)
 		{
-			unsigned tid = unsignedset_to_id(ustoi, state->accepts);
-			
-			dpv(tid);
-			
-			dynvector_set(accepts, lid, tid);
-			
-			TODO;
-			#if 0
-			if (state->is_whitespace)
+			if (state->kind == tk_whitespace)
 			{
-				add state id to table of 'is-whitespace' or something,
-				so runtime can tell
+				dynvector_set(accepts, lid, 1);
 			}
-			#endif
+			else
+			{
+				unsigned tid = unsignedset_to_id(ustoi, state->accepts);
+				
+				dpv(tid);
+				
+				dynvector_set(accepts, lid, tid);
+			}
 		}
-		
 		
 		for (unsigned i = 0, n = 256; i < n; i++)
 		{
@@ -445,6 +443,10 @@ void out(struct yacc_state* start)
 				fprintf(stream, "%u", string_to_id(stoi, start));
 				
 				free_string(start);
+			}
+			else if (!strncmp(old, "TOKEN_IDS_TO_SETS", len))
+			{
+				unsignedset_to_id_print_source(ustoi, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
 			{

@@ -76,7 +76,11 @@ static int compare_firsts_nodes(const void* a, const void* b)
 
 static void free_firsts_node(void* a)
 {
-	TODO;
+	struct firsts_node* node = a;
+	free_string(node->name);
+	free_unsignedset(node->whitespace);
+	free_unsignedset(node->tokens);
+	free(node);
 }
 
 static struct stringset* get(struct avl_tree_t* tree, struct string* name)

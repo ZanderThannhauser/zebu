@@ -51,7 +51,7 @@ static void helper(struct regex* start, unsigned is_accepting, enum token_kind t
 		if (state->is_accepting)
 		{
 			state->is_accepting = is_accepting;
-			state->token_kind = token_kind;
+			state->kind = token_kind;
 		}
 		
 		for (unsigned i = 0, n = 256; i < n; i++)

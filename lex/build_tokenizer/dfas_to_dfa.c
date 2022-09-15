@@ -133,19 +133,16 @@ struct unsignedsetset* dfas_to_dfa(
 			{
 				if (substate->is_accepting)
 				{
-					TODO;
-					#if 0
-					if (substate->is_literal > is_literal)
+					if (substate->kind > kind)
 					{
 						unsignedset_clear(accepts);
 						unsignedset_add(accepts, substate->is_accepting);
-						is_literal = substate->is_literal;
+						kind = substate->kind;
 					}
-					else if (substate->is_literal == is_literal)
+					else if (substate->kind == kind)
 					{
 						unsignedset_add(accepts, substate->is_accepting);
 					}
-					#endif
 				}
 			}
 			runme;
@@ -153,7 +150,10 @@ struct unsignedsetset* dfas_to_dfa(
 		
 		if (unsignedset_len(accepts))
 		{
-			unsignedsetset_add(all_accepts, accepts);
+			if (kind > tk_whitespace)
+			{
+				unsignedsetset_add(all_accepts, accepts);
+			}
 			
 			state->accepts = inc_unsignedset(accepts);
 			state->kind = kind;
