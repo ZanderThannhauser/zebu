@@ -38,6 +38,10 @@ enum tokenizer_state
 	ts_hashtag_scalar,
 	ts_hashtag_array,
 	
+	// literals:
+	ts_octal_literal,
+	ts_decimal_literal,
+	ts_hexadecimal_literal,
 	ts_character_literal,
 	
 	// strings:
@@ -47,7 +51,6 @@ enum tokenizer_state
 	ts_string_literal,
 	ts_absolute_path,
 	ts_relative_path,
-	ts_numeric_literal,
 	ts_identifier,
 	
 	// keywords/misc:
@@ -99,6 +102,10 @@ enum tokenizer_state
 	ts_reading_gravemarked_identifier,
 	ts_reading_parenthesised_identifier,
 	ts_reading_numeric_literal,
+	ts_reading_octal_literal,
+	ts_reading_decimal_literal,
+	ts_reading_hexadecimal_literal,
+	ts_reading_hexadecimal_literal2,
 	ts_reading_string_literal,
 	ts_reading_relpath_literal,
 	ts_reading_abspath_literal,

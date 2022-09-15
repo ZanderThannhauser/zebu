@@ -72,10 +72,22 @@ enum token read_token(
 			dputs("t_directive");
 			break;
 		
-		case ts_numeric_literal:
+		case ts_octal_literal:
 			append(this, 0);
-			this->token = t_numeric_literal;
-			dputs("t_numeric_literal");
+			this->token = t_octal_literal;
+			dputs("t_octal_literal");
+			break;
+			
+		case ts_decimal_literal:
+			append(this, 0);
+			this->token = t_decimal_literal;
+			dputs("t_decimal_literal");
+			break;
+			
+		case ts_hexadecimal_literal:
+			append(this, 0);
+			this->token = t_hexadecimal_literal;
+			dputs("t_hexadecimal_literal");
 			break;
 		
 		case ts_start:

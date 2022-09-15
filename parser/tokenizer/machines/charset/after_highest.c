@@ -13,6 +13,9 @@ const enum tokenizer_state charset_after_highest_machine[number_of_tokenizer_sta
 		// character literal:
 		#include "../fragments/character_literal.h"
 		
+		// numeric literal:
+		#include "../fragments/numeric_literal.h"
+		
 		// identifier:
 		#include "../fragments/identifier.h"
 		

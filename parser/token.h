@@ -39,7 +39,10 @@ enum token
 	
 	t_ellipsis,
 	
-	t_numeric_literal,
+	t_octal_literal,
+	t_decimal_literal,
+	t_hexadecimal_literal,
+	
 	t_string_literal,
 	t_character_literal,
 	

@@ -36,24 +36,148 @@ cannot have the same name, even if defined in seperate files.
     A file `include`d more than once will not be read more than once, this is
     detected by using `stat(2)`'s `st_dev` and `st_ino` values.
 
-### Regular Expression Language
+### Character Set Expression Context
 
-#### Examples
+Inside of either a regular-expression or grammar-rule context, one can enter the
+character-set-expression context using `'['` and `']'`. One can define a name
+as representing the result of a character-set expression to a name
+using `[name]: value;` syntax.
 
-### Grammar Language
+Either C-style single-quote character literals or C-style integer-literals can
+be used inside a character set to describe a character. For example, the letter
+'a' can be indicated by `'a'`, or `97`, or `0x61`.
+
+Remember that one can also refer to the value of a defined character-set by
+name, inside of other character-set expressions. The referenced character-set
+must be defined before it can be used.
+
+#### Operators:
+
+A list of operators and their meaning is listed below. Remember that parenthesis
+(`(` & `)`) can be used to raise the precedence of low-precedence operators.
+
+1. `~ $1`: Unary operator. Returns the complement of the given character-set.
+2. `$1 - $2`: Binary operator, not associative. If given two Literals, returns a
+   character-set containing all of the characters bewteen the first character
+   literal up-to-and-including the second character literal. If the first
+   operand is a character-set, it will use the minimum character contained in
+   the set. If the second operand is a is character-set, it will use the
+   maximum character contained in the set.
+   Example: `['a' - 'c']` yields `['a', 'b', 'c']`.
+   Example: `[('a', 'b') - ('c', 'd')]` yields `['a', 'b', 'c', 'd']`.
+3. `$1 & $2`: Binary operator, intersection, left-associative.
+   Returns a character-set of all the elements
+   that are contained in *both* of the two given character-sets.
+   Example: `[('a','b','c') & ('b','c','d')]` yields `['b', 'c']`.
+   Example: `[('a','b','c') & ~'a']` yields `['b', 'c']`.
+4. `$1 ^ $2`: Binary operator, symmetric-difference, Left-associative.
+   Returns a character-set of all the elements that are
+   contained in *only one* of the two given character-sets.
+   Example: `[('a','b','c') ^ ('b','c','d')]` yields `['a', 'd']`.
+5. `$1 | $2` or `$1, $2` or `$1 $2`: Binary operator, union, left-associative.
+   Returns a character-set of all elements that
+   are contained in *either* given character-set. This is also the default
+   behavior if no operator is given bewteen two character-sets.
+   Example: `[('a','b','c') | ('b','c','d')]` yields `['a', 'b', 'c', 'd']`.
+
+#### Examples:
+
+ - `['a' 'b' 'c']` or `['a', 'b', 'c']` or `['a' | 'b' | 'c']` or `['a' - 'c']`
+    or `[97 - 99]`: Describes a character-set containing the letters 'a', 'b'
+    and 'c'.
+ - `[('a', 'b') ^ ('b', 'c')]`: Describes a character-set containing the letters
+    'a' and 'c'.
+ - `[~(~('a' - 'c') & ~('b' - 'd'))]` or `['a' - 'c' | 'b' - 'd']`: Describes
+    the character-set containing 'a', 'b', 'c' and 'd'.
+ - `[~(~('a' - 'c') | ~('b' - 'd'))]` or `['a' - 'c' & 'b' - 'd']`: Describes
+    the character-set containing 'b' and 'c'.
+ - `['a'-'z' & ~('a','e','i','o','u')]`: Describes a character-set containing
+    all consonants.
+
+### Regular Expression Context
+
+Inside of a grammar-rule context, one can enter the regular-expression context
+using gravemarks ('`'). One can also define a name as representing the value
+of a regular-expression to using ``[name]`: value;` syntax.
+
+Either C-style character-literals, integer-literals, or string-literals can be
+used in regular-expressions. The dot ('.') literal can be used as a shorthand
+for `[0 - 255]`, matching any valid next character.
+
+Square-brackets ('[]') can be used to describe a character-set, described above.
+
+Remember that one can also refer to the value of a defined regular-expression by
+name, inside of other regular expressions. The referenced regular-expression
+must be defined before it can be used.
+
+#### Operators
+
+A list of operators and their meaning is listed below. Remember that parenthesis
+(`(` & `)`) can be used to raise the precedence of low-precedence operators.
+
+1. `$1?`, `$1*`, `$1+`, `$1{N}`, `$1{N, }`, `$1{, N}`, `$1{N, M}`: Unary
+   Operators, indicates repetition. Returns a regular expression that would match
+   strings that would match the given regular-expression to repeat 0 or 1 times,
+   0 or more times, 1 or more times, `N` times ('N' must be a numeric literal),
+   `N` or more times, up to `N` times (inclusive), bewteen `N` to `M` times
+   (inclusive, 'M' must be a numeric literal), respectively.
+   Example: `'a'?` would match "", "a".
+   Example: `'a'*` would match "", "a", "aa", "aaa", etc.
+   Example: `'a'+` would match "a", "aa", "aaa", etc.
+   Example: `'a'{3}` would match "aaa".
+   Example: `'a'{,3}` would match "", "a", "aa", "aaa".
+   Example: `'a'{3,}` would match "aaa", "aaaa", "aaaaa", etc.
+   Example: `'a'{2,4}` would match "aa", "aaa", "aaaa".
+2. `$1 $2`: Binary operator, indicates concatenation/juxtaposition,
+   left-associative. Returns
+   a regular expression that would match the strings made of concatenating all
+   the strings that would match the first given regular-expression with all
+   the strings that would match the second given regular-expression.
+   Example: `'a'+ 'b'+` would match "ab", "aab", "abb", etc.
+3. `$1 & $2` or `$1 &! $2`: Binary operators, intersection and difference
+   respectively, left-associative. If the intersection operator was used, this
+   expression returns a regular expression that matches the strings that would
+   be matched by *both* the first and the second given regular expressions. If
+   the difference operator was used, this expression returns a regular
+   expression that matches the strings that would be matched by the first, but
+   not the second given regular expression.
+   Example: `"aa"* & "aaa"*` would match "", "aaaaaa", "aaaaaaaaaaaa", etc.
+   Example: `"aa"* &! "aaa"*` would match "aa", "aaaa", "aaaaaaaa", etc.
+4. `$1 | $2`: Binary operator, union, left-associative. Returns a regular
+   expression that matches the strings that would be matched by either the
+   first or second given regular expression.
+   Example: `"a" | "b"` would match "a" or "b".
+   Example: `("a" | "b")*` would match "", "a", "b", "ab", "ba", etc.
+
+#### Examples:
+
+ - `[~'b']* 'b' [~'b']* 'b' [~'b']*`: Would match any string containing exactly
+    two 'b's.
+ - `['0'-'9']+ ('.' ['0'-'9']*)?`: Would match any decimal digits with possibly
+    digits past the decimal-point.
+ - `'a'+'b'+'c'+ & (..)*`: Describes all even-length strings with one-or-more
+    'a's, one-or-more 'b's, and one-or-more 'c's, consecutively.
+ - `'a'+'b'+'c'+ &! 'a''b'+'c'`: Describes all strings with one-or-more
+    'a's, one-or-more 'b's, and one-or-more 'c's, but with the additional
+    requirement that either there needs to be more than one 'a' or more than one
+    'c'.
+ - `'a'+'b'+'c'+ &! "abc"`: Describes all strings with one-or-more
+    'a's, one-or-more 'b's, and one-or-more 'c's, besides "abc".
+
+### Grammar Rule Expressions
 
 #### Examples
 
 ### Languages
 
-## More about Token Processing
+## Implementation Details: Tokenizer
 
 Each of the resultant tokenizers can be "minimized" into one monolithic
 tokenizer with the `-l` (`--minimize-lexer`) command-line argument. This option
 is not enabled by default, because it can sometimes make the generation
 significantly slower.
 
-## More about Grammar Processing
+## Implementation Details: Grammar Rules
 
 ## Parser Templates
 
@@ -65,5 +189,18 @@ significantly slower.
     higher precedence than the lookahead token: reduce, otherwise shift.)
  - Something to let you insert custom C code into the tokenizer to change which
    token the tokenizer reports detecting, an application for this would be to
-   get Zebu to differeate bewteen C variable usage and a `typedef`-ed type usage.
+   get Zebu to differentiate bewteen C variable usage and a `typedef`-ed type usage.
+
+
+
+
+
+
+
+
+
+
+
+
+
 

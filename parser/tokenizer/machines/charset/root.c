@@ -14,6 +14,9 @@ const enum tokenizer_state charset_root_machine[number_of_tokenizer_states][256]
 		// character literal:
 		#include "../fragments/character_literal.h"
 		
+		// numeric literal:
+		#include "../fragments/numeric_literal.h"
+		
 		// identifier:
 		#include "../fragments/identifier.h"
 		

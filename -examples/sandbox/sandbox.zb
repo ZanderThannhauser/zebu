@@ -1,22 +1,6 @@
 
 
-postfix_expression: `['a'-'z']+` #variable | `['0'-'9']+` #literal;
-
-operator:
-	(     "++" #increment
-	|     "--" #decrement
-	|      "&" #address_of
-	|      "*" #dereference
-	|      "+" #positive
-	|      "-" #negative
-	|      "~" #bitwise_not
-	|      "!" #logical_not
-	| "sizeof" #sizeof_
-	);
-
-unary_expression: (operator #operators[])* postfix_expression #expression ;
-
-%start: unary_expression #expression;
+%start: [ 0 - 010 ];
 
 
 

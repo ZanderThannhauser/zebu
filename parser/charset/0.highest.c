@@ -38,6 +38,93 @@ charset_t read_highest_charset(
 			return charset;
 		}
 		
+		case t_octal_literal:
+		{
+			dpvs(tokenizer->tokenchars.chars);
+			
+			errno = 0;
+			const char* start = (void*) tokenizer->tokenchars.chars;
+			unsigned long int value = strtoul(start, NULL, 8);
+			
+			if (errno)
+			{
+				fprintf(stderr, "zebu: strtoul(): %m\n");
+				exit(e_syntax_error);
+			}
+			else if (value >= 256)
+			{
+				fprintf(stderr, "zebu: octal literal '%lu' must be bewteen 0 and 255\n", value);
+				exit(e_syntax_error);
+			}
+			
+			charset_t charset = {};
+			
+			charset[value >> 4] |= 1 << (value & 0xF);
+			
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return charset;
+		}
+		
+		case t_decimal_literal:
+		{
+			dpvs(tokenizer->tokenchars.chars);
+			
+			errno = 0;
+			const char* start = (void*) tokenizer->tokenchars.chars;
+			unsigned long int value = strtoul(start, NULL, 10);
+			
+			if (errno)
+			{
+				fprintf(stderr, "zebu: strtoul(): %m\n");
+				exit(e_syntax_error);
+			}
+			else if (value >= 256)
+			{
+				fprintf(stderr, "zebu: decimal literal '%lu' must be bewteen 0 and 255\n", value);
+				exit(e_syntax_error);
+			}
+			
+			charset_t charset = {};
+			
+			charset[value >> 4] |= 1 << (value & 0xF);
+			
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return charset;
+		}
+		
+		case t_hexadecimal_literal:
+		{
+			dpvs(tokenizer->tokenchars.chars);
+			
+			errno = 0;
+			const char* start = (void*) tokenizer->tokenchars.chars;
+			unsigned long int value = strtoul(start, NULL, 16);
+			
+			if (errno)
+			{
+				fprintf(stderr, "zebu: strtoul(): %m\n");
+				exit(e_syntax_error);
+			}
+			else if (value >= 256)
+			{
+				fprintf(stderr, "zebu: hexadecimal literal '0x%lX' must be bewteen 0 and 255\n", value);
+				exit(e_syntax_error);
+			}
+			
+			charset_t charset = {};
+			
+			charset[value >> 4] |= 1 << (value & 0xF);
+			
+			read_token(tokenizer, charset_after_highest_machine);
+			
+			EXIT;
+			return charset;
+		}
+		
 		case t_identifier:
 		{
 			charset_t inner = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
