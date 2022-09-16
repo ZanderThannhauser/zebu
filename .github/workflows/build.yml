@@ -7,6 +7,10 @@ on:
   push:
     # branches: [ "main", "dev" ]
 
+stages:
+  - build
+  - test
+
 jobs:
   build-debug:
     runs-on: ubuntu-latest
