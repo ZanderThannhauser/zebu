@@ -16,9 +16,9 @@ jobs:
     
     - name: Build
       run: make buildtype=debug dotout=no verbose=no
-    artifacts:
-      paths:
-       - gen/debug-build/no-verbose/no-dotout/zebu
+  artifacts:
+    paths:
+     - gen/debug-build/no-verbose/no-dotout/zebu
 
 #  json-example-debug:
 #    runs-on: ubuntu-latest
