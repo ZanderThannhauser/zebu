@@ -15,124 +15,134 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Build Debug
+      run: make buildtype=debug verbose=no
+    - name: Build Test
       run: make buildtype=test verbose=no
-
-  iloc-example:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install -y valgrind
-
-    - name: Generate Iloc Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
-
-    - name: Compile Iloc Example
-      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
-
-    - name: Run Iloc Example
-      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
-
-  json-example:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install valgrind
-
-    - name: Generate JSON Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
-
-    - name: Compile JSON Example
-      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/test
-
-    - name: Run JSON Example
-      run: valgrind /tmp/test ./-examples/json/input.json
-
-  zebu-example:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install valgrind
-
-    - name: Generate Zebu Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
-
-    - name: Compile Zebu Example
-      run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
-
-    - name: Run Zebu Example
-      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
-
-  release-build:
-    runs-on: ubuntu-latest
-    needs: [iloc-example, json-example, zebu-example]
-    steps:
-    - uses: actions/checkout@v3
-    
     - name: Build Release
-      run: make
+      run: make buildtype=release verbose=no
+    - name: Build Debug (with verbose)
+      run: make buildtype=debug verbose=yes
+    - name: Build Test (with verbose)
+      run: make buildtype=test verbose=yes
+    - name: Build Release (with verbose)
+      run: make buildtype=release verbose=yes
 
-  release-iloc-example:
-    runs-on: ubuntu-latest
-    needs: [release-build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install valgrind
+#  iloc-example:
+#    runs-on: ubuntu-latest
+#    needs: [build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install -y valgrind
 
-    - name: Generate Iloc Example
-      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+#    - name: Generate Iloc Example
+#      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
-    - name: Compile Iloc Example
-      run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
+#    - name: Compile Iloc Example
+#      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
 
-    - name: Run Iloc Example
-      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
+#    - name: Run Iloc Example
+#      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
-  release-json-example:
-    runs-on: ubuntu-latest
-    needs: [release-build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install valgrind
+#  json-example:
+#    runs-on: ubuntu-latest
+#    needs: [build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install valgrind
 
-    - name: Generate JSON Example
-      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
-      
-    - name: Compile JSON Example
-      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
+#    - name: Generate JSON Example
+#      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-    - name: Run JSON Example
-      run: valgrind /tmp/test ./-examples/json/input.json
+#    - name: Compile JSON Example
+#      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/test
 
-  release-zebu-example:
-    runs-on: ubuntu-latest
-    needs: [release-build]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install valgrind
+#    - name: Run JSON Example
+#      run: valgrind /tmp/test ./-examples/json/input.json
 
-    - name: Generate zebu Example
-      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
-      
-    - name: Compile zebu Example
-      run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
+#  zebu-example:
+#    runs-on: ubuntu-latest
+#    needs: [build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install valgrind
 
-    - name: Run zebu Example
-      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
+#    - name: Generate Zebu Example
+#      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
+
+#    - name: Compile Zebu Example
+#      run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
+
+#    - name: Run Zebu Example
+#      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
+
+#  release-build:
+#    runs-on: ubuntu-latest
+#    needs: [iloc-example, json-example, zebu-example]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Build Release
+#      run: make
+
+#  release-iloc-example:
+#    runs-on: ubuntu-latest
+#    needs: [release-build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install valgrind
+
+#    - name: Generate Iloc Example
+#      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+
+#    - name: Compile Iloc Example
+#      run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
+
+#    - name: Run Iloc Example
+#      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
+
+#  release-json-example:
+#    runs-on: ubuntu-latest
+#    needs: [release-build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install valgrind
+
+#    - name: Generate JSON Example
+#      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
+#      
+#    - name: Compile JSON Example
+#      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
+
+#    - name: Run JSON Example
+#      run: valgrind /tmp/test ./-examples/json/input.json
+
+#  release-zebu-example:
+#    runs-on: ubuntu-latest
+#    needs: [release-build]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install valgrind
+
+#    - name: Generate zebu Example
+#      run: make run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
+#      
+#    - name: Compile zebu Example
+#      run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
+
+#    - name: Run zebu Example
+#      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
 
 
 
