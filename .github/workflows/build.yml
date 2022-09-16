@@ -7,10 +7,9 @@ on:
   push:
     # branches: [ "main", "dev" ]
 
-stages:
-  - build
-
 jobs:
+  stages:
+    - build
   job-name:
     stage: build
     runs-on: ubuntu-latest
