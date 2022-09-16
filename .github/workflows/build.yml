@@ -7,22 +7,19 @@ on:
   push:
     # branches: [ "main", "dev" ]
 
-jobs:
-  stage: build
-  build-debug:
-    runs-on: ubuntu-latest
+stages:
+  - build
 
-    steps:
+job-name:
+  stage: build
+  runs-on: ubuntu-latest
+  steps:
     - uses: actions/checkout@v3
-    
-    - name: Build Debug
+    - name: Build
       run: make buildtype=debug dotout=no verbose=no
-    - name: Build Debug (with verbose)
-      run: make buildtype=debug dotout=no verbose=yes
-    - name: Build Debug (with dotout)
-      run: make buildtype=debug dotout=yes verbose=no
-    - name: Build Debug (with verbose)
-      run: make buildtype=debug dotout=yes verbose=yes
+  artifacts:
+  paths:
+    - binaries/
 
 #  json-example-debug:
 #    runs-on: ubuntu-latest
