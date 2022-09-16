@@ -265,7 +265,7 @@ jobs:
 
   zebu-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver (Zebu.zb)
+    name: Fileio with Driver (zebu.zb)
     needs: [zebu-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -273,20 +273,20 @@ jobs:
     - name: Install Dependences
       run: sudo apt install -y valgrind
 
-    - name: Generate Iloc Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/iloc/zebu"
+    - name: Generate Zebu Example
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
 
-    - name: Compile Iloc Example (-D DEBUG)
+    - name: Compile Zebu Example (-D DEBUG)
       run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
 
-    - name: Run Iloc Example (-D DEBUG)
+    - name: Run Zebu Example (-D DEBUG)
       run: valgrind /tmp/test ./-examples/zebu/zebu.zb
 
-    - name: Compile Iloc Example
+    - name: Compile Zebu Example
       run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
 
-    - name: Run Iloc Example
-      run: valgrind /tmp/test ./-examples/zebu/zebu.il
+    - name: Run Zebu Example
+      run: valgrind /tmp/test ./-examples/zebu/zebu.zb
 
   build-release:
     runs-on: ubuntu-latest
