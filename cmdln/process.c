@@ -64,6 +64,8 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_readline;
 				} else if (strequals(optarg, "readline-with-driver")) {
 					parser_template = pt_readline_with_driver;
+				} else if (strequals(optarg, "fileio")) {
+					parser_template = pt_fileio;
 				} else if (strequals(optarg, "fileio-with-driver")) {
 					parser_template = pt_fileio_with_driver;
 /*				} else if (strequals(optarg, "fileio-passfail")) {*/

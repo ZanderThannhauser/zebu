@@ -11,6 +11,7 @@ enum parser_template
 	pt_readline_with_driver,
 /*	pt_readline_passfail,*/
 	
+	pt_fileio,
 	pt_fileio_with_driver,
 /*	pt_fileio_passfail,*/
 /*	pt_fileio_graphviz,*/

@@ -53,11 +53,11 @@
 #include "escaped/readline_with_driver_source.h"
 #include "escaped/readline_with_driver_header.h"
 
+#include "escaped/fileio_source.h"
+#include "escaped/fileio_header.h"
+
 #include "escaped/fileio_with_driver_source.h"
 #include "escaped/fileio_with_driver_header.h"
-
-/*#include "escaped/fileio_passfail_source.h"*/
-/*#include "escaped/fileio_passfail_header.h"*/
 
 /*#include "escaped/fileio_graphviz_source.h"*/
 /*#include "escaped/fileio_graphviz_header.h"*/
@@ -114,6 +114,7 @@ static struct {
 	[pt_readline] = {&readline_source, &readline_header},
 	[pt_readline_with_driver] = {&readline_with_driver_source, &readline_with_driver_header},
 	
+	[pt_fileio] = {&fileio_source, &fileio_header},
 	[pt_fileio_with_driver] = {&fileio_with_driver_source, &fileio_with_driver_header},
 /*	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},*/
 /*	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},*/
