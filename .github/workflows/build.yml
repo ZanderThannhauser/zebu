@@ -58,26 +58,8 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o /tmp/unused"
-
-  json-example-test-really-just-tables:
-    runs-on: ubuntu-latest
-    name: Really just Tables
-    needs: [json-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/json/json.zb -o ./-examples/json/json"
-
-  json-example-test-fileio:
-    runs-on: ubuntu-latest
-    name: Fileio
-    needs: [json-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio -i ./-examples/json/json.zb -o ./-examples/json/json"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/json/json.zb -o /tmp/unused"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/json/json.zb -o /tmp/unused"
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
@@ -104,16 +86,6 @@ jobs:
     - name: Run JSON Example
       run: valgrind /tmp/json ./-examples/json/input.json
 
-  json-example-test-readline:
-    runs-on: ubuntu-latest
-    name: Readline
-    needs: [json-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t readline -i ./-examples/json/json.zb -o ./-examples/json/json"
-
   json-example-test-readline-with-driver:
     runs-on: ubuntu-latest
     name: Readline with Driver ([1, 2, 3])
@@ -139,6 +111,35 @@ jobs:
     - name: Run JSON Example
       run: echo '[1, 2, 3]' | valgrind /tmp/json ./-examples/json/input.json
 
+  calc-example-test:
+    runs-on: ubuntu-latest
+    name: Calc Example
+    needs: [build-test]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Generate
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t readline -i ./-examples/calc/parser.zb -o ./-examples/calc/parser"
+
+    - name: Test 2
+      run: echo '2' | make -C ./-examples/calc valrun
+    - name: Test 2 + 3
+      run: echo '2 + 3' | make -C ./-examples/calc valrun
+    - name: Test 2 - 3
+      run: echo '2 - 3' | make -C ./-examples/calc valrun
+    - name: Test 2 * 3
+      run: echo '2 * 3' | make -C ./-examples/calc valrun
+    - name: Test 2 / 3
+      run: echo '2 / 3' | make -C ./-examples/calc valrun
+    - name: Test 2 ** 3
+      run: echo '2 ** 3' | make -C ./-examples/calc valrun
+    - name: Test sin(pi)
+      run: echo 'sin(pi)' | make -C ./-examples/calc valrun
+    - name: Test cos(pi)
+      run: echo 'cos(pi)' | make -C ./-examples/calc valrun
+    - name: Test tan(pi)
+      run: echo 'tan(pi)' | make -C ./-examples/calc valrun
+
   iloc1-example-test:
     runs-on: ubuntu-latest
     name: Iloc (Regex) Example
@@ -148,15 +149,7 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
-
-  iloc1-test-really-just-tables:
-    runs-on: ubuntu-latest
-    name: Really just Tables
-    needs: [iloc1-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
 
   iloc1-test-fileio-with-driver:
@@ -193,15 +186,7 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
-
-  iloc2-test-really-just-tables:
-    runs-on: ubuntu-latest
-    name: Really just Tables
-    needs: [iloc2-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
 
   iloc2-test-fileio-with-driver:
@@ -238,15 +223,7 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
-
-  iloc3-test-really-just-tables:
-    runs-on: ubuntu-latest
-    name: Really just Tables
-    needs: [iloc3-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
 
   iloc3-test-fileio-with-driver:
@@ -283,15 +260,7 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/zebu/zebu.zb -o /tmp/unused"
-
-  zebu-test-really-just-tables:
-    runs-on: ubuntu-latest
-    name: Really just Tables
-    needs: [zebu-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/zebu/zebu.zb -o /tmp/unused"
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/zebu/zebu.zb -o /tmp/unused"
 
   zebu-test-fileio-with-driver:
