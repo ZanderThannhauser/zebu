@@ -20,5 +20,8 @@ parser.c parser.h: parser.zb
 run: main
 	./main
 
+valrun: main
+	valgrind ./main
+
 clean:
 	rm -vf main parser.c parser.h *.o

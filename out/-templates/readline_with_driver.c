@@ -100,12 +100,19 @@ int main()
 				}
 				else if (b)
 				{
-					struct token* token = malloc(sizeof(*token));
-					token->refcount = 1;
-					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
-					token->len = lexer - begin;
-					t = b, td = token;
-					break;
+					if (b == 1)
+					{
+						l = original_l, begin = lexer, f = NULL;
+					}
+					else
+					{
+						struct token* token = malloc(sizeof(*token));
+						token->refcount = 1;
+						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+						token->len = lexer - begin;
+						t = b, td = token;
+						break;
+					}
 				}
 				else if (t)
 				{
