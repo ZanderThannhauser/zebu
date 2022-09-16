@@ -7,14 +7,10 @@ on:
   push:
     # branches: [ "main", "dev" ]
 
-stages:
-  - build
-  - test
-
 jobs:
   build-debug:
-    runs-on: ubuntu-latest
     stage: build
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -28,92 +24,92 @@ jobs:
     - name: Build Debug (with verbose)
       run: make buildtype=debug dotout=yes verbose=yes
 
-  json-example-debug:
-    runs-on: ubuntu-latest
-    stage: test
-    needs: [build-debug]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=debug dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o ./-examples/json/json"
+#  json-example-debug:
+#    runs-on: ubuntu-latest
+#    stage: test
+#    needs: [build-debug]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Generate JSON Example
+#      run: make buildtype=debug dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-  build-test:
-    runs-on: ubuntu-latest
-    stage: build
+#  build-test:
+#    runs-on: ubuntu-latest
+#    stage: build
 
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build Test
-      run: make buildtype=test dotout=no verbose=no
-    - name: Build Test (with verbose)
-      run: make buildtype=test dotout=no verbose=yes
-    - name: Build Test (with dotout)
-      run: make buildtype=test dotout=yes verbose=no
-    - name: Build Test (with verbose)
-      run: make buildtype=test dotout=yes verbose=yes
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Build Test
+#      run: make buildtype=test dotout=no verbose=no
+#    - name: Build Test (with verbose)
+#      run: make buildtype=test dotout=no verbose=yes
+#    - name: Build Test (with dotout)
+#      run: make buildtype=test dotout=yes verbose=no
+#    - name: Build Test (with verbose)
+#      run: make buildtype=test dotout=yes verbose=yes
 
-  json-example-test:
-    runs-on: ubuntu-latest
-    stage: test
-    needs: [build-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o ./-examples/json/json"
+#  json-example-test:
+#    runs-on: ubuntu-latest
+#    stage: test
+#    needs: [build-test]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Generate JSON Example
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-  json-example-test-really-just-tables:
-    runs-on: ubuntu-latest
-    stage: test
-    needs: [json-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/json/json.zb -o ./-examples/json/json"
+#  json-example-test-really-just-tables:
+#    runs-on: ubuntu-latest
+#    stage: test
+#    needs: [json-example-test]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Generate JSON Example
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-  json-example-test-fileio-with-driver:
-    runs-on: ubuntu-latest
-    stage: test
-    needs: [json-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install -y valgrind
+#  json-example-test-fileio-with-driver:
+#    runs-on: ubuntu-latest
+#    stage: test
+#    needs: [json-example-test]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install -y valgrind
 
-    - name: Generate JSON Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
+#    - name: Generate JSON Example
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-    - name: Compile JSON Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/json
+#    - name: Compile JSON Example (-D DEBUG)
+#      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/json
 
-    - name: Run JSON Example (-D DEBUG)
-      run: valgrind /tmp/json ./-examples/json/input.json
+#    - name: Run JSON Example (-D DEBUG)
+#      run: valgrind /tmp/json ./-examples/json/input.json
 
-    - name: Compile JSON Example
-      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/json
+#    - name: Compile JSON Example
+#      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/json
 
-    - name: Run JSON Example
-      run: valgrind /tmp/json ./-examples/iloc/input.json
+#    - name: Run JSON Example
+#      run: valgrind /tmp/json ./-examples/iloc/input.json
 
-  build-release:
-    runs-on: ubuntu-latest
-    stage: build
+#  build-release:
+#    runs-on: ubuntu-latest
+#    stage: build
 
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build Release
-      run: make buildtype=release dotout=no verbose=no
-    - name: Build Release (with verbose)
-      run: make buildtype=release dotout=no verbose=yes
-    - name: Build Release (with dotout)
-      run: make buildtype=release dotout=yes verbose=no
-    - name: Build Release (with verbose)
-      run: make buildtype=release dotout=yes verbose=yes
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Build Release
+#      run: make buildtype=release dotout=no verbose=no
+#    - name: Build Release (with verbose)
+#      run: make buildtype=release dotout=no verbose=yes
+#    - name: Build Release (with dotout)
+#      run: make buildtype=release dotout=yes verbose=no
+#    - name: Build Release (with verbose)
+#      run: make buildtype=release dotout=yes verbose=yes
 
 #  iloc-example:
 #    runs-on: ubuntu-latest
