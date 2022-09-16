@@ -8,8 +8,8 @@ on:
     # branches: [ "main", "dev" ]
 
 jobs:
+  stage: build
   build-debug:
-    stage: build
     runs-on: ubuntu-latest
 
     steps:
