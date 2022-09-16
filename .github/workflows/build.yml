@@ -25,6 +25,7 @@ jobs:
 
   json-example-debug:
     runs-on: ubuntu-latest
+    name: JSON Example
     needs: [build-debug]
     steps:
     - uses: actions/checkout@v3
@@ -34,6 +35,7 @@ jobs:
 
   build-test:
     runs-on: ubuntu-latest
+    name: Test-Build
 
     steps:
     - uses: actions/checkout@v3
@@ -49,6 +51,7 @@ jobs:
 
   json-example-test:
     runs-on: ubuntu-latest
+    name: JSON Example
     needs: [build-test]
     steps:
     - uses: actions/checkout@v3
@@ -58,6 +61,7 @@ jobs:
 
   json-example-test-really-just-tables:
     runs-on: ubuntu-latest
+    name: JSON Example (Really-just-tables)
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -67,6 +71,7 @@ jobs:
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
+    name: JSON Example (Fileio-with-driver)
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -91,6 +96,7 @@ jobs:
 
   json-example-test-readline-with-driver:
     runs-on: ubuntu-latest
+    name: JSON Example (Readline-with-driver)
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
