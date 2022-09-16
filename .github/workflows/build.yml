@@ -8,16 +8,17 @@ on:
     # branches: [ "main", "dev" ]
 
 jobs:
-  job-name:
+  build-debug:
     runs-on: ubuntu-latest
-    stage: build
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Build
-        run: make buildtype=debug dotout=no verbose=no
-#    artifacts:
-#      paths:
-#        - gen/
+    - uses: actions/checkout@v3
+    
+    - name: Build
+      run: make buildtype=debug dotout=no verbose=no
+    artifacts:
+      paths:
+       - gen/debug-build/no-verbose/no-dotout/zebu
 
 #  json-example-debug:
 #    runs-on: ubuntu-latest
