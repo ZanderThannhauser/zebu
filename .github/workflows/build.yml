@@ -81,7 +81,7 @@ jobs:
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver
+    name: Fileio with Driver (input.json)
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -116,7 +116,7 @@ jobs:
 
   json-example-test-readline-with-driver:
     runs-on: ubuntu-latest
-    name: Readline with Driver
+    name: Readline with Driver ([1, 2, 3])
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -161,7 +161,7 @@ jobs:
 
   iloc1-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver
+    name: Fileio with Driver (dynamic.il)
     needs: [iloc1-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -206,7 +206,7 @@ jobs:
 
   iloc2-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver
+    name: Fileio with Driver (dynamic.il)
     needs: [iloc2-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -251,7 +251,7 @@ jobs:
 
   iloc3-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver
+    name: Fileio with Driver (dynamic.il)
     needs: [iloc3-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -296,7 +296,7 @@ jobs:
 
   zebu-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: Fileio with Driver
+    name: Fileio with Driver (Zebu.zb)
     needs: [zebu-example-test]
     steps:
     - uses: actions/checkout@v3
