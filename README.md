@@ -30,6 +30,9 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
   Lexer-Minimization and LL parser-generation.
  - `-h` (`--help`): Prints this help message.
 
+## Building from Source:
+
+
 ## Input file Specification
 
 The input file lists a series of grammar rules and directives. Two grammars

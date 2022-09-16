@@ -87,11 +87,13 @@
 #include "dyntable/new.h"
 #include "dyntable/set.h"
 #include "dyntable/print_source.h"
+#include "dyntable/print_header.h"
 #include "dyntable/free.h"
 
 #include "dynvector/new.h"
 #include "dynvector/set.h"
 #include "dynvector/print_source.h"
+#include "dynvector/print_header.h"
 #include "dynvector/free.h"
 
 #include "print_structs.h"
@@ -305,33 +307,31 @@ void out(struct yacc_state* start)
 			}
 			else if (!strncmp(old, "SHIFT_TABLE", len))
 			{
-				TODO;
-/*				dyntable_print_source(shifts, output_prefix, stream);*/
+				dyntable_print_header(shifts, output_prefix, stream);
 			}
 			else if (!strncmp(old, "REDUCE_TABLE", len))
 			{
-				TODO;
-/*				dyntable_print_source(reduces, output_prefix, stream);*/
+				dyntable_print_header(reduces, output_prefix, stream);
 			}
 			else if (!strncmp(old, "GOTO_TABLE", len))
 			{
-				TODO;
-/*				dyntable_print_source(gotos, output_prefix, stream);*/
+				dyntable_print_header(gotos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "LEXER_TABLE", len))
 			{
-				TODO;
-/*				dyntable_print_source(lexer, output_prefix, stream);*/
+				dyntable_print_header(lexer, output_prefix, stream);
+			}
+			else if (!strncmp(old, "LEXER_STARTS_TABLE", len))
+			{
+				dynvector_print_header(starts, output_prefix, stream);
 			}
 			else if (!strncmp(old, "LEXER_ACCEPTS_TABLE", len))
 			{
-				TODO;
-/*				dynvector_print_source(accepts, output_prefix, stream);*/
+				dynvector_print_header(accepts, output_prefix, stream);
 			}
 			else if (!strncmp(old, "LEXER_EOF_TABLE", len))
 			{
-				TODO;
-/*				dynvector_print_source(EOFs, output_prefix, stream);*/
+				dynvector_print_header(EOFs, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_STRUCTS", len))
 			{
