@@ -68,10 +68,10 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_readline_with_driver;
 				} else if (strequals(optarg, "readline-with-driver-debug")) {
 					parser_template = pt_readline_with_driver_debug;
-				} else if (strequals(optarg, "fileio-debug")) {
-					parser_template = pt_fileio_debug;
-				} else if (strequals(optarg, "fileio")) {
-					parser_template = pt_fileio;
+				} else if (strequals(optarg, "fileio-with-driver-debug")) {
+					parser_template = pt_fileio_with_driver_debug;
+				} else if (strequals(optarg, "fileio-with-driver")) {
+					parser_template = pt_fileio_with_driver;
 /*				} else if (strequals(optarg, "fileio-passfail")) {*/
 /*					parser_template = pt_fileio_passfail;*/
 /*				} else if (strequals(optarg, "fileio-graphviz")) {*/

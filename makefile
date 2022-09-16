@@ -81,8 +81,8 @@ ARGS += --minimize-lexer
 #ARGS += --template=readline-with-driver-debug
 #ARGS += --template=readline-with-driver
 
-#ARGS += --template=fileio-debug
-ARGS += --template=fileio
+#ARGS += --template=fileio-with-driver-debug
+ARGS += --template=fileio-with-driver
 
 ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
@@ -154,8 +154,8 @@ srcs += ./out/escaped/readline_debug_source.c     ./out/escaped/readline_debug_h
 srcs += ./out/escaped/readline_with_driver_source.c       ./out/escaped/readline_with_driver_header.c
 srcs += ./out/escaped/readline_with_driver_debug_source.c ./out/escaped/readline_with_driver_debug_header.c
 
-srcs += ./out/escaped/fileio_source.c             ./out/escaped/fileio_header.c
-srcs += ./out/escaped/fileio_debug_source.c       ./out/escaped/fileio_debug_header.c
+srcs += ./out/escaped/fileio_with_driver_source.c       ./out/escaped/fileio_with_driver_header.c
+srcs += ./out/escaped/fileio_with_driver_debug_source.c ./out/escaped/fileio_with_driver_debug_header.c
 #srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
 #srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
 
