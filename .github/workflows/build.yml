@@ -56,9 +56,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Generate Example
+    - name: Generate
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/json/json.zb -o /tmp/unused"
+    - name: Generate Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/json/json.zb -o /tmp/unused"
+    - name: Generate Really-Just-Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/json/json.zb -o /tmp/unused"
 
   json-example-test-fileio-with-driver:
@@ -159,7 +161,9 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
+    - name: Generate Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
+    - name: Generate Really Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
 
   iloc1-test-fileio-with-driver:
@@ -196,7 +200,9 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
+    - name: Generate Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
+    - name: Generate Really Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
 
   iloc2-test-fileio-with-driver:
@@ -233,7 +239,9 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+    - name: Generate Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+    - name: Generate Really Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
 
   iloc3-test-fileio-with-driver:
@@ -270,7 +278,9 @@ jobs:
     
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/zebu/zebu.zb -o /tmp/unused"
+    - name: Generate Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/zebu/zebu.zb -o /tmp/unused"
+    - name: Generate Really Just Tables
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/zebu/zebu.zb -o /tmp/unused"
 
   zebu-test-fileio-with-driver:
