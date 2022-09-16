@@ -8,7 +8,7 @@ on:
     # branches: [ "main", "dev" ]
 
 jobs:
-  build:
+  build-debug:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,16 +16,42 @@ jobs:
     
     - name: Build Debug
       run: make buildtype=debug verbose=no
-    - name: Build Test
-      run: make buildtype=test verbose=no
-    - name: Build Release
-      run: make buildtype=release verbose=no
     - name: Build Debug (with verbose)
       run: make buildtype=debug verbose=yes
+    - name: Build Debug (with dotout)
+      run: make buildtype=debug dotout=yes verbose=no
+    - name: Build Debug (with verbose)
+      run: make buildtype=debug dotout=yes verbose=yes
+
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Test
+      run: make buildtype=test verbose=no
     - name: Build Test (with verbose)
       run: make buildtype=test verbose=yes
+    - name: Build Test (with dotout)
+      run: make buildtype=test dotout=yes verbose=no
+    - name: Build Test (with verbose)
+      run: make buildtype=test dotout=yes verbose=yes
+
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Release
+      run: make buildtype=release verbose=no
     - name: Build Release (with verbose)
       run: make buildtype=release verbose=yes
+    - name: Build Release (with dotout)
+      run: make buildtype=release dotout=yes verbose=no
+    - name: Build Release (with verbose)
+      run: make buildtype=release dotout=yes verbose=yes
 
 #  iloc-example:
 #    runs-on: ubuntu-latest
