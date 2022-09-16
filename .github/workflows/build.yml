@@ -72,7 +72,7 @@ jobs:
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    stage: test1
+    stage: test
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
