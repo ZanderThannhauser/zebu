@@ -61,7 +61,7 @@ jobs:
 
   json-example-test-really-just-tables:
     runs-on: ubuntu-latest
-    name: JSON Example (Really-just-tables)
+    name: Really just Tables
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -71,7 +71,7 @@ jobs:
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
-    name: JSON Example (Fileio-with-driver)
+    name: Fileio with Driver
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -96,7 +96,7 @@ jobs:
 
   json-example-test-readline-with-driver:
     runs-on: ubuntu-latest
-    name: JSON Example (Readline-with-driver)
+    name: Readline with Driver
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
