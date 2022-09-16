@@ -10,10 +10,7 @@ on:
 jobs:
   job-name:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build
-        run: make buildtype=debug dotout=no verbose=no
+    script: make buildtype=debug dotout=no verbose=no
 #    artifacts:
 #      paths:
 #        - gen/
