@@ -10,6 +10,7 @@ on:
 jobs:
   build-debug:
     runs-on: ubuntu-latest
+    stage: build
 
     steps:
     - uses: actions/checkout@v3
@@ -25,6 +26,7 @@ jobs:
 
   json-example-debug:
     runs-on: ubuntu-latest
+    stage: test
     needs: [build-debug]
     steps:
     - uses: actions/checkout@v3
@@ -34,6 +36,7 @@ jobs:
 
   build-test:
     runs-on: ubuntu-latest
+    stage: build
 
     steps:
     - uses: actions/checkout@v3
@@ -49,6 +52,7 @@ jobs:
 
   json-example-test:
     runs-on: ubuntu-latest
+    stage: test
     needs: [build-test]
     steps:
     - uses: actions/checkout@v3
@@ -58,6 +62,7 @@ jobs:
 
   json-example-test-really-just-tables:
     runs-on: ubuntu-latest
+    stage: test
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -67,6 +72,7 @@ jobs:
 
   json-example-test-fileio-with-driver:
     runs-on: ubuntu-latest
+    stage: test1
     needs: [json-example-test]
     steps:
     - uses: actions/checkout@v3
@@ -91,6 +97,7 @@ jobs:
 
   build-release:
     runs-on: ubuntu-latest
+    stage: build
 
     steps:
     - uses: actions/checkout@v3
