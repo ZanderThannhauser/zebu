@@ -139,7 +139,7 @@ jobs:
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
 
-  iloc1-example-test:
+  iloc3-example-test:
     runs-on: ubuntu-latest
     name: Iloc (Grammar) Example
     needs: [build-test]
