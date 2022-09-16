@@ -5,5 +5,5 @@
 
 {{PARSE_TREE_FREE_FUNCTIONS}}
 
-extern struct $start* {{PREFIX}}_parse();
+struct $start* {{PREFIX}}_parse();
 

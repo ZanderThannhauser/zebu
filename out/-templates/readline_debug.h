@@ -1,9 +1,0 @@
-
-{{PARSE_TREE_STRUCTS}}
-
-{{PARSE_TREE_INC_FUNCTIONS}}
-
-{{PARSE_TREE_FREE_FUNCTIONS}}
-
-struct $start* {{PREFIX}}_parse();
-

@@ -23,6 +23,25 @@
 // --yacc=really-just-tables:
 	// generate just the tables, don't print this help message.
 
+// --yacc=readline
+
+// --yacc=readline-debug
+
+// --yacc=readline-with-driver
+
+// --yacc=readline-with-driver-debug
+
+// --yacc=fileio-with-driver
+
+// --yacc=fileio-with-driver-debug
+
+// temporarily unsupported templates:
+
+// --yacc=fileio-graphviz
+	// creates a program that parses the contents of the file refered to by
+	// the first parameter, and builds a parser tree that it outputs as a
+	// DOT graphviz input file named by the second parameter.
+
 // --yacc=buffer-driven
 	// generates functions to link into a larger program:
 		// struct <PREFIX>_state* new_<PREFIX>_state()
@@ -45,19 +64,4 @@
 	
 	// remember that <PREFIX> can be defined with the --prefix=<PREFIX>
 	// argument.
-
-// --yacc=readline
-	// generates a bottom-up parser that uses the readline library to feed
-	// input strings into the parser. Bewteen each line the parser is reset.
-
-// --yacc=readline-debug
-	// generates a bottom-up parser that uses the readline library to feed
-	// input strings into the parser. Bewteen each line the parser is reset.
-	// variables internal to the parser are printed, along with the stack used.
-
-// --yacc=fileio-graphviz
-	// creates a program that parses the contents of the file refered to by
-	// the first parameter, and builds a parser tree that it outputs as a
-	// DOT graphviz input file named by the second parameter.
-
 

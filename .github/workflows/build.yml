@@ -5,7 +5,7 @@ name: Build & Test
 
 on:
   push:
-    branches: [ "main", "dev"]
+    # branches: [ "main", "dev" ]
 
 jobs:
   build:
@@ -27,10 +27,10 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate Iloc Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver-debug -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
     - name: Compile Iloc Example
-      run: gcc -Wall -Werror ./-examples/iloc/iloc2.c -o /tmp/test
+      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
 
     - name: Run Iloc Example
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
@@ -45,10 +45,10 @@ jobs:
       run: sudo apt install valgrind
 
     - name: Generate JSON Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver-debug -i ./-examples/json/json.zb -o ./-examples/json/json"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
 
     - name: Compile JSON Example
-      run: gcc -Wall -Werror ./-examples/json/json.c -o /tmp/test
+      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/test
 
     - name: Run JSON Example
       run: valgrind /tmp/test ./-examples/json/input.json
@@ -63,10 +63,10 @@ jobs:
       run: sudo apt install valgrind
 
     - name: Generate Zebu Example
-      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver-debug -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
+      run: make buildtype=test verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
 
     - name: Compile Zebu Example
-      run: gcc -Wall -Werror ./-examples/zebu/zebu.c -o /tmp/test
+      run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
 
     - name: Run Zebu Example
       run: valgrind /tmp/test ./-examples/zebu/zebu.zb

@@ -268,6 +268,8 @@ root: addition #root;
 
 ## Parser Templates
 
+ - `-t just-tables` (`--template=just-tables`): This is the default.
+
 ## Future Features
 
  - Way of articulating in the input file how to handle shift-reduce errors,

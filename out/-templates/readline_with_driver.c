@@ -9,6 +9,12 @@
 #include <stddef.h>
 #include <string.h>
 
+{{SHIFT_TABLE}}
+
+{{REDUCE_TABLE}}
+
+{{GOTO_TABLE}}
+
 {{LEXER_TABLE}}
 
 {{LEXER_STARTS_TABLE}}
@@ -16,12 +22,6 @@
 {{LEXER_ACCEPTS_TABLE}}
 
 {{LEXER_EOF_TABLE}}
-
-{{SHIFT_TABLE}}
-
-{{REDUCE_TABLE}}
-
-{{GOTO_TABLE}}
 
 {{PARSE_TREE_STRUCTS}}
 
@@ -31,13 +31,80 @@
 
 {{PARSE_TREE_FREE_FUNCTIONS}}
 
+#ifdef DEBUG
+{{TOKEN_IDS_TO_SETS}}
+#endif
+
 #define N(array) (sizeof(array) / sizeof(*array))
+
+#ifdef DEBUG
+static void escape(char *out, char in)
+{
+	switch (in)
+	{
+		case ' ':
+		case '~':
+		case '!':
+		case '@':
+		case '#':
+		case '$':
+		case '%':
+		case '^':
+		case '&':
+		case '*':
+		case '-':
+		case '+':
+		case '=':
+		case '|':
+		case '<': case '>':
+		case '(': case ')':
+		case '{': case '}':
+		case '[': case ']':
+		case ':': case ';':
+		case ',': case '.':
+		case '_':
+		case '0' ... '9':
+		case 'a' ... 'z':
+		case 'A' ... 'Z':
+			*out++ = in;
+			*out = 0;
+			break;
+		
+		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
+		
+		case '\t': *out++ = '\\', *out++ = 't', *out = 0; break;
+		
+		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
+		
+		default:
+			sprintf(out, "\\x%02X", in);
+			break;
+	}
+}
+#endif
 
 int main()
 {
 	struct { unsigned* data, n, cap; } yacc = {};
 	
 	struct { void** data; unsigned n, cap; } data = {};
+	
+	#ifdef DEBUG
+	void ddprintf(const char* fmt, ...)
+	{
+		for (unsigned i = 0, n = yacc.n; i < n; i++)
+			printf("%u ", yacc.data[i]);
+		
+		printf("| ");
+		
+		va_list va;
+		va_start(va, fmt);
+		vprintf(fmt, va);
+		va_end(va);
+	}
+	#endif
 	
 	void push_state(unsigned state)
 	{
@@ -71,6 +138,12 @@ int main()
 		
 		void read_token(unsigned l)
 		{
+			#ifdef DEBUG
+			char escaped[10];
+			#endif
+			
+			unsigned original_l = l;
+			
 			char* begin = lexer, *f = NULL;
 			
 			unsigned a, b, c;
@@ -78,30 +151,61 @@ int main()
 			while (1)
 			{
 				if ((c = *lexer))
+				{
+					#ifdef DEBUG
+					escape(escaped, c);
+					
+					ddprintf("c = '%s' (0x%X)\n", escaped, c);
+					#endif
+					
 					a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
+				}
 				else
+				{
+					#ifdef DEBUG
+					ddprintf("c == <EOF>\n");
+					#endif
+					
 					// it would be cool if it would read another line
 					// if there wasn't an EOF transition
 					a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
+				}
 				
 				b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
+				
+				#ifdef DEBUG
+				ddprintf("lexer: %u: a = %u, b = %u\n", l, a, b);
+				#endif
 				
 				if (a)
 				{
 					if (b)
 					{
 						l = a, t = b, f = lexer++;
+						#ifdef DEBUG
+						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
+						#endif
 					}
 					else
 					{
 						l = a;
 						if (c) lexer++;
+						#ifdef DEBUG
+						ddprintf("lexer: l == %u\n", l);
+						#endif
 					}
 				}
 				else if (b)
 				{
+					#ifdef DEBUG
+					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
+					#endif
+					
 					if (b == 1)
 					{
+						#ifdef DEBUG
+						ddprintf("lexer: whitespace\n");
+						#endif
 						l = original_l, begin = lexer, f = NULL;
 					}
 					else
@@ -114,12 +218,13 @@ int main()
 						break;
 					}
 				}
-				else if (t)
+				else if (f)
 				{
 					assert(!"172" || f);
 					#if 0
 					process_token(t);
 					l = {{PREFIX}}_starts[yacc.data[yacc.n - 1]], i = f, t = 0;
+					ddprintf("l == %u, i = %u, t = %u\n", l, i, t);
 					#endif
 				}
 				else
@@ -133,6 +238,10 @@ int main()
 		
 		read_token({{PREFIX}}_lexer_starts[y]);
 		
+		#ifdef DEBUG
+		ddprintf("y = %u, t == %u (%s)\n", y, t, {{PREFIX}}_token_names[t]);
+		#endif
+		
 		void* root;
 		
 		while (yacc.n)
@@ -140,13 +249,22 @@ int main()
 			if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 			{
 				y = s, push_state(y), push_data(td);
+				
 				read_token({{PREFIX}}_lexer_starts[y]);
+				
+				#ifdef DEBUG
+				ddprintf("t == %u (%s)\n", t, {{PREFIX}}_token_names[t]);
+				#endif
 			}
 			else if (y < N({{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 			{
 				unsigned g;
 				
 				void* d;
+				
+				#ifdef DEBUG
+				ddprintf("r = %u\n", r);
+				#endif
 				
 				{{REDUCTIONRULE_SWITCH}}
 				
@@ -159,9 +277,17 @@ int main()
 				{
 					y = yacc.data[yacc.n - 1];
 					
+					#ifdef DEBUG
+					ddprintf("y = %u\n", y);
+					#endif
+					
 					assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
 					
 					s = {{PREFIX}}_gotos[y][g];
+					
+					#ifdef DEBUG
+					ddprintf("s = %u\n", s);
+					#endif
 					
 					y = s, push_state(y), push_data(d);
 				}
@@ -173,8 +299,6 @@ int main()
 		}
 		
 		assert(!data.n);
-		
-		puts("accepted!");
 		
 		print_$start_ptree(NULL, p_root, "start", root);
 		
