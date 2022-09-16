@@ -6,6 +6,6 @@ const char* readline_header = ""
 	"" "\n"
 	"{{PARSE_TREE_FREE_FUNCTIONS}}" "\n"
 	"" "\n"
-	"extern struct $start* {{PREFIX}}_parse();" "\n"
+	"struct $start* {{PREFIX}}_parse();" "\n"
 	"" "\n"
 	"";
