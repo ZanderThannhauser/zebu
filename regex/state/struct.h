@@ -1,6 +1,8 @@
 
 #include <stdbool.h>
 
+#include <enums/token_kind.h>
+
 struct regex
 {
 	struct regex* transitions[256];

@@ -1,6 +1,5 @@
 
-#include <stdbool.h>
-#include <stddef.h>
+#include <enums/token_kind.h>
 
 struct lex_state
 {

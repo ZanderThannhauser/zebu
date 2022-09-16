@@ -1,8 +1,15 @@
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <string/inc.h>
+#include <string/compare.h>
+#include <string/free.h>
 
 #include <avl/search.h>
 #include <avl/foreach.h>

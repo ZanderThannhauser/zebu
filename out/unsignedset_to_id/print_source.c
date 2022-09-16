@@ -3,7 +3,7 @@
 
 #include <debug.h>
 
-/*#include <avl/tree_t.h>*/
+#include <avl/tree_t.h>
 
 #include <set/unsigned/to_string.h>
 
