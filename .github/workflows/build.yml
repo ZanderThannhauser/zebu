@@ -1,5 +1,5 @@
 
-# vim: set noai ts=4 sw=4 expandtab:
+# vim: set noai ts=2 sw=2 expandtab:
 
 name: Build & Test
 
@@ -10,16 +10,17 @@ on:
 stages:
   - build
 
-job-name:
-  stage: build
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: make buildtype=debug dotout=no verbose=no
-  artifacts:
-  paths:
-    - binaries/
+jobs:
+  job-name:
+    stage: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: make buildtype=debug dotout=no verbose=no
+    artifacts:
+    paths:
+      - binaries/
 
 #  json-example-debug:
 #    runs-on: ubuntu-latest
