@@ -78,6 +78,7 @@ struct cmdln* process_cmdln(int argc, char* const* argv)
 	return retval;
 }
 
+#ifdef DEBUG
 static void escape(char *out, unsigned char in)
 {
 	switch (in)
@@ -123,6 +124,7 @@ static void escape(char *out, unsigned char in)
 			break;
 	}
 }
+#endif
 
 void* parse(FILE* stream)
 {
@@ -151,6 +153,7 @@ void* parse(FILE* stream)
 		data.data[data.n++] = d;
 	}
 	
+	#ifdef DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
 		for (unsigned i = 0, n = yacc.n; i < n; i++)
@@ -163,6 +166,7 @@ void* parse(FILE* stream)
 		vprintf(fmt, va);
 		va_end(va);
 	}
+	#endif
 	
 	unsigned y, t, s, r;
 	void* td;
@@ -174,7 +178,9 @@ void* parse(FILE* stream)
 			while (lexer.n + 1 >= lexer.cap)
 			{
 				lexer.cap = lexer.cap << 1 ?: 1;
+				#ifdef DEBUG
 				ddprintf("lexer.cap == %u\n", lexer.cap);
+				#endif
 				lexer.data = realloc(lexer.data, lexer.cap);
 			}
 			
@@ -185,7 +191,9 @@ void* parse(FILE* stream)
 		
 		t = 0;
 		
+		#ifdef DEBUG
 		ddprintf("l = %u\n", l);
+		#endif
 		
 		while (1)
 		{
@@ -193,11 +201,13 @@ void* parse(FILE* stream)
 			{
 				c = lexer.data[i];
 				
+				#ifdef DEBUG
 				char escaped[10];
 				
 				escape(escaped, c);
 				
 				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				#endif
 				
 				assert(!"163");
 				#if 0
@@ -210,11 +220,13 @@ void* parse(FILE* stream)
 			{
 				append(c);
 				
+				#ifdef DEBUG
 				char escaped[10];
 				
 				escape(escaped, c);
 				
 				ddprintf("c = '%s' (0x%X)\n", escaped, c);
+				#endif
 				
 				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 			}
@@ -222,26 +234,34 @@ void* parse(FILE* stream)
 			{
 				c = EOF;
 				
+				#ifdef DEBUG
 				ddprintf("c = <EOF>\n");
+				#endif
 				
 				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
 			}
 			
 			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 			
+			#ifdef DEBUG
 			ddprintf("a = %u, b = %u\n", a, b);
+			#endif
 			
 			if (a)
 			{
 				if (b)
 				{
 					l = a, t = b, i++;
+					#ifdef DEBUG
 					ddprintf("l = %u\n", l);
+					#endif
 				}
 				else
 				{
 					l = a, i++;
+					#ifdef DEBUG
 					ddprintf("l = %u\n", l);
+					#endif
 				}
 			}
 			else if (b)
@@ -251,11 +271,15 @@ void* parse(FILE* stream)
 					lexer.n--, ungetc(c, stream);
 				}
 				
+				#ifdef DEBUG
 				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
+				#endif
 				
 				if (b == 1)
 				{
+					#ifdef DEBUG
 					ddprintf("lexer: whitespace.\n");
+					#endif
 					l = original_l, t = 0, lexer.n = 0;
 				}
 				else
@@ -286,23 +310,31 @@ void* parse(FILE* stream)
 	
 	push_state(1), y = 1, read_token(1);
 	
+	#ifdef DEBUG
 	ddprintf("y = %u, t = %u\n", y, t);
+	#endif
 	
 	while (yacc.n)
 	{
 		if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 		{
+			#ifdef DEBUG
 			ddprintf("s == %u\n", s);
+			#endif
 			
 			y = s, push_state(y), push_data(td);
 			
 			read_token({{PREFIX}}_lexer_starts[y]);
 			
+			#ifdef DEBUG
 			ddprintf("t = %u\n", t);
+			#endif
 		}
 		else if (y < N( {{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 		{
+			#ifdef DEBUG
 			ddprintf("r == %u\n", r);
+			#endif
 			
 			unsigned g;
 			void* d;
@@ -318,13 +350,17 @@ void* parse(FILE* stream)
 			{
 				y = yacc.data[yacc.n - 1];
 				
+				#ifdef DEBUG
 				ddprintf("y = %u\n", y);
+				#endif
 				
 				assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
 				
 				s = {{PREFIX}}_gotos[y][g];
 				
+				#ifdef DEBUG
 				ddprintf("s = %u\n", s);
+				#endif
 				
 				y = s, push_state(y), push_data(d);
 			}

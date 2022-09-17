@@ -233,44 +233,46 @@ jobs:
     - name: Run Iloc Example
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
-  iloc3-example-test:
-    runs-on: ubuntu-latest
-    name: Iloc (Grammar) Example
-    needs: [build-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
-    - name: Generate Just Tables
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
-    - name: Generate Really Just Tables
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+# this example takes too long to run for GitHub to handle...
 
-  iloc3-test-fileio-with-driver:
-    runs-on: ubuntu-latest
-    name: Fileio with Driver (dynamic.il)
-    needs: [iloc3-example-test]
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Dependences
-      run: sudo apt install -y valgrind
+#  iloc3-example-test:
+#    runs-on: ubuntu-latest
+#    name: Iloc (Grammar) Example
+#    needs: [build-test]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Generate Example
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+#    - name: Generate Just Tables
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+#    - name: Generate Really Just Tables
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
 
-    - name: Generate Iloc Example
-      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3"
+#  iloc3-test-fileio-with-driver:
+#    runs-on: ubuntu-latest
+#    name: Fileio with Driver (dynamic.il)
+#    needs: [iloc3-example-test]
+#    steps:
+#    - uses: actions/checkout@v3
+#    
+#    - name: Install Dependences
+#      run: sudo apt install -y valgrind
 
-    - name: Compile Iloc Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc3.c -o /tmp/test
+#    - name: Generate Iloc Example
+#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t fileio-with-driver -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3"
 
-    - name: Run Iloc Example (-D DEBUG)
-      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
+#    - name: Compile Iloc Example (-D DEBUG)
+#      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc3.c -o /tmp/test
 
-    - name: Compile Iloc Example
-      run: gcc -Wall -Werror ./-examples/iloc/iloc3.c -o /tmp/test
+#    - name: Run Iloc Example (-D DEBUG)
+#      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
-    - name: Run Iloc Example
-      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
+#    - name: Compile Iloc Example
+#      run: gcc -Wall -Werror ./-examples/iloc/iloc3.c -o /tmp/test
+
+#    - name: Run Iloc Example
+#      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
   lisp-example-test:
     runs-on: ubuntu-latest
