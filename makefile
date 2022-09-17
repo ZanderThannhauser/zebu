@@ -79,8 +79,8 @@ ARGS += --minimize-lexer
 #ARGS += --template=readline
 #ARGS += --template=readline-with-driver
 
-ARGS += --template=fileio
-#ARGS += --template=fileio-with-driver
+#ARGS += --template=fileio
+ARGS += --template=fileio-with-driver
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
@@ -90,7 +90,7 @@ ARGS += --template=fileio
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
 #ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
+ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
 #ARGS += -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/expressions
 #ARGS += -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
 #ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
@@ -99,7 +99,7 @@ ARGS += --template=fileio
 
 #ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
-ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
+#ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 
 #ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
