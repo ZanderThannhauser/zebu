@@ -7,22 +7,20 @@
 
 #include <string/struct.h>
 
-#include <set/string/add.h>
-
 #include "struct.h"
 #include "print_source.h"
 
 void structinfo_print_source(
 	struct structinfo* this,
-	struct stringset* done,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
 	
 	fprintf(stream, ""
-		"struct %s" "\n"
+		"struct %s_%s" "\n"
 		"{" "\n"
-	"", this->name->chars);
+	"", prefix, this->name->chars);
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
 	{
@@ -47,17 +45,17 @@ void structinfo_print_source(
 			
 			case sin_grammar_scalar:
 				fprintf(stream, ""
-					"\t" "struct %s* %s;" "\n"
-				"", ele->grammar->chars, ele->name->chars);
+					"\t" "struct %s_%s* %s;" "\n"
+				"", prefix, ele->grammar->chars, ele->name->chars);
 				break;
 			
 			case sin_grammar_array:
 				fprintf(stream, ""
 					"\t" "struct {" "\n"
-					"\t" "\t" "struct %s** data;" "\n"
+					"\t" "\t" "struct %s_%s** data;" "\n"
 					"\t" "\t" "unsigned n, cap;" "\n"
 					"\t" "} %s;" "\n"
-				"", ele->grammar->chars, ele->name->chars);
+				"", prefix, ele->grammar->chars, ele->name->chars);
 				break;
 			
 			default:
@@ -71,8 +69,6 @@ void structinfo_print_source(
 		"};" "\n"
 		"" "\n"
 	"");
-	
-	stringset_add(done, this->name);
 	
 	EXIT;
 }

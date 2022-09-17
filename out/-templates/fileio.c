@@ -1,6 +1,4 @@
 
-#define _GNU_SOURCE
-
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
@@ -23,59 +21,17 @@
 
 {{LEXER_EOF_TABLE}}
 
-{{PARSE_TREE_STRUCTS}}
-
+#ifdef DEBUG
 {{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
+#endif
 
 {{PARSE_TREE_INC_FUNCTIONS}}
 
 {{PARSE_TREE_FREE_FUNCTIONS}}
 
-#define argv0 (program_invocation_name)
-
 #define N(array) (sizeof(array) / sizeof(*array))
 
-struct cmdln
-{
-	const char* input;
-};
-
-void usage(int code)
-{
-	fprintf(stderr, "usage: %s <path/to/input/file>\n", argv0);
-	exit(code);
-}
-
-struct cmdln* process_cmdln(int argc, char* const* argv)
-{
-	int opt;
-	
-	const char* input = NULL;
-	
-	while ((opt = getopt(argc, argv, "h")) != -1)
-	{
-		switch (opt)
-		{
-			case 'h':
-				usage(0);
-				break;
-			
-			default:
-				usage(1);
-		}
-	}
-	
-	input = argv[optind++];
-	
-	if (!input)
-		usage(1);
-	
-	struct cmdln* retval = malloc(sizeof(*retval));
-	assert(retval);
-	retval->input = input;
-	return retval;
-}
-
+#ifdef DEBUG
 static void escape(char *out, unsigned char in)
 {
 	switch (in)
@@ -121,8 +77,9 @@ static void escape(char *out, unsigned char in)
 			break;
 	}
 }
+#endif
 
-struct $start* {{PREFIX}}_parse(FILE* stream)
+struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 {
 	void* root;
 	struct { unsigned* data, n, cap; } yacc = {};
@@ -149,6 +106,7 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 		data.data[data.n++] = d;
 	}
 	
+	#ifdef DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
 		for (unsigned i = 0, n = yacc.n; i < n; i++)
@@ -161,6 +119,7 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 		vprintf(fmt, va);
 		va_end(va);
 	}
+	#endif
 	
 	unsigned y, t, s, r;
 	void* td;
@@ -172,7 +131,9 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			while (lexer.n + 1 >= lexer.cap)
 			{
 				lexer.cap = lexer.cap << 1 ?: 1;
+				#ifdef DEBUG
 				ddprintf("lexer.cap == %u\n", lexer.cap);
+				#endif
 				lexer.data = realloc(lexer.data, lexer.cap);
 			}
 			
@@ -183,7 +144,9 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 		
 		t = 0;
 		
+		#ifdef DEBUG
 		ddprintf("l = %u\n", l);
+		#endif
 		
 		while (1)
 		{
@@ -191,11 +154,13 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			{
 				c = lexer.data[i];
 				
+				#ifdef DEBUG
 				char escaped[10];
 				
 				escape(escaped, c);
 				
 				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				#endif
 				
 				assert(!"163");
 				#if 0
@@ -208,11 +173,13 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			{
 				append(c);
 				
+				#ifdef DEBUG
 				char escaped[10];
 				
 				escape(escaped, c);
 				
 				ddprintf("c = '%s' (0x%X)\n", escaped, c);
+				#endif
 				
 				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 			}
@@ -220,26 +187,34 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			{
 				c = EOF;
 				
+				#ifdef DEBUG
 				ddprintf("c = <EOF>\n");
+				#endif
 				
 				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
 			}
 			
 			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 			
+			#ifdef DEBUG
 			ddprintf("a = %u, b = %u\n", a, b);
+			#endif
 			
 			if (a)
 			{
 				if (b)
 				{
 					l = a, t = b, i++;
+					#ifdef DEBUG
 					ddprintf("l = %u\n", l);
+					#endif
 				}
 				else
 				{
 					l = a, i++;
+					#ifdef DEBUG
 					ddprintf("l = %u\n", l);
+					#endif
 				}
 			}
 			else if (b)
@@ -249,11 +224,15 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 					lexer.n--, ungetc(c, stream);
 				}
 				
+				#ifdef DEBUG
 				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
+				#endif
 				
 				if (b == 1)
 				{
+					#ifdef DEBUG
 					ddprintf("lexer: whitespace.\n");
+					#endif
 					l = original_l, t = 0, lexer.n = 0;
 				}
 				else
@@ -284,23 +263,31 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 	
 	push_state(1), y = 1, read_token(1);
 	
+	#ifdef DEBUG
 	ddprintf("y = %u, t = %u\n", y, t);
+	#endif
 	
 	while (yacc.n)
 	{
 		if (y < N({{PREFIX}}_shifts) && t < N(*{{PREFIX}}_shifts) && (s = {{PREFIX}}_shifts[y][t]))
 		{
+			#ifdef DEBUG
 			ddprintf("s == %u\n", s);
+			#endif
 			
 			y = s, push_state(y), push_data(td);
 			
 			read_token({{PREFIX}}_lexer_starts[y]);
 			
+			#ifdef DEBUG
 			ddprintf("t = %u\n", t);
+			#endif
 		}
 		else if (y < N( {{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 		{
+			#ifdef DEBUG
 			ddprintf("r == %u\n", r);
+			#endif
 			
 			unsigned g;
 			void* d;
@@ -316,13 +303,17 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			{
 				y = yacc.data[yacc.n - 1];
 				
+				#ifdef DEBUG
 				ddprintf("y = %u\n", y);
+				#endif
 				
 				assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
 				
 				s = {{PREFIX}}_gotos[y][g];
 				
+				#ifdef DEBUG
 				ddprintf("s = %u\n", s);
+				#endif
 				
 				y = s, push_state(y), push_data(d);
 			}
@@ -332,6 +323,10 @@ struct $start* {{PREFIX}}_parse(FILE* stream)
 			assert(!"266");
 		}
 	}
+	
+	#ifdef DEBUG
+	print_{{PREFIX}}_$start_ptree(NULL, p_root, "start", root);
+	#endif
 	
 	free(yacc.data);
 	free(data.data);

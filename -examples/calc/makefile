@@ -2,7 +2,7 @@
 CC = gcc
 
 CFLAGS += -Wall -Werror
-CFLAGS += -g -Wno-unused-variable
+#CFLAGS += -g -Wno-unused-variable
 
 LDLIBS += -lreadline -lm
 

@@ -6,5 +6,5 @@ struct stringset;
 
 void structinfo_print_source(
 	struct structinfo* this,
-	struct stringset* done,
+	const char* prefix,
 	FILE* stream);

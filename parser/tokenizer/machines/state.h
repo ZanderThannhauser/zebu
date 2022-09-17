@@ -105,6 +105,7 @@ enum tokenizer_state
 	ts_reading_hexadecimal_literal,
 	ts_reading_hexadecimal_literal2,
 	ts_reading_string_literal,
+	ts_reading_string_escape,
 	ts_reading_relpath_literal,
 	ts_reading_abspath_literal,
 	ts_reading_identifier,

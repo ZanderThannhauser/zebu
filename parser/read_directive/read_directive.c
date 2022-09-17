@@ -1,3 +1,5 @@
+
+#include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,7 +8,7 @@
 
 #include <macros/strequals.h>
 
-/*#include <enums/error.h>*/
+#include <enums/error.h>
 
 /*#include <macros/strequals.h>*/
 
@@ -77,12 +79,8 @@ void read_directive(
 	}
 	else
 	{
-		TODO;
-		#if 0
-		dpvs(token);
-		TODO;
-		exit(e_bad_input_file);
-		#endif
+		fprintf(stderr, "zebu: unknown directive '%s'!\n", token);
+		exit(e_syntax_error);
 	}
 	
 	EXIT;

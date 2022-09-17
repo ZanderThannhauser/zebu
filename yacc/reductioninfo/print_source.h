@@ -7,4 +7,5 @@ struct structinfo;
 void reductioninfo_print_source(
 	struct reductioninfo* this,
 	struct structinfo* structinfo,
+	const char* prefix,
 	FILE* stream);

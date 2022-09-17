@@ -17,6 +17,7 @@
 void reducerule_to_id_print_source(
 	struct reducerule_to_id* this,
 	struct string_to_id* stoi,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -36,11 +37,11 @@ void reducerule_to_id_print_source(
 		"", ele->id);
 		
 		fprintf(stream, ""
-			"\t" "\t" "struct %s* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));" "\n"
+			"\t" "\t" "struct %s_%s* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));" "\n"
 			"\t" "\t" "value->refcount = 1;" "\n"
-		"", ele->structinfo->name->chars);
+		"", prefix, ele->structinfo->name->chars);
 		
-		reductioninfo_print_source(ele->reductioninfo, ele->structinfo, stream);
+		reductioninfo_print_source(ele->reductioninfo, ele->structinfo, prefix, stream);
 		
 		fprintf(stream, ""
 			"\t" "\t" "d = value, g = %u;" "\n"

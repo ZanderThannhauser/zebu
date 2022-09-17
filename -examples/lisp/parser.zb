@@ -1,0 +1,17 @@
+
+%skip: [' ', '\t', '\n'];
+
+value
+	: `"#t" | "#f"` #boolean
+	| `['0' - '9']+` #number
+	| `"\"" [!'\"']* "\""` #string
+	| `['+', '-', '*', '%', '/', '^', '&', '|', '<', '>', '=']` #identifier
+	| `['a' - 'z', 'A' - 'Z']+` #identifier
+	| '`' value #backtick
+	| '(' (value #list[])+ ')'
+	;
+
+roots: (value #values[])+;
+
+%start: roots #roots;
+

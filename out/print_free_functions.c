@@ -13,6 +13,7 @@
 
 void print_free_function_prototypes(
 	struct avl_tree_t* structinfos,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -26,9 +27,9 @@ void print_free_function_prototypes(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"extern void free_%s_ptree(struct %s* ptree);" "\n"
+			"extern void free_%s_%s_ptree(struct %s_%s* ptree);" "\n"
 			"" "\n"
-		"", ele->name->chars, ele->name->chars);
+		"", prefix, ele->name->chars, prefix, ele->name->chars);
 	}
 	
 	EXIT;
@@ -36,6 +37,7 @@ void print_free_function_prototypes(
 
 void print_free_functions(
 	struct avl_tree_t* structinfos,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -56,9 +58,9 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s_ptree(struct %s* ptree);" "\n"
+			"void free_%s_%s_ptree(struct %s_%s* ptree);" "\n"
 			"" "\n"
-		"", ele->name->chars, ele->name->chars);
+		"", prefix, ele->name->chars, prefix, ele->name->chars);
 	}
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
@@ -66,11 +68,11 @@ void print_free_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void free_%s_ptree(struct %s* ptree)" "\n"
+			"void free_%s_%s_ptree(struct %s_%s* ptree)" "\n"
 			"{" "\n"
 			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
-		"", ele->name->chars, ele->name->chars);
+		"", prefix, ele->name->chars, prefix, ele->name->chars);
 		
 		for (struct avl_node_t* node = ele->tree->head; node; node = node->next)
 		{
@@ -98,17 +100,17 @@ void print_free_functions(
 				
 				case sin_grammar_scalar:
 					fprintf(stream, ""
-						"\t" "\t" "free_%s_ptree(ptree->%s);" "\n"
-					"", ele->grammar->chars, field);
+						"\t" "\t" "free_%s_%s_ptree(ptree->%s);" "\n"
+					"", prefix, ele->grammar->chars, field);
 					break;
 				
 				case sin_grammar_array:
 				{
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
-						"\t" "\t" "\t" "free_%s_ptree(ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "free_%s_%s_ptree(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
-					"", field, ele->grammar->chars, field, field);
+					"", field, prefix, ele->grammar->chars, field, field);
 					break;
 				}
 				

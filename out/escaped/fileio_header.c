@@ -1,4 +1,12 @@
 const char* fileio_header = ""
 	"" "\n"
-	"struct $start* {{PREFIX}}_parse(FILE* stream);" "\n"
+	"#include <stdio.h>" "\n"
+	"" "\n"
+	"{{PARSE_TREE_STRUCTS}}" "\n"
+	"" "\n"
+	"{{PARSE_TREE_INC_FUNCTIONS}}" "\n"
+	"" "\n"
+	"{{PARSE_TREE_FREE_FUNCTIONS}}" "\n"
+	"" "\n"
+	"struct zebu_$start* {{PREFIX}}_parse(FILE* stream);" "\n"
 	"";

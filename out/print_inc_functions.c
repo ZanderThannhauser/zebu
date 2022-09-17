@@ -11,6 +11,7 @@
 
 void print_inc_function_prototypes(
 	struct avl_tree_t* structinfos,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -26,8 +27,8 @@ void print_inc_function_prototypes(
 		const char* type = ele->name->chars;
 		
 		fprintf(stream, ""
-			"extern struct %s* inc_%s_ptree(struct %s* ptree);" "\n"
-		"", type, type, type);
+			"extern struct %s_%s* inc_%s_%s_ptree(struct %s_%s* ptree);" "\n"
+		"", prefix, type, prefix, type, prefix, type);
 	}
 	
 	EXIT;
@@ -35,6 +36,7 @@ void print_inc_function_prototypes(
 
 void print_inc_functions(
 	struct avl_tree_t* structinfos,
+	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -54,14 +56,29 @@ void print_inc_functions(
 		const char* type = ele->name->chars;
 		
 		fprintf(stream, ""
-			"struct %s* inc_%s_ptree(struct %s* ptree)" "\n"
+			"struct %s_%s* inc_%s_%s_ptree(struct %s_%s* ptree)" "\n"
 			"{" "\n"
 				"\t" "if (ptree) ptree->refcount++;" "\n"
 				"\t" "return ptree;" "\n"
 			"}" "\n"
 			"\n"
-		"", type, type, type);
+		"", prefix, type, prefix, type, prefix, type);
 	}
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

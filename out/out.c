@@ -336,15 +336,19 @@ void out(struct yacc_state* start)
 			}
 			else if (!strncmp(old, "PARSE_TREE_STRUCTS", len))
 			{
-				print_structs(structinfos, stream);
+				print_structs(structinfos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_INC_FUNCTIONS", len))
 			{
-				print_inc_function_prototypes(structinfos, stream);
+				print_inc_function_prototypes(structinfos, output_prefix, stream);
+			}
+			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
+			{
+				print_tree_function_prototypes(structinfos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
 			{
-				print_free_function_prototypes(structinfos, stream);
+				print_free_function_prototypes(structinfos, output_prefix, stream);
 			}
 			else
 			{
@@ -419,11 +423,11 @@ void out(struct yacc_state* start)
 			}
 			else if (!strncmp(old, "REDUCTIONRULE_SWITCH", len))
 			{
-				reducerule_to_id_print_source(rrtoi, stoi, stream);
+				reducerule_to_id_print_source(rrtoi, stoi, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_STRUCTS", len))
 			{
-				print_structs(structinfos, stream);
+				print_structs(structinfos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "START_GRAMMAR_ID", len))
 			{
@@ -439,15 +443,15 @@ void out(struct yacc_state* start)
 			}
 			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
 			{
-				print_tree_functions(structinfos, stream);
+				print_tree_functions(structinfos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_INC_FUNCTIONS", len))
 			{
-				print_inc_functions(structinfos, stream);
+				print_inc_functions(structinfos, output_prefix, stream);
 			}
 			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
 			{
-				print_free_functions(structinfos, stream);
+				print_free_functions(structinfos, output_prefix, stream);
 			}
 			else
 			{

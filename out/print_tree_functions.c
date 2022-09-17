@@ -14,6 +14,7 @@
 
 void print_tree_function_prototypes(
 	struct avl_tree_t* structinfos,
+	const char* output_prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -28,9 +29,9 @@ void print_tree_function_prototypes(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"extern void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"extern void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
 			"\n"
-		"", ele->name->chars, ele->name->chars);
+		"", output_prefix, ele->name->chars, ele->name->chars);
 	}
 	
 	EXIT;
@@ -38,6 +39,7 @@ void print_tree_function_prototypes(
 
 void print_tree_functions(
 	struct avl_tree_t* structinfos,
+	const char* output_prefix,
 	FILE* stream)
 {
 	ENTER;
@@ -119,7 +121,7 @@ void print_tree_functions(
 			"\t" "p_last_child," "\n"
 		"};" "\n"
 		"\n"
-		"void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token)" "\n"
+		"static void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token)" "\n"
 		"{" "\n"
 			"\t" "print_links(links);" "\n"
 			"\t" "switch (p)" "\n"
@@ -135,7 +137,7 @@ void print_tree_functions(
 			"\t" "printf(\"\\\"\\e[0m)\\n\");" "\n"
 		"}" "\n"
 		"\n"
-		"void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name)" "\n"
+		"static void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name)" "\n"
 		"{" "\n"
 			"\t" "print_links(links);" "\n"
 			"\t" "switch (p)" "\n"
@@ -153,9 +155,9 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree);" "\n"
 			"\n"
-		"", ele->name->chars, ele->name->chars);
+		"", output_prefix, ele->name->chars, output_prefix, ele->name->chars);
 	};
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
@@ -163,7 +165,7 @@ void print_tree_functions(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"void print_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree)" "\n"
+			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree)" "\n"
 			"{" "\n"
 				"\t" "print_links(links);" "\n"
 				"\t" "\n"
@@ -189,7 +191,7 @@ void print_tree_functions(
 				"\t" "\t" "break;" "\n"
 				"\t" "}" "\n"
 				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m)\\n\", name);" "\n"
-		"", ele->name->chars, ele->name->chars, ele->name->chars);
+		"", output_prefix, ele->name->chars, output_prefix, ele->name->chars, ele->name->chars);
 		
 		for (struct avl_node_t* node = ele->tree->head; node; node = node->next)
 		{
@@ -243,10 +245,12 @@ void print_tree_functions(
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
-						"\t" "\t" "print_%s_ptree(new ?: links, %s, \"%s\", ptree->%s);" "\n"
+						"\t" "\t" "print_%s_%s_ptree(new ?: links, %s, \"%s\", ptree->%s);" "\n"
 						"\t" "else" "\n"
 						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
-					"", field, grammar_chars, prefix, field, field, prefix, grammar_chars, field);
+					"", field,
+					output_prefix, grammar_chars, prefix, field, field,
+					prefix, grammar_chars, field);
 					break;
 				}
 				
@@ -261,14 +265,20 @@ void print_tree_functions(
 						"\t" "\t" "{" "\n"
 						"\t" "\t" "\t" "char label[%lu + 30];" "\n"
 						"\t" "\t" "\t" "snprintf(label, sizeof(label), \"%s[%%u]\", i);" "\n"
-						"\t" "\t" "\t" "print_%s_ptree(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "print_%s_%s_ptree(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
 						"\t" "\t" "}" "\n"
 						"\t" "}" "\n"
 						"\t" "else" "\n"
 						"\t" "{" "\n"
 						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s[]\", \"%s\");" "\n"
 						"\t" "}" "\n"
-					"", field, field, strlen(field), field, grammar_chars, prefix, field, prefix, grammar_chars, field);
+					"", field,
+					field,
+					strlen(field),
+					field,
+					output_prefix, grammar_chars,
+					prefix, field,
+					prefix, grammar_chars, field);
 					
 					break;
 				}
