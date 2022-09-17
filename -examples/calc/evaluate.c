@@ -9,9 +9,9 @@
 #include "parser.h"
 #include "evaluate.h"
 
-static double evaluate_add(struct add* add);
+static double evaluate_add(struct zebu_add* add);
 
-static double evaluate_highest(struct highest* highest)
+static double evaluate_highest(struct zebu_highest* highest)
 {
 	double retval;
 	
@@ -79,7 +79,7 @@ static double evaluate_highest(struct highest* highest)
 	return retval;
 }
 
-static double evaluate_expo(struct expo* expo)
+static double evaluate_expo(struct zebu_expo* expo)
 {
 	double subresult = evaluate_highest(expo->base);
 	
@@ -91,7 +91,7 @@ static double evaluate_expo(struct expo* expo)
 	return subresult;
 }
 
-static double evaluate_multiply(struct multiply* multiply)
+static double evaluate_multiply(struct zebu_multiply* multiply)
 {
 	double subresult = evaluate_expo(multiply->base);
 	
@@ -108,7 +108,7 @@ static double evaluate_multiply(struct multiply* multiply)
 	return subresult;
 }
 
-static double evaluate_add(struct add* add)
+static double evaluate_add(struct zebu_add* add)
 {
 	double subresult = evaluate_multiply(add->base);
 	
@@ -125,7 +125,7 @@ static double evaluate_add(struct add* add)
 	return subresult;
 }
 
-double evaluate(struct $start* start)
+double evaluate(struct zebu_$start* start)
 {
 	return evaluate_add(start->root->add);
 }

@@ -1,4 +1,4 @@
 
-struct $start;
+struct zebu_$start;
 
-double evaluate(struct $start* start);
+double evaluate(struct zebu_$start* start);

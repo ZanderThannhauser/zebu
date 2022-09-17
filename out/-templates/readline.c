@@ -79,7 +79,7 @@ static void escape(char *out, char in)
 	}
 }
 
-struct $start* {{PREFIX}}_parse()
+struct {{PREFIX}}_$start* {{PREFIX}}_parse()
 {
 	struct { unsigned* data, n, cap; } yacc = {};
 	
@@ -267,7 +267,7 @@ struct $start* {{PREFIX}}_parse()
 	
 	assert(!data.n);
 	
-	print_$start_ptree(NULL, p_root, "start", root);
+	print_{{PREFIX}}_$start_ptree(NULL, p_root, "start", root);
 	
 	add_history(line);
 	

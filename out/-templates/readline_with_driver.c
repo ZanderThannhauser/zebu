@@ -300,9 +300,9 @@ int main()
 		
 		assert(!data.n);
 		
-		print_$start_ptree(NULL, p_root, "start", root);
+		print_zebu_$start_ptree(NULL, p_root, "start", root);
 		
-		free_$start_ptree(root);
+		free_zebu_$start_ptree(root);
 		
 		add_history(line);
 		

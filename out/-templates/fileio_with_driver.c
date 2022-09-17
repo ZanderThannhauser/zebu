@@ -356,9 +356,9 @@ int main(int argc, char* const* argv)
 	
 	void* root = parse(input);
 	
-	print_$start_ptree(NULL, p_root, "start", root);
+	print_zebu_$start_ptree(NULL, p_root, "start", root);
 	
-	free_$start_ptree(root);
+	free_zebu_$start_ptree(root);
 	
 	fclose(input);
 	

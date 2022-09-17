@@ -6,7 +6,7 @@
 
 int main()
 {
-	struct $start* root;
+	struct zebu_$start* root;
 	
 	while ((root = zebu_parse()))
 	{
@@ -17,7 +17,7 @@ int main()
 		
 		printf("%g\n", result);
 		
-		free_$start_ptree(root);
+		free_zebu_$start_ptree(root);
 	}
 	
 	return 0;
