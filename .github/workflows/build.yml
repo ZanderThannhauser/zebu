@@ -233,21 +233,21 @@ jobs:
     - name: Run Iloc Example
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
-# this example takes too long to run for GitHub to handle...
+  iloc3-example-test:
+    runs-on: ubuntu-latest
+    name: Iloc (Grammar) Example
+    needs: [build-test]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Generate Example
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+    - name: Generate Just Tables
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+    - name: Generate Really Just Tables
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
 
-#  iloc3-example-test:
-#    runs-on: ubuntu-latest
-#    name: Iloc (Grammar) Example
-#    needs: [build-test]
-#    steps:
-#    - uses: actions/checkout@v3
-#    
-#    - name: Generate Example
-#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
-#    - name: Generate Just Tables
-#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
-#    - name: Generate Really Just Tables
-#      run: make buildtype=test dotout=no verbose=no run ARGS="-vl -t really-just-tables -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
+# this example takes too long to run for GitHub to handle...
 
 #  iloc3-test-fileio-with-driver:
 #    runs-on: ubuntu-latest
