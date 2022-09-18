@@ -46,30 +46,30 @@ TODO
 ## Input File Specification
 
 An input file lists a set of directives, named characters-sets,
-named regular-expressions and grammar rules. Described Below.
+named regular-expressions and named grammar rules. Each of these items, named
+items cannot be reused. Described Below.
 
 ### List of Directives
 
  - `%start`: A grammar rule follows, ending with a semicolon. This grammar
-    follows all the regular behavior of grammar rules, 
+   follows all the regular behavior of grammar rules, 
  - `%skip`: A regular expression follows, ending with a semicolon. This regular
-    expression describes the characters or strings that should be ignored by
-    the tokenizer when scanning for tokens. Note that the specified "skip"
-    pattern will only be effective to the tokens described *after* the
-    directive is given. Common usages are listed below:
-    - `%skip: [' ', '\t', '\n];` (Ignores space, tab and newline characters)
-    - `%skip: [' ', '\t', '\n] | "#"[!"\n"]*"\n"` (Ignores whitespace characters
-       above, in addition to skipping shell-style comments)
-    - `%skip: [' ', '\t', '\n] | "//"[!"\n"]*"\n"` (Ignores whitespace characters
-       above, in addition to skipping C-style comments)
-    - `%skip: [128 - 255];` (Ignores all bytes with their high-bit set)
+   expression describes the characters or strings that should be ignored by
+   the tokenizer when scanning for tokens. Note that the specified "skip"
+   pattern will only be effective to the tokens described *after* the
+   directive is given. Common usages are listed below:
+   - `%skip: ' ' | '\t' | '\n';` (Ignores space, tab and newline characters)
+   - `%skip: ' ' | '\t' | '\n' | "#" [!"\n"]* "\n";` (Ignores whitespace
+     characters above, in addition to skipping shell-style comments)
+   - `%skip: ' ' | '\t' | '\n' | "//" [!"\n"]* "\n";` (Ignores whitespace
+     characters above, in addition to skipping C-style comments)
+   - `%skip: [128 - 255];` (Ignores all bytes with their high-bit set)
  - `%include`: Gives a path to read using either `"path"` or `<path>` syntax.
-    The former will resolve the path relative to the current file, and the latter
-    will resolve the path relative to the file zebu was given on the command-line.
-    Each file does *not* have its own namespace. All of the defined character
-    sets, tokens, and grammars will be copied into the global scope.
-    A file `include`d more than once will not be read more than once, this is
-    detected by using `stat(2)`'s `st_dev` and `st_ino` values.
+   The former will resolve the path relative to the current file, and the latter
+   will resolve the path relative to the file zebu was given on the command-line.
+   Each file does *not* have its own namespace. All of the defined character
+   sets, tokens, and grammars will be copied into the global scope.
+   A file `include`d more than once will not be **read** more than once.
 
 ### Character Set Expression Context
 
