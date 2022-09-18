@@ -3,19 +3,23 @@
 
 ## Introduction
 
-Zebu is an LL parser-generator written in C. It does the work of both GNU Bison &
-Flex by allowing the user to put regular expressions directly in the grammar
-rules. The parser and the tokenizer(s) are generated simultaneously,
-resulting in a **context-sensitive** tokenizer. A tokenizer is generated to
+Zebu is an LL parser-generator written in C.
+
+It does the work of both GNU Bison &
+Flex by allowing the user to put regular expressions directly in the grammar rules.
+
+The parser and the tokenizer(s) are generated simultaneously,
+resulting in **context-sensitive** tokenization. A tokenizer is generated to
 recognize only the tokens that would be valid to read next for each parser state.
+
 This enables reading multiple languages with the same parser, with perhaps
 different keywords or comment-style. (CSS embedded in HTML, for instance)
 
 ## Command-Line Arguments (Usage)
 
  - `-i <PATH>` (`--input=<PATH>`): Specifies path to input file.
- - `-o <PATH>` (`--output=<PATH>`): Specifies path for output files.
-   *without file extension*. For instance, if one wanted zebu to produce
+ - `-o <PATH>` (`--output=<PATH>`): Specifies path for output files
+   *without the file extension*. For instance, if one wanted zebu to produce
    "dir/foo.c" and "dir/foo.h", one would invoke zebu with `-o dir/foo`.
  - `-p <PREFIX>` (`--prefix=<PREFIX>`): Sets the prefix the generated code should
    have it's non-`static` functions, globals and structs. This is useful to
