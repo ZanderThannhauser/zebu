@@ -46,8 +46,8 @@ TODO
 ## Input File Specification
 
 An input file lists a set of directives, named characters-sets,
-named regular-expressions and named grammar rules. Each of these items, named
-items cannot be reused. Described Below.
+named regular-expressions and named grammar rules. For each of these items,
+names cannot be reused. Described Below.
 
 ### List of Directives
 
