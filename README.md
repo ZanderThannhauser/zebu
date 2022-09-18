@@ -28,7 +28,9 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
    multiple generated parsers in the same program.
    The default prefix is "zebu".
  - `-t <TEMPLATE>` (`--template=<TEMPLATE>`): Sets which parser-template zebu
-   should use when generating its output. See the "Parser Template" Section below.
+   should use when generating its output. See the
+   ["Parser Template"](https://github.com/ZanderThannhauser/zebu/tree/editing-readme#parser-templates)
+   Section below.
    The default value is "just-tables".
  - `-l` (`--minimize-lexer`): Tells zebu to combine and simplify all tokenizers
    generated across all parser-contexts. This operation may take some time
