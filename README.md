@@ -21,7 +21,7 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
 
 ## Command-Line Arguments (Usage)
 
- - `-i <PATH>` (`--input=<PATH>`): Specifies path to input file.
+ - `-i <PATH>` (`--input=<PATH>`): Specifies path to initial input file.
  - `-o <PATH>` (`--output=<PATH>`): Specifies path for output files
    *without the file extension*. For instance, if one wanted zebu to produce
    "dir/foo.c" and "dir/foo.h", one would invoke zebu with `-o dir/foo`.
@@ -36,7 +36,7 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
    performed as its duration depends on the language.
  - `-v` (`--verbose`): Enables progress-percentage print-outs to the terminal
    for the most time-consuming algorithms: NFA-to-DFA, DFA simplification,
-   lexer minimization, and LL parser generation.
+   lexer minimization (see above), and LL parser generation.
  - `-h` (`--help`): Prints this help message.
 
 ## Building from Source
@@ -45,8 +45,9 @@ TODO
 
 ## Input file Specification
 
-The input file lists a series of grammar rules and directives. Two grammars
-cannot have the same name, even if defined in separate files.
+An input file lists a series of grammar rules and directives. Multiple
+named character-sets, tokens, or grammar-rules cannot have the same name,
+even if defined in separate files.
 
 ### List of Directives
 
