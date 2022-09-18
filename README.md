@@ -43,11 +43,10 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
 
 TODO
 
-## Input file Specification
+## Input File Specification
 
-An input file lists a series of grammar rules and directives. Multiple
-named character-sets, tokens, or grammar-rules cannot have the same name,
-even if defined in separate files.
+An input file lists a set of directives, named characters-sets,
+named regular-expressions and grammar rules. Described Below.
 
 ### List of Directives
 
