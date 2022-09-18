@@ -33,6 +33,7 @@ different keywords or comment-style. (CSS embedded in HTML, for instance)
 
 ## Building from Source:
 
+TODO
 
 ## Input file Specification
 
@@ -206,9 +207,11 @@ A list of operators and their meaning is listed below. Remember that parenthesis
 
 ### Grammar Rule Expressions
 
-Also Talk about tags.
+TODO. Also Talk about tags.
 
 #### Operators
+
+TODO
 
 #### Examples
 
@@ -268,7 +271,11 @@ root: addition #root;
 
 ## Implementation Details: Tokenizer
 
+TODO
+
 ## Implementation Details: Grammar Rules
+
+TODO
 
 ## Parser Templates
 
