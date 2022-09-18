@@ -46,13 +46,14 @@ TODO
 ## Input File Specification
 
 An input file lists a set of directives, named characters-sets,
-named regular-expressions and named grammar rules. For each of these items,
-names cannot be reused. Described Below.
+named regular-expressions and named grammar rules. Described Below.
+For each of these items, names cannot be reused.
 
 ### List of Directives
 
- - `%start`: A grammar rule follows, ending with a semicolon. This grammar
-   follows all the regular behavior of grammar rules, 
+ - `%start`: Defines the "start" grammar of the language. After this directive
+   and a colon, a grammar rule follows, ending with a semicolon.<br>
+   Example: `%start: "abc" | "def";`
  - `%skip`: A regular expression follows, ending with a semicolon. This regular
    expression describes the characters or strings that should be ignored by
    the tokenizer when scanning for tokens. Note that the specified "skip"
