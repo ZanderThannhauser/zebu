@@ -70,7 +70,7 @@ default: $(buildprefix)/zebu
 #ARGS += -v
 ARGS += --verbose
 
-#ARGS += -l
+#ARGS += -m
 ARGS += --minimize-lexer
 
 #ARGS += --template=really-just-tables
