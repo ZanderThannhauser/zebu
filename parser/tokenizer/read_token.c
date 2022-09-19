@@ -240,7 +240,6 @@ enum token read_token(
 		{
 			// remove #:
 			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
-			
 			this->tokenchars.n -= 1;
 			
 			append(this, 0);
@@ -254,7 +253,6 @@ enum token read_token(
 		{
 			// remove #:
 			memmove(this->tokenchars.chars, this->tokenchars.chars + 1, this->tokenchars.n);
-			
 			this->tokenchars.n -= 3;
 			
 			append(this, 0);

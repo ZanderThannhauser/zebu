@@ -30,13 +30,13 @@ void cmdln_process(int argc, char* const* argv)
 		{"output",         no_argument, 0, 'o'},
 		{"prefix",   required_argument, 0, 'p'},
 		{"template", required_argument, 0, 't'},
-		{"minimize-lexer", no_argument, 0, 'l'},
+		{"minimize-lexer", no_argument, 0, 'm'},
 		{"verbose",        no_argument, 0, 'v'},
 		{"help",           no_argument, 0, 'h'},
 		{ 0,                            0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "l" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -77,7 +77,7 @@ void cmdln_process(int argc, char* const* argv)
 				}
 				break;
 			
-			case 'l':
+			case 'm':
 				minimize_lexer = true;
 				break;
 			
