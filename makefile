@@ -71,18 +71,18 @@ default: $(buildprefix)/zebu
 ARGS += --verbose
 
 #ARGS += -m
-ARGS += --minimize-lexer
+#ARGS += --minimize-lexer
 
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
 
 #ARGS += --template=readline
-#ARGS += --template=readline-with-driver
+ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio
-ARGS += --template=fileio-with-driver
+#ARGS += --template=fileio-with-driver
 
-#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
@@ -101,7 +101,7 @@ ARGS += --template=fileio-with-driver
 
 #ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 
-ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
 #ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 

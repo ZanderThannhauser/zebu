@@ -42,6 +42,8 @@
 // aabbcc::x!
 // baccabgccbbaa
 // ABCCBA
+// aacc
+// abbabaab
 
 %start
 	: "abc"          #abc1                                                      "?"?
@@ -54,7 +56,7 @@
 	   `b`: [b,          'B'];
 	   (a): 'a' (b | c)? 'a' ;
 	    b : `b` (a | c)? `b` ;
-	    c : 'c' (a | b)? 'c' : (b a | b c | a c | c a)+
+	    c : 'c' (a | b)? 'c' : (a b | b a | b c | a c | c a)+
 	
 	| % a : 'A' (b | c)? 'A' ;
 	    b : 'B' (a | c)? 'B' ;

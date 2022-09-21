@@ -92,6 +92,10 @@ int main()
 	struct { void** data; unsigned n, cap; } data = {};
 	
 	#ifdef DEBUG
+	setvbuf(stdout, 0, _IONBF, 0);
+	#endif
+	
+	#ifdef DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
 		for (unsigned i = 0, n = yacc.n; i < n; i++)
@@ -155,7 +159,7 @@ int main()
 					#ifdef DEBUG
 					escape(escaped, c);
 					
-					ddprintf("c = '%s' (0x%X)\n", escaped, c);
+					ddprintf("lexer: c = '%s' (0x%X)\n", escaped, c);
 					#endif
 					
 					a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
@@ -163,7 +167,7 @@ int main()
 				else
 				{
 					#ifdef DEBUG
-					ddprintf("c == <EOF>\n");
+					ddprintf("lexer: c == <EOF>\n");
 					#endif
 					
 					// it would be cool if it would read another line
@@ -174,7 +178,7 @@ int main()
 				b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 				
 				#ifdef DEBUG
-				ddprintf("lexer: %u: a = %u, b = %u\n", l, a, b);
+				ddprintf("lexer: l = %u, a = %u, b = %u\n", l, a, b);
 				#endif
 				
 				if (a)
@@ -183,7 +187,7 @@ int main()
 					{
 						l = a, t = b, f = lexer++;
 						#ifdef DEBUG
-						ddprintf("l = %u, t == %u, f = %p (saved)\n", l, t, f);
+						ddprintf("lexer: l = %u, t == %u, f = %p (saved)\n", l, t, f);
 						#endif
 					}
 					else
@@ -220,12 +224,18 @@ int main()
 				}
 				else if (f)
 				{
-					assert(!"172" || f);
-					#if 0
-					process_token(t);
-					l = {{PREFIX}}_starts[yacc.data[yacc.n - 1]], i = f, t = 0;
-					ddprintf("l == %u, i = %u, t = %u\n", l, i, t);
+					lexer = f;
+					
+					#ifdef DEBUG
+					ddprintf("lexer: fallback to \"%.*s\"\n", lexer - begin, begin);
 					#endif
+					
+					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
+					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+					token->len = lexer - begin;
+					td = token;
+					break;
 				}
 				else
 				{
