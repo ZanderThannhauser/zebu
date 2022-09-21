@@ -4,20 +4,19 @@
 #include <debug.h>
 
 #include <regex/dfa_to_nfa.h>
-#include <regex/state/add_lambda_transition.h>
-#include <regex/state/struct.h>
-#include <regex/state/free.h>
+#include <regex/add_lambda_transition.h>
+#include <regex/struct.h>
+#include <regex/free.h>
 #include <regex/nfa_to_dfa.h>
-#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/simplify_dfa.h>
 
-#include <parser/token/root.h>
+#include <parser/regex/root.h>
 
+#include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
-#include <parser/tokenizer/machines/misc/colon.h>
-#include <parser/tokenizer/machines/regex/root.h>
 
 #include <lex/struct.h>
-#include <lex/lookup/add_token.h>
+#include <lex/add_token.h>
 
 #include "skip.h"
 
@@ -31,9 +30,17 @@ void read_skip_directive(
 {
 	ENTER;
 	
-	read_token(tokenizer, colon_machine);
+	assert(tokenizer->token == t_identifier);
 	
-	read_token(tokenizer, regex_root_machine);
+	read_token(tokenizer);
+	
+	if (tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
 	
 	struct rbundle regex = read_root_token_expression(tokenizer, scope);
 	
@@ -42,23 +49,19 @@ void read_skip_directive(
 		regex = regex_dfa_to_nfa(regex.dfa);
 	}
 	
-	regex_add_lambda_transition(regex.nfa.end, regex.nfa.start);
+	regex_add_lambda_transition(regex.nfa.accepts, regex.nfa.start);
 	
-	regex.nfa.end->is_accepting = true;
+	struct regex* dfa = regex_nfa_to_dfa(regex);
 	
-	struct regex* nfa = regex.nfa.start;
+	struct regex* simp = regex_simplify_dfa(dfa);
 	
-	struct regex* dfa = regex_nfa_to_dfa(nfa);
-	
-	struct regex* regex_start = regex_simplify_dfa(dfa);
-	
-	unsigned token_id = lex_add_token2(lex, regex_start, tk_whitespace);
+	unsigned token_id = lex_add_token(lex, simp, tk_whitespace);
 	
 	dpv(token_id);
 	
 	lex->whitespace_token_id = token_id;
 	
-	free_regex(nfa), free_regex(dfa);
+	free_regex(regex.nfa.start), free_regex(dfa);
 	
 	EXIT;
 }

@@ -28,9 +28,8 @@
 #include <regex/dotout.h>
 #endif
 
-#include "state/struct.h"
-#include "state/new.h"
-
+#include "struct.h"
+#include "new.h"
 #include "intersect_dfas.h"
 
 struct mapping
@@ -75,6 +74,8 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = avl_alloc_tree(compare, free);
 	
 	struct quack* todo = new_quack();
@@ -171,6 +172,7 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
 

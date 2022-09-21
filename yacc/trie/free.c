@@ -35,9 +35,9 @@ void free_trie(struct trie* this)
 		free(ele);
 	}
 	
-	for (unsigned i = 0, n = this->grammar_transitions.n; i < n; i++)
+	for (unsigned i = 0, n = this->grammars.n; i < n; i++)
 	{
-		struct trie_grammar_transition* ele = this->grammar_transitions.data[i];
+		struct trie_grammar_transition* ele = this->grammars.data[i];
 		
 		free_string(ele->grammar);
 		
@@ -47,7 +47,7 @@ void free_trie(struct trie* this)
 	}
 	
 	free(this->transitions.data);
-	free(this->grammar_transitions.data);
+	free(this->grammars.data);
 	
 	EXIT;
 }

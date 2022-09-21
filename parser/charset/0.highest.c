@@ -10,8 +10,7 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/charset/after_highest.h"
-#include "../tokenizer/machines/charset/root.h"
+#include "../tokenizer/token_names.h"
 
 #include "../scope/lookup/charset.h"
 
@@ -22,6 +21,7 @@ charset_t read_highest_charset(
 	struct tokenizer* tokenizer,
 	struct scope* scope)
 {
+	charset_t retval = {};
 	ENTER;
 	
 	switch (tokenizer->token)
@@ -32,18 +32,15 @@ charset_t read_highest_charset(
 			
 			dpvc(first);
 			
-			charset_t charset = {};
+			retval[first >> 4] |= 1 << (first & 0xF);
 			
-			charset[first >> 4] |= 1 << (first & 0xF);
-			
-			read_token(tokenizer, charset_after_highest_machine);
-			
-			EXIT;
-			return charset;
+			break;
 		}
 		
 		case t_octal_literal:
 		{
+			TODO;
+			#if 0
 			dpvs(tokenizer->tokenchars.chars);
 			
 			errno = 0;
@@ -65,14 +62,20 @@ charset_t read_highest_charset(
 			
 			charset[value >> 4] |= 1 << (value & 0xF);
 			
+			TODO;
+			#if 0
 			read_token(tokenizer, charset_after_highest_machine);
+			#endif
 			
 			EXIT;
 			return charset;
+			#endif
 		}
 		
 		case t_decimal_literal:
 		{
+			TODO;
+			#if 0
 			dpvs(tokenizer->tokenchars.chars);
 			
 			errno = 0;
@@ -94,14 +97,20 @@ charset_t read_highest_charset(
 			
 			charset[value >> 4] |= 1 << (value & 0xF);
 			
+			TODO;
+			#if 0
 			read_token(tokenizer, charset_after_highest_machine);
+			#endif
 			
 			EXIT;
 			return charset;
+			#endif
 		}
 		
 		case t_hexadecimal_literal:
 		{
+			TODO;
+			#if 0
 			dpvs(tokenizer->tokenchars.chars);
 			
 			errno = 0;
@@ -123,25 +132,34 @@ charset_t read_highest_charset(
 			
 			charset[value >> 4] |= 1 << (value & 0xF);
 			
-			read_token(tokenizer, charset_after_highest_machine);
+			TODO
+/*			read_token(tokenizer, charset_after_highest_machine);*/
 			
 			EXIT;
 			return charset;
+			#endif
 		}
 		
 		case t_identifier:
 		{
+			TODO;
+			#if 0
 			charset_t inner = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
 			
-			read_token(tokenizer, charset_after_highest_machine);
+			TODO;
+/*			read_token(tokenizer, charset_after_highest_machine);*/
 			
 			EXIT;
 			return inner;
+			#endif
 		}
 		
 		case t_oparen:
 		{
-			read_token(tokenizer, charset_root_machine);
+			TODO;
+			#if 0
+			TODO;
+/*			read_token(tokenizer, charset_root_machine);*/
 			
 			charset_t retval = read_root_charset(tokenizer, scope);
 			
@@ -151,16 +169,45 @@ charset_t read_highest_charset(
 				exit(1);
 			}
 			
-			read_token(tokenizer, charset_after_highest_machine);
+			TODO;
+/*			read_token(tokenizer, charset_after_highest_machine);*/
 			
 			EXIT;
 			return retval;
+			#endif
 		}
 		
 		default:
-			TODO;
+		{
+			assert(token_names[tokenizer->token]);
+			
+			assert(token_names[t_oparen]);
+			assert(token_names[t_identifier]);
+			assert(token_names[t_octal_literal]);
+			assert(token_names[t_decimal_literal]);
+			assert(token_names[t_character_literal]);
+			assert(token_names[t_hexadecimal_literal]);
+			
+			fprintf(stderr, "zebu: error while reading character set: "
+				"unexpected '%s' token on line %u, expecting '%s', '%s', '%s', '%s', "
+				"'%s', '%s'!\n",
+				token_names[tokenizer->token],
+				tokenizer->line,
+				token_names[t_oparen],
+				token_names[t_identifier],
+				token_names[t_octal_literal],
+				token_names[t_decimal_literal],
+				token_names[t_character_literal],
+				token_names[t_hexadecimal_literal]);
+			exit(e_syntax_error);
 			break;
+		}
 	}
+	
+	read_token(tokenizer);
+	
+	EXIT;
+	return retval;
 }
 
 

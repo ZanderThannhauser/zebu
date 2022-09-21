@@ -4,18 +4,18 @@
 #include <string/new.h>
 #include <string/free.h>
 
-#include <parser/tokenizer/read_token.h>
-#include <parser/tokenizer/machines/misc/colon.h>
-#include <parser/tokenizer/machines/production/root.h>
-
-#include <gegex/state/struct.h>
-#include <gegex/state/free.h>
+#include <gegex/struct.h>
+#include <gegex/free.h>
 #include <gegex/nfa_to_dfa.h>
-#include <gegex/simplify_dfa/simplify_dfa.h>
+#include <gegex/simplify_dfa.h>
 
-#include "../production/root.h"
+#include "../grammar/root.h"
 
 #include "../scope/declare/grammar.h"
+
+#include "../tokenizer/struct.h"
+#include "../tokenizer/token_names.h"
+#include "../tokenizer/read_token.h"
 
 #include "start.h"
 
@@ -29,31 +29,36 @@ void read_start_directive(
 {
 	ENTER;
 	
-	read_token(tokenizer, colon_machine);
+	assert(tokenizer->token == t_identifier);
 	
-	// prep production-rule reader:
-	read_token(tokenizer, production_root_machine);
+	read_token(tokenizer);
+	
+	if (tokenizer->token != t_colon)
+	{
+		assert(token_names[tokenizer->token]);
+		assert(token_names[t_colon]);
+		
+		fprintf(stderr, "zebu: error while reading '%%start' directive: "
+			"unexpected '%s', expecting '%s'!\n",
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
+	}
+	
+	read_token(tokenizer);
 	
 	struct string* name = new_string("$start");
 	
 	// read a prodution rule:
-	struct gbundle bundle = read_root_production(
-		/*     tokenizer: */ tokenizer,
-		/*         scope: */ scope,
-		/*           lex: */ lex);
+	struct gbundle nfa = read_root_production(tokenizer, scope, lex);
 	
-	bundle.end->is_reduction_point = true;
+	struct gegex* dfa = gegex_nfa_to_dfa(nfa);
 	
-	struct gegex* nfa_start = bundle.start;
+	struct gegex* simp = gegex_simplify_dfa(dfa);
 	
-	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	scope_declare_grammar(scope, name, simp);
 	
-	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
-	
-	scope_declare_grammar(scope, name, simp_start);
-	
-	free_gegex(nfa_start), free_gegex(dfa_start);
-	
+	free_gegex(nfa.start), free_gegex(dfa);
 	free_string(name);
 	
 	EXIT;

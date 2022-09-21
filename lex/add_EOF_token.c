@@ -1,8 +1,8 @@
 
 #include <debug.h>
 
-#include <regex/state/struct.h>
-#include <regex/state/new.h>
+#include <regex/struct.h>
+#include <regex/new.h>
 /*#include <regex/clone.h>*/
 /*#include <regex/state/free.h>*/
 /*#include <regex/nfa_to_dfa.h>*/
@@ -11,7 +11,7 @@
 
 #include <regex/dotout.h>
 
-#include "lookup/add_token.h"
+#include "add_token.h"
 
 #include "struct.h"
 
@@ -26,13 +26,13 @@ void lex_add_EOF_token(struct lex* this)
 	
 	start->EOF_transition_to = end;
 	
-	end->is_accepting = true;
+	end->accepts = true;
 	
 	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
-	unsigned tid = lex_add_token2(this, start, tk_literal);
+	unsigned tid = lex_add_token(this, start, tk_literal);
 	
 	this->EOF_token_id = tid;
 	

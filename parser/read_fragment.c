@@ -15,10 +15,10 @@
 
 /*#include <arena/memdup.h>*/
 
-#include <regex/simplify_dfa/simplify_dfa.h>
+#include <regex/simplify_dfa.h>
 #include <regex/nfa_to_dfa.h>
-#include <regex/state/struct.h>
-#include <regex/state/free.h>
+#include <regex/struct.h>
+#include <regex/free.h>
 
 /*#include "scope/get_arena.h"*/
 
@@ -26,10 +26,8 @@
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/misc/colon.h"
-#include "tokenizer/machines/regex/root.h"
 
-#include "token/root.h"
+#include "regex/root.h"
 /*#include "token/rbundle.h"*/
 
 #include "read_fragment.h"
@@ -38,35 +36,53 @@ void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 {
 	ENTER;
 	
-	assert(tokenizer->token == t_gravemarked_identifier);
+	assert(tokenizer->token == t_gravemark);
+	
+	read_token(tokenizer);
+	
+	if (tokenizer->token != t_identifier)
+	{
+		TODO;
+		exit(1);
+	}
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
 	
-	read_token(tokenizer, colon_machine);
+	read_token(tokenizer);
 	
-	read_token(tokenizer, regex_root_machine);
-	
-	struct rbundle bun = read_root_token_expression(tokenizer, scope);
-	
-	if (bun.is_nfa)
+	if (tokenizer->token != t_gravemark)
 	{
-		struct regex* nfa = bun.nfa.start;
-		
-		bun.nfa.end->is_accepting = true;
-		
-		struct regex* dfa = regex_nfa_to_dfa(nfa);
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
+	
+	if (tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
+	
+	struct rbundle regex = read_root_token_expression(tokenizer, scope);
+	
+	if (regex.is_nfa)
+	{
+		struct regex* dfa = regex_nfa_to_dfa(regex);
 		
 		struct regex* simp = regex_simplify_dfa(dfa);
 		
 		scope_declare_fragment(scope, name, simp);
 		
-		free_regex(nfa), free_regex(dfa);
+		free_regex(regex.nfa.start), free_regex(dfa);
 	}
 	else
 	{
-		scope_declare_fragment(scope, name, bun.dfa);
+		scope_declare_fragment(scope, name, regex.dfa);
 	}
 	
 	if (true

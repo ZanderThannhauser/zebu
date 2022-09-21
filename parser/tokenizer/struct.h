@@ -1,7 +1,7 @@
 
 #include <stddef.h>
 
-#include "../token.h"
+#include "token.h"
 
 struct tokenizer
 {
@@ -11,6 +11,8 @@ struct tokenizer
 		unsigned char data[4096];
 		size_t i, n;
 	} buffer;
+	
+	unsigned line;
 	
 	char c;
 	

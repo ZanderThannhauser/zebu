@@ -1,10 +1,6 @@
 
-#include "machines/state.h"
-
-#include "../token.h"
+#include "token.h"
 
 struct tokenizer;
 
-enum token read_token(
-	struct tokenizer* this,
-	const enum tokenizer_state machine[number_of_tokenizer_states][256]);
+enum token read_token(struct tokenizer* this);

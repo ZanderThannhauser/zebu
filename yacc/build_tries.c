@@ -11,7 +11,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -28,14 +28,16 @@
 /*#include <named/trie/compare.h>*/
 /*#include <named/trie/free.h>*/
 
-#include <set/gegex/new.h>
-#include <set/gegex/add.h>
-#include <set/gegex/free.h>
+/*#include <set/gegex/new.h>*/
+/*#include <set/gegex/add.h>*/
+/*#include <set/gegex/free.h>*/
 
 /*#include <set/string/new.h>*/
 /*#include <set/string/foreach.h>*/
 
-#include <gegex/state/struct.h>
+#include <gegex/grammar/struct.h>
+#include <gegex/transition/struct.h>
+#include <gegex/struct.h>
 
 #ifdef VERBOSE
 #include <stdio.h>
@@ -106,7 +108,7 @@ static struct gegex_to_trie_name_node* new_gegex_to_trie_name(
 #ifdef DOTOUT
 static void explore_dotout(
 	struct gegex* start,
-	struct gegexset* seen,
+	struct ptrset* seen,
 	struct avl_tree_t* gegex_to_trie,
 	struct gegex* focus)
 {
@@ -122,11 +124,11 @@ static void explore_dotout(
 	
 	fprintf(stream, "rankdir = LR" "\n");
 	
-	struct gegexset* queued = new_gegexset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	gegexset_add(queued, start);
+	ptrset_add(queued, start);
 	
 	quack_append(todo, start);
 	
@@ -155,7 +157,7 @@ static void explore_dotout(
 				"peripheries = %u" "\n"
 			"];" "\n"
 		"", state, label,
-		gegexset_contains(seen, state) ? "grey" : "white",
+		ptrset_contains(seen, state) ? "grey" : "white",
 		state == focus ? "square" : "circle",
 		state->is_reduction_point ? 2 : 1);
 		
@@ -163,7 +165,7 @@ static void explore_dotout(
 		{
 			struct gegex_transition* transition = state->transitions.data[i];
 			
-			if (gegexset_add(queued, transition->to))
+			if (ptrset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 			
 			char* label = structinfo_to_hashtagstring(transition->structinfo);
@@ -177,11 +179,11 @@ static void explore_dotout(
 			free(label);
 		}
 		
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			struct gegex_grammar_transition* gtransition = state->grammar_transitions.data[i];
+			struct gegex_grammar_transition* gtransition = state->grammars.data[i];
 			
-			if (gegexset_add(queued, gtransition->to))
+			if (ptrset_add(queued, gtransition->to))
 				quack_append(todo, gtransition->to);
 			
 			char* label = structinfo_to_hashtagstring(gtransition->structinfo);
@@ -196,7 +198,7 @@ static void explore_dotout(
 	
 	fprintf(stream, "}");
 	
-	free_gegexset(queued);
+	free_ptrset(queued);
 	
 	free_quack(todo);
 	
@@ -269,9 +271,9 @@ static void expand_dotout(struct trie* start)
 			free(whitespace);
 		}
 		
-		for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 		{
-			struct trie_grammar_transition* trans = trie->grammar_transitions.data[i];
+			struct trie_grammar_transition* trans = trie->grammars.data[i];
 			
 			fprintf(stream, ""
 				"\"%p\" -> \"%p\" [ label = \"%s\" ];" "\n"
@@ -307,7 +309,7 @@ void build_tries(
 	
 	struct quack* expand = new_quack();
 	
-	struct gegexset* seen = new_gegexset();
+	struct ptrset* seen = new_ptrset();
 	
 	int compare_gegex_to_trie(const void* a, const void* b)
 	{
@@ -330,7 +332,7 @@ void build_tries(
 	
 	// setup:
 	{
-		gegexset_add(seen, start);
+		ptrset_add(seen, start);
 		
 		quack_append(explore, start);
 		
@@ -368,7 +370,7 @@ void build_tries(
 	#endif
 	
 	// explore:
-	while (quack_len(explore))
+	while (quack_is_nonempty(explore))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -378,11 +380,11 @@ void build_tries(
 		
 		void process_to(struct gegex* to)
 		{
-			if (gegexset_add(seen, to))
+			if (ptrset_add(seen, to))
 			{
 				quack_append(explore, to);
 			}
-			else if ((to->transitions.n || to->grammar_transitions.n) && !avl_search(gegex_to_trie, &to))
+			else if ((to->transitions.n || to->grammars.n) && !avl_search(gegex_to_trie, &to))
 			{
 				struct string* name = new_string_from_format("(trie #%u)", trie_id++);
 				
@@ -403,9 +405,9 @@ void build_tries(
 			process_to(state->transitions.data[i]->to);
 		}
 		
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			process_to(state->grammar_transitions.data[i]->to);
+			process_to(state->grammars.data[i]->to);
 		}
 		
 		#ifdef DOTOUT
@@ -436,7 +438,7 @@ void build_tries(
 	#endif
 	
 	// we have one pass that fills-out all the tries:
-	while (quack_len(expand))
+	while (quack_is_nonempty(expand))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -451,7 +453,7 @@ void build_tries(
 		{
 			ENTER;
 			
-			if (reductioninfo && gegex->is_reduction_point)
+			if (reductioninfo && gegex->accepts)
 			{
 				trie->reductioninfo = inc_reductioninfo(reductioninfo);
 				trie->structinfo = inc_structinfo(structinfo);
@@ -473,7 +475,7 @@ void build_tries(
 				
 				if (node)
 				{
-					if (to->is_reduction_point)
+					if (to->accepts)
 					{
 						retval->reductioninfo = inc_reductioninfo(subreductioninfo);
 						retval->structinfo = inc_structinfo(structinfo);
@@ -510,9 +512,9 @@ void build_tries(
 				trie_add_transition(trie, transition->token, transition->whitespace, to);
 			}
 			
-			for (unsigned i = 0, n = gegex->grammar_transitions.n; i < n; i++)
+			for (unsigned i = 0, n = gegex->grammars.n; i < n; i++)
 			{
-				struct gegex_grammar_transition* transition = gegex->grammar_transitions.data[i];
+				struct gegex_grammar_transition* transition = gegex->grammars.data[i];
 				
 				struct trie* to = process_transition(transition->structinfo, transition->grammar, transition->to);
 				
@@ -537,7 +539,7 @@ void build_tries(
 	
 	avl_free_tree(gegex_to_trie);
 	
-	free_gegexset(seen);
+	free_ptrset(seen);
 	
 	free_quack(explore);
 	

@@ -20,7 +20,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -32,7 +32,7 @@
 
 #include <lex/struct.h>
 #include <lex/build_tokenizer/build_tokenizer.h>
-#include <lex/minimize_lexer/minimize_lexer.h>
+#include <lex/minimize_lexer.h>
 
 #include <set/unsigned/head.h>
 #include <set/unsigned/new.h>
@@ -407,7 +407,15 @@ struct yacc_state* yacc(
 	{
 		struct stateinfo* stateinfo = new_stateinfo();
 		
-		struct named_trie* start_trie = avl_search(named_tries, &(const char**){(const char*[]) {"$start"}})->item;
+		struct avl_node_t* node = avl_search(named_tries, &(const char**){(const char*[]) {"$start"}});
+		
+		if (!node)
+		{
+			fprintf(stderr, "zebu: the '%%start' directive must be used to specify which grammar starts the parse!\n");
+			exit(e_bad_input_file);
+		}
+		
+		struct named_trie* start_trie = node->item;
 		
 		struct unsignedset* lookahead_whitespace = new_unsignedset();
 		
@@ -435,7 +443,6 @@ struct yacc_state* yacc(
 		free_stateinfo(stateinfo);
 	}
 	
-	
 	#ifdef VERBOSE
 	unsigned completed = 0;
 	
@@ -458,7 +465,7 @@ struct yacc_state* yacc(
 	signal(SIGALRM, handler2);
 	#endif
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct mapping* const mapping = quack_pop(todo);
 		
@@ -504,9 +511,9 @@ struct yacc_state* yacc(
 					unsignedset_add(all_tokens, ele->token);
 				}
 				
-				for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
+				for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 				{
-					const struct trie_grammar_transition* ele = trie->grammar_transitions.data[i];
+					const struct trie_grammar_transition* ele = trie->grammars.data[i];
 					
 					dpvs(ele->grammar);
 					

@@ -53,6 +53,7 @@
 	struct reducerule_to_id;
 	struct string_to_id;
 	struct tags;
+	struct gegex_transition;
 	
 	#include <enums/error.h>
 	#include <enums/token_kind.h>
@@ -76,13 +77,13 @@
 	#include <avl/free_nodes.h>
 	#include <avl/free_tree.h>
 	
-	#include <quack/new.h>
-	#include <quack/len.h>
-	#include <quack/append.h>
-	#include <quack/pop.h>
-	#include <quack/push.h>
-	#include <quack/foreach.h>
-	#include <quack/free.h>
+	#include <set/ptr/new.h>
+	#include <set/ptr/inc.h>
+	#include <set/ptr/add.h>
+	#include <set/ptr/foreach.h>
+	#include <set/ptr/compare.h>
+	#include <set/ptr/is_nonempty.h>
+	#include <set/ptr/free.h>
 	
 #endif
 
@@ -285,6 +286,8 @@
 	}
 	
 #else
+	#ifdef TESTING
+	
 	#define dpv(x) ;
 	#define dpvb(x) ;
 	#define dpvc(x) ;
@@ -297,13 +300,15 @@
 	
 	#define dperror(x) ;
 	
-	#define ENTER
-	#define EXIT
-	#define HERE
-	
 	#define TODO assert(!"TODO");
 	#define CHECK assert(!"CHECK");
 	#define NOPE assert(!"NOPE");
+	
+	#endif
+	
+	#define ENTER
+	#define EXIT
+	#define HERE
 	
 #endif
 

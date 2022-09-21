@@ -1,26 +1,29 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
-#include <set/gegex/new.h>
-#include <set/gegex/add.h>
-#include <set/gegex/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include "state/struct.h"
-#include "state/new.h"
-#include "state/add_lambda_transition.h"
-
+#include "struct.h"
+#include "new.h"
+#include "add_lambda_transition.h"
 #include "dfa_to_nfa.h"
 
 struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct gegex* end = new_gegex();
 	
 	struct gegexset* done = new_gegexset();
@@ -31,7 +34,7 @@ struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 	
 	quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct gegex* state = quack_pop(todo);
 		
@@ -72,6 +75,7 @@ struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 	
 	EXIT;
 	return (struct gbundle) {start, end};
+	#endif
 }
 
 

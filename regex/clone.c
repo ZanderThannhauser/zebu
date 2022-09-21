@@ -13,7 +13,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -24,10 +24,9 @@
 #include <misc/default_sighandler.h>
 #endif
 
-#include "state/struct.h"
-#include "state/new.h"
-#include "state/add_lambda_transition.h"
-
+#include "struct.h"
+#include "new.h"
+#include "add_lambda_transition.h"
 #include "clone.h"
 
 struct mapping
@@ -60,6 +59,8 @@ struct regex* regex_clone(struct regex* original_start)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
 	struct quack* todo = new_quack();
@@ -180,14 +181,16 @@ struct regex* regex_clone(struct regex* original_start)
 	
 	EXIT;
 	return new_start;
+	#endif
 }
 
-
-struct clone_nfa_bundle regex_clone_nfa(
+struct rbundle regex_clone_nfa(
 	struct regex* start, struct regex* end)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
 	struct quack* todo = new_quack();
@@ -317,6 +320,7 @@ struct clone_nfa_bundle regex_clone_nfa(
 	
 	EXIT;
 	return (struct clone_nfa_bundle) {new_start, new_end};
+	#endif
 }
 
 

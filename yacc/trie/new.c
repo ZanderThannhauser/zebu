@@ -20,9 +20,9 @@ struct trie* new_trie()
 	this->transitions.n = 0;
 	this->transitions.cap = 0;
 	
-	this->grammar_transitions.data = NULL;
-	this->grammar_transitions.n = 0;
-	this->grammar_transitions.cap = 0;
+	this->grammars.data = NULL;
+	this->grammars.n = 0;
+	this->grammars.cap = 0;
 	
 	EXIT;
 	return this;

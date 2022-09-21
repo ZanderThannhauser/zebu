@@ -13,17 +13,17 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <set/regex/new.h>
-#include <set/regex/compare.h>
-#include <set/regex/add.h>
-#include <set/regex/inc.h>
-#include <set/regex/free.h>
-#include <set/regex/foreach.h>
-#include <set/regex/len.h>
+/*#include <set/regex/new.h>*/
+/*#include <set/regex/compare.h>*/
+/*#include <set/regex/add.h>*/
+/*#include <set/regex/inc.h>*/
+/*#include <set/regex/free.h>*/
+/*#include <set/regex/foreach.h>*/
+/*#include <set/regex/len.h>*/
 
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>
@@ -39,7 +39,7 @@
 #include <lex/state/new.h>
 /*#include <lex/state/dotout.h>*/
 
-#include <regex/state/struct.h>
+#include <regex/struct.h>
 /*#include <regex/dotout.h>*/
 
 #ifdef DOTOUT
@@ -51,19 +51,19 @@
 
 struct mapping
 {
-	struct regexset* regexset; // must be first
+	struct ptrset* ptrset; // must be first
 	struct lex_state* state;
 };
 
 static struct mapping* new_mapping(
-	struct regexset* regexset,
+	struct ptrset* ptrset,
 	struct lex_state* state)
 {
 	ENTER;
 	
 	struct mapping* this = smalloc(sizeof(*this));
 	
-	this->regexset = inc_regexset(regexset);
+	this->ptrset = inc_ptrset(ptrset);
 	
 	this->state = state;
 	
@@ -75,20 +75,21 @@ static int compare_mappings(const void* a, const void* b)
 {
 	const struct mapping *A = a, *B = b;
 	
-	return compare_regexsets(A->regexset, B->regexset);
+	return compare_ptrsets(A->ptrset, B->ptrset);
 }
 
 static void free_mapping(void* ptr)
 {
 	struct mapping* mapping = ptr;
 	
-	free_regexset(mapping->regexset);
+	free_ptrset(mapping->ptrset);
+	
 	free(mapping);
 }
 
 struct unsignedsetset* dfas_to_dfa(
 	struct lex_state** outgoing,
-	struct regexset* starts)
+	struct ptrset* starts)
 {
 	ENTER;
 	
@@ -116,11 +117,11 @@ struct unsignedsetset* dfas_to_dfa(
 	lex_state_dotout(start);
 	#endif
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct mapping* const mapping = quack_pop(todo);
 		
-		struct regexset* const stateset = mapping->regexset;
+		struct ptrset* const stateset = mapping->ptrset;
 		
 		struct lex_state* const state = mapping->state;
 		
@@ -128,20 +129,21 @@ struct unsignedsetset* dfas_to_dfa(
 		
 		struct unsignedset* accepts = new_unsignedset();
 		
-		regexset_foreach(stateset, ({
-			void runme(struct regex* substate)
+		ptrset_foreach(stateset, ({
+			void runme(void* ptr)
 			{
-				if (substate->is_accepting)
+				struct regex* substate = ptr;
+				if (substate->accepts)
 				{
 					if (substate->kind > kind)
 					{
 						unsignedset_clear(accepts);
-						unsignedset_add(accepts, substate->is_accepting);
+						unsignedset_add(accepts, substate->accepts);
 						kind = substate->kind;
 					}
 					else if (substate->kind == kind)
 					{
-						unsignedset_add(accepts, substate->is_accepting);
+						unsignedset_add(accepts, substate->accepts);
 					}
 				}
 			}
@@ -162,19 +164,20 @@ struct unsignedsetset* dfas_to_dfa(
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct regexset* subregexset = new_regexset();
+			struct ptrset* subptrset = new_ptrset();
 			
-			regexset_foreach(stateset, ({
-				void runme(struct regex* substate) {
+			ptrset_foreach(stateset, ({
+				void runme(void* ptr) {
+					struct regex* substate = ptr;
 					struct regex* to = substate->transitions[i];
-					if (to) regexset_add(subregexset, to);
+					if (to) ptrset_add(subptrset, to);
 				}
 				runme;
 			}));
 			
-			if (regexset_len(subregexset))
+			if (ptrset_is_nonempty(subptrset))
 			{
-				struct avl_node_t* node = avl_search(mappings, &subregexset);
+				struct avl_node_t* node = avl_search(mappings, &subptrset);
 				
 				if (node)
 				{
@@ -186,7 +189,7 @@ struct unsignedsetset* dfas_to_dfa(
 				{
 					struct lex_state* substate = new_lex_state();
 					
-					struct mapping* new = new_mapping(subregexset, substate);
+					struct mapping* new = new_mapping(subptrset, substate);
 					
 					state->transitions[i] = substate;
 					
@@ -196,24 +199,25 @@ struct unsignedsetset* dfas_to_dfa(
 				}
 			}
 			
-			free_regexset(subregexset);
+			free_ptrset(subptrset);
 		}
 		
 		// EOF transitions:
 		{
-			struct regexset* subregexset = new_regexset();
+			struct ptrset* subptrset = new_ptrset();
 			
-			regexset_foreach(stateset, ({
-				void runme(struct regex* substate) {
+			ptrset_foreach(stateset, ({
+				void runme(void* ptr) {
+					struct regex* substate = ptr;
 					struct regex* to = substate->EOF_transition_to;
-					if (to) regexset_add(subregexset, to);
+					if (to) ptrset_add(subptrset, to);
 				}
 				runme;
 			}));
 			
-			if (regexset_len(subregexset))
+			if (ptrset_is_nonempty(subptrset))
 			{
-				struct avl_node_t* node = avl_search(mappings, &subregexset);
+				struct avl_node_t* node = avl_search(mappings, &subptrset);
 				
 				if (node)
 				{
@@ -225,7 +229,7 @@ struct unsignedsetset* dfas_to_dfa(
 				{
 					struct lex_state* substate = new_lex_state();
 					
-					struct mapping* new = new_mapping(subregexset, substate);
+					struct mapping* new = new_mapping(subptrset, substate);
 					
 					state->EOF_transition_to = substate;
 					
@@ -235,7 +239,7 @@ struct unsignedsetset* dfas_to_dfa(
 				}
 			}
 			
-			free_regexset(subregexset);
+			free_ptrset(subptrset);
 		}
 		
 		#ifdef DOTOUT

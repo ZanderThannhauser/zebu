@@ -15,8 +15,6 @@
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/misc/colon.h"
-#include "tokenizer/machines/charset/root.h"
 
 #include "scope/declare/charset.h"
 
@@ -28,6 +26,8 @@ void read_charset(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_bracketed_identifier);
 	
 	dpvs(tokenizer->tokenchars.chars);
@@ -51,6 +51,7 @@ void read_charset(
 	}
 	
 	free_string(name);
+	#endif
 	
 	EXIT;
 }

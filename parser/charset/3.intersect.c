@@ -5,7 +5,6 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/charset/inside_intersect.h"
 
 #include "2.range.h"
 #include "3.intersect.h"
@@ -18,13 +17,16 @@ charset_t read_intersect_charset(
 	
 	charset_t left = read_range_charset(tokenizer, scope);
 	
-	if (tokenizer->token == t_ampersand)
+	while (tokenizer->token == t_ampersand)
 	{
+		TODO;
+		#if 0
 		read_token(tokenizer, charset_inside_intersect_machine);
 		
 		charset_t right = read_range_charset(tokenizer, scope);
 		
 		left &= right;
+		#endif
 	}
 	
 	EXIT;

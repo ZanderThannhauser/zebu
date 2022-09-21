@@ -6,27 +6,27 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <set/lexstate/add.h>
+/*#include <set/lexstate/add.h>*/
 
 #include <set/unsigned/free.h>
 
 #include "struct.h"
 #include "free.h"
 
-void free_lex_state(struct lexstateset* freed, struct lex_state* start)
+void free_lex_state(struct ptrset* freed, struct lex_state* start)
 {
 	ENTER;
 	
 	struct quack* todo = new_quack();
 	
-	if (lexstateset_add(freed, start))
+	if (ptrset_add(freed, start))
 		quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct lex_state* state = quack_pop(todo);
 		
@@ -36,7 +36,7 @@ void free_lex_state(struct lexstateset* freed, struct lex_state* start)
 		{
 			struct lex_state* to = state->transitions[i];
 			
-			if (to && lexstateset_add(freed, to))
+			if (to && ptrset_add(freed, to))
 				quack_append(todo, to);
 		}
 		
@@ -44,7 +44,7 @@ void free_lex_state(struct lexstateset* freed, struct lex_state* start)
 		{
 			struct lex_state* to = state->EOF_transition_to;
 			
-			if (lexstateset_add(freed, to))
+			if (ptrset_add(freed, to))
 				quack_append(todo, to);
 		}
 		

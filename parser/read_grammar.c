@@ -11,20 +11,17 @@
 
 #include <enums/error.h>
 
-#include <gegex/state/struct.h>
-/*#include <gegex/state/new.h>*/
+#include <gegex/struct.h>
 #include <gegex/nfa_to_dfa.h>
-#include <gegex/simplify_dfa/simplify_dfa.h>
-#include <gegex/state/free.h>
+#include <gegex/simplify_dfa.h>
+#include <gegex/free.h>
 
-#include "production/root.h"
+#include "grammar/root.h"
 
 #include "scope/declare/grammar.h"
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/misc/colon.h"
-#include "tokenizer/machines/production/root.h"
 
 #include "read_grammar.h"
 
@@ -35,6 +32,8 @@ void read_grammar(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	assert(tokenizer->token == t_identifier);
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
@@ -75,6 +74,7 @@ void read_grammar(
 	free_gegex(dfa_start);
 	
 	free_string(name);
+	#endif
 	
 	EXIT;
 }

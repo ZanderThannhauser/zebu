@@ -8,9 +8,9 @@
 #include <avl/insert.h>
 #include <avl/search.h>
 
-#include <set/regex/new.h>
-#include <set/regex/add.h>
-#include <set/regex/free.h>
+/*#include <set/regex/new.h>*/
+/*#include <set/regex/add.h>*/
+/*#include <set/regex/free.h>*/
 
 #include <set/unsigned/foreach.h>
 
@@ -20,7 +20,7 @@
 
 #include "../struct.h"
 
-#include "../lookup/id_to_dfa.h"
+#include "../id_to_dfa.h"
 
 #include "node/struct.h"
 #include "node/new.h"
@@ -51,11 +51,11 @@ struct unsignedsetset* lex_build_tokenzer(
 	}
 	else
 	{
-		struct regexset* starts = new_regexset();
+		struct ptrset* starts = new_ptrset();
 		
 		unsignedset_foreach(token_ids, ({
 			void runme(unsigned token) {
-				regexset_add(starts, lex_id_to_dfa(this, token));
+				ptrset_add(starts, lex_id_to_dfa(this, token));
 			}
 			runme;
 		}));
@@ -64,7 +64,7 @@ struct unsignedsetset* lex_build_tokenzer(
 		
 		avl_insert(this->tokenizer_cache, new_build_tokenizer_node(token_ids, accepts, *outgoing));
 		
-		free_regexset(starts);
+		free_ptrset(starts);
 		
 		EXIT
 		return accepts;

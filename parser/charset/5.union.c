@@ -7,7 +7,7 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/charset/inside_union.h"
+#include "../tokenizer/token_names.h"
 
 #include "4.xor.h"
 #include "5.union.h"
@@ -20,22 +20,28 @@ charset_t read_union_charset(
 	
 	charset_t left = read_xor_charset(tokenizer, scope);
 	
-	while (false
-		|| tokenizer->token == t_oparen
-		|| tokenizer->token == t_character_literal
-		|| tokenizer->token == t_vertical_bar
-		|| tokenizer->token == t_comma)
+	again: switch (tokenizer->token)
 	{
-		if (false
-			|| tokenizer->token == t_vertical_bar
-			|| tokenizer->token == t_comma)
+		case t_vbar:
+		case t_comma:
+			read_token(tokenizer);
+		case t_oparen:
+		case t_character_literal:
 		{
-			read_token(tokenizer, charset_inside_union_machine);
+			charset_t right = read_xor_charset(tokenizer, scope);
+			left |= right;
+			goto again;
 		}
 		
-		charset_t right = read_xor_charset(tokenizer, scope);
+		case t_cparen:
+		case t_csquare:
+		case t_semicolon:
+			break;
 		
-		left |= right;
+		default:
+			dpvs(token_names[tokenizer->token]);
+			TODO;
+			break;
 	}
 	
 	EXIT;

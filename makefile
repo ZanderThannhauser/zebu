@@ -82,7 +82,7 @@ ARGS += --verbose
 #ARGS += --template=fileio
 ARGS += --template=fileio-with-driver
 
-ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
@@ -109,7 +109,7 @@ ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += -i ./-examples/csv/csv.zb -o ./-examples/csv/csv
 
-#ARGS += -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu
+ARGS += -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu
 
 run: $(buildprefix)/zebu
 	$< $(ARGS)
@@ -135,7 +135,7 @@ install: $(buildprefix)/zebu
 %/:
 	@ mkdir -p $@
 
-gen/srclist.mk: | gen/%/
+gen/srclist.mk: | gen/
 	@ echo "searching for source files..."
 	@ find -name '*.c' -! -path '*/-*' | sort -Vr | sed 's/^/srcs += /' > $@
 

@@ -3,9 +3,8 @@
 
 #include <debug.h>
 
-#include "state/new.h"
-#include "state/struct.h"
-
+#include "new.h"
+#include "struct.h"
 #include "dotout.h"
 #include "from_literal.h"
 
@@ -30,7 +29,7 @@ struct regex* regex_from_literal(const unsigned char* string, unsigned len)
 		accept = temp;
 	}
 	
-	accept->is_accepting = true;
+	accept->accepts = true;
 	
 	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);

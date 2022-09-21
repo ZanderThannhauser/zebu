@@ -7,16 +7,9 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
-
-#include <set/yaccstate/new.h>
-#include <set/yaccstate/add.h>
-#include <set/yaccstate/free.h>
-
-#include <set/lexstate/new.h>
-#include <set/lexstate/free.h>
 
 #include <lex/state/free.h>
 
@@ -33,17 +26,17 @@ void free_yacc_state(struct yacc_state* start)
 {
 	ENTER;
 	
-	struct yaccstateset* yacc_queued = new_yaccstateset();
+	struct ptrset* yacc_queued = new_ptrset();
 	
-	struct lexstateset* lex_queued = new_lexstateset();
+	struct ptrset* lex_queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	yaccstateset_add(yacc_queued, start);
+	ptrset_add(yacc_queued, start);
 	
 	quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct yacc_state* state = quack_pop(todo);
 		
@@ -55,7 +48,7 @@ void free_yacc_state(struct yacc_state* start)
 			
 			free_unsignedset(ele->on);
 			
-			if (yaccstateset_add(yacc_queued, ele->to))
+			if (ptrset_add(yacc_queued, ele->to))
 				quack_append(todo, ele->to);
 			
 			free(ele);
@@ -67,7 +60,7 @@ void free_yacc_state(struct yacc_state* start)
 			
 			free_string(ele->grammar);
 			
-			if (yaccstateset_add(yacc_queued, ele->to))
+			if (ptrset_add(yacc_queued, ele->to))
 				quack_append(todo, ele->to);
 			
 			free(ele);
@@ -97,9 +90,9 @@ void free_yacc_state(struct yacc_state* start)
 		free(state);
 	}
 	
-	free_yaccstateset(yacc_queued);
+	free_ptrset(yacc_queued);
 	
-	free_lexstateset(lex_queued);
+	free_ptrset(lex_queued);
 	
 	free_quack(todo);
 	

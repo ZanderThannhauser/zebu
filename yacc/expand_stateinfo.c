@@ -13,7 +13,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -310,14 +310,16 @@ void expand_stateinfo(
 	#endif
 	
 	// expand stateinfo, setting up lookahead dependencies:
-	while (quack_len(explore))
+	while (quack_is_nonempty(explore))
 	{
 		struct stateinfo_node* node = quack_pop(explore);
 		
 		struct trie* const trie = node->trie;
 		
-		for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 		{
+			TODO;
+			#if 0
 			struct trie_grammar_transition *const ele = trie->grammar_transitions.data[i];
 			
 			struct trie* subgrammar_start;
@@ -373,11 +375,12 @@ void expand_stateinfo(
 			#endif
 			
 			free_unsignedset(whitespace), free_unsignedset(tokens);
+			#endif
 		}
 	}
 	
 	// percolate lookaheads:
-	while (quack_len(percolate))
+	while (quack_is_nonempty(percolate))
 	{
 		struct trie* const trie = quack_pop(percolate);
 		

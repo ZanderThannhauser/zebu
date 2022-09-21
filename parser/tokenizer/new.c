@@ -17,6 +17,8 @@ struct tokenizer* new_tokenizer(int fd)
 	
 	this->fd = fd;
 	
+	this->line = 1;
+	
 	this->buffer.i = 0;
 	this->buffer.n = 0;
 	

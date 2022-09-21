@@ -10,13 +10,12 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <set/regex/new.h>
-#include <set/regex/add.h>
-#include <set/regex/free.h>
+/*#include <set/regex/new.h>*/
+/*#include <set/regex/add.h>*/
+/*#include <set/regex/free.h>*/
 
-#include "state/struct.h"
-#include "state/new.h"
-
+#include "struct.h"
+#include "new.h"
 #include "dotout.h"
 #include "complement.h"
 
@@ -24,6 +23,8 @@ void regex_complement(struct regex* start)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct regexset* queued = new_regexset();
 	struct quack* todo = new_quack();
 	
@@ -80,6 +81,7 @@ void regex_complement(struct regex* start)
 	free_regexset(queued);
 	
 	free_quack(todo);
+	#endif
 	
 	EXIT;
 }

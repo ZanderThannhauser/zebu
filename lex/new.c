@@ -9,11 +9,11 @@
 
 #include <set/unsigned/new.h>
 
-#include "lookup/to_node/compare.h"
-#include "lookup/to_node/free.h"
+#include "to_node/compare.h"
+#include "to_node/free.h"
 
-#include "lookup/from_node/compare.h"
-#include "lookup/from_node/free.h"
+#include "from_node/compare.h"
+#include "from_node/free.h"
 
 #include "build_tokenizer/node/compare.h"
 #include "build_tokenizer/node/free.h"

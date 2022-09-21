@@ -22,18 +22,18 @@ void trie_add_grammar_transition(
 	gtransition->grammar = inc_string(grammar);
 	gtransition->to = to;
 	
-	if (this->grammar_transitions.n + 1 > this->grammar_transitions.cap)
+	if (this->grammars.n + 1 > this->grammars.cap)
 	{
-		this->grammar_transitions.cap = this->grammar_transitions.cap * 2 ?: 1;
+		this->grammars.cap = this->grammars.cap * 2 ?: 1;
 		
-		this->grammar_transitions.data = srealloc(this->grammar_transitions.data,
-			sizeof(*this->grammar_transitions.data) * this->grammar_transitions.cap);
+		this->grammars.data = srealloc(this->grammars.data,
+			sizeof(*this->grammars.data) * this->grammars.cap);
 	}
 	
 	unsigned i;
-	struct trie_grammar_transition** const gdata = this->grammar_transitions.data;
+	struct trie_grammar_transition** const gdata = this->grammars.data;
 	
-	for (i = this->grammar_transitions.n++ - 1; 0 + 1 <= i + 1 && compare_strings(grammar, gdata[i]->grammar) < 0; i--)
+	for (i = this->grammars.n++ - 1; 0 + 1 <= i + 1 && compare_strings(grammar, gdata[i]->grammar) < 0; i--)
 	{
 		gdata[i + 1] = gdata[i];
 	}

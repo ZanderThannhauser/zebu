@@ -12,16 +12,15 @@
 #include "tokenizer/new.h"
 #include "tokenizer/read_char.h"
 #include "tokenizer/read_token.h"
-#include "tokenizer/machines/root.h"
 #include "tokenizer/free.h"
 
 #include "pragma_once/lookup.h"
 
-#include "read_directive/read_directive.h"
 #include "read_charset.h"
 #include "read_fragment.h"
 #include "read_grammar.h"
 #include "read_inline_grammar.h"
+#include "read_directive.h"
 
 #include "recursive_parse.h"
 
@@ -45,13 +44,13 @@ void recursive_parse(
 		
 		read_char(tokenizer);
 		
-		read_token(tokenizer, root_machine);
+		read_token(tokenizer);
 		
 		while (tokenizer->token != t_EOF)
 		{
 			switch (tokenizer->token)
 			{
-				case t_directive:
+				case t_percent:
 				{
 					read_directive(
 						/* pragma_once:    */ pragma_once,
@@ -63,39 +62,43 @@ void recursive_parse(
 					break;
 				}
 				
-				case t_bracketed_identifier:
+				case t_osquare:
 				{
+					TODO;
+					#if 0
 					read_charset(
 						/* tokenizer: */ tokenizer,
 						/* scope      */ scope);
 					break;
+					#endif
 				}
 				
-				case t_gravemarked_identifier:
-				{
-					read_fragment(
-						/* tokenizer:  */ tokenizer,
-						/* scope       */ scope
-					);
+				case t_gravemark:
+					read_fragment(tokenizer, scope);
 					break;
-				}
 				
-				case t_parenthesised_identifier:
+				case t_oparen:
 				{
+					TODO;
+					#if 0
 					read_inline_grammar(
 						/* tokenizer: */ tokenizer,
 						/* scope: */ scope,
 						/* lex: */ lex);
 					break;
+					#endif
 				}
 				
 				case t_identifier:
 				{
+					TODO;
+					#if 0
 					read_grammar(
 						/* tokenizer:   */ tokenizer,
 						/* scope        */ scope,
 						/* lex:         */ lex);
 					break;
+					#endif
 				}
 				
 				default:
@@ -104,7 +107,7 @@ void recursive_parse(
 					break;
 			}
 			
-			read_token(tokenizer, root_machine);
+			read_token(tokenizer);
 		}
 		
 		free_tokenizer(tokenizer);

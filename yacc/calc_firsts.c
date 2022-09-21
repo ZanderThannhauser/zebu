@@ -19,7 +19,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -249,9 +249,9 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 				unsignedset_add(tokens, trie->transitions.data[i]->token);
 			}
 			
-			for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
+			for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 			{
-				struct string* const grammar = trie->grammar_transitions.data[i]->grammar;
+				struct string* const grammar = trie->grammars.data[i]->grammar;
 				
 				add(dependent_on, name, grammar);
 				add(dependent_of, grammar, name);
@@ -270,9 +270,8 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 	dotout(named_firsts, dependent_of, NULL);
 	#endif
 	
-	
 	// percolate:
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct string* name = quack_pop(todo);
 		
@@ -319,6 +318,7 @@ struct avl_tree_t* calc_firsts(struct avl_tree_t* named_tries)
 	EXIT;
 	return named_firsts;
 }
+
 
 
 

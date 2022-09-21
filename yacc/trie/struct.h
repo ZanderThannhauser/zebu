@@ -22,6 +22,6 @@ struct trie
 			struct trie* to;
 		}** data;
 		unsigned n, cap;
-	} grammar_transitions;
+	} grammars;
 };
 

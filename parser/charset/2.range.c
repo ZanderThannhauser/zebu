@@ -7,7 +7,6 @@
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"
-#include "../tokenizer/machines/charset/inside_range.h"
 
 #include "1.complement.h"
 #include "2.range.h"
@@ -36,9 +35,9 @@ charset_t read_range_charset(
 	
 	charset_t left = read_complement_charset(tokenizer, scope);
 	
-	if (tokenizer->token == t_hypen)
+	if (tokenizer->token == t_minus)
 	{
-		read_token(tokenizer, charset_inside_range_machine);
+		read_token(tokenizer);
 		
 		charset_t right = read_complement_charset(tokenizer, scope);
 		
@@ -47,19 +46,12 @@ charset_t read_range_charset(
 		dpv(l);
 		dpv(r);
 		
-		charset_t range = {};
-		
 		for (unsigned i = l; i <= r; i++)
-			range[i >> 4] |= (1 << (i & 0xF));
-		
-		EXIT;
-		return range;
+			left[i >> 4] |= (1 << (i & 0xF));
 	}
-	else
-	{
-		EXIT;
-		return left;
-	}
+	
+	EXIT;
+	return left;
 }
 
 

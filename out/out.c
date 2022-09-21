@@ -14,21 +14,13 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
 #include <cmdln/output_path.h>
 #include <cmdln/output_prefix.h>
 #include <cmdln/parser_template.h>
-
-#include <set/yaccstate/new.h>
-#include <set/yaccstate/add.h>
-#include <set/yaccstate/free.h>
-
-#include <set/lexstate/new.h>
-#include <set/lexstate/add.h>
-#include <set/lexstate/free.h>
 
 #include <yacc/state/struct.h>
 
@@ -148,14 +140,14 @@ void out(struct yacc_state* start)
 	struct quack* yacc_todo = new_quack();
 	struct quack* lex_todo = new_quack();
 	
-	struct yaccstateset* yacc_queued = new_yaccstateset();
-	struct lexstateset* lex_queued = new_lexstateset();
+	struct ptrset* yacc_queued = new_ptrset();
+	struct ptrset* lex_queued = new_ptrset();
 	
-	yaccstateset_add(yacc_queued, start);
+	ptrset_add(yacc_queued, start);
 	
 	quack_append(yacc_todo, start);
 	
-	while (quack_len(yacc_todo))
+	while (quack_is_nonempty(yacc_todo))
 	{
 		struct yacc_state* const state = quack_pop(yacc_todo);
 		
@@ -171,7 +163,7 @@ void out(struct yacc_state* start)
 			
 			dpv(lid);
 			
-			if (lexstateset_add(lex_queued, lstate))
+			if (ptrset_add(lex_queued, lstate))
 				quack_append(lex_todo, lstate);
 			
 			dynvector_set(starts, yid, lid);
@@ -188,7 +180,7 @@ void out(struct yacc_state* start)
 			
 			dyntable_set(shifts, yid, tid, syid);
 			
-			if (yaccstateset_add(yacc_queued, ele->to))
+			if (ptrset_add(yacc_queued, ele->to))
 				quack_append(yacc_todo, ele->to);
 		}
 		
@@ -205,7 +197,7 @@ void out(struct yacc_state* start)
 			
 			dyntable_set(gotos, yid, gid, syid);
 			
-			if (yaccstateset_add(yacc_queued, ele->to))
+			if (ptrset_add(yacc_queued, ele->to))
 				quack_append(yacc_todo, ele->to);
 		}
 		
@@ -225,7 +217,7 @@ void out(struct yacc_state* start)
 		}
 	}
 	
-	while (quack_len(lex_todo))
+	while (quack_is_nonempty(lex_todo))
 	{
 		struct lex_state* const state = quack_pop(lex_todo);
 		
@@ -259,7 +251,7 @@ void out(struct yacc_state* start)
 				
 				dyntable_set(lexer, lid, i, slid);
 				
-				if (lexstateset_add(lex_queued, to))
+				if (ptrset_add(lex_queued, to))
 					quack_append(lex_todo, to);
 			}
 		}
@@ -272,7 +264,7 @@ void out(struct yacc_state* start)
 			
 			dynvector_set(EOFs, lid, slid);
 			
-			if (lexstateset_add(lex_queued, to))
+			if (ptrset_add(lex_queued, to))
 				quack_append(lex_todo, to);
 		}
 	}
@@ -483,9 +475,9 @@ void out(struct yacc_state* start)
 	
 	free_unsignedset_to_id(ustoi);
 	
-	free_yaccstateset(yacc_queued);
+	free_ptrset(yacc_queued);
 	
-	free_lexstateset(lex_queued);
+	free_ptrset(lex_queued);
 	
 	free_string_to_id(stoi);
 	

@@ -7,17 +7,18 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <gegex/state/struct.h>
+#include <gegex/transition/struct.h>
+#include <gegex/struct.h>
 
 #include <named/gegex/struct.h>
 
-#include <set/gegex/new.h>
-#include <set/gegex/add.h>
-#include <set/gegex/free.h>
+/*#include <set/gegex/new.h>*/
+/*#include <set/gegex/add.h>*/
+/*#include <set/gegex/free.h>*/
 
 #include "scope/struct.h"
 #include "scope/resolve/grammar.h"
@@ -30,7 +31,7 @@ void resolve_grammar_names(struct scope* scope)
 	
 	struct quack* todo = new_quack();
 	
-	struct gegexset* queued = new_gegexset();
+	struct ptrset* queued = new_ptrset();
 	
 	for (struct avl_node_t* i = scope->grammar->head; i; i = i->next)
 	{
@@ -38,11 +39,11 @@ void resolve_grammar_names(struct scope* scope)
 		
 		dpvs(ele->name);
 		
-		if (gegexset_add(queued, ele->gegex))
+		if (ptrset_add(queued, ele->gegex))
 			quack_append(todo, ele->gegex);
 	}
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct gegex* state = quack_pop(todo);
 		
@@ -51,25 +52,28 @@ void resolve_grammar_names(struct scope* scope)
 		{
 			struct gegex* const to = state->transitions.data[i]->to;
 			
-			if (gegexset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(todo, to);
 		}
 		
 		// grammar_transitions:
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
+			TODO;
+			#if 0
 			struct gegex_grammar_transition* const ele = state->grammar_transitions.data[i];
 			
 			struct string* new = scope_resolve_grammar(scope, ele->grammar);
 			
 			free_string(ele->grammar), ele->grammar = new;
 			
-			if (gegexset_add(queued, ele->to))
+			if (ptrset_add(queued, ele->to))
 				quack_append(todo, ele->to);
+			#endif
 		}
 	}
 	
-	free_gegexset(queued);
+	free_ptrset(queued);
 	
 	free_quack(todo);
 	

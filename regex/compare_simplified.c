@@ -10,8 +10,7 @@
 #include <avl/insert.h>
 #include <avl/free_tree.h>
 
-#include "state/struct.h"
-
+#include "struct.h"
 #include "compare_simplified.h"
 
 struct node
@@ -111,9 +110,9 @@ int compare_simplified_regexes(
 			
 			next_number++;
 			
-			if (!!a->is_accepting > !!b->is_accepting)
+			if (!!a->accepts > !!b->accepts)
 				cmp = +1;
-			else if (!!a->is_accepting < !!b->is_accepting)
+			else if (!!a->accepts < !!b->accepts)
 				cmp = -1;
 			
 			for (unsigned i = 0, n = 256; !cmp && i < n; i++)

@@ -13,12 +13,12 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <gegex/state/struct.h>
-#include <gegex/state/new.h>
+#include <gegex/struct.h>
+#include <gegex/new.h>
 
 #ifdef VERBOSE
 #include <stdio.h>
@@ -27,10 +27,10 @@
 #include <misc/default_sighandler.h>
 #endif
 
-/*#include "state/struct.h"*/
-/*#include "state/new.h"*/
-#include "state/add_transition.h"
-#include "state/add_grammar_transition.h"
+/*#include "struct.h"*/
+/*#include "new.h"*/
+#include "add_transition.h"
+#include "add_grammar_transition.h"
 
 #include "dotout.h"
 #include "clone.h"
@@ -98,12 +98,14 @@ struct gegex* gegex_clone(struct gegex* original_start)
 	signal(SIGALRM, handler);
 	#endif
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		#ifdef VERBOSE
 		completed++;
 		#endif
 		
+		TODO;
+		#if 0
 		struct mapping* mapping = quack_pop(todo);
 		
 		struct gegex* const old = mapping->old;
@@ -193,6 +195,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			}
 			#endif
 		}
+		#endif
 		
 		#ifdef DOTOUT
 		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);

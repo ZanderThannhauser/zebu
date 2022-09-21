@@ -1,4 +1,6 @@
 
+#ifdef VERBOSE
+
 #include <debug.h>
 
 #include "struct.h"
@@ -8,3 +10,5 @@ unsigned heap_len(const struct heap* this)
 {
 	return this->n;
 }
+
+#endif
