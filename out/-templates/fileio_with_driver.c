@@ -179,7 +179,7 @@ void* parse(FILE* stream)
 			{
 				lexer.cap = lexer.cap << 1 ?: 1;
 				#ifdef DEBUG
-				ddprintf("lexer.cap == %u\n", lexer.cap);
+				ddprintf("lexer: cap == %u\n", lexer.cap);
 				#endif
 				lexer.data = realloc(lexer.data, lexer.cap);
 			}
@@ -187,12 +187,12 @@ void* parse(FILE* stream)
 			lexer.data[lexer.n++] = c;
 		}
 		
-		unsigned original_l = l, i = 0, a, b, c;
+		unsigned original_l = l, i = 0, a, b, c, f = 0;
 		
 		t = 0;
 		
 		#ifdef DEBUG
-		ddprintf("l = %u\n", l);
+		ddprintf("lexer: \"%.*s\": l = %u\n", lexer.n, lexer.data, l);
 		#endif
 		
 		while (1)
@@ -206,15 +206,10 @@ void* parse(FILE* stream)
 				
 				escape(escaped, c);
 				
-				ddprintf("c = '%s' (0x%X) (from cache)\n", escaped, c);
+				ddprintf("lexer: c = '%s' (0x%X) (from cache)\n", escaped, c);
 				#endif
 				
-				assert(!"163");
-				#if 0
-				next = 0
-					?: (state < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[state][c] : 0)
-					?: (state < N({{PREFIX}}_defaults) ? {{PREFIX}}_defaults[state] : 0);
-				#endif
+				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 			}
 			else if ((c = getc(stream)) != EOF)
 			{
@@ -225,7 +220,7 @@ void* parse(FILE* stream)
 				
 				escape(escaped, c);
 				
-				ddprintf("c = '%s' (0x%X)\n", escaped, c);
+				ddprintf("lexer: c = '%s' (0x%X)\n", escaped, c);
 				#endif
 				
 				a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
@@ -235,7 +230,7 @@ void* parse(FILE* stream)
 				c = EOF;
 				
 				#ifdef DEBUG
-				ddprintf("c = <EOF>\n");
+				ddprintf("lexer: c = <EOF>\n");
 				#endif
 				
 				a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
@@ -244,62 +239,79 @@ void* parse(FILE* stream)
 			b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 			
 			#ifdef DEBUG
-			ddprintf("a = %u, b = %u\n", a, b);
+			ddprintf("lexer: \"%.*s\" (%u): a = %u, b = %u\n", lexer.n, lexer.data, i, a, b);
 			#endif
 			
 			if (a)
 			{
 				if (b)
 				{
-					l = a, t = b, i++;
+					l = a, t = b, f = i++;
 					#ifdef DEBUG
-					ddprintf("l = %u\n", l);
+					ddprintf("lexer: l = %u\n", l);
 					#endif
 				}
 				else
 				{
 					l = a, i++;
 					#ifdef DEBUG
-					ddprintf("l = %u\n", l);
+					ddprintf("lexer: l = %u\n", l);
 					#endif
 				}
 			}
 			else if (b)
 			{
-				if (c != EOF)
-				{
-					lexer.n--, ungetc(c, stream);
-				}
-				
 				#ifdef DEBUG
-				ddprintf("lexer: \"%.*s\"\n", lexer.n, lexer.data);
+				ddprintf("lexer: commiting to \"%.*s\"\n", i, lexer.data);
 				#endif
 				
-				if (b == 1)
+				if (!lexer.n)
+				{
+					#ifdef DEBUG
+					ddprintf("lexer: EOF.\n");
+					#endif
+					t = b;
+					break;
+				}
+				else if (b == 1)
 				{
 					#ifdef DEBUG
 					ddprintf("lexer: whitespace.\n");
 					#endif
-					l = original_l, t = 0, lexer.n = 0;
+					
+					l = original_l, t = 0;
+					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i, i = 0;
 				}
 				else
 				{
+					#ifdef DEBUG
+					ddprintf("lexer: i = %u\n", i);
+					#endif
+					
 					struct token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(lexer.n), lexer.data, lexer.n);
-					token->len = lexer.n;
-					t = b, td = token, lexer.n = 0;
+					token->data = memcpy(malloc(i), lexer.data, i);
+					token->len = i;
+					t = b, td = token;
+					
+					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i;
 					break;
 				}
 			}
-			else if (t)
+			else if (f)
 			{
-				assert(!"235");
-				#if 0
-				memmove(lexer.data, lexer.data + fallback, lexer.n - fallback);
-				lexer.n -= fallback;
-				return token;
+				#ifdef DEBUG
+				ddprintf("lexer: falling back to \"%.*s\"\n", f, lexer.data);
 				#endif
+				
+				struct token* token = malloc(sizeof(*token));
+				token->refcount = 1;
+				token->data = memcpy(malloc(f), lexer.data, f);
+				token->len = f;
+				td = token;
+				
+				memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f;
+				break;
 			}
 			else
 			{

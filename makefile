@@ -77,10 +77,10 @@ ARGS += --verbose
 #ARGS += --template=just-tables
 
 #ARGS += --template=readline
-ARGS += --template=readline-with-driver
+#ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio
-#ARGS += --template=fileio-with-driver
+ARGS += --template=fileio-with-driver
 
 ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 

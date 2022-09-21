@@ -30,7 +30,7 @@
 // state. When the state returns a token enum value, it's done, feed it
 // to parser state machine.
 
-%skip: [' ', 'g']+;
+%skip: [' ', 'g', '\n']+;
 
 // %token_skip: '-';
 
