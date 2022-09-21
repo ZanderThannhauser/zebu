@@ -97,6 +97,7 @@ static void escape(char *out, unsigned char in)
 		case '+':
 		case '=':
 		case '|':
+		case '/':
 		case '<': case '>':
 		case '(': case ')':
 		case '{': case '}':
@@ -112,6 +113,8 @@ static void escape(char *out, unsigned char in)
 			break;
 		
 		case '\\': *out++ = '\\', *out++ = '\\', *out = 0; break;
+		
+		case '\'': *out++ = '\\', *out++ = '\'', *out = 0; break;
 		
 		case '\"': *out++ = '\\', *out++ = '\"', *out = 0; break;
 		
@@ -262,7 +265,7 @@ void* parse(FILE* stream)
 			else if (b)
 			{
 				#ifdef DEBUG
-				ddprintf("lexer: commiting to \"%.*s\"\n", i, lexer.data);
+				ddprintf("lexer: token: \"%.*s\"\n", i, lexer.data);
 				#endif
 				
 				if (!lexer.n)
@@ -276,7 +279,7 @@ void* parse(FILE* stream)
 				else if (b == 1)
 				{
 					#ifdef DEBUG
-					ddprintf("lexer: whitespace.\n");
+					ddprintf("lexer: whitespace: \"%.*s\"\n", i, lexer.data);
 					#endif
 					
 					l = original_l, t = 0;
@@ -300,18 +303,30 @@ void* parse(FILE* stream)
 			}
 			else if (f)
 			{
-				#ifdef DEBUG
-				ddprintf("lexer: falling back to \"%.*s\"\n", f, lexer.data);
-				#endif
-				
-				struct token* token = malloc(sizeof(*token));
-				token->refcount = 1;
-				token->data = memcpy(malloc(f), lexer.data, f);
-				token->len = f;
-				td = token;
-				
-				memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f;
-				break;
+				if (t == 1)
+				{
+					#ifdef DEBUG
+					ddprintf("lexer: falling back to whitespace: \"%.*s\"\n", f, lexer.data);
+					#endif
+					
+					l = original_l, t = 0;
+					memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f, f = 0, i = 0;
+				}
+				else
+				{
+					#ifdef DEBUG
+					ddprintf("lexer: falling back to token: \"%.*s\"\n", f, lexer.data);
+					#endif
+					
+					struct token* token = malloc(sizeof(*token));
+					token->refcount = 1;
+					token->data = memcpy(malloc(f), lexer.data, f);
+					token->len = f;
+					td = token;
+					
+					memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f, f = 0;
+					break;
+				}
 			}
 			else
 			{

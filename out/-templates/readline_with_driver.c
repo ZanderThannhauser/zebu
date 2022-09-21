@@ -208,12 +208,15 @@ int main()
 					if (b == 1)
 					{
 						#ifdef DEBUG
-						ddprintf("lexer: whitespace\n");
+						ddprintf("lexer: whitespace: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						l = original_l, begin = lexer, f = NULL;
 					}
 					else
 					{
+						#ifdef DEBUG
+						ddprintf("lexer: token: \"%.*s\"\n", lexer - begin, begin);
+						#endif
 						struct token* token = malloc(sizeof(*token));
 						token->refcount = 1;
 						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
@@ -224,18 +227,29 @@ int main()
 				}
 				else if (f)
 				{
-					lexer = f;
-					
-					#ifdef DEBUG
-					ddprintf("lexer: fallback to \"%.*s\"\n", lexer - begin, begin);
-					#endif
-					
-					struct token* token = malloc(sizeof(*token));
-					token->refcount = 1;
-					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
-					token->len = lexer - begin;
-					td = token;
-					break;
+					if (t == 1)
+					{
+						#ifdef DEBUG
+						ddprintf("lexer: falling back to whitespace: \"%.*s\"\n", lexer - begin, begin);
+						#endif
+						
+						assert(!"TODO");
+					}
+					else
+					{
+						lexer = f;
+						
+						#ifdef DEBUG
+						ddprintf("lexer: falling back to token: \"%.*s\"\n", lexer - begin, begin);
+						#endif
+						
+						struct token* token = malloc(sizeof(*token));
+						token->refcount = 1;
+						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+						token->len = lexer - begin;
+						td = token;
+						break;
+					}
 				}
 				else
 				{
