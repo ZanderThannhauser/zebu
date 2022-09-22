@@ -122,12 +122,13 @@ void print_free_functions(
 				
 				case snt_user_defined:
 				{
+					struct string* const type = ele->user_defined.type;
 					const char* const destructor = ele->user_defined.destructor->chars;
 					
 					fprintf(stream, ""
-						"\t" "\t" "void %s(void*);" "\n"
+						"\t" "\t" "void %s(%.*s);" "\n"
 						"\t" "\t" "%s(ptree->%s);" "\n"
-					"", destructor, destructor, field);
+					"", destructor, type->len, type->chars, destructor, field);
 					
 					break;
 				}
