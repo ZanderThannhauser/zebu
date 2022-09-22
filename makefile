@@ -84,7 +84,7 @@ ARGS += --template=fileio
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
-ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -97,13 +97,15 @@ ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 #ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
+#ARGS += -i /home/zander/wmu/maia/repo/dev/parse/zebu.zb -o /tmp/out
+
 #ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
 #ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 
 #ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
-#ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
+ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
 #ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
 

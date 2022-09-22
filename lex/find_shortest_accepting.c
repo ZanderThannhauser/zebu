@@ -1,36 +1,43 @@
 
-#if 0
 #include <assert.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include <debug.h>
 
-/*#include <memory/smalloc.h>*/
+#include <memory/smalloc.h>
 
+#include <avl/alloc_tree.h>
 #include <avl/search.h>
 #include <avl/insert.h>
 #include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/append.h>
+#include <quack/is_nonempty.h>
+#include <quack/pop.h>
+#include <quack/free.h>
 
 #include <heap/new.h>
 #include <heap/free.h>
 #include <heap/push.h>
 #include <heap/pop.h>
-#include <heap/len.h>
+#include <heap/is_nonempty.h>
 
-#include <macros/len.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
-#include "../state/struct.h"
+/*#include <macros/len.h>*/
+
+#include "state/struct.h"
 
 #include "find_shortest_accepting.h"
 
-#include <misc/phase_counters.h>
+/*#include <misc/phase_counters.h>*/
 
-
-#include <misc/escape.h>
-#include <misc/frame_counter.h>
-#include <set/of_tokens/to_string.h>
-
+/*#include <misc/escape.h>*/
+/*#include <misc/frame_counter.h>*/
+/*#include <set/of_tokens/to_string.h>*/
 
 struct dist_node
 {
@@ -60,8 +67,6 @@ static void set_dist(
 	struct avl_tree_t* tree,
 	const struct lex_state* state, unsigned dist)
 {
-	TODO;
-	#if 0
 	struct avl_node_t* node = avl_search(tree, &state);
 	if (node)
 	{
@@ -74,16 +79,21 @@ static void set_dist(
 		new->state = state, new->dist = dist;
 		avl_insert(tree, new);
 	}
-	#endif
 }
 
 static unsigned get_dist(
 	struct avl_tree_t* tree,
 	const struct lex_state* state)
 {
+	ENTER;
+	
 	struct avl_node_t* node = avl_search(tree, &state);
+	
 	assert(node);
+	
 	struct dist_node* old = node->item;
+	
+	EXIT;
 	return old->dist;
 }
 
@@ -97,6 +107,7 @@ struct prev_node
 static int compare_prev_nodes(const void* a, const void* b)
 {
 	const struct prev_node *A = a, *B = b;
+	
 	if (A->state > B->state)
 		return +1;
 	else if (A->state < B->state)
@@ -111,7 +122,10 @@ static void set_prev(
 	struct lex_state* prev,
 	unsigned char value)
 {
+	ENTER;
+	
 	struct avl_node_t* node = avl_search(tree, &state);
+	
 	if (node)
 	{
 		struct prev_node* old = node->item;
@@ -120,15 +134,16 @@ static void set_prev(
 	}
 	else
 	{
-		TODO;
-		#if 0
 		struct prev_node* new = smalloc(sizeof(*new));
+		
 		new->state = state;
 		new->prev = prev;
 		new->value = value;
+		
 		avl_insert(tree, new);
-		#endif
 	}
+	
+	EXIT;
 }
 
 static struct lex_state* get_prev(
@@ -136,17 +151,21 @@ static struct lex_state* get_prev(
 	struct lex_state* state,
 	unsigned char* out_value)
 {
+	ENTER;
+	
 	struct avl_node_t* node = avl_search(tree, &state);
+	
 	if (node)
 	{
 		struct prev_node* old = node->item;
 		*out_value = old->value;
+		
+		EXIT;
 		return old->prev;
 	}
-	else
-	{
-		return NULL;
-	}
+	
+	EXIT;
+	return NULL;
 }
 
 #ifdef DOTOUT
@@ -166,7 +185,7 @@ static void helper(FILE* out, struct lex_state* state,
 			char* label = NULL;
 			
 			if (state->accepting)
-				label = tokenset_to_string(state->accepting);
+				label = unsignedset_to_string(state->accepting);
 			
 			if (has_dist(dist, state))
 			{
@@ -314,22 +333,22 @@ static void dotout(
 }
 #endif
 
-struct lfsa_rettype lex_find_shortest_accepting(
+struct fsa_rettype lex_find_shortest_accepting(
 	struct lex_state* source,
-	struct tokenset* acceptme)
+	struct unsignedset* acceptme)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct avl_tree_t* dist = new_avl_tree(compare_dist_nodes, free);
-	struct avl_tree_t* prev = new_avl_tree(compare_prev_nodes, free);
+	struct avl_tree_t* dist = avl_alloc_tree(compare_dist_nodes, free);
+	struct avl_tree_t* prev = avl_alloc_tree(compare_prev_nodes, free);
 	
 	int compare(const void* a, const void* b)
 	{
 		const struct lex_state *A = a, *B = b;
+		
 		bool a_has_dist = has_dist(dist, A);
 		bool b_has_dist = has_dist(dist, B);
+		
 		if (a_has_dist > b_has_dist)
 			return -1;
 		else if (a_has_dist < b_has_dist)
@@ -358,38 +377,21 @@ struct lfsa_rettype lex_find_shortest_accepting(
 	
 	heap_push(Q, source);
 	
-	while (len(Q))
+	while (heap_is_nonempty(Q))
 	{
 		struct lex_state* u = heap_pop(Q);
 		
 		unsigned const alt = get_dist(dist, u) + 1;
 		
-		for (unsigned i = 0, n = u->transitions.n; i < n; i++)
+		for (unsigned i = 0, n = 256; i < n; i++)
 		{
-			struct lex_state* v = u->transitions.data[i]->to;
+			struct lex_state* v = u->transitions[i];
 			
-			if (!has_dist(dist, v) || alt < get_dist(dist, v))
+			if (v && (!has_dist(dist, v) || alt < get_dist(dist, v)))
 			{
 				set_dist(dist, v, alt);
-				set_prev(prev, v, u, u->transitions.data[i]->value);
 				
-				heap_push(Q, v);
-				
-				#ifdef DEBUGGING
-				if (alt > max_dist)
-					max_dist = alt;
-				#endif
-			}
-		}
-		
-		if (u->default_transition_to)
-		{
-			struct lex_state* v = u->default_transition_to;
-			
-			if (!has_dist(dist, v) || alt < get_dist(dist, v))
-			{
-				set_dist(dist, v, alt);
-				set_prev(prev, v, u, '.');
+				set_prev(prev, v, u, i);
 				
 				heap_push(Q, v);
 				
@@ -402,13 +404,18 @@ struct lfsa_rettype lex_find_shortest_accepting(
 		
 		if (u->EOF_transition_to)
 		{
+			TODO;
+			#if 0
 			// TODO;
+			#endif
 		}
 		
-		#ifdef DEBUGGING
+		#ifdef DOTOUT
 		dotout(source, dist, max_dist);
 		#endif
 	}
+	
+	dpv(max_dist);
 	
 	unsigned min_dist = 0;
 	struct lex_state* target = NULL;
@@ -416,45 +423,54 @@ struct lfsa_rettype lex_find_shortest_accepting(
 	{
 		bool found = false;
 		
-		lex_phase_counter++;
-		void helper(struct lex_state* s)
+		struct ptrset* queued = new_ptrset();
+		struct quack* todo = new_quack();
+		
+		ptrset_add(queued, source);
+		quack_append(todo, source);
+		
+		while (quack_is_nonempty(todo))
 		{
-			if (s->phase != lex_phase_counter)
+			struct lex_state* state = quack_pop(todo);
+			
+			if (state->accepts == acceptme)
 			{
-				s->phase = lex_phase_counter;
+				unsigned ele_dist = get_dist(dist, state);
 				
-				if (s->accepting == acceptme)
+				if (!found || ele_dist < min_dist)
 				{
-					unsigned ele_dist = get_dist(dist, s);
-					
-					if (!found || ele_dist < min_dist)
-					{
-						found = true;
-						target = s;
-						min_dist = ele_dist;
-						dpv(min_dist);
-					}
+					found = true;
+					target = state;
+					min_dist = ele_dist;
+					dpv(min_dist);
 				}
+			}
+			
+			for (unsigned i = 0, n = 256; i < n; i++)
+			{
+				struct lex_state* to = state->transitions[i];
 				
-				for (unsigned i = 0, n = s->transitions.n; i < n; i++)
-					helper(s->transitions.data[i]->to);
-				
-				if (s->default_transition_to)
-					helper(s->default_transition_to);
-				
-				if (s->EOF_transition_to)
+				if (to && ptrset_add(queued, to))
 				{
-					// TODO;
+					quack_append(todo, to);
 				}
+			}
+			
+			if (state->EOF_transition_to)
+			{
+				// TODO;
 			}
 		}
 		
-		helper(source);
-		
 		assert(found);
+		
+		free_quack(todo);
+		
+		free_ptrset(queued);
 	}
 	
 	dpv(min_dist);
+	
 	assert(target);
 	
 	unsigned char* data = smalloc(min_dist);
@@ -465,7 +481,9 @@ struct lfsa_rettype lex_find_shortest_accepting(
 		void helper(struct lex_state* s)
 		{
 			unsigned char v;
+			
 			struct lex_state* p = get_prev(prev, s, &v);
+			
 			if (p)
 			{
 				helper(p);
@@ -475,6 +493,7 @@ struct lfsa_rettype lex_find_shortest_accepting(
 		}
 		
 		helper(target);
+		
 		assert(moving == data + min_dist);
 	}
 	
@@ -486,8 +505,7 @@ struct lfsa_rettype lex_find_shortest_accepting(
 	avl_free_tree(prev);
 	
 	EXIT;
-	return (struct lfsa_rettype) {.data = data, .len = min_dist};
-	#endif
+	return (struct fsa_rettype){data, min_dist};
 }
 
 
@@ -503,4 +521,3 @@ struct lfsa_rettype lex_find_shortest_accepting(
 
 
 
-#endif

@@ -36,6 +36,7 @@
 #include <lex/struct.h>
 #include <lex/build_tokenizer/build_tokenizer.h>
 #include <lex/minimize_lexer.h>
+#include <lex/find_shortest_accepting.h>
 
 #include <set/unsigned/head.h>
 #include <set/unsigned/new.h>
@@ -399,6 +400,22 @@ static void add_subgrammar(
 	EXIT;
 }
 
+static void shift_reduce_error(
+	struct lex_state* start,
+	struct unsignedset* tokenset)
+{
+	ENTER;
+	
+	struct fsa_rettype string = lex_find_shortest_accepting(start, tokenset);
+	
+	dpvsn(string.data, string.len);
+	
+	fprintf(stderr, "zebu: shift/reduce error on token \"%.*s\"\n", string.len, string.data);
+	
+	EXIT;
+	exit(e_shift_reduce_error);
+}
+
 struct yacc_state* yacc(
 	struct avl_tree_t* named_gegexes,
 	struct avl_tree_t* extra_fields,
@@ -600,9 +617,7 @@ struct yacc_state* yacc(
 							
 							if (avl_search(reduce_tokens, &token))
 							{
-								// struct reduce_node* rn = rnode->item;
-								TODO;
-								exit(1);
+								shift_reduce_error(tokenizer_start, ele);
 							}
 							
 							struct shift_node* shift = avl_search(shift_tokens, &token)->item;

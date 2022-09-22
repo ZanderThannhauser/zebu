@@ -10,6 +10,7 @@ enum
 	e_out_of_memory,
 	e_bad_input_file,
 	e_syntax_error,
+	e_shift_reduce_error,
 	
 	number_of_errors,
 };

@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -6,6 +7,8 @@
 #include <string.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <string/struct.h>
 #include <string/inc.h>
@@ -50,8 +53,8 @@ struct string* scope_resolve_grammar(
 	
 	if (!node)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: cannot find grammar-rule '%s'!\n", original->chars);
+		exit(e_bad_input_file);
 	}
 	
 	EXIT;
