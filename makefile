@@ -82,9 +82,9 @@ ARGS += --minimize-lexer
 ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math

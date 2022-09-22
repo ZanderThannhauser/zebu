@@ -19,8 +19,6 @@ char* structinfo_to_string(struct structinfo* this)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct {
 		char* data;
 		size_t n, cap;
@@ -56,12 +54,12 @@ char* structinfo_to_string(struct structinfo* this)
 					break;
 				
 				case snt_grammar_scalar:
-					append("struct "), append(node->grammar->chars);
+					append("struct "), append(node->grammar.name->chars);
 					append("* "), append(node->name->chars), append(";\\l");
 					break;
 				
 				case snt_grammar_array:
-					append("struct "), append(node->grammar->chars);
+					append("struct "), append(node->grammar.name->chars);
 					append("* "), append(node->name->chars), append("[];\\l");
 					break;
 				
@@ -79,7 +77,6 @@ char* structinfo_to_string(struct structinfo* this)
 	
 	EXIT;
 	return buffer.data;
-	#endif
 }
 
 

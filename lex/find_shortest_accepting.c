@@ -27,17 +27,18 @@
 #include <set/ptr/add.h>
 #include <set/ptr/free.h>
 
-/*#include <macros/len.h>*/
+#include <set/unsigned/to_string.h>
 
 #include "state/struct.h"
 
 #include "find_shortest_accepting.h"
 
-/*#include <misc/phase_counters.h>*/
-
-/*#include <misc/escape.h>*/
-/*#include <misc/frame_counter.h>*/
-/*#include <set/of_tokens/to_string.h>*/
+#ifdef DOTOUT
+#include <limits.h>
+#include <stdio.h>
+#include <misc/escape.h>
+#include <misc/frame_counter.h>
+#endif
 
 struct dist_node
 {
@@ -169,132 +170,9 @@ static struct lex_state* get_prev(
 }
 
 #ifdef DOTOUT
-static void helper(FILE* out, struct lex_state* state,
-	struct avl_tree_t* dist,
-	unsigned max_dist)
-{
-	ENTER;
-	
-	if (state->phase != lex_phase_counter)
-	{
-		size_t i, n;
-		
-		state->phase = lex_phase_counter;
-		
-		{
-			char* label = NULL;
-			
-			if (state->accepting)
-				label = unsignedset_to_string(state->accepting);
-			
-			if (has_dist(dist, state))
-			{
-				fprintf(out, ""
-					"\"%p\" [" "\n"
-						"\t" "shape = %s;" "\n"
-						"\t" "label = \"%s\";" "\n"
-						"\t" "style = filled;" "\n"
-						"\t" "fillcolor = \"%lf 1 1\";" "\n"
-					"]" "\n"
-				"", state, state->accepting ? "doublecircle" : "circle",
-				label ?: "", (double) get_dist(dist, state) / max_dist);
-			}
-			else
-			{
-				fprintf(out, ""
-					"\"%p\" [" "\n"
-						"\t" "shape = %s;" "\n"
-						"\t" "label = \"%s\";" "\n"
-					"]" "\n"
-				"", state, state->accepting ? "doublecircle" : "circle", label ?: "");
-			}
-			
-			free(label);
-		}
-		
-		// normal transitions:
-		for (i = 0, n = state->transitions.n; i < n; i++)
-		{
-			struct ltransition* transition = state->transitions.data[i];
-			
-			helper(out, transition->to, dist, max_dist);
-			
-			unsigned value = transition->value;
-			
-			dpvc(value);
-			
-			if (true
-				&& i + 1 < n
-				&& value + 1 == state->transitions.data[i + 1]->value
-				&& transition->to == state->transitions.data[i + 1]->to)
-			{
-				do i++; while (true
-					&& i + 1 < n
-					&& state->transitions.data[i]->value + 1 == state->transitions.data[i + 1]->value
-					&& transition->to == state->transitions.data[i + 1]->to);
-				
-				unsigned value2 = state->transitions.data[i]->value;
-				
-				dpvc(value2);
-				
-				char low[10], high[10];
-				escape(low, value);
-				escape(high, value2);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s - %s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, low, high);
-			}
-			else
-			{
-				char str[10];
-				escape(str, value);
-				dpvs(str);
-				
-				fprintf(out, ""
-					"\"%p\" -> \"%p\" [" "\n"
-						"\t" "label = \"%s\"" "\n"
-					"]" "\n"
-				"", state, transition->to, str);
-			}
-		}
-		
-		// default transition?:
-		if (state->default_transition_to)
-		{
-			struct lex_state* to = state->default_transition_to;
-			
-			helper(out, to, dist, max_dist);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<default>\"" "\n"
-				"]" "\n"
-			"", state, to);
-		}
-		
-		// EOF transition?
-		if (state->EOF_transition_to)
-		{
-			struct lex_state* to = state->EOF_transition_to;
-			
-			helper(out, to, dist, max_dist);
-			
-			fprintf(out, ""
-				"\"%p\" -> \"%p\" [" "\n"
-					"\t" "label = \"<EOF>\"" "\n"
-				"]" "\n"
-			"", state, to);
-		}
-	}
-	
-	EXIT;
-}
 
 static void dotout(
-	struct lex_state* state,
+	struct lex_state* start,
 	struct avl_tree_t* dist,
 	unsigned max_dist)
 {
@@ -310,7 +188,7 @@ static void dotout(
 	
 	if (!out)
 	{
-		fprintf(stderr, "%s: fopen(\"%s\"): %m\n", argv0, path);
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", path);
 		abort();
 	}
 	
@@ -318,11 +196,96 @@ static void dotout(
 	
 	fprintf(out, "\t" "rankdir = LR;" "\n");
 	
-	fprintf(out, "\"%p\" [ style = bold; ];" "\n", state);
+	fprintf(out, "\"%p\" [ style = bold; ];" "\n", start);
 	
-	lex_phase_counter++;
+	struct ptrset* queued = new_ptrset();
+	struct quack* todo = new_quack();
 	
-	helper(out, state, dist, max_dist);
+	ptrset_add(queued, start);
+	quack_append(todo, start);
+	
+	while (quack_is_nonempty(todo))
+	{
+		struct lex_state* state = quack_pop(todo);
+		
+		{
+			char* label = NULL;
+			
+			if (state->accepts)
+			{
+				label = unsignedset_to_string(state->accepts);
+			}
+			
+			if (has_dist(dist, state))
+			{
+				fprintf(out, ""
+					"\"%p\" [" "\n"
+						"\t" "shape = %s;" "\n"
+						"\t" "label = \"%s\";" "\n"
+						"\t" "style = filled;" "\n"
+						"\t" "fillcolor = \"%lf 1 1\";" "\n"
+					"]" "\n"
+				"", state, state->accepts ? "doublecircle" : "circle",
+				label ?: "", (double) get_dist(dist, state) / max_dist);
+			}
+			else
+			{
+				fprintf(out, ""
+					"\"%p\" [" "\n"
+						"\t" "shape = %s;" "\n"
+						"\t" "label = \"%s\";" "\n"
+					"]" "\n"
+				"", state, state->accepts ? "doublecircle" : "circle", label ?: "");
+			}
+			
+			free(label);
+		}
+		
+		// normal transitions:
+		for (unsigned i = 0, n = 256; i < n; i++)
+		{
+			struct lex_state* to = state->transitions[i];
+			
+			if (to)
+			{
+				char str[10];
+				
+				escape(str, i);
+				
+				dpvs(str);
+				
+				fprintf(out, ""
+					"\"%p\" -> \"%p\" [" "\n"
+						"\t" "label = \"%s\"" "\n"
+					"]" "\n"
+				"", state, to, str);
+				
+				if (ptrset_add(queued, to))
+					quack_append(todo, to);
+			}
+		}
+		
+		// EOF transition?
+		if (state->EOF_transition_to)
+		{
+			TODO;
+			#if 0
+			struct lex_state* to = state->EOF_transition_to;
+			
+			helper(out, to, dist, max_dist);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"<EOF>\"" "\n"
+				"]" "\n"
+			"", state, to);
+			#endif
+		}
+	}
+	
+	free_quack(todo);
+	
+	free_ptrset(queued);
 	
 	fprintf(out, "}" "\n");
 	
@@ -371,7 +334,7 @@ struct fsa_rettype lex_find_shortest_accepting(
 	
 	set_dist(dist, source, 0);
 	
-	#ifdef DEBUGGING
+	#ifdef DOTOUT
 	unsigned max_dist = 1;
 	#endif
 	
@@ -395,7 +358,7 @@ struct fsa_rettype lex_find_shortest_accepting(
 				
 				heap_push(Q, v);
 				
-				#ifdef DEBUGGING
+				#ifdef DOTOUT
 				if (alt > max_dist)
 					max_dist = alt;
 				#endif
@@ -414,8 +377,6 @@ struct fsa_rettype lex_find_shortest_accepting(
 		dotout(source, dist, max_dist);
 		#endif
 	}
-	
-	dpv(max_dist);
 	
 	unsigned min_dist = 0;
 	struct lex_state* target = NULL;
