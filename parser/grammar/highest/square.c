@@ -47,9 +47,9 @@ struct gbundle read_square_production(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	read_token(tokenizer, charset_root_machine);
+	assert(tokenizer->token == t_osquare);
+	
+	read_token(tokenizer);
 	
 	charset_t charset = read_root_charset(tokenizer, scope);
 	
@@ -59,29 +59,29 @@ struct gbundle read_square_production(
 		exit(1);
 	}
 	
-	struct regex* regex_start = regex_from_charset(charset);
+	struct regex* regex = regex_from_charset(charset);
 	
-	unsigned token_id = lex_add_token2(lex, regex_start, tk_regex);
+	unsigned token_id = lex_add_token(lex, regex, tk_regex);
 	
 	dpv(token_id);
 	
-	struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+	struct structinfo* structinfo = new_structinfo();
 	
-	read_token(tokenizer, production_after_highest_machine);
+	read_token(tokenizer);
 	
 	while (false
-		|| tokenizer->token == t_hashtag_scalar
-		|| tokenizer->token == t_hashtag_array)
+		|| tokenizer->token == t_scalar_hashtag
+		|| tokenizer->token == t_array_hashtag)
 	{
 		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
 		switch (tokenizer->token)
 		{
-			case t_hashtag_array:
+			case t_array_hashtag:
 				structinfo_add_token_array_field(structinfo, tag);
 				break;
 			
-			case t_hashtag_scalar:
+			case t_scalar_hashtag:
 				structinfo_add_token_scalar_field(structinfo, tag);
 				break;
 			
@@ -90,7 +90,7 @@ struct gbundle read_square_production(
 				break;
 		}
 		
-		read_token(tokenizer, production_after_highest_machine);
+		read_token(tokenizer);
 		
 		free_string(tag);
 	}
@@ -115,7 +115,6 @@ struct gbundle read_square_production(
 	
 	EXIT;
 	return (struct gbundle) {start, end};
-	#endif
 }
 
 

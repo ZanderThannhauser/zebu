@@ -28,7 +28,7 @@ parser.o: parser.c parser.h
 value.o: value.c value.h argv0.h
 
 parser.c parser.h: parser.zb
-	zebu -l -t fileio -i parser.zb -o parser
+	zebu -m -t fileio -i parser.zb -o parser
 
 ARGS += ./input.lisp
 
@@ -43,3 +43,14 @@ valrun-leak: main
 
 clean:
 	rm -vf main parser.c parser.h *.o
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

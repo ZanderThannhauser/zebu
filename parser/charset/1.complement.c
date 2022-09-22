@@ -16,16 +16,8 @@ charset_t read_complement_charset(
 	
 	if (tokenizer->token == t_emark)
 	{
-		TODO;
-		#if 0
-		TODO;
-/*		read_token(tokenizer, charset_root_machine);*/
-		
-		charset_t inner = read_highest_charset(tokenizer, scope);
-		
-		EXIT;
-		return ~inner;
-		#endif
+		read_token(tokenizer);
+		retval = ~read_highest_charset(tokenizer, scope);
 	}
 	else
 	{

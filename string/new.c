@@ -34,9 +34,14 @@ struct string* new_string(const char* str)
 	return new_string_without_copy(strdup(str));
 }
 
+struct string* new_string_len(const char* str, unsigned len)
+{
+	return new_string_without_copy(strndup(str, len));
+}
+
 struct string* new_string_from_tokenchars(struct tokenizer* tokenizer)
 {
-	return new_string((const char*) tokenizer->tokenchars.chars);
+	return new_string_len((const char*) tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 }
 
 struct string* new_string_from_format(const char* fmt, ...)

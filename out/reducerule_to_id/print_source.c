@@ -39,9 +39,9 @@ void reducerule_to_id_print_source(
 		fprintf(stream, ""
 			"\t" "\t" "struct %s_%s* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));" "\n"
 			"\t" "\t" "value->refcount = 1;" "\n"
-		"", prefix, ele->structinfo->name->chars);
+		"", prefix, ele->grammar->chars);
 		
-		reductioninfo_print_source(ele->reductioninfo, ele->structinfo, prefix, stream);
+		reductioninfo_print_source(ele->reductioninfo, ele->structinfo, ele->grammar->chars, prefix, stream);
 		
 		fprintf(stream, ""
 			"\t" "\t" "d = value, g = %u;" "\n"

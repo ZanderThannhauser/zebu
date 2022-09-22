@@ -11,15 +11,15 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
 #include <set/unsigned/to_string.h>
 
-#include <set/yaccstate/new.h>
-#include <set/yaccstate/add.h>
-#include <set/yaccstate/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include <misc/frame_counter.h>
 
@@ -43,7 +43,7 @@ void yacc_state_dotout(
 	
 	fprintf(stream, "rankdir = LR\n");
 	
-	struct yaccstateset* queued = new_yaccstateset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
@@ -51,7 +51,7 @@ void yacc_state_dotout(
 	
 	unsigned reduce_counter = 0;
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct yacc_state* const state = quack_pop(todo);
 		
@@ -77,7 +77,7 @@ void yacc_state_dotout(
 			
 			free(label);
 			
-			if (yaccstateset_add(queued, ele->to))
+			if (ptrset_add(queued, ele->to))
 				quack_append(todo, ele->to);
 		}
 		
@@ -92,7 +92,7 @@ void yacc_state_dotout(
 				"]" "\n"
 			"", state, ele->to, ele->grammar->chars);
 			
-			if (yaccstateset_add(queued, ele->to))
+			if (ptrset_add(queued, ele->to))
 				quack_append(todo, ele->to);
 		}
 		
@@ -127,7 +127,7 @@ void yacc_state_dotout(
 	
 	free_quack(todo);
 	
-	free_yaccstateset(queued);
+	free_ptrset(queued);
 	
 	fprintf(stream, "}\n");
 	

@@ -32,35 +32,32 @@ void read_grammar(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	assert(tokenizer->token == t_identifier);
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
 	
 	dpvs(name);
 	
-	// read a colon:
-	read_token(tokenizer, colon_machine);
+	read_token(tokenizer);
 	
-	// prep production-rule reader:
-	read_token(tokenizer, production_root_machine);
+	if (tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
 	
 	// read a prodution rule:
-	struct gbundle bundle = read_root_production(
-		/* tokenizer:     */ tokenizer,
-		/* scope:         */ scope,
-		/* lex:           */ lex);
+	struct gbundle nfa = read_root_production(tokenizer, scope, lex);
 	
-	bundle.end->is_reduction_point = true;
+	nfa.accepts->accepts = true;
 	
-	struct gegex* nfa_start = bundle.start;
+	struct gegex* dfa = gegex_nfa_to_dfa(nfa);
 	
-	struct gegex* dfa_start = gegex_nfa_to_dfa(nfa_start);
+	struct gegex* simp = gegex_simplify_dfa(dfa);
 	
-	struct gegex* simp_start = gegex_simplify_dfa(dfa_start);
-	
-	scope_declare_grammar(scope, name, simp_start);
+	scope_declare_grammar(scope, name, simp);
 	
 	if (true
 		&& tokenizer->token != t_semicolon
@@ -70,11 +67,11 @@ void read_grammar(
 		exit(e_syntax_error);
 	}
 	
-	free_gegex(nfa_start);
-	free_gegex(dfa_start);
+	free_gegex(nfa.start);
+	
+	free_gegex(dfa);
 	
 	free_string(name);
-	#endif
 	
 	EXIT;
 }

@@ -15,6 +15,7 @@ struct trie* new_trie()
 	this->reductioninfo = NULL;
 	this->structinfo = NULL;
 	this->reduce_as = NULL;
+	this->grammar = NULL;
 	
 	this->transitions.data = NULL;
 	this->transitions.n = 0;

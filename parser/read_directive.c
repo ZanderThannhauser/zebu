@@ -52,9 +52,11 @@
 #include "read_directive/skip.h"
 #include "read_directive/start.h"
 #include "read_directive/include.h"
+#include "read_directive/extra_field.h"
 
 void read_directive(
 	struct pragma_once* pragma_once,
+	struct avl_tree_t* extra_fields,
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct lex* lex,
@@ -73,15 +75,19 @@ void read_directive(
 	
 	if (strequals(token, "start"))
 	{
-		read_start_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
+		read_start_directive(tokenizer, scope, lex);
 	}
 	else if (strequals(token, "skip"))
 	{
-		read_skip_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
+		read_skip_directive(tokenizer, scope, lex);
 	}
 	else if (strequals(token, "include"))
 	{
-		read_include_directive(pragma_once, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
+		read_include_directive(pragma_once, extra_fields, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
+	}
+	else if (strequals(token, "extra_field"))
+	{
+		read_extra_field_directive(tokenizer, extra_fields);
 	}
 	else
 	{

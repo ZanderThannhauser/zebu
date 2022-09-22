@@ -25,47 +25,38 @@ struct gbundle read_suffixes_production(
 	{
 		case t_plus:
 		{
-			TODO;
-			#if 0
-			gegex_add_lambda_transition(retval.end, retval.start);
+			gegex_add_lambda_transition(retval.accepts, retval.start);
 			
 			#ifdef DOTOUT
-			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
+			gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);
 			#endif
 			
-			read_token(tokenizer, production_after_suffix_machine);
-			#endif
+			read_token(tokenizer);
 			break;
 		}
 		
 		case t_asterisk:
 		{
-			TODO;
-			#if 0
-			gegex_add_lambda_transition(retval.end,retval.start);
-			gegex_add_lambda_transition(retval.start, retval.end);
+			gegex_add_lambda_transition(retval.accepts, retval.start);
+			gegex_add_lambda_transition(retval.start, retval.accepts);
 			
 			#ifdef DOTOUT
-			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
+			gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);
 			#endif
 			
-			read_token(tokenizer, production_after_suffix_machine);
-			#endif
+			read_token(tokenizer);
 			break;
 		}
 		
 		case t_qmark:
 		{
-			TODO;
-			#if 0
-			gegex_add_lambda_transition(retval.start, retval.end);
+			gegex_add_lambda_transition(retval.start, retval.accepts);
 			
 			#ifdef DOTOUT
-			gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
+			gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);
 			#endif
 			
-			read_token(tokenizer, production_after_suffix_machine);
-			#endif
+			read_token(tokenizer);
 			break;
 		}
 		

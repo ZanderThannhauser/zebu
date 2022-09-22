@@ -1,9 +1,12 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 /*#include <lex/lookup/add_token.h>*/
 

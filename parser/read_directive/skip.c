@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+#include <assert.h>
 #include <stddef.h>
 
 #include <debug.h>
@@ -21,12 +23,9 @@
 #include "skip.h"
 
 void read_skip_directive(
-	struct pragma_once* pragma_once,
 	struct tokenizer* tokenizer,
 	struct scope* scope,
-	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd)
+	struct lex* lex)
 {
 	ENTER;
 	

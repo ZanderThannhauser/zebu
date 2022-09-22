@@ -46,6 +46,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #ifdef DOTOUT
@@ -359,8 +360,6 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 			
 			while (heap_is_nonempty(heap))
 			{
-				TODO;
-				#if 0
 				struct iterator* iterator;
 				
 				struct gegex_grammar_transition* transition;
@@ -409,7 +408,6 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 				}
 				
 				free_structinfo(structinfo);
-				#endif
 			}
 			
 			free_heap(heap);

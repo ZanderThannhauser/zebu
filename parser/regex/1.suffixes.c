@@ -33,22 +33,19 @@ struct rbundle read_suffixes_token_expression(
 	{
 		case t_qmark:
 		{
-			TODO;
-			#if 0
 			// convert into nfa:
 			if (!retval.is_nfa)
 			{
 				retval = regex_dfa_to_nfa(retval.dfa);
 			}
 			
-			regex_add_lambda_transition(retval.nfa.start, retval.nfa.end);
+			regex_add_lambda_transition(retval.nfa.start, retval.nfa.accepts);
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			
-			read_token(tokenizer, regex_after_suffix_machine);
-			#endif
+			read_token(tokenizer);
 			break;
 		}
 		

@@ -10,7 +10,7 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-/*#include <set/lexstate/add.h>*/
+#include <set/ptr/add.h>
 
 #include <set/unsigned/free.h>
 

@@ -23,8 +23,6 @@ struct rbundle read_parenthesis_token_expression(
 	
 	struct rbundle retval = read_root_token_expression(tokenizer, scope);
 	
-	TODO;
-	#if 0
 	if (tokenizer->token != t_cparen)
 	{
 		TODO;
@@ -33,5 +31,4 @@ struct rbundle read_parenthesis_token_expression(
 	
 	EXIT;
 	return retval;
-	#endif
 }

@@ -17,11 +17,20 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <set/ptr/new.h>
+#include <set/ptr/inc.h>
+#include <set/ptr/compare.h>
+#include <set/ptr/foreach.h>
+#include <set/ptr/is_nonempty.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
+
 #ifdef VERBOSE
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #ifdef DOTOUT

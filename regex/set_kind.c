@@ -8,6 +8,11 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
+
+#include "dotout.h"
 #include "struct.h"
 #include "set_kind.h"
 
@@ -55,7 +60,7 @@ void regex_set_kind(struct regex* start, unsigned accepts, enum token_kind token
 	free_quack(todo);
 	
 	#if DOTOUT
-	TODO;
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;

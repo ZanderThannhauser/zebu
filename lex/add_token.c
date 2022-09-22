@@ -3,8 +3,8 @@
 
 #include <debug.h>
 
-/*#include <avl/search.h>*/
-/*#include <avl/insert.h>*/
+#include <avl/search.h>
+#include <avl/insert.h>
 
 #include <regex/set_kind.h>
 #include <regex/free.h>

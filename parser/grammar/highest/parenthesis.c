@@ -19,9 +19,7 @@ struct gbundle read_parenthesis_production(
 	struct gbundle retval;
 	ENTER;
 	
-	TODO;
-	#if 0
-	read_token(tokenizer, production_root_machine);
+	read_token(tokenizer);
 	
 	retval = read_root_production(tokenizer, scope, lex);
 	
@@ -31,11 +29,10 @@ struct gbundle read_parenthesis_production(
 		exit(1);
 	}
 	
-	read_token(tokenizer, production_after_highest_machine);
+	read_token(tokenizer);
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 

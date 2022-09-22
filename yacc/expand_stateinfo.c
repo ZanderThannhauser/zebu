@@ -227,9 +227,9 @@ static void dotout(
 			free(whitespace);
 		}
 		
-		for (unsigned i = 0, n = trie->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 		{
-			const struct trie_grammar_transition* const trans = trie->grammar_transitions.data[i];
+			const struct trie_grammar_transition* const trans = trie->grammars.data[i];
 			
 			fprintf(stream, ""
 				"\"%p_%p\" -> \"%p_%p\" [" "\n"
@@ -318,9 +318,7 @@ void expand_stateinfo(
 		
 		for (unsigned i = 0, n = trie->grammars.n; i < n; i++)
 		{
-			TODO;
-			#if 0
-			struct trie_grammar_transition *const ele = trie->grammar_transitions.data[i];
+			struct trie_grammar_transition *const ele = trie->grammars.data[i];
 			
 			struct trie* subgrammar_start;
 			
@@ -347,9 +345,9 @@ void expand_stateinfo(
 				unsignedset_add(tokens, to->transitions.data[i]->token);
 			}
 			
-			for (unsigned i = 0, n = to->grammar_transitions.n; i < n; i++)
+			for (unsigned i = 0, n = to->grammars.n; i < n; i++)
 			{
-				struct firsts_node* node = get_firsts(named_firsts, to->grammar_transitions.data[i]->grammar);
+				struct firsts_node* node = get_firsts(named_firsts, to->grammars.data[i]->grammar);
 				
 				unsignedset_update(whitespace, node->whitespace);
 				unsignedset_update(tokens, node->tokens);
@@ -375,7 +373,6 @@ void expand_stateinfo(
 			#endif
 			
 			free_unsignedset(whitespace), free_unsignedset(tokens);
-			#endif
 		}
 	}
 	

@@ -10,6 +10,7 @@
 
 #include <string/inc.h>
 
+#include "node.h"
 #include "struct.h"
 #include "add_token_array_field.h"
 
@@ -32,7 +33,7 @@ void structinfo_add_token_array_field(
 		
 		node->name = inc_string(name);
 		
-		node->kind = sin_token_array;
+		node->type = snt_token_array;
 		
 		node->refcount = 1;
 		

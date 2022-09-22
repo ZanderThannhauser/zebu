@@ -36,6 +36,7 @@ static void free_node(void* ptr)
 {
 	struct reducerule_to_id_node* node = ptr;
 	free_string(node->reduce_as);
+	free_string(node->grammar);
 	free_reductioninfo(node->reductioninfo);
 	free_structinfo(node->structinfo);
 	free(node);

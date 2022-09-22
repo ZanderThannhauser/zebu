@@ -17,6 +17,9 @@
 #include <avl/alloc_tree.h>
 #include <avl/free_tree.h>
 
+#include <named/structinfo/compare.h>
+#include <named/structinfo/free.h>
+
 #include <named/gegex/compare.h>
 #include <named/gegex/free.h>
 
@@ -72,13 +75,17 @@ int main(int argc, char* argv[])
 	
 	struct avl_tree_t* grammar = avl_alloc_tree(compare_named_gegexes, free_named_gegex);
 	
-	main_parse(grammar, lex);
+	struct avl_tree_t* extra_fields = avl_alloc_tree(compare_named_structinfos, free_named_structinfo);
 	
-	struct yacc_state* parser = yacc(lex, grammar);
+	main_parse(grammar, extra_fields, lex);
+	
+	struct yacc_state* parser = yacc(grammar, extra_fields, lex);
 	
 	out(parser);
 	
 	free_yacc_state(parser);
+	
+	avl_free_tree(extra_fields);
 	
 	avl_free_tree(grammar);
 	

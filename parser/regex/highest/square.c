@@ -1,8 +1,11 @@
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <parser/charset/root.h>
 

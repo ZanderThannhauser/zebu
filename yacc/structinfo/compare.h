@@ -1,2 +1,6 @@
 
-int compare_structinfos(const void* a, const void* b);
+struct structinfo;
+
+int compare_structinfos(const struct structinfo* a, const struct structinfo* b);
+
+

@@ -7,6 +7,7 @@
 
 #include <avl/alloc_tree.h>
 #include <avl/insert.h>
+#include <avl/search.h>
 #include <avl/free_tree.h>
 
 #include <string/new.h>
@@ -26,9 +27,17 @@
 
 #include <lex/state/struct.h>
 
-#include <yacc/structinfo/inc.h>
-#include <yacc/structinfo/compare.h>
-#include <yacc/structinfo/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
+
+#include <named/structinfo/new.h>
+#include <named/structinfo/compare.h>
+#include <named/structinfo/free.h>
+
+/*#include <yacc/structinfo/inc.h>*/
+/*#include <yacc/structinfo/compare.h>*/
+/*#include <yacc/structinfo/free.h>*/
 
 #include "escaped/really_just_tables_source.h"
 #include "escaped/really_just_tables_header.h"
@@ -135,7 +144,7 @@ void out(struct yacc_state* start)
 	struct dyntable* shifts = new_dyntable("shifts");
 	struct dyntable* reduces = new_dyntable("reduces");
 	
-	struct avl_tree_t* structinfos = avl_alloc_tree(compare_structinfos, free_structinfo);
+	struct avl_tree_t* structinfos = avl_alloc_tree(compare_named_structinfos, free_named_structinfo);
 	
 	struct quack* yacc_todo = new_quack();
 	struct quack* lex_todo = new_quack();
@@ -208,12 +217,16 @@ void out(struct yacc_state* start)
 			
 			unsigned tid = unsignedset_to_id(ustoi, ele->on);
 			
-			unsigned rrid = reducerule_to_id(rrtoi, ele->reduce_as, ele->reductioninfo, ele->structinfo);
-			
-			if (avl_insert(structinfos, ele->structinfo))
-				inc_structinfo(ele->structinfo);
+			unsigned rrid = reducerule_to_id(rrtoi, ele->reduce_as, ele->grammar, ele->reductioninfo, ele->structinfo);
 			
 			dyntable_set(reduces, yid, tid, rrid);
+			
+			assert(ele->grammar);
+			
+			if (!avl_search(structinfos, &ele->grammar))
+			{
+				avl_insert(structinfos, new_named_structinfo(ele->grammar, ele->structinfo));
+			}
 		}
 	}
 	

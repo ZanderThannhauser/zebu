@@ -11,6 +11,11 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
+
+#include <gegex/grammar/struct.h>
 #include <gegex/transition/struct.h>
 #include <gegex/struct.h>
 
@@ -59,17 +64,18 @@ void resolve_grammar_names(struct scope* scope)
 		// grammar_transitions:
 		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			TODO;
-			#if 0
-			struct gegex_grammar_transition* const ele = state->grammar_transitions.data[i];
+			struct gegex_grammar_transition* const ele = state->grammars.data[i];
+			
+			dpvs(ele->grammar);
 			
 			struct string* new = scope_resolve_grammar(scope, ele->grammar);
+			
+			dpvs(new);
 			
 			free_string(ele->grammar), ele->grammar = new;
 			
 			if (ptrset_add(queued, ele->to))
 				quack_append(todo, ele->to);
-			#endif
 		}
 	}
 	

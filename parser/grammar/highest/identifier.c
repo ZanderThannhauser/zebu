@@ -34,8 +34,6 @@ struct gbundle read_identifier_production(
 	struct gbundle retval;
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpvs(tokenizer->tokenchars.chars);
 	
 	struct gegex* inlined;
@@ -44,7 +42,7 @@ struct gbundle read_identifier_production(
 	{
 		retval = gegex_dfa_to_nfa(gegex_clone(inlined));
 		
-		read_token(tokenizer, production_after_highest_machine);
+		read_token(tokenizer);
 	}
 	else
 	{
@@ -54,21 +52,21 @@ struct gbundle read_identifier_production(
 		
 		struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
 		
-		read_token(tokenizer, production_after_highest_machine);
+		read_token(tokenizer);
 		
 		while (false
-			|| tokenizer->token == t_hashtag_scalar
-			|| tokenizer->token == t_hashtag_array)
+			|| tokenizer->token == t_scalar_hashtag
+			|| tokenizer->token == t_array_hashtag)
 		{
 			struct string* tag = new_string_from_tokenchars(tokenizer);
 			
 			switch (tokenizer->token)
 			{
-				case t_hashtag_scalar:
+				case t_scalar_hashtag:
 					structinfo_add_grammar_scalar_field(structinfo, tag, full_name);
 					break;
 				
-				case t_hashtag_array:
+				case t_array_hashtag:
 					structinfo_add_grammar_array_field(structinfo, tag, full_name);
 					break;
 				
@@ -77,17 +75,17 @@ struct gbundle read_identifier_production(
 					break;
 			}
 			
-			read_token(tokenizer, production_after_highest_machine);
+			read_token(tokenizer);
 			
 			free_string(tag);
 		}
 		
 		struct gegex* start = new_gegex();
-		struct gegex* end = new_gegex();
+		struct gegex* accepts = new_gegex();
 		
-		gegex_add_grammar_transition(start, full_name, structinfo, end);
+		gegex_add_grammar_transition(start, full_name, structinfo, accepts);
 		
-		retval = (struct gbundle) {start, end};
+		retval = (struct gbundle) {start, accepts};
 		
 		free_structinfo(structinfo);
 		
@@ -97,12 +95,11 @@ struct gbundle read_identifier_production(
 	}
 	
 	#ifdef DOTOUT
-	gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
+	gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;
 	return retval;
-	#endif
 }
 
 

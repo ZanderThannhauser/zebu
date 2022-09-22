@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <debug.h>
 
 #include <memory/smalloc.h>
@@ -20,15 +21,19 @@ void yacc_state_add_reduce_transition(
 	struct yacc_state* this,
 	struct unsignedset* on,
 	struct string* reduce_as,
+	struct string* grammar,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
 	ENTER;
 	
+	assert(grammar);
+	
 	struct yacc_state_reduce_transition* transition = smalloc(sizeof(*transition));
 	
 	transition->on = inc_unsignedset(on);
 	transition->reduce_as = inc_string(reduce_as);
+	transition->grammar = inc_string(grammar);
 	transition->reductioninfo = inc_reductioninfo(reductioninfo);
 	transition->structinfo = inc_structinfo(structinfo);
 	

@@ -17,13 +17,13 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-/*#include <set/regex/new.h>*/
-/*#include <set/regex/compare.h>*/
-/*#include <set/regex/add.h>*/
-/*#include <set/regex/inc.h>*/
-/*#include <set/regex/free.h>*/
-/*#include <set/regex/foreach.h>*/
-/*#include <set/regex/len.h>*/
+#include <set/ptr/new.h>
+#include <set/ptr/compare.h>
+#include <set/ptr/add.h>
+#include <set/ptr/inc.h>
+#include <set/ptr/free.h>
+#include <set/ptr/foreach.h>
+#include <set/ptr/is_nonempty.h>
 
 #include <set/unsigned/new.h>
 #include <set/unsigned/add.h>

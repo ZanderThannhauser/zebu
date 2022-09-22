@@ -7,6 +7,9 @@
 
 #include <string/struct.h>
 
+#include <named/structinfo/struct.h>
+
+#include <yacc/structinfo/node.h>
 #include <yacc/structinfo/struct.h>
 
 #include "print_free_functions.h"
@@ -24,12 +27,14 @@ void print_free_function_prototypes(
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
+		
+		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
 			"extern void free_%s_%s_ptree(struct %s_%s* ptree);" "\n"
 			"" "\n"
-		"", prefix, ele->name->chars, prefix, ele->name->chars);
+		"", prefix, name, prefix, name);
 	}
 	
 	EXIT;
@@ -41,6 +46,8 @@ void print_free_functions(
 	FILE* stream)
 {
 	ENTER;
+	
+	print_free_function_prototypes(structinfos, prefix, stream);
 	
 	fprintf(stream, ""
 		"void free_token(struct token* this)" "\n"
@@ -55,62 +62,73 @@ void print_free_functions(
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
 		
-		fprintf(stream, ""
-			"void free_%s_%s_ptree(struct %s_%s* ptree);" "\n"
-			"" "\n"
-		"", prefix, ele->name->chars, prefix, ele->name->chars);
-	}
-	
-	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
-	{
-		struct structinfo* const ele = node->item;
+		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
 			"void free_%s_%s_ptree(struct %s_%s* ptree)" "\n"
 			"{" "\n"
 			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
-		"", prefix, ele->name->chars, prefix, ele->name->chars);
+		"", prefix, name, prefix, name);
 		
-		for (struct avl_node_t* node = ele->tree->head; node; node = node->next)
+		for (struct avl_node_t* node = ele->structinfo->tree->head; node; node = node->next)
 		{
 			struct structinfo_node* const ele = node->item;
 			
 			const char* field = ele->name->chars;
 			
-			switch (ele->kind)
+			switch (ele->type)
 			{
-				case sin_token_scalar:
+				case snt_token_scalar:
+				{
 					fprintf(stream, ""
 						"\t" "\t" "free_token(ptree->%s);" "\n"
 					"", field);
 					break;
+				}
 				
-				case sin_token_array:
+				case snt_token_array:
 				{
+					TODO;
+					#if 0
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
 						"\t" "\t" "\t" "free_token(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
 					"", field, field, field);
+					#endif
 					break;
 				}
 				
-				case sin_grammar_scalar:
+				case snt_grammar_scalar:
+				{
 					fprintf(stream, ""
 						"\t" "\t" "free_%s_%s_ptree(ptree->%s);" "\n"
-					"", prefix, ele->grammar->chars, field);
+					"", prefix, ele->grammar.name->chars, field);
 					break;
+				}
 				
-				case sin_grammar_array:
+				case snt_grammar_array:
 				{
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
 						"\t" "\t" "\t" "free_%s_%s_ptree(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
-					"", field, prefix, ele->grammar->chars, field, field);
+					"", field, prefix, ele->grammar.name->chars, field, field);
+					break;
+				}
+				
+				case snt_user_defined:
+				{
+					const char* const destructor = ele->user_defined.destructor->chars;
+					
+					fprintf(stream, ""
+						"\t" "\t" "void %s(void*);" "\n"
+						"\t" "\t" "%s(ptree->%s);" "\n"
+					"", destructor, destructor, field);
+					
 					break;
 				}
 				

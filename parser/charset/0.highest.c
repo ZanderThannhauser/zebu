@@ -142,26 +142,15 @@ charset_t read_highest_charset(
 		
 		case t_identifier:
 		{
-			TODO;
-			#if 0
-			charset_t inner = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
-			
-			TODO;
-/*			read_token(tokenizer, charset_after_highest_machine);*/
-			
-			EXIT;
-			return inner;
-			#endif
+			retval = scope_lookup_charset(scope, (void*) tokenizer->tokenchars.chars);
+			break;
 		}
 		
 		case t_oparen:
 		{
-			TODO;
-			#if 0
-			TODO;
-/*			read_token(tokenizer, charset_root_machine);*/
+			read_token(tokenizer);
 			
-			charset_t retval = read_root_charset(tokenizer, scope);
+			retval = read_root_charset(tokenizer, scope);
 			
 			if (tokenizer->token != t_cparen)
 			{
@@ -169,12 +158,7 @@ charset_t read_highest_charset(
 				exit(1);
 			}
 			
-			TODO;
-/*			read_token(tokenizer, charset_after_highest_machine);*/
-			
-			EXIT;
-			return retval;
-			#endif
+			break;
 		}
 		
 		default:

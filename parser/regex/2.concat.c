@@ -45,7 +45,7 @@ struct rbundle read_concat_token_expression(
 			regex_add_lambda_transition(left.nfa.accepts, right.nfa.start);
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(left.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 			
 			left = (struct rbundle) {

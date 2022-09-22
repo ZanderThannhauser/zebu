@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
 #include <set/unsigned/inc.h>
 
 #include <yacc/structinfo/inc.h>

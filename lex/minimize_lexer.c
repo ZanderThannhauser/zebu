@@ -1,20 +1,73 @@
 
+#include <stdlib.h>
+#include <assert.h>
+
 #include <debug.h>
 
-#if 0
+#include <memory/smalloc.h>
 
-struct lex_pair
+#include <avl/foreach.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/alloc_tree.h>
+#include <avl/free_tree.h>
+
+#include <quack/new.h>
+#include <quack/pop.h>
+#include <quack/is_nonempty.h>
+#include <quack/append.h>
+#include <quack/free.h>
+
+#include <heap/new.h>
+#include <heap/is_nonempty.h>
+#include <heap/pop.h>
+#include <heap/push.h>
+#include <heap/free.h>
+
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/clone.h>
+#include <set/ptr/contains.h>
+#include <set/ptr/foreach.h>
+#include <set/ptr/get_head.h>
+#include <set/ptr/discard.h>
+#include <set/ptr/free.h>
+
+#include <set/unsigned/compare.h>
+#include <set/unsigned/inc.h>
+
+#include <yacc/state/struct.h>
+
+#include "struct.h"
+#include "minimize_lexer.h"
+
+#include "state/struct.h"
+#include "state/new.h"
+#include "state/free.h"
+
+#include "build_tokenizer/node/struct.h"
+
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <inttypes.h>
+#include <quack/len.h>
+#include <set/ptr/len.h>
+#include <heap/len.h>
+#include <misc/default_sighandler.h>
+#endif
+
+struct pair
 {
 	struct lex_state *a, *b;
 };
 
-
-struct lex_pair* new_lex_pair(
-	struct lex_state* a, struct lex_state* b)
+static struct pair* new_pair(struct lex_state* a, struct lex_state* b)
 {
 	ENTER;
 	
-	struct lex_pair* this = smalloc(sizeof(*this));
+	struct pair* this = smalloc(sizeof(*this));
 	
 	assert(a < b);
 	
@@ -25,10 +78,10 @@ struct lex_pair* new_lex_pair(
 	return this;
 }
 
-int compare_lex_pairs(const void* a, const void* b)
+static int compare_pairs(const void* a, const void* b)
 {
 	int cmp = 0;
-	const struct lex_pair *A = a, *B = b;
+	const struct pair *A = a, *B = b;
 	ENTER;
 	
 	if (A->a > B->a)
@@ -44,47 +97,46 @@ int compare_lex_pairs(const void* a, const void* b)
 	return cmp;
 }
 
-
-struct lex_dependent_of_node
+struct dependent_of_node
 {
-	struct lex_pair pair;
+	struct pair pair;
 	
 	struct avl_tree_t* dependent_of;
 };
 
 
-struct lex_dependent_of_node* new_lex_dependent_of_node(
+static struct dependent_of_node* new_dependent_of_node(
 	struct lex_state* a, struct lex_state* b)
 {
 	ENTER;
 	
-	struct lex_dependent_of_node* this = smalloc(sizeof(*this));
+	struct dependent_of_node* this = smalloc(sizeof(*this));
 	
 	this->pair.a = a;
 	this->pair.b = b;
 	
-	this->dependent_of = avl_alloc_tree(compare_lex_pairs, free_lex_pair);
+	this->dependent_of = avl_alloc_tree(compare_pairs, free);
 	
 	EXIT;
 	return this;
 }
 
-int compare_lex_dependent_of_nodes(const void* a, const void* b)
+static int compare_dependent_of_nodes(const void* a, const void* b)
 {
 	int cmp = 0;
-	const struct lex_dependent_of_node *A = a, *B = b;
+	const struct dependent_of_node *A = a, *B = b;
 	ENTER;
 	
-	cmp = compare_lex_pairs(&A->pair, &B->pair);
+	cmp = compare_pairs(&A->pair, &B->pair);
 	
 	EXIT;
 	return cmp;
 }
 
 
-void free_lex_dependent_of_node(void* ptr)
+static void free_dependent_of_node(void* ptr)
 {
-	struct lex_dependent_of_node* this = ptr;
+	struct dependent_of_node* this = ptr;
 	ENTER;
 	
 	avl_free_tree(this->dependent_of);
@@ -94,20 +146,19 @@ void free_lex_dependent_of_node(void* ptr)
 	EXIT;
 }
 
-struct lex_same_as_node
+struct same_as_node
 {
 	struct lex_state* state;
 	
-	struct lexstateset* set;
+	struct ptrset* set;
 };
 
-
-struct lex_same_as_node* new_lex_same_as_node(
-	struct lex_state* state, struct lexstateset* set)
+static struct same_as_node* new_same_as_node(
+	struct lex_state* state, struct ptrset* set)
 {
 	ENTER;
 	
-	struct lex_same_as_node* this = smalloc(sizeof(*this));
+	struct same_as_node* this = smalloc(sizeof(*this));
 	
 	this->state = state;
 	
@@ -117,10 +168,10 @@ struct lex_same_as_node* new_lex_same_as_node(
 	return this;
 }
 
-int compare_lex_same_as_nodes(const void* a, const void* b)
+static int compare_same_as_nodes(const void* a, const void* b)
 {
 	int cmp = 0;
-	const struct lex_same_as_node* A = a, *B = b;
+	const struct same_as_node* A = a, *B = b;
 	ENTER;
 	
 	if (A->state > B->state)
@@ -134,34 +185,33 @@ int compare_lex_same_as_nodes(const void* a, const void* b)
 	return cmp;
 }
 
-
-void free_lex_same_as_node(void* ptr)
+static void free_same_as_node(void* ptr)
 {
-	struct lex_same_as_node* this = ptr;
+	struct same_as_node* this = ptr;
 	ENTER;
 	
-	free_lexstateset(this->set);
+	free_ptrset(this->set);
 	
 	free(this);
 	
 	EXIT;
 }
 
-struct lex_simplify_task
+struct task
 {
-	struct lex_pair pair;
+	struct pair pair;
 	
 	unsigned hopcount;
 };
 
 
-struct lex_simplify_task* new_lex_simplify_task(
+static struct task* new_task(
 	struct lex_state* a, struct lex_state* b,
 	unsigned hopcount)
 {
 	ENTER;
 	
-	struct lex_simplify_task* this = smalloc(sizeof(*this));
+	struct task* this = smalloc(sizeof(*this));
 	
 	this->pair.a = a;
 	this->pair.b = b;
@@ -172,9 +222,9 @@ struct lex_simplify_task* new_lex_simplify_task(
 	return this;
 }
 
-int compare_lex_simplify_tasks(const void* a, const void* b)
+static int compare_tasks(const void* a, const void* b)
 {
-	const struct lex_simplify_task* A = a, *B = b;
+	const struct task* A = a, *B = b;
 	int cmp;
 	ENTER;
 	
@@ -193,7 +243,7 @@ int compare_lex_simplify_tasks(const void* a, const void* b)
 }
 
 
-void lex_simplify_dfa_add_dep(
+static void add_dep(
 	struct avl_tree_t* dependent_of,
 	struct lex_state* a_on, struct lex_state* b_on,
 	struct lex_state* a_of, struct lex_state* b_of)
@@ -206,24 +256,24 @@ void lex_simplify_dfa_add_dep(
 		b_of = a_of, a_of = swap;
 	}
 	
-	struct avl_node_t* node = avl_search(dependent_of, &(struct lex_pair){a_of, b_of});
+	struct avl_node_t* node = avl_search(dependent_of, &(struct pair){a_of, b_of});
 	
 	if (node)
 	{
-		struct lex_dependent_of_node* old = node->item;
+		struct dependent_of_node* old = node->item;
 		
-		if (!avl_search(old->dependent_of, &(struct lex_pair){a_on, b_on}))
+		if (!avl_search(old->dependent_of, &(struct pair){a_on, b_on}))
 		{
-			struct lex_pair* dep = new_lex_pair(a_on, b_on);
+			struct pair* dep = new_pair(a_on, b_on);
 			
 			avl_insert(old->dependent_of, dep);
 		}
 	}
 	else
 	{
-		struct lex_dependent_of_node* new = new_lex_dependent_of_node(a_of, b_of);
+		struct dependent_of_node* new = new_dependent_of_node(a_of, b_of);
 		
-		struct lex_pair* dep = new_lex_pair(a_on, b_on);
+		struct pair* dep = new_pair(a_on, b_on);
 		
 		avl_insert(new->dependent_of, dep);
 		
@@ -233,17 +283,11 @@ void lex_simplify_dfa_add_dep(
 	EXIT;
 }
 
-
-
-
-
-struct lexstateset* minimize_lexer_build_universe(struct lex* this)
+static struct ptrset* build_universe(struct lex* this)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct lexstateset* universe = new_lexstateset();
+	struct ptrset* universe = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
@@ -274,14 +318,14 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 		{
 			struct build_tokenizer_node* ele = ptr;
 			
-			lexstateset_add(universe, ele->start);
+			ptrset_add(universe, ele->start);
 			
 			quack_append(todo, ele->start);
 		}
 		runme;
 	}));
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -293,7 +337,7 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 		{
 			struct lex_state* const to = state->transitions[i];
 			
-			if (to && lexstateset_add(universe, to))
+			if (to && ptrset_add(universe, to))
 				quack_append(todo, to);
 		}
 		
@@ -301,7 +345,7 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 		{
 			struct lex_state* const to = state->EOF_transition_to;
 			
-			if (lexstateset_add(universe, to))
+			if (ptrset_add(universe, to))
 				quack_append(todo, to);
 		}
 	}
@@ -314,33 +358,29 @@ struct lexstateset* minimize_lexer_build_universe(struct lex* this)
 	
 	EXIT;
 	return universe;
-	#endif
 }
 
-
-
-bool lex_simplify_dfa_mark_as_unequal(
+static bool mark_as_unequal(
 	struct avl_tree_t* connections,
-	struct lex_pair* pair)
+	struct pair* pair)
 {
 	ENTER;
-	
 	
 	struct avl_node_t* a_node = avl_search(connections, &pair->a);
 	struct avl_node_t* b_node = avl_search(connections, &pair->b);
 	
 	assert(a_node && b_node);
 	
-	struct lex_same_as_node* a_sa = a_node->item, *b_sa = b_node->item;
+	struct same_as_node* a_sa = a_node->item, *b_sa = b_node->item;
 	
 	bool removed = false;
 	
-	if (lexstateset_contains(a_sa->set, pair->b))
+	if (ptrset_contains(a_sa->set, pair->b))
 	{
-		assert(lexstateset_contains(b_sa->set, pair->a));
+		assert(ptrset_contains(b_sa->set, pair->a));
 		
-		lexstateset_discard(a_sa->set, pair->b);
-		lexstateset_discard(b_sa->set, pair->a);
+		ptrset_discard(a_sa->set, pair->b);
+		ptrset_discard(b_sa->set, pair->a);
 		
 		removed = true;
 	}
@@ -383,14 +423,12 @@ static struct lex_state* find(struct avl_tree_t* connections, struct lex_state* 
 	
 	assert(node);
 	
-	struct lex_same_as_node* sa = node->item;
+	struct same_as_node* sa = node->item;
 	
-	assert(sa->set->len);
-	
-	return sa->set->tree->head->item;
+	return ptrset_get_head(sa->set);
 }
 
-void lex_minimize_traverse_and_clone(
+static void traverse_and_clone(
 	struct avl_tree_t* connections,
 	struct yacc_state* start)
 {
@@ -400,15 +438,15 @@ void lex_minimize_traverse_and_clone(
 	
 	struct quack* lex_todo = new_quack();
 	
-	struct yaccstateset* queued = new_yaccstateset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
-	yaccstateset_add(queued, start);
+	ptrset_add(queued, start);
 	
 	quack_append(yacc_todo, start);
 	
-	while (quack_len(yacc_todo))
+	while (quack_is_nonempty(yacc_todo))
 	{
 		struct yacc_state* state = quack_pop(yacc_todo);
 		
@@ -437,7 +475,7 @@ void lex_minimize_traverse_and_clone(
 		{
 			struct yacc_state* const to = state->transitions.data[i]->to;
 			
-			if (yaccstateset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(yacc_todo, to);
 		}
 		
@@ -445,11 +483,10 @@ void lex_minimize_traverse_and_clone(
 		{
 			struct yacc_state* const to = state->grammar_transitions.data[i]->to;
 			
-			if (yaccstateset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(yacc_todo, to);
 		}
 	}
-	
 	
 	#ifdef VERBOSE
 	unsigned completed = 0;
@@ -473,7 +510,7 @@ void lex_minimize_traverse_and_clone(
 	signal(SIGALRM, handler);
 	#endif
 	
-	while (quack_len(lex_todo))
+	while (quack_is_nonempty(lex_todo))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -552,7 +589,7 @@ void lex_minimize_traverse_and_clone(
 	signal(SIGALRM, default_sighandler);
 	#endif
 	
-	free_yaccstateset(queued);
+	free_ptrset(queued);
 	
 	avl_free_tree(mappings);
 	
@@ -564,24 +601,20 @@ void lex_minimize_traverse_and_clone(
 }
 
 
-#endif
-
 void lex_minimize_lexer(
 	struct lex* this,
 	struct yacc_state* ystart)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct lexstateset* universe = minimize_lexer_build_universe(this);
+	struct ptrset* universe = build_universe(this);
 	
-	struct avl_tree_t* dependent_of = avl_alloc_tree(compare_lex_dependent_of_nodes, free_lex_dependent_of_node);
+	struct avl_tree_t* dependent_of = avl_alloc_tree(compare_dependent_of_nodes, free_dependent_of_node);
 	
-	struct heap* todo = new_heap(compare_lex_simplify_tasks);
+	struct heap* todo = new_heap(compare_tasks);
 	
 	#ifdef VERBOSE
-	uintmax_t count = 0, n = lexstateset_len(universe);
+	uintmax_t count = 0, n = ptrset_len(universe);
 	
 	dpv(n);
 	
@@ -606,13 +639,16 @@ void lex_minimize_lexer(
 	signal(SIGALRM, handler1);
 	#endif
 	
-	lexstateset_foreach(universe, ({
-		void runme(struct lex_state* a) {
-			lexstateset_foreach(universe, ({
-				void runme(struct lex_state* b) {
-					if (a < b)
+	ptrset_foreach(universe, ({
+		void runme(void* a_ptr) {
+			ptrset_foreach(universe, ({
+				void runme(void* b_ptr) {
+					if (a_ptr < b_ptr)
 					{
 						ENTER;
+						
+						struct lex_state* a = a_ptr;
+						struct lex_state* b = b_ptr;
 						
 						bool unequal = false;
 						
@@ -623,7 +659,7 @@ void lex_minimize_lexer(
 						else if (!a->EOF_transition_to != !b->EOF_transition_to)
 							unequal = true;
 						else if (a->EOF_transition_to && b->EOF_transition_to)
-							lex_simplify_dfa_add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
+							add_dep(dependent_of, a, b, a->EOF_transition_to, b->EOF_transition_to);
 							
 						for (unsigned i = 0, n = 256; !unequal && i < n; i++)
 						{
@@ -633,11 +669,11 @@ void lex_minimize_lexer(
 							if (!at != !bt)
 								unequal = true;
 							else if (at && bt)
-								lex_simplify_dfa_add_dep(dependent_of, a, b, at, bt);
+								add_dep(dependent_of, a, b, at, bt);
 						}
 						
 						if (unequal)
-							heap_push(todo, new_lex_simplify_task(a, b, 0));
+							heap_push(todo, new_task(a, b, 0));
 						
 						#ifdef VERBOSE
 						count++;
@@ -667,20 +703,22 @@ void lex_minimize_lexer(
 		}
 	}
 	
-	count = 0, n = lexstateset_len(universe);
+	count = 0, n = ptrset_len(universe);
 	
 	signal(SIGALRM, handler12);
 	#endif
 	
-	struct avl_tree_t* connections = avl_alloc_tree(compare_lex_same_as_nodes, free_lex_same_as_node);
+	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
 	
-	lexstateset_foreach(universe, ({
-		void runme(struct lex_state* a) {
+	ptrset_foreach(universe, ({
+		void runme(void* ptr) {
 			ENTER;
 			
-			struct lexstateset* uni = lexstateset_clone(universe);
+			struct lex_state* a = ptr;
 			
-			struct lex_same_as_node* sa = new_lex_same_as_node(a, uni);
+			struct ptrset* uni = ptrset_clone(universe);
+			
+			struct same_as_node* sa = new_same_as_node(a, uni);
 			
 			avl_insert(connections, sa);
 			
@@ -715,25 +753,25 @@ void lex_minimize_lexer(
 	signal(SIGALRM, handler2);
 	#endif
 	
-	while (heap_len(todo))
+	while (heap_is_nonempty(todo))
 	{
-		struct lex_simplify_task* task = heap_pop(todo);
+		struct task* task = heap_pop(todo);
 		
-		if (lex_simplify_dfa_mark_as_unequal(connections, &task->pair))
+		if (mark_as_unequal(connections, &task->pair))
 		{
 			struct avl_node_t* node = avl_search(dependent_of, &task->pair);
 			
 			if (node)
 			{
-				struct lex_dependent_of_node* dep = node->item;
+				struct dependent_of_node* dep = node->item;
 				
 				unsigned hopcount = task->hopcount + 1;
 				
 				avl_tree_foreach(dep->dependent_of, ({
 					void runme(void* ptr) {
-						const struct lex_pair* pair = ptr;
+						const struct pair* pair = ptr;
 						
-						heap_push(todo, new_lex_simplify_task(pair->a, pair->b, hopcount));
+						heap_push(todo, new_task(pair->a, pair->b, hopcount));
 					}
 					runme;
 				}));
@@ -744,36 +782,48 @@ void lex_minimize_lexer(
 		completed++;
 		#endif
 		
-		free_lex_simplify_task(task);
+		free(task);
 	}
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);
 	#endif
 	
-	lex_minimize_traverse_and_clone(connections, ystart);
+	traverse_and_clone(connections, ystart);
 	
-	struct lexstateset* freed = new_lexstateset();
+	struct ptrset* freed = new_ptrset();
 	
-	lexstateset_foreach(universe, ({
-		void runme(struct lex_state* state) {
+	ptrset_foreach(universe, ({
+		void runme(void* ptr) {
+			struct lex_state* state = ptr;
 			free_lex_state(freed, state);
 		}
 		runme;
 	}));
 	
-	free_lexstateset(freed);
+	free_ptrset(freed);
 	
 	avl_free_tree(dependent_of);
 	
-	free_lexstateset(universe);
+	free_ptrset(universe);
 	
 	avl_free_tree(connections);
 	
 	free_heap(todo);
-	#endif
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

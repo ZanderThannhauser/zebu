@@ -8,6 +8,7 @@
 
 #include <string/are_equal.h>
 
+#include <avl/foreach.h>
 #include <avl/alloc_tree.h>
 #include <avl/search.h>
 #include <avl/insert.h>
@@ -47,6 +48,15 @@
 #include "transition/struct.h"
 
 #include "grammar/struct.h"
+
+#ifdef VERBOSE
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <set/ptr/len.h>
+#include <heap/len.h>
+#include <misc/default_sighandler.h>
+#endif
 
 struct pair
 {
@@ -229,7 +239,7 @@ struct same_as_node
 };
 
 
-struct same_as_node* new_same_as_node(
+static struct same_as_node* new_same_as_node(
 	struct gegex* state, struct ptrset* set) {
 	ENTER;
 	
@@ -243,7 +253,7 @@ struct same_as_node* new_same_as_node(
 	return this;
 }
 
-int compare_same_as_nodes(const void* a, const void* b)
+static int compare_same_as_nodes(const void* a, const void* b)
 {
 	int cmp = 0;
 	const struct same_as_node* A = a, *B = b;
@@ -261,7 +271,7 @@ int compare_same_as_nodes(const void* a, const void* b)
 }
 
 
-void free_same_as_node(void* ptr)
+static void free_same_as_node(void* ptr)
 {
 	struct same_as_node* this = ptr;
 	ENTER;
@@ -302,6 +312,46 @@ static bool mark_as_unequal(
 	
 	EXIT;
 	return removed;
+}
+
+static void add_dep(
+	struct avl_tree_t* dependent_of,
+	struct gegex* a_on, struct gegex* b_on,
+	struct gegex* a_of, struct gegex* b_of)
+{
+	ENTER;
+	
+	if (a_of > b_of)
+	{
+		struct gegex* swap = b_of;
+		b_of = a_of, a_of = swap;
+	}
+	
+	struct avl_node_t* node = avl_search(dependent_of, &(struct pair){a_of, b_of});
+	
+	if (node)
+	{
+		struct dependent_of_node* old = node->item;
+		
+		if (!avl_search(old->dependent_of, &(struct pair){a_on, b_on}))
+		{
+			struct pair* dep = new_pair(a_on, b_on);
+			
+			avl_insert(old->dependent_of, dep);
+		}
+	}
+	else
+	{
+		struct dependent_of_node* new = new_dependent_of_node(a_of, b_of);
+		
+		struct pair* dep = new_pair(a_on, b_on);
+		
+		avl_insert(new->dependent_of, dep);
+		
+		avl_insert(dependent_of, new);
+	}
+	
+	EXIT;
 }
 
 struct mapping
@@ -447,6 +497,26 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 	
 	struct heap* todo = new_heap(compare_tasks);
 	
+	#ifdef VERBOSE
+	unsigned count = 0, n = ptrset_len(universe) * ptrset_len(universe) / 2;
+	
+	void handler1(int _)
+	{
+		char ptr[1000] = {};
+		
+		size_t len = snprintf(ptr, sizeof(ptr),
+			"\e[K" "zebu: grammar simplify (build dependencies) %u of %u (%.2f%%)\r",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler1);
+	#endif
+	
 	ptrset_foreach(universe, ({
 		void runme(void* a_ptr) {
 			ptrset_foreach(universe, ({
@@ -482,11 +552,8 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 								}
 								else
 								{
-									TODO;
-									#if 0
-									simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
+									add_dep(dependent_of, a, b, at->to, bt->to);
 									a_i++, b_i++;
-									#endif
 								}
 							}
 							
@@ -515,11 +582,8 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 								}
 								else
 								{
-									TODO;
-									#if 0
-									simplify_dfa_add_dep(dependent_of, a, b, at->to, bt->to);
+									add_dep(dependent_of, a, b, at->to, bt->to);
 									a_i++, b_i++;
-									#endif
 								}
 							}
 							
@@ -533,6 +597,10 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 						{
 							heap_push(todo, new_task(a, b, 0));
 						}
+						
+						#ifdef VERBOSE
+						count++;
+						#endif
 					}
 				}
 				runme;
@@ -540,6 +608,26 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 		}
 		runme;
 	}));
+	
+	#ifdef VERBOSE
+	void handler12(int _)
+	{
+		char ptr[1000] = {};
+		
+		size_t len = snprintf(ptr, sizeof(ptr),
+			"\e[K" "zebu: grammar simplify (allocating sets): %u of %u (%.2f%%)\r",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	count = 0, n = ptrset_len(universe);
+	
+	signal(SIGALRM, handler12);
+	#endif
 	
 	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
 	
@@ -555,10 +643,36 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 			
 			avl_insert(connections, sa);
 			
+			#ifdef VERBOSE
+			count++;
+			#endif
+			
 			EXIT;
 		}
 		runme;
 	}));
+	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler2(int _)
+	{
+		char buffer[1000] = {};
+		
+		unsigned total = completed + heap_len(todo);
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: grammar simplify (percolate): %u of %u (%.2f%%)\r",
+				completed, total, (double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler2);
+	#endif
 	
 	while (heap_is_nonempty(todo))
 	{
@@ -570,8 +684,6 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 			
 			if (node)
 			{
-				TODO;
-				#if 0
 				struct dependent_of_node* dep = node->item;
 				
 				unsigned hopcount = task->hopcount + 1;
@@ -579,14 +691,16 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 				avl_tree_foreach(dep->dependent_of, ({
 					void runme(void* ptr) {
 						const struct pair* pair = ptr;
-						
-						heap_push(todo, new_simplify_task(pair->a, pair->b, hopcount));
+						heap_push(todo, new_task(pair->a, pair->b, hopcount));
 					}
 					runme;
 				}));
-				#endif
 			}
 		}
+		
+		#ifdef VERBOSE
+		completed++;
+		#endif
 		
 		free(task);
 	}
@@ -600,6 +714,10 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 	avl_free_tree(connections);
 	
 	free_heap(todo);
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
 	
 	EXIT;
 	return new_start;

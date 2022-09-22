@@ -5,7 +5,9 @@ struct trie
 	
 	struct structinfo* structinfo;
 	
-	struct string* reduce_as;
+	struct string* reduce_as; // name of trie
+	
+	struct string* grammar; // name of grammar rule
 	
 	struct {
 		struct trie_transition {

@@ -13,7 +13,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #ifdef DOTOUT
@@ -74,8 +75,6 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_tree_t* mappings = avl_alloc_tree(compare, free);
 	
 	struct quack* todo = new_quack();
@@ -112,7 +111,7 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 	signal(SIGALRM, handler);
 	#endif
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -124,9 +123,9 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 		struct regex* const B = mapping->b;
 		struct regex* const state = mapping->new;
 		
-		state->is_accepting = A->is_accepting && B->is_accepting;
+		state->accepts = A->accepts && B->accepts;
 		
-		dpvb(state->is_accepting);
+		dpvb(state->accepts);
 		
 		for (unsigned i = 0, n = 256; i < n; i++)
 		{
@@ -172,7 +171,6 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 	
 	EXIT;
 	return new_start;
-	#endif
 }
 
 

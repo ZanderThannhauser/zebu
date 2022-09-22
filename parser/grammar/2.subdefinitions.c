@@ -29,9 +29,7 @@ struct gbundle read_subdefinitions_production(
 	
 	if (tokenizer->token == t_percent)
 	{
-		TODO;
-		#if 0
-		read_token(tokenizer, subroot_machine);
+		read_token(tokenizer);
 		
 		scope_push(scope);
 		
@@ -39,29 +37,21 @@ struct gbundle read_subdefinitions_production(
 		{
 			switch (tokenizer->token)
 			{
-				case t_bracketed_identifier:
-				{
+				case t_osquare:
 					read_charset(tokenizer, scope);
 					break;
-				}
 				
-				case t_gravemarked_identifier:
-				{
+				case t_gravemark:
 					read_fragment(tokenizer, scope);
 					break;
-				}
 				
-				case t_parenthesised_identifier:
-				{
+				case t_oparen:
 					read_inline_grammar(tokenizer, scope, lex);
 					break;
-				}
 				
 				case t_identifier:
-				{
 					read_grammar(tokenizer, scope, lex);
 					break;
-				}
 				
 				default:
 					TODO;
@@ -69,18 +59,14 @@ struct gbundle read_subdefinitions_production(
 			}
 			
 			if (tokenizer->token == t_semicolon)
-			{
-				read_token(tokenizer, subroot_machine);
-			}
+				read_token(tokenizer);
 		}
 		
-		// read production rule:
-		read_token(tokenizer, production_inside_subdefinitions_machine);
+		read_token(tokenizer);
 		
 		retval = read_suffixes_production(tokenizer, scope, lex);
 		
 		scope_pop(scope);
-		#endif
 	}
 	else
 	{

@@ -3,6 +3,8 @@
 
 #include <avl/tree_t.h>
 
+#include <named/structinfo/struct.h>
+
 #include <yacc/structinfo/print_source.h>
 
 #include "print_structs.h"
@@ -24,7 +26,10 @@ void print_structs(
 	"");
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
-		structinfo_print_source(node->item, prefix, stream);
+	{
+		struct named_structinfo* ele = node->item;
+		structinfo_print_source(ele->structinfo, ele->name, prefix, stream);
+	}
 	
 	EXIT;
 }

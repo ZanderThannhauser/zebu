@@ -1,9 +1,12 @@
 
+#include <stdio.h>
 #include <assert.h>
 
 #include <stdlib.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <memory/smalloc.h>
 
@@ -28,7 +31,7 @@
 
 #include <cmdln/minimize_lexer.h>
 
-/*#include <named/gegex/struct.h>*/
+#include <named/structinfo/struct.h>
 
 #include <lex/struct.h>
 #include <lex/build_tokenizer/build_tokenizer.h>
@@ -56,6 +59,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #ifdef DOTOUT
@@ -139,6 +143,8 @@ struct reduce_node
 	
 	struct string* reduce_as;
 	
+	struct string* grammar;
+	
 	struct reductioninfo* reductioninfo;
 	
 	struct structinfo* structinfo;
@@ -193,16 +199,21 @@ static void free_shift_node(void* ptr)
 static struct reduce_node* new_reduce_node(
 	unsigned token,
 	struct string* reduce_as,
+	struct string* grammar,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
 	ENTER;
+	
+	assert(grammar);
 	
 	struct reduce_node* this = smalloc(sizeof(*this));
 	
 	this->token = token;
 	
 	this->reduce_as = inc_string(reduce_as);
+	
+	this->grammar = inc_string(grammar);
 	
 	this->reductioninfo = reductioninfo;
 	
@@ -222,6 +233,21 @@ static int compare_reduce_nodes(const void* a, const void* b)
 		return -1;
 	else
 		return +0;
+}
+
+static void free_reduce_node(void* ptr)
+{
+	ENTER;
+	
+	struct reduce_node* node = ptr;
+	
+	free_string(node->reduce_as);
+	
+	free_string(node->grammar);
+	
+	free(node);
+	
+	EXIT;
 }
 
 static struct subgrammar_node* new_subgrammar_node(struct string* grammar)
@@ -298,6 +324,7 @@ static void add_reduce(
 	struct avl_tree_t* reduce_tokens,
 	unsigned token,
 	struct string* reduce_as,
+	struct string* grammar,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
@@ -326,7 +353,7 @@ static void add_reduce(
 	}
 	else
 	{
-		struct reduce_node* new = new_reduce_node(token, reduce_as, reductioninfo, structinfo);
+		struct reduce_node* new = new_reduce_node(token, reduce_as, grammar, reductioninfo, structinfo);
 		
 		avl_insert(reduce_tokens, new);
 	}
@@ -373,12 +400,11 @@ static void add_subgrammar(
 }
 
 struct yacc_state* yacc(
-	struct lex* lex,
-	struct avl_tree_t* named_gegexes)
+	struct avl_tree_t* named_gegexes,
+	struct avl_tree_t* extra_fields,
+	struct lex* lex)
 {
 	ENTER;
-	
-	struct avl_tree_t* structinfos = avl_alloc_tree(compare_structinfos, free_structinfo);
 	
 	struct avl_tree_t* named_tries = avl_alloc_tree(compare_named_tries, free_named_trie);
 	
@@ -387,9 +413,25 @@ struct yacc_state* yacc(
 		{
 			struct named_gegex* named_gegex = ptr;
 			
-			struct structinfo* structinfo = build_structinfo(named_gegex->name, named_gegex->gegex);
+			struct string* name = named_gegex->name;
 			
-			build_tries(named_tries, named_gegex->name, named_gegex->gegex, structinfo);
+			dpvs(name);
+			
+			struct avl_node_t* node = avl_search(extra_fields, &name);
+			
+			struct structinfo* extra = NULL;
+			
+			if (node)
+			{
+				struct named_structinfo* ninfo = node->item;
+				extra = ninfo->structinfo;
+			}
+			
+			struct structinfo* structinfo = build_structinfo(name, named_gegex->gegex, extra);
+			
+			build_tries(named_tries, name, named_gegex->gegex, structinfo);
+			
+			free_structinfo(structinfo);
 		}
 		runme;
 	}));
@@ -477,7 +519,7 @@ struct yacc_state* yacc(
 		
 		struct avl_tree_t* shift_tokens = avl_alloc_tree(compare_shift_nodes, free_shift_node);
 		
-		struct avl_tree_t* reduce_tokens = avl_alloc_tree(compare_reduce_nodes, free);
+		struct avl_tree_t* reduce_tokens = avl_alloc_tree(compare_reduce_nodes, free_reduce_node);
 		
 		struct avl_tree_t* subgrammars = avl_alloc_tree(compare_subgrammar_nodes, free_subgrammar_node);
 		
@@ -488,10 +530,12 @@ struct yacc_state* yacc(
 				
 				if (trie->reduce_as)
 				{
+					assert(trie->grammar);
+					
 					unsignedset_foreach(tokens, ({
 						void runme(unsigned token)
 						{
-							add_reduce(reduce_tokens, token, trie->reduce_as, trie->reductioninfo, trie->structinfo);
+							add_reduce(reduce_tokens, token, trie->reduce_as, trie->grammar, trie->reductioninfo, trie->structinfo);
 						}
 						runme;
 					}));
@@ -604,6 +648,7 @@ struct yacc_state* yacc(
 				else if (avl_search(reduce_tokens, &first))
 				{
 					struct string* reduce_as = NULL;
+					struct string* grammar = NULL;
 					struct reductioninfo* reductioninfo;
 					struct structinfo* structinfo;
 					
@@ -629,6 +674,7 @@ struct yacc_state* yacc(
 							if (!reduce_as)
 							{
 								reduce_as = reduce->reduce_as;
+								grammar = reduce->grammar;
 								reductioninfo = reduce->reductioninfo;
 								structinfo = reduce->structinfo;
 							}
@@ -640,7 +686,7 @@ struct yacc_state* yacc(
 						runme;
 					}));
 					
-					yacc_state_add_reduce_transition(state, ele, reduce_as, reductioninfo, structinfo);
+					yacc_state_add_reduce_transition(state, ele, reduce_as, grammar, reductioninfo, structinfo);
 				}
 				else
 				{
@@ -734,8 +780,6 @@ struct yacc_state* yacc(
 	avl_free_tree(mappings);
 	
 	avl_free_tree(named_firsts);
-	
-	avl_free_tree(structinfos);
 	
 	avl_free_tree(named_tries);
 	

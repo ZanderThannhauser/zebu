@@ -11,6 +11,10 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
+
 #include <lex/state/free.h>
 
 #include <set/unsigned/free.h>
@@ -73,6 +77,8 @@ void free_yacc_state(struct yacc_state* start)
 			free_unsignedset(ele->on);
 			
 			free_string(ele->reduce_as);
+			
+			free_string(ele->grammar);
 			
 			free_reductioninfo(ele->reductioninfo);
 			

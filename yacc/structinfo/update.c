@@ -9,6 +9,7 @@
 
 #include <string/compare.h>
 
+#include "node.h"
 #include "struct.h"
 #include "update.h"
 
@@ -42,7 +43,7 @@ void structinfo_update(
 		}
 		else
 		{
-			if (ae->kind != be->kind)
+			if (ae->type != be->type)
 			{
 				TODO;
 				exit(1);
@@ -65,4 +66,10 @@ void structinfo_update(
 	
 	EXIT;
 }
+
+
+
+
+
+
 

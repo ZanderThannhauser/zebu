@@ -273,7 +273,7 @@ void* parse(FILE* stream)
 					#ifdef DEBUG
 					ddprintf("lexer: EOF.\n");
 					#endif
-					t = b;
+					t = b, td = NULL;
 					break;
 				}
 				else if (b == 1)

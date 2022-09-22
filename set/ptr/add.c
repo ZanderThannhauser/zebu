@@ -1,5 +1,10 @@
 
+#include <assert.h>
+#include <errno.h>
+
 #include <debug.h>
+
+#include <avl/insert.h>
 
 #include "struct.h"
 #include "add.h"
@@ -15,6 +20,9 @@ bool ptrset_add(
 	
 	if (node)
 	{
+		#ifdef VERBOSE
+		set->n++;
+		#endif
 		new = true;
 	}
 	else if (errno == EEXIST)

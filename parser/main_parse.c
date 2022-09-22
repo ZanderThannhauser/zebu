@@ -22,7 +22,10 @@
 #include "resolve_grammar_names.h"
 #include "recursive_parse.h"
 
-void main_parse(struct avl_tree_t* grammar, struct lex* lex)
+void main_parse(
+	struct avl_tree_t* grammar,
+	struct avl_tree_t* extra_fields,
+	struct lex* lex)
 {
 	ENTER;
 	
@@ -36,6 +39,7 @@ void main_parse(struct avl_tree_t* grammar, struct lex* lex)
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
+		/* extra_fields: */ extra_fields,
 		/* scope: */ scope,
 		/* lex: */ lex,
 		/* absolute_dirfd: */ br.dirfd,

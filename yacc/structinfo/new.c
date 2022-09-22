@@ -13,6 +13,7 @@
 #include <string/compare.h>
 #include <string/free.h>
 
+#include "node.h"
 #include "struct.h"
 #include "new.h"
 
@@ -30,15 +31,20 @@ static void free_node(void* ptr)
 	{
 		free_string(node->name);
 		
-		switch (node->kind)
+		switch (node->type)
 		{
-			case sin_token_scalar:
-			case sin_token_array:
+			case snt_token_scalar:
+			case snt_token_array:
 				break;
 			
-			case sin_grammar_scalar:
-			case sin_grammar_array:
-				free_string(node->grammar);
+			case snt_grammar_scalar:
+			case snt_grammar_array:
+				free_string(node->grammar.name);
+				break;
+			
+			case snt_user_defined:
+				free_string(node->user_defined.type);
+				free_string(node->user_defined.destructor);
 				break;
 			
 			default:
@@ -50,13 +56,11 @@ static void free_node(void* ptr)
 	}
 }
 
-struct structinfo* new_structinfo(struct string* name)
+struct structinfo* new_structinfo()
 {
 	ENTER;
 	
 	struct structinfo* this = smalloc(sizeof(*this));
-	
-	this->name = inc_string(name);
 	
 	this->tree = avl_alloc_tree(compare_nodes, free_node);
 	

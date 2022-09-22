@@ -1,8 +1,11 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include "../tokenizer/struct.h"
 #include "../tokenizer/read_token.h"

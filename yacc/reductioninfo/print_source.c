@@ -15,12 +15,11 @@
 void reductioninfo_print_source(
 	struct reductioninfo* this,
 	struct structinfo* structinfo,
+	const char* grammar,
 	const char* prefix,
 	FILE* stream)
 {
 	ENTER;
-	
-	assert(this);
 	
 	switch (this->kind)
 	{
@@ -29,11 +28,11 @@ void reductioninfo_print_source(
 			bool once = true;
 			
 			structinfo_foreach(this->structinfo, ({
-				void runme(struct string* name, enum structinfo_node_kind kind, struct string* _)
+				void runme(struct string* name, enum structinfo_node_type type, struct string* _)
 				{
-					switch (kind)
+					switch (type)
 					{
-						case sin_token_scalar:
+						case snt_token_scalar:
 						{
 							if (once)
 							{
@@ -51,7 +50,7 @@ void reductioninfo_print_source(
 							break;
 						}
 						
-						case sin_token_array:
+						case snt_token_array:
 						{
 							if (once)
 							{
@@ -98,20 +97,22 @@ void reductioninfo_print_source(
 		{
 			bool once = true;
 			
-			const char* type = this->grammar->chars;
+			const char* datatype = this->grammar->chars;
 			
 			structinfo_foreach(this->structinfo, ({
-				void runme(struct string* name, enum structinfo_node_kind kind, struct string* grammar)
+				void runme(struct string* name, enum structinfo_node_type type, struct string* grammar)
 				{
-					switch (kind)
+					const char* name_chars = name->chars;
+					
+					switch (type)
 					{
-						case sin_grammar_scalar:
+						case snt_grammar_scalar:
 						{
 							if (once)
 							{
 								fprintf(stream, ""
 									"\t" "\t" "free_%s_%s_ptree(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
-								"", prefix, type, name->chars, name->chars);
+								"", prefix, datatype, name_chars, name_chars);
 								once = false;
 							}
 							else
@@ -126,7 +127,7 @@ void reductioninfo_print_source(
 							break;
 						}
 						
-						case sin_grammar_array:
+						case snt_grammar_array:
 						{
 							if (once)
 							{
@@ -138,11 +139,11 @@ void reductioninfo_print_source(
 									"\t" "\t" "}" "\n"
 									"\t" "\t" "memmove(value->%s.data + 1, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
 									"\t" "\t" "value->%s.data[0] = data.data[--yacc.n, --data.n], value->%s.n++;" "\n"
-								"", name->chars, name->chars,
-								name->chars, name->chars,
-								name->chars, name->chars, name->chars, name->chars,
-								name->chars, name->chars, name->chars, name->chars,
-								name->chars, name->chars);
+								"", name_chars, name_chars,
+								name_chars, name_chars,
+								name_chars, name_chars, name_chars, name_chars,
+								name_chars, name_chars, name_chars, name_chars,
+								name_chars, name_chars);
 								once = false;
 							}
 							else
@@ -165,7 +166,7 @@ void reductioninfo_print_source(
 			{
 				fprintf(stream, ""
 					"\t" "\t" "free_%s_%s_ptree(data.data[--yacc.n, --data.n]);" "\n"
-				"", prefix, type);
+				"", prefix, datatype);
 			}
 			
 			break;
@@ -180,16 +181,16 @@ void reductioninfo_print_source(
 			fprintf(stream, ""
 				"\t" "\t" "{" "\n"
 				"\t" "\t" "\t" "struct %s_%s* trie = data.data[--yacc.n, --data.n];" "\n"
-			"", prefix, structinfo->name->chars);
+			"", prefix, grammar);
 			
 			structinfo_foreach(structinfo, ({
-				void runme(struct string* name, enum structinfo_node_kind kind, struct string* grammar)
+				void runme(struct string* name, enum structinfo_node_type type, struct string* grammar)
 				{
 					const char* const name_chars = name->chars;
 					
-					switch (kind)
+					switch (type)
 					{
-						case sin_token_scalar:
+						case snt_token_scalar:
 						{
 							fprintf(stream, ""
 								"\t" "\t" "\t" "if (trie->%s) { free_token(value->%s); value->%s = inc_token(trie->%s); }" "\n"
@@ -197,7 +198,7 @@ void reductioninfo_print_source(
 							break;
 						}
 						
-						case sin_token_array:
+						case snt_token_array:
 						{
 							fprintf(stream, ""
 								"\t" "\t" "\t" "if (trie->%s.n)"
@@ -223,7 +224,7 @@ void reductioninfo_print_source(
 							break;
 						}
 						
-						case sin_grammar_scalar:
+						case snt_grammar_scalar:
 						{
 							const char* const grammar_chars = grammar->chars;
 							fprintf(stream, ""
@@ -232,7 +233,7 @@ void reductioninfo_print_source(
 							break;
 						}
 						
-						case sin_grammar_array:
+						case snt_grammar_array:
 						{
 							const char* const grammar_chars = grammar->chars;
 							
@@ -260,6 +261,9 @@ void reductioninfo_print_source(
 							break;
 						}
 						
+						case snt_user_defined:
+							break;
+						
 						default:
 							TODO;
 							break;
@@ -271,7 +275,7 @@ void reductioninfo_print_source(
 			fprintf(stream, ""
 				"\t" "\t" "\t" "free_%s_%s_ptree(trie);" "\n"
 				"\t" "\t" "}" "\n"
-			"", prefix, structinfo->name->chars);
+			"", prefix, grammar);
 			break;
 		}
 		
@@ -282,7 +286,7 @@ void reductioninfo_print_source(
 	
 	if (this->prev)
 	{
-		reductioninfo_print_source(this->prev, structinfo, prefix, stream);
+		reductioninfo_print_source(this->prev, structinfo, grammar, prefix, stream);
 	}
 	
 	EXIT;

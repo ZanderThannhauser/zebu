@@ -42,6 +42,7 @@
 	struct trie;
 	struct charset;
 	struct unsignedcharset;
+	struct quack;
 	struct gegexset;
 	struct structinfo;
 	struct lex_state;
@@ -286,7 +287,10 @@
 	}
 	
 #else
-	#ifdef TESTING
+	
+	#define TODO assert(!"TODO");
+	#define CHECK assert(!"CHECK");
+	#define NOPE assert(!"NOPE");
 	
 	#define dpv(x) ;
 	#define dpvb(x) ;
@@ -299,12 +303,6 @@
 	#define ddprintf(...) ;
 	
 	#define dperror(x) ;
-	
-	#define TODO assert(!"TODO");
-	#define CHECK assert(!"CHECK");
-	#define NOPE assert(!"NOPE");
-	
-	#endif
 	
 	#define ENTER
 	#define EXIT

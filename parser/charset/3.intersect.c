@@ -19,14 +19,11 @@ charset_t read_intersect_charset(
 	
 	while (tokenizer->token == t_ampersand)
 	{
-		TODO;
-		#if 0
-		read_token(tokenizer, charset_inside_intersect_machine);
+		read_token(tokenizer);
 		
 		charset_t right = read_range_charset(tokenizer, scope);
 		
 		left &= right;
-		#endif
 	}
 	
 	EXIT;

@@ -38,6 +38,7 @@ enum token
 	
 	// identifers:
 	t_identifier,
+	t_absolute_path,
 	t_array_hashtag,
 	t_scalar_hashtag,
 	

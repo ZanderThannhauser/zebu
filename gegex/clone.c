@@ -25,11 +25,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
-/*#include "struct.h"*/
-/*#include "new.h"*/
+#include "transition/struct.h"
+#include "grammar/struct.h"
 #include "add_transition.h"
+#include "add_lambda_transition.h"
 #include "add_grammar_transition.h"
 
 #include "dotout.h"
@@ -104,14 +106,12 @@ struct gegex* gegex_clone(struct gegex* original_start)
 		completed++;
 		#endif
 		
-		TODO;
-		#if 0
 		struct mapping* mapping = quack_pop(todo);
 		
 		struct gegex* const old = mapping->old;
 		struct gegex* const new = mapping->new;
 		
-		new->is_reduction_point = old->is_reduction_point;
+		new->accepts = old->accepts;
 		
 		// for each transition:
 		for (unsigned i = 0, n = old->transitions.n; i < n; i++)
@@ -140,9 +140,9 @@ struct gegex* gegex_clone(struct gegex* original_start)
 			}
 		}
 		
-		for (unsigned i = 0, n = old->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->grammars.n; i < n; i++)
 		{
-			struct gegex_grammar_transition* const ele = old->grammar_transitions.data[i];
+			struct gegex_grammar_transition* const ele = old->grammars.data[i];
 			
 			struct avl_node_t* node = avl_search(mappings, &ele->to);
 			
@@ -167,11 +167,9 @@ struct gegex* gegex_clone(struct gegex* original_start)
 		}
 		
 		// for each lambda transition:
-		for (unsigned i = 0, n = old->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->lambdas.n; i < n; i++)
 		{
-			TODO;
-			#if 0
-			struct gegex* const subold = old->lambda_transitions.data[i];
+			struct gegex* const subold = old->lambdas.data[i];
 			
 			struct avl_node_t* node = avl_search(mappings, &subold);
 			
@@ -193,9 +191,7 @@ struct gegex* gegex_clone(struct gegex* original_start)
 				
 				quack_append(todo, submapping);
 			}
-			#endif
 		}
-		#endif
 		
 		#ifdef DOTOUT
 		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);

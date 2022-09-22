@@ -12,22 +12,21 @@
 
 #include <misc/escape.h>
 
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/append.h>
 #include <quack/new.h>
 #include <quack/free.h>
 
-#include <set/regex/new.h>
-#include <set/regex/add.h>
-#include <set/regex/foreach.h>
-#include <set/regex/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/foreach.h>
+#include <set/ptr/free.h>
 
-#include "state/struct.h"
-
+#include "struct.h"
 #include "dotout.h"
 
-static void helper(const char* name, struct regexset* queued, struct quack* todo)
+static void helper(const char* name, struct ptrset* queued, struct quack* todo)
 {
 	ENTER;
 	
@@ -54,7 +53,7 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 		fprintf(out, "\t" "label = \"%s\";" "\n", name);
 	}
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct regex* state = quack_pop(todo);
 		
@@ -66,8 +65,8 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 				"\t" "fillcolor = white;" "\n"
 				"\t" "peripheries = %u;" "\n"
 			"]" "\n"
-		"", state, state->is_accepting ? "doublecircle" : "circle",
-		           state->is_accepting ? 2 + state->kind : 1);
+		"", state, state->accepts ? "doublecircle" : "circle",
+		           state->accepts ? 2 + state->kind : 1);
 		
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)
@@ -82,18 +81,18 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 				
 				fprintf(out, "\"%p\" -> \"%p\" [ label = \"%s\" ]" "\n", state, to, str);
 				
-				if (regexset_add(queued, to))
+				if (ptrset_add(queued, to))
 					quack_append(todo, to);
 			}
 		}
 		
-		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambdas.n; i < n; i++)
 		{
-			struct regex* const to = state->lambda_transitions.data[i];
+			struct regex* const to = state->lambdas.data[i];
 			
 			fprintf(out, "\"%p\" -> \"%p\" [ label = \"λ\" ]" "\n", state, to);
 		
-			if (regexset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(todo, to);
 		}
 		
@@ -101,7 +100,7 @@ static void helper(const char* name, struct regexset* queued, struct quack* todo
 		{
 			struct regex* const to = state->EOF_transition_to;
 			
-			if (regexset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(todo, to);
 			
 			fprintf(out, "\"%p\" -> \"%p\" [ label = \"<EOF>\" ]" "\n", state, to);
@@ -119,35 +118,37 @@ void regex_dotout(struct regex* state, const char* name)
 {
 	ENTER;
 	
-	struct regexset* queued = new_regexset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	regexset_add(queued, state);
+	ptrset_add(queued, state);
 	
 	quack_append(todo, state);
 	
 	helper(name, queued, todo);
 	
-	free_regexset(queued);
+	free_ptrset(queued);
 	
 	free_quack(todo);
 	
 	EXIT;
 }
 
-void regex_dotout_set(struct regexset* set, const char* name)
+void regex_dotout_set(struct ptrset* set, const char* name)
 {
 	ENTER;
 	
-	struct regexset* queued = new_regexset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	regexset_foreach(set, ({
-		void runme(struct regex* state)
+	ptrset_foreach(set, ({
+		void runme(void* ptr)
 		{
-			regexset_add(queued, state);
+			struct regex* state = ptr;
+			
+			ptrset_add(queued, state);
 			
 			quack_append(todo, state);
 		}
@@ -156,7 +157,7 @@ void regex_dotout_set(struct regexset* set, const char* name)
 	
 	helper(name, queued, todo);
 	
-	free_regexset(queued);
+	free_ptrset(queued);
 	
 	free_quack(todo);
 	

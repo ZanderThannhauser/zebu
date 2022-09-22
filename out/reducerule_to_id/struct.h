@@ -3,6 +3,8 @@ struct reducerule_to_id_node
 {
 	struct string* reduce_as;
 	
+	struct string* grammar;
+	
 	struct reductioninfo* reductioninfo;
 	
 	struct structinfo* structinfo;

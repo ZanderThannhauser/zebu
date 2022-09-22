@@ -15,6 +15,7 @@
 
 void read_include_directive(
 	struct pragma_once* pragma_once,
+	struct avl_tree_t* extra_fields,
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct lex* lex,
@@ -23,15 +24,15 @@ void read_include_directive(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	enum token token = read_token(tokenizer, include_machine);
+	assert(tokenizer->token == t_identifier);
+	
+	read_token(tokenizer);
 	
 	unsigned dirfd;
 	
-	switch (token)
+	switch (tokenizer->token)
 	{
-		case t_relative_path:
+		case t_string_literal:
 			dirfd = relative_dirfd;
 			break;
 		
@@ -44,10 +45,13 @@ void read_include_directive(
 			break;
 	}
 	
+	dpvs(tokenizer->tokenchars.chars);
+	
 	struct br_rettype br = break_and_open_path(dirfd, tokenizer->tokenchars.chars);
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
+		/* extra_fields: */ extra_fields,
 		/* scope: */ scope,
 		/* lex: */ lex,
 		/* absolute_dirfd: */ absolute_dirfd,
@@ -58,7 +62,6 @@ void read_include_directive(
 		close(br.dirfd);
 	
 	close(br.fd);
-	#endif
 	
 	EXIT;
 }

@@ -1,4 +1,5 @@
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
@@ -28,9 +29,9 @@
 /*#include <named/trie/compare.h>*/
 /*#include <named/trie/free.h>*/
 
-/*#include <set/gegex/new.h>*/
-/*#include <set/gegex/add.h>*/
-/*#include <set/gegex/free.h>*/
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 /*#include <set/string/new.h>*/
 /*#include <set/string/foreach.h>*/
@@ -44,6 +45,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #ifdef DOTOUT
@@ -51,7 +53,7 @@
 #include <stdio.h>
 #include <misc/frame_counter.h>
 #include <string/struct.h>
-#include <set/gegex/contains.h>
+#include <set/ptr/contains.h>
 #endif
 
 #include "reductioninfo/new.h"
@@ -132,7 +134,7 @@ static void explore_dotout(
 	
 	quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct gegex* state = quack_pop(todo);
 		
@@ -159,7 +161,7 @@ static void explore_dotout(
 		"", state, label,
 		ptrset_contains(seen, state) ? "grey" : "white",
 		state == focus ? "square" : "circle",
-		state->is_reduction_point ? 2 : 1);
+		state->accepts ? 2 : 1);
 		
 		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
@@ -225,21 +227,19 @@ static void expand_dotout(struct trie* start)
 		
 		if (trie->reduce_as)
 		{
-			char* reductioninfo_string = reductioninfo_to_string(trie->reductioninfo);
+			assert(trie->grammar);
 			
-			#ifdef DEBUGGING
-			assert(trie->structinfo->name);
-			#endif
+			char* reductioninfo_string = reductioninfo_to_string(trie->reductioninfo);
 			
 			fprintf(stream, ""
 				"\"%p\" [" "\n"
-					"label = \"{ reduce_as = %s } | {structinfo = %s} %s \"" "\n"
+					"label = \"{ reduce_as = %s } | { grammar = %s } %s \"" "\n"
 					"shape = record" "\n"
 					"style = filled" "\n"
 					"color = black" "\n"
 					"fillcolor = white" "\n"
 				"];" "\n"
-			"", trie, trie->reduce_as->chars, trie->structinfo->name->chars, reductioninfo_string ?: "");
+			"", trie, trie->reduce_as->chars, trie->grammar->chars, reductioninfo_string ?: "");
 			
 			free(reductioninfo_string);
 		}
@@ -299,11 +299,13 @@ static unsigned trie_id = 0;
 
 void build_tries(
 	struct avl_tree_t* named_tries,
-	struct string* name,
+	struct string* reduce_as,
 	struct gegex* start,
 	struct structinfo* structinfo)
 {
 	ENTER;
+	
+	assert(reduce_as);
 	
 	struct quack* explore = new_quack();
 	
@@ -336,13 +338,13 @@ void build_tries(
 		
 		quack_append(explore, start);
 		
-		avl_insert(gegex_to_trie, new_gegex_to_trie_name(start, name));
+		avl_insert(gegex_to_trie, new_gegex_to_trie_name(start, reduce_as));
 		
 		struct trie* trie = new_trie();
 		
-		struct named_trie* new = new_named_trie(name, trie);
+		struct named_trie* new = new_named_trie(reduce_as, trie);
 		
-		quack_append(expand, new_explore_bundle(name, trie, start));
+		quack_append(expand, new_explore_bundle(reduce_as, trie, start));
 		
 		avl_insert(named_tries, new);
 	}
@@ -458,6 +460,7 @@ void build_tries(
 				trie->reductioninfo = inc_reductioninfo(reductioninfo);
 				trie->structinfo = inc_structinfo(structinfo);
 				trie->reduce_as = inc_string(bundle->trie_name);
+				trie->grammar = inc_string(reduce_as);
 			}
 			
 			struct trie* process_transition(
@@ -480,6 +483,7 @@ void build_tries(
 						retval->reductioninfo = inc_reductioninfo(subreductioninfo);
 						retval->structinfo = inc_structinfo(structinfo);
 						retval->reduce_as = inc_string(bundle->trie_name);
+						retval->grammar = inc_string(reduce_as);
 					}
 					
 					struct trie* reduce = new_trie();
@@ -491,6 +495,7 @@ void build_tries(
 					reduce->reductioninfo = new_reductioninfo(rik_trie, NULL, gtotn->trie_name, subreductioninfo);
 					reduce->structinfo = inc_structinfo(structinfo);
 					reduce->reduce_as = inc_string(bundle->trie_name);
+					reduce->grammar = inc_string(reduce_as);
 				}
 				else
 				{

@@ -16,8 +16,6 @@ void free_structinfo(void* ptr)
 	
 	if (this && !--this->refcount)
 	{
-		free_string(this->name);
-		
 		avl_free_tree(this->tree);
 		
 		free(this);

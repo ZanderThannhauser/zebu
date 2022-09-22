@@ -24,6 +24,7 @@ struct yacc_state
 			struct unsignedset* on;
 			
 			struct string* reduce_as;
+			struct string* grammar;
 			
 			struct reductioninfo* reductioninfo;
 			

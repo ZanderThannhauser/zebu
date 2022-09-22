@@ -17,10 +17,12 @@
 #include <set/ptr/add.h>
 #include <set/ptr/free.h>
 
-#include <set/unsigned/free.h>
+/*#include <set/unsigned/free.h>*/
 
-#include <yacc/structinfo/free.h>
+/*#include <yacc/structinfo/free.h>*/
 
+#include "grammar/struct.h"
+#include "grammar/free.h"
 #include "transition/struct.h"
 #include "transition/free.h"
 
@@ -54,34 +56,20 @@ void free_gegex(struct gegex* start)
 		
 		for (unsigned i = 0, n = state->lambdas.n; i < n; i++)
 		{	
-			TODO;
-			#if 0
-			struct gegex* to = state->lambda_transitions.data[i];
+			struct gegex* to = state->lambdas.data[i];
 			
 			if (ptrset_add(freed, to))
-			{
 				quack_append(todo, to);
-			}
-			#endif
 		}
 		
 		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			TODO;
-			#if 0
-			struct gegex_grammar_transition* t = state->grammar_transitions.data[i];
+			struct gegex_grammar_transition* t = state->grammars.data[i];
 			
 			if (ptrset_add(freed, t->to))
-			{
 				quack_append(todo, t->to);
-			}
 			
-			free_string(t->grammar);
-			
-			free_structinfo(t->structinfo);
-			
-			free(t);
-			#endif
+			free_gegex_grammar_transition(t);
 		}
 		
 		free(state->transitions.data);

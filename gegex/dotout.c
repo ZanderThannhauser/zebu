@@ -9,13 +9,13 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 #include <quack/free.h>
 
-#include <set/gegex/new.h>
-#include <set/gegex/add.h>
-#include <set/gegex/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include <misc/frame_counter.h>
 
@@ -25,8 +25,9 @@
 
 #include <yacc/structinfo/to_hashtagstring.h>
 
-#include "state/struct.h"
-
+#include "grammar/struct.h"
+#include "transition/struct.h"
+#include "struct.h"
 #include "dotout.h"
 
 void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* name)
@@ -55,15 +56,15 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 	
 	fprintf(out, "\"%p\" [ style = bold; ];" "\n", start);
 	
-	struct gegexset* queued = new_gegexset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	gegexset_add(queued, start);
+	ptrset_add(queued, start);
 	
 	quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct gegex* state = quack_pop(todo);
 		
@@ -72,7 +73,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 				"\t" "shape = %s;" "\n"
 				"\t" "label = \"\";" "\n"
 			"]" "\n"
-		"", state, state->is_reduction_point ? "doublecircle" : "circle");
+		"", state, state->accepts ? "doublecircle" : "circle");
 		
 		// normal transitions:
 		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
@@ -89,18 +90,18 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 				"]" "\n"
 			"", state, transition->to, whitespace, transition->token, label);
 			
-			if (gegexset_add(queued, transition->to))
+			if (ptrset_add(queued, transition->to))
 				quack_append(todo, transition->to);
 			
 			free(label), free(whitespace);
 		}
 		
 		// grammar transitions:
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			struct gegex_grammar_transition* gtransition = state->grammar_transitions.data[i];
+			struct gegex_grammar_transition* gtransition = state->grammars.data[i];
 			
-			if (gegexset_add(queued, gtransition->to))
+			if (ptrset_add(queued, gtransition->to))
 				quack_append(todo, gtransition->to);
 			
 			char* label = structinfo_to_hashtagstring(gtransition->structinfo);
@@ -113,11 +114,11 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 		}
 		
 		// lambda transitions:
-		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambdas.n; i < n; i++)
 		{
-			struct gegex* const to = state->lambda_transitions.data[i];
+			struct gegex* const to = state->lambdas.data[i];
 			
-			if (gegexset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(todo, to);
 			
 			fprintf(out, ""

@@ -1,5 +1,12 @@
 
+#include <stddef.h>
+
 #include <debug.h>
+
+#include <memory/smalloc.h>
+
+#include <avl/insert.h>
+#include <avl/alloc_tree.h>
 
 #include "struct.h"
 #include "clone.h"
@@ -21,6 +28,10 @@ struct ptrset* ptrset_clone(const struct ptrset* this)
 	
 	new->refcount = 1;
 	new->tree = tree;
+	
+	#ifdef VERBOSE
+	new->n = this->n;
+	#endif
 	
 	EXIT;
 	return new;

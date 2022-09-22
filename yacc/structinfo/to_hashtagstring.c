@@ -10,6 +10,7 @@
 
 #include <string/struct.h>
 
+#include "node.h"
 #include "struct.h"
 #include "to_hashtagstring.h"
 
@@ -43,7 +44,7 @@ char* structinfo_to_hashtagstring(const struct structinfo* this)
 		
 		append("#"), append(element->name->chars);
 		
-		if (element->kind == sin_grammar_array || element->kind == sin_token_array)
+		if (element->type == snt_grammar_array || element->type == snt_token_array)
 			append("[]");
 		
 		if (node->next)

@@ -9,12 +9,12 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
-#include <quack/len.h>
+#include <quack/is_nonempty.h>
 #include <quack/pop.h>
 
-#include <set/lexstate/new.h>
-#include <set/lexstate/add.h>
-#include <set/lexstate/free.h>
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include <misc/escape.h>
 
@@ -49,15 +49,15 @@ void lex_state_dotout(
 	
 	fprintf(stream, "\"%p\" [ style = bold; ];" "\n", start);
 	
-	struct lexstateset* queued = new_lexstateset();
+	struct ptrset* queued = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	lexstateset_add(queued, start);
+	ptrset_add(queued, start);
 	
 	quack_append(todo, start);
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct lex_state* state = quack_pop(todo);
 		
@@ -100,7 +100,7 @@ void lex_state_dotout(
 					"]" "\n"
 				"", state, to, str);
 				
-				if (lexstateset_add(queued, to))
+				if (ptrset_add(queued, to))
 					quack_append(todo, to);
 			}
 		}
@@ -115,12 +115,12 @@ void lex_state_dotout(
 				"]" "\n"
 			"", state, to);
 			
-			if (lexstateset_add(queued, to))
+			if (ptrset_add(queued, to))
 				quack_append(todo, to);
 		}
 	}
 	
-	free_lexstateset(queued);
+	free_ptrset(queued);
 	
 	fprintf(stream, "}" "\n");
 	

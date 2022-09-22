@@ -1,7 +1,16 @@
 
+#include <stdlib.h>
+#include <assert.h>
+
 #include <debug.h>
 
 #include <avl/foreach.h>
+#include <avl/alloc_tree.h>
+#include <avl/search.h>
+#include <avl/insert.h>
+#include <avl/free_tree.h>
+
+#include <memory/smalloc.h>
 
 #include <quack/new.h>
 #include <quack/is_nonempty.h>
@@ -27,6 +36,16 @@
 #include <set/ptr/discard.h>
 #include <set/ptr/free.h>
 
+#ifdef VERBOSE
+#include <inttypes.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <set/ptr/len.h>
+#include <heap/len.h>
+#include <misc/default_sighandler.h>
+#endif
+
 #include "simplify_dfa.h"
 
 struct pair
@@ -38,7 +57,7 @@ static struct pair* new_pair(struct regex* a, struct regex* b)
 {
 	ENTER;
 	
-	struct pair* this = malloc(sizeof(*this));
+	struct pair* this = smalloc(sizeof(*this));
 	
 	assert(a < b);
 	
@@ -465,6 +484,30 @@ struct regex* regex_simplify_dfa(struct regex* original)
 	
 	struct heap* todo = new_heap(compare_tasks);
 	
+	#ifdef VERBOSE
+	uintmax_t count = 0, n;
+	
+	void handler1(int _)
+	{
+		char buffer[1000] = {};
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: regex simplify (building dependencies): %lu of %lu (%.2f%%)\r",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	{
+		n = (ptrset_len(universe) * (ptrset_len(universe) - 1)) / 2;
+		
+		signal(SIGALRM, handler1);
+	}
+	#endif
+	
 	ptrset_foreach(universe, ({
 		void runme(void* a_ptr) {
 			ptrset_foreach(universe, ({
@@ -498,6 +541,10 @@ struct regex* regex_simplify_dfa(struct regex* original)
 						{
 							heap_push(todo, new_task(a, b, 0));
 						}
+						
+						#ifdef VERBOSE
+						count++;
+						#endif
 					}
 				}
 				runme;
@@ -505,6 +552,27 @@ struct regex* regex_simplify_dfa(struct regex* original)
 		}
 		runme;
 	}));
+	
+	#ifdef VERBOSE
+	void handler12(int _)
+	{
+		char ptr[200] = {};
+		
+		size_t len = snprintf(ptr, 200,
+			"\e[K" "zebu: regex simplify (allocating sets): %lu of %lu (%.2f%%)\r",
+			count, n, (((double) count * 100) / n));
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	{
+		count = 0, n = ptrset_len(universe);
+		signal(SIGALRM, handler12);
+	}
+	#endif
 	
 	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
 	
@@ -517,12 +585,43 @@ struct regex* regex_simplify_dfa(struct regex* original)
 			struct same_as_node* sa = new_same_as_node(a, uni);
 			
 			avl_insert(connections, sa);
+			
+			#ifdef VERBOSE
+			count++;
+			#endif
 		}
 		runme;
 	}));
 	
+	#ifdef VERBOSE
+	unsigned completed = 0;
+	
+	void handler2(int _)
+	{
+		char buffer[1000] = {};
+		
+		unsigned total = completed + heap_len(todo);
+		
+		size_t len = snprintf(buffer, sizeof(buffer),
+			"\e[K" "zebu: regex simplify (percolate): %u of %u (%.2f%%)\r",
+				completed, total,
+				(double) completed * 100 / total);
+		
+		if (write(1, buffer, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler2);
+	#endif
+	
 	while (heap_is_nonempty(todo))
 	{
+		#ifdef VERBOSE
+		completed++;
+		#endif
+		
 		struct task* task = heap_pop(todo);
 		
 		if (mark_as_unequal(connections, &task->pair))
@@ -538,7 +637,7 @@ struct regex* regex_simplify_dfa(struct regex* original)
 				avl_tree_foreach(dep->dependent_of, ({
 					void runme(void* ptr) {
 						const struct pair* pair = ptr;
-						heap_push(todo, new_simplify_task(pair->a, pair->b, hopcount));
+						heap_push(todo, new_task(pair->a, pair->b, hopcount));
 					}
 					runme;
 				}));
@@ -557,6 +656,10 @@ struct regex* regex_simplify_dfa(struct regex* original)
 	avl_free_tree(connections);
 	
 	free_heap(todo);
+	
+	#ifdef VERBOSE
+	signal(SIGALRM, default_sighandler);
+	#endif
 	
 	EXIT;
 	return new_start;

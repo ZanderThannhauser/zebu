@@ -26,15 +26,13 @@ struct rbundle read_and_token_expression(
 	
 	while (tokenizer->token == t_ampersand)
 	{
-		TODO;
-		#if 0
-		read_token(tokenizer, regex_inside_and_machine);
+		read_token(tokenizer);
 		
 		bool take_complement = false;
 		while (tokenizer->token == t_emark)
 		{
 			take_complement = !take_complement;
-			read_token(tokenizer, regex_inside_and_machine);
+			read_token(tokenizer);
 		}
 		
 		struct rbundle right = read_concat_token_expression(tokenizer, scope);
@@ -52,15 +50,11 @@ struct rbundle read_and_token_expression(
 		
 		if (right.is_nfa)
 		{
-			right.nfa.end->is_accepting = true;
-			
-			struct regex* nfa = right.nfa.start;
-			
-			struct regex* dfa = regex_nfa_to_dfa(nfa);
+			struct regex* dfa = regex_nfa_to_dfa(right);
 			
 			right_machine = regex_simplify_dfa(dfa);
 			
-			free_regex(nfa), free_regex(dfa);
+			free_regex(right.nfa.start), free_regex(dfa);
 		}
 		else
 		{
@@ -80,7 +74,6 @@ struct rbundle read_and_token_expression(
 			.is_nfa = false,
 			.dfa = outgoing,
 		};
-		#endif
 	}
 	
 	EXIT;

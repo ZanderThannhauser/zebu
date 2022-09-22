@@ -18,6 +18,7 @@
 unsigned reducerule_to_id(
 	struct reducerule_to_id* this,
 	struct string* reduce_as,
+	struct string* grammar,
 	struct reductioninfo* reductioninfo,
 	struct structinfo* structinfo)
 {
@@ -36,6 +37,7 @@ unsigned reducerule_to_id(
 		struct reducerule_to_id_node* new = smalloc(sizeof(*new));
 		
 		new->reduce_as = inc_string(reduce_as);
+		new->grammar = inc_string(grammar);
 		new->reductioninfo = inc_reductioninfo(reductioninfo);
 		new->structinfo = inc_structinfo(structinfo);
 		

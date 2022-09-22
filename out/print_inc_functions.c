@@ -5,7 +5,7 @@
 
 #include <string/struct.h>
 
-#include <yacc/structinfo/struct.h>
+#include <named/structinfo/struct.h>
 
 #include "print_inc_functions.h"
 
@@ -22,7 +22,7 @@ void print_inc_function_prototypes(
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
 		
 		const char* type = ele->name->chars;
 		
@@ -51,7 +51,7 @@ void print_inc_functions(
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
 		
 		const char* type = ele->name->chars;
 		

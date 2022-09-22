@@ -1,5 +1,11 @@
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <string/new.h>
 #include <string/free.h>
@@ -20,12 +26,9 @@
 #include "start.h"
 
 void read_start_directive(
-	struct pragma_once* pragma_once,
 	struct tokenizer* tokenizer,
 	struct scope* scope,
-	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd)
+	struct lex* lex)
 {
 	ENTER;
 	

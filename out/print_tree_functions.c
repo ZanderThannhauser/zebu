@@ -8,6 +8,9 @@
 
 #include <string/struct.h>
 
+#include <named/structinfo/struct.h>
+
+#include <yacc/structinfo/node.h>
 #include <yacc/structinfo/struct.h>
 
 #include "print_tree_functions.h"
@@ -19,6 +22,8 @@ void print_tree_function_prototypes(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	fprintf(stream, ""
 		"extern void print_token_leaf(struct link* links, enum prefix p, const char* name, struct token* token);" "\n"
 		"extern void print_empty_leaf(struct link* links, enum prefix p, const char* type, const char* name);" "\n"
@@ -31,8 +36,9 @@ void print_tree_function_prototypes(
 		fprintf(stream, ""
 			"extern void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
 			"\n"
-		"", output_prefix, ele->name->chars, ele->name->chars);
+		"", output_prefix, name->chars, name->chars);
 	}
+	#endif
 	
 	EXIT;
 }
@@ -152,17 +158,23 @@ void print_tree_functions(
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
+		
+		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
 			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree);" "\n"
 			"\n"
-		"", output_prefix, ele->name->chars, output_prefix, ele->name->chars);
+		"", output_prefix, name, output_prefix, name);
 	};
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
-		struct structinfo* const ele = node->item;
+		struct named_structinfo* const ele = node->item;
+		
+		char* const name = ele->name->chars;
+		
+		struct structinfo* const structinfo = ele->structinfo;
 		
 		fprintf(stream, ""
 			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree)" "\n"
@@ -191,18 +203,19 @@ void print_tree_functions(
 				"\t" "\t" "break;" "\n"
 				"\t" "}" "\n"
 				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m)\\n\", name);" "\n"
-		"", output_prefix, ele->name->chars, output_prefix, ele->name->chars, ele->name->chars);
+		"", output_prefix, name, output_prefix, name, name);
 		
-		for (struct avl_node_t* node = ele->tree->head; node; node = node->next)
+		for (struct avl_node_t* node = structinfo->tree->head; node; node = node->next)
 		{
 			struct structinfo_node* const ele = node->item;
 			
 			const char* field = ele->name->chars;
+			
 			const char* prefix = node->next ? "p_not_last_child" : "p_last_child";
 			
-			switch (ele->kind)
+			switch (ele->type)
 			{
-				case sin_token_scalar:
+				case snt_token_scalar:
 				{
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
@@ -213,8 +226,10 @@ void print_tree_functions(
 					break;
 				}
 				
-				case sin_token_array:
+				case snt_token_array:
 				{
+					TODO;
+					#if 0
 					fprintf(stream, ""
 						"\t" "if (ptree->%s.n)" "\n"
 						"\t" "{" "\n"
@@ -235,13 +250,13 @@ void print_tree_functions(
 					field,
 					prefix, field,
 					prefix, field);
-					
+					#endif
 					break;
 				}
 				
-				case sin_grammar_scalar:
+				case snt_grammar_scalar:
 				{
-					const char* grammar_chars = ele->grammar->chars;
+					const char* grammar_chars = ele->grammar.name->chars;
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
@@ -254,9 +269,9 @@ void print_tree_functions(
 					break;
 				}
 				
-				case sin_grammar_array:
+				case snt_grammar_array:
 				{
-					const char* grammar_chars = ele->grammar->chars;
+					const char* grammar_chars = ele->grammar.name->chars;
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s.n)" "\n"
@@ -279,6 +294,16 @@ void print_tree_functions(
 					output_prefix, grammar_chars,
 					prefix, field,
 					prefix, grammar_chars, field);
+					break;
+				}
+				
+				case snt_user_defined:
+				{
+					struct string *const type = ele->user_defined.type;
+					
+					fprintf(stream, ""
+						"\t" "print_empty_leaf(new ?: links, %s, \"%.*s\", \"%s\");" "\n"
+					"", prefix, type->len, type->chars, field);
 					
 					break;
 				}

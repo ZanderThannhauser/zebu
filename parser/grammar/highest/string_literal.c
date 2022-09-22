@@ -45,35 +45,33 @@ struct gbundle read_string_literal_production(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 	
 	struct regex* regex_start = regex_from_literal(
 		/* chars:  */ tokenizer->tokenchars.chars,
 		/* strlen: */ tokenizer->tokenchars.n);
 	
-	unsigned token_id = lex_add_token2(lex, regex_start, tk_literal);
+	unsigned token_id = lex_add_token(lex, regex_start, tk_literal);
 	
 	dpv(token_id);
 	
-	struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+	struct structinfo* structinfo = new_structinfo();
 	
-	read_token(tokenizer, production_after_highest_machine);
+	read_token(tokenizer);
 	
 	while (false
-		|| tokenizer->token == t_hashtag_scalar
-		|| tokenizer->token == t_hashtag_array)
+		|| tokenizer->token == t_scalar_hashtag
+		|| tokenizer->token == t_array_hashtag)
 	{
 		struct string* tag = new_string_from_tokenchars(tokenizer);
 		
 		switch (tokenizer->token)
 		{
-			case t_hashtag_scalar:
+			case t_scalar_hashtag:
 				structinfo_add_token_scalar_field(structinfo, tag);
 				break;
 			
-			case t_hashtag_array:
+			case t_array_hashtag:
 				structinfo_add_token_array_field(structinfo, tag);
 				break;
 			
@@ -82,14 +80,12 @@ struct gbundle read_string_literal_production(
 				break;
 		}
 		
-		read_token(tokenizer, production_after_highest_machine);
+		read_token(tokenizer);
 		
 		free_string(tag);
 	}
 	
-	struct gegex* gegex_start = new_gegex();
-	
-	struct gegex* gegex_end = new_gegex();
+	struct gegex *start = new_gegex(), *end = new_gegex();
 	
 	struct unsignedset* whitespace = new_unsignedset();
 	
@@ -98,10 +94,10 @@ struct gbundle read_string_literal_production(
 		unsignedset_add(whitespace, lex->whitespace_token_id);
 	}
 	
-	gegex_add_transition(gegex_start, token_id, whitespace, structinfo, gegex_end);
+	gegex_add_transition(start, token_id, whitespace, structinfo, end);
 	
 	#ifdef DOTOUT
-	gegex_dotout(gegex_start, gegex_end, __PRETTY_FUNCTION__);
+	gegex_dotout(start, end, __PRETTY_FUNCTION__);
 	#endif
 	
 	free_unsignedset(whitespace);
@@ -109,8 +105,7 @@ struct gbundle read_string_literal_production(
 	free_structinfo(structinfo);
 	
 	EXIT;
-	return (struct gbundle) {gegex_start, gegex_end};
-	#endif
+	return (struct gbundle) {start, end};
 }
 
 

@@ -7,8 +7,10 @@ const char* token_names[number_of_tokens] = {
 	
 	// symbols:
 	[t_dot] = ".",
+	[t_vbar] = "|",
 	[t_colon] = ":",
 	[t_comma] = ",",
+	[t_emark] = "!",
 	[t_minus] = "-",
 	[t_percent] = "%",
 	[t_gravemark] = "`",

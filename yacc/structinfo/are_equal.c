@@ -1,4 +1,5 @@
 
+#if 0
 #include <debug.h>
 
 #include <avl/tree_t.h>
@@ -28,3 +29,4 @@ bool structinfos_are_equal(
 	return !an && !bn;
 }
 
+#endif

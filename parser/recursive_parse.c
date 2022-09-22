@@ -26,6 +26,7 @@
 
 void recursive_parse(
 	struct pragma_once* pragma_once,
+	struct avl_tree_t* extra_fields,
 	struct scope* scope,
 	struct lex* lex,
 	int absolute_dirfd,
@@ -51,55 +52,31 @@ void recursive_parse(
 			switch (tokenizer->token)
 			{
 				case t_percent:
-				{
 					read_directive(
 						/* pragma_once:    */ pragma_once,
+						/* extra_fields:   */ extra_fields,
 						/* tokenizer:      */ tokenizer,
 						/* scope:          */ scope,
 						/* lex:            */ lex,
 						/* absolute_dirfd: */ absolute_dirfd,
 						/* relative_dirfd: */ relative_dirfd);
 					break;
-				}
 				
 				case t_osquare:
-				{
-					TODO;
-					#if 0
-					read_charset(
-						/* tokenizer: */ tokenizer,
-						/* scope      */ scope);
+					read_charset(tokenizer, scope);
 					break;
-					#endif
-				}
 				
 				case t_gravemark:
 					read_fragment(tokenizer, scope);
 					break;
 				
 				case t_oparen:
-				{
-					TODO;
-					#if 0
-					read_inline_grammar(
-						/* tokenizer: */ tokenizer,
-						/* scope: */ scope,
-						/* lex: */ lex);
+					read_inline_grammar(tokenizer, scope, lex);
 					break;
-					#endif
-				}
 				
 				case t_identifier:
-				{
-					TODO;
-					#if 0
-					read_grammar(
-						/* tokenizer:   */ tokenizer,
-						/* scope        */ scope,
-						/* lex:         */ lex);
+					read_grammar(tokenizer, scope, lex);
 					break;
-					#endif
-				}
 				
 				default:
 					dpv(tokenizer->token);

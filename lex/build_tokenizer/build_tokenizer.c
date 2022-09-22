@@ -8,9 +8,9 @@
 #include <avl/insert.h>
 #include <avl/search.h>
 
-/*#include <set/regex/new.h>*/
-/*#include <set/regex/add.h>*/
-/*#include <set/regex/free.h>*/
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include <set/unsigned/foreach.h>
 

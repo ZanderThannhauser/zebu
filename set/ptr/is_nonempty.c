@@ -1,6 +1,8 @@
 
 #include <debug.h>
 
+#include <avl/tree_t.h>
+
 #include "struct.h"
 #include "is_nonempty.h"
 

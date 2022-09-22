@@ -24,6 +24,8 @@ void free_trie(struct trie* this)
 	
 	free_string(this->reduce_as);
 	
+	free_string(this->grammar);
+	
 	for (unsigned i = 0, n = this->transitions.n; i < n; i++)
 	{
 		struct trie_transition* ele = this->transitions.data[i];

@@ -10,6 +10,7 @@
 
 #include <string/inc.h>
 
+#include "node.h"
 #include "struct.h"
 #include "add_grammar_scalar_field.h"
 
@@ -35,9 +36,9 @@ void structinfo_add_grammar_scalar_field(
 		
 		node->name = inc_string(name);
 		
-		node->kind = sin_grammar_scalar;
+		node->type = snt_grammar_scalar;
 		
-		node->grammar = inc_string(grammar);
+		node->grammar.name = inc_string(grammar);
 		
 		node->refcount = 1;
 		

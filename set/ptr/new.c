@@ -1,6 +1,10 @@
 
 #include <debug.h>
 
+#include <memory/smalloc.h>
+
+#include <avl/alloc_tree.h>
+
 #include "struct.h"
 #include "new.h"
 
@@ -23,6 +27,10 @@ struct ptrset* new_ptrset()
 	this->tree = avl_alloc_tree(compare, NULL);
 	
 	this->refcount = 1;
+	
+	#ifdef VERBOSE
+	this->n = 0;
+	#endif
 	
 	EXIT;
 	return this;

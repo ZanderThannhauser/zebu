@@ -21,19 +21,15 @@ struct gbundle read_or_production(
 	
 	while (tokenizer->token == t_vbar)
 	{
-		TODO;
-		#if 0
-		read_token(tokenizer, production_inside_or_machine);
+		read_token(tokenizer);
 		
-		struct gbundle sub = read_concat_production(tokenizer, scope, lex);
+		struct gbundle right = read_concat_production(tokenizer, scope, lex);
 		
-		gegex_add_lambda_transition(retval.start, sub.start);
-		
-		gegex_add_lambda_transition(sub.end, retval.end);
+		gegex_add_lambda_transition(left.start, right.start);
+		gegex_add_lambda_transition(right.accepts, left.accepts);
 		
 		#ifdef DOTOUT
-		gegex_dotout(retval.start, retval.end, __PRETTY_FUNCTION__);
-		#endif
+		gegex_dotout(left.start, left.accepts, __PRETTY_FUNCTION__);
 		#endif
 	}
 	

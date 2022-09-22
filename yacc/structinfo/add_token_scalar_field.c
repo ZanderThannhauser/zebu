@@ -10,6 +10,7 @@
 #include <avl/insert.h>
 #include <avl/search.h>
 
+#include "node.h"
 #include "struct.h"
 #include "add_token_scalar_field.h"
 
@@ -32,7 +33,7 @@ void structinfo_add_token_scalar_field(
 		
 		node->name = inc_string(name);
 		
-		node->kind = sin_token_scalar;
+		node->type = snt_token_scalar;
 		
 		node->refcount = 1;
 		

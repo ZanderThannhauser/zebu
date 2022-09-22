@@ -26,17 +26,35 @@ void read_charset(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	assert(tokenizer->token == t_bracketed_identifier);
+	assert(tokenizer->token == t_osquare);
 	
-	dpvs(tokenizer->tokenchars.chars);
+	read_token(tokenizer);
+	
+	if (tokenizer->token != t_identifier)
+	{
+		TODO;
+		exit(1);
+	}
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
 	
-	read_token(tokenizer, colon_machine);
+	read_token(tokenizer);
 	
-	read_token(tokenizer, charset_root_machine);
+	if (tokenizer->token != t_csquare)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
+		
+	if (tokenizer->token != t_colon)
+	{
+		TODO;
+		exit(1);
+	}
+	
+	read_token(tokenizer);
 	
 	charset_t charset = read_root_charset(tokenizer, scope);
 	
@@ -51,7 +69,6 @@ void read_charset(
 	}
 	
 	free_string(name);
-	#endif
 	
 	EXIT;
 }

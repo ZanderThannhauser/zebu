@@ -11,6 +11,7 @@
 
 #include <avl/foreach.h>
 
+#include "node.h"
 #include "struct.h"
 #include "to_string.h"
 
@@ -18,6 +19,8 @@ char* structinfo_to_string(struct structinfo* this)
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	struct {
 		char* data;
 		size_t n, cap;
@@ -35,31 +38,29 @@ char* structinfo_to_string(struct structinfo* this)
 		buffer.n += len;
 	}
 	
-	append("struct "), append(this->name->chars), append(" {\\l");
+	append("struct "), append(" {\\l");
 	
 	avl_tree_foreach(this->tree, ({
 		void runme(void* ptr)
 		{
 			struct structinfo_node* node = ptr;
 			
-			dpvs(node->name->chars);
-			
-			switch (node->kind)
+			switch (node->type)
 			{
-				case sin_token_scalar:
+				case snt_token_scalar:
 					append("struct token* "), append(node->name->chars), append(";\\l");
 					break;
 				
-				case sin_token_array:
+				case snt_token_array:
 					append("struct token* "), append(node->name->chars), append("[];\\l");
 					break;
 				
-				case sin_grammar_scalar:
+				case snt_grammar_scalar:
 					append("struct "), append(node->grammar->chars);
 					append("* "), append(node->name->chars), append(";\\l");
 					break;
 				
-				case sin_grammar_array:
+				case snt_grammar_array:
 					append("struct "), append(node->grammar->chars);
 					append("* "), append(node->name->chars), append("[];\\l");
 					break;
@@ -78,6 +79,7 @@ char* structinfo_to_string(struct structinfo* this)
 	
 	EXIT;
 	return buffer.data;
+	#endif
 }
 
 

@@ -43,7 +43,7 @@ struct rbundle read_or_token_expression(
 			regex_add_lambda_transition(right.nfa.accepts, left.nfa.accepts);
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(left.nfa.start, __PRETTY_FUNCTION__);
 			#endif
 		}
 		while (tokenizer->token == t_vbar);

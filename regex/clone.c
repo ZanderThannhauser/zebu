@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <misc/default_sighandler.h>
+#include <quack/len.h>
 #endif
 
 #include "struct.h"
@@ -59,8 +60,6 @@ struct regex* regex_clone(struct regex* original_start)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free);
 	
 	struct quack* todo = new_quack();
@@ -69,7 +68,9 @@ struct regex* regex_clone(struct regex* original_start)
 	
 	{
 		struct mapping* mapping = new_mapping(original_start, new_start);
+		
 		avl_insert(mappings, mapping);
+		
 		quack_append(todo, mapping);
 	}
 	
@@ -95,7 +96,7 @@ struct regex* regex_clone(struct regex* original_start)
 	signal(SIGALRM, handler);
 	#endif
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		#ifdef VERBOSE
 		completed++;
@@ -106,7 +107,7 @@ struct regex* regex_clone(struct regex* original_start)
 		struct regex* const old = mapping->old;
 		struct regex* const new = mapping->new;
 		
-		new->is_accepting = old->is_accepting;
+		new->accepts = old->accepts;
 		
 		// for each transition:
 		for (unsigned i = 0, n = 256; i < n; i++)
@@ -139,9 +140,9 @@ struct regex* regex_clone(struct regex* original_start)
 		}
 		
 		// for each lambda transition:
-		for (unsigned i = 0, n = old->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = old->lambdas.n; i < n; i++)
 		{
-			struct regex* const subold = old->lambda_transitions.data[i];
+			struct regex* const subold = old->lambdas.data[i];
 			
 			struct avl_node_t* node = avl_search(mappings, &subold);
 			
@@ -181,7 +182,6 @@ struct regex* regex_clone(struct regex* original_start)
 	
 	EXIT;
 	return new_start;
-	#endif
 }
 
 struct rbundle regex_clone_nfa(

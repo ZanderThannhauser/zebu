@@ -18,19 +18,21 @@
 #include "add_lambda_transition.h"
 #include "dfa_to_nfa.h"
 
+#include "transition/struct.h"
+
+#include "grammar/struct.h"
+
 struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	struct gegex* end = new_gegex();
 	
-	struct gegexset* done = new_gegexset();
+	struct ptrset* done = new_ptrset();
 	
 	struct quack* todo = new_quack();
 	
-	gegexset_add(done, start);
+	ptrset_add(done, start);
 	
 	quack_append(todo, start);
 	
@@ -38,44 +40,43 @@ struct gbundle gegex_dfa_to_nfa(struct gegex* start)
 	{
 		struct gegex* state = quack_pop(todo);
 		
-		if (state->is_reduction_point)
+		if (state->accepts)
 		{
 			gegex_add_lambda_transition(state, end);
-			state->is_reduction_point = false;
+			state->accepts = false;
 		}
 		
 		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
 		{
 			struct gegex* to = state->transitions.data[i]->to;
 			
-			if (gegexset_add(done, to))
+			if (ptrset_add(done, to))
 				quack_append(todo, to);
 		}
 		
-		for (unsigned i = 0, n = state->grammar_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
 		{
-			struct gegex* to = state->grammar_transitions.data[i]->to;
+			struct gegex* to = state->grammars.data[i]->to;
 			
-			if (gegexset_add(done, to))
+			if (ptrset_add(done, to))
 				quack_append(todo, to);
 		}
 		
-		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambdas.n; i < n; i++)
 		{
-			struct gegex* to = state->lambda_transitions.data[i];
+			struct gegex* to = state->lambdas.data[i];
 			
-			if (gegexset_add(done, to))
+			if (ptrset_add(done, to))
 				quack_append(todo, to);
 		}
 	}
 	
 	free_quack(todo);
 	
-	free_gegexset(done);
+	free_ptrset(done);
 	
 	EXIT;
 	return (struct gbundle) {start, end};
-	#endif
 }
 
 
