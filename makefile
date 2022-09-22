@@ -84,7 +84,7 @@ ARGS += --template=fileio
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
-ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -97,7 +97,7 @@ ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 #ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
 
-#ARGS += -i /home/zander/wmu/maia/repo/dev/parse/zebu.zb -o /tmp/out
+ARGS += -i /home/zander/wmu/maia/repo/dev/parse/parser.zb -o /tmp/out
 
 #ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 

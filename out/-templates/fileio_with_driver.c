@@ -182,7 +182,7 @@ void* parse(FILE* stream)
 			{
 				lexer.cap = lexer.cap << 1 ?: 1;
 				#ifdef DEBUG
-				ddprintf("lexer: cap == %u\n", lexer.cap);
+				ddprintf("lexer.cap == %u\n", lexer.cap);
 				#endif
 				lexer.data = realloc(lexer.data, lexer.cap);
 			}
