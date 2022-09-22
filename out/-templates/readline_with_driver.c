@@ -31,13 +31,13 @@
 
 {{PARSE_TREE_FREE_FUNCTIONS}}
 
-#ifdef DEBUG
+#ifdef ZEBU_DEBUG
 {{TOKEN_IDS_TO_SETS}}
 #endif
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
-#ifdef DEBUG
+#ifdef ZEBU_DEBUG
 static void escape(char *out, char in)
 {
 	switch (in)
@@ -91,11 +91,11 @@ int main()
 	
 	struct { void** data; unsigned n, cap; } data = {};
 	
-	#ifdef DEBUG
+	#ifdef ZEBU_DEBUG
 	setvbuf(stdout, 0, _IONBF, 0);
 	#endif
 	
-	#ifdef DEBUG
+	#ifdef ZEBU_DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
 		for (unsigned i = 0, n = yacc.n; i < n; i++)
@@ -142,7 +142,7 @@ int main()
 		
 		void read_token(unsigned l)
 		{
-			#ifdef DEBUG
+			#ifdef ZEBU_DEBUG
 			char escaped[10];
 			#endif
 			
@@ -156,7 +156,7 @@ int main()
 			{
 				if ((c = *lexer))
 				{
-					#ifdef DEBUG
+					#ifdef ZEBU_DEBUG
 					escape(escaped, c);
 					
 					ddprintf("lexer: c = '%s' (0x%X)\n", escaped, c);
@@ -166,7 +166,7 @@ int main()
 				}
 				else
 				{
-					#ifdef DEBUG
+					#ifdef ZEBU_DEBUG
 					ddprintf("lexer: c == <EOF>\n");
 					#endif
 					
@@ -177,7 +177,7 @@ int main()
 				
 				b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 				
-				#ifdef DEBUG
+				#ifdef ZEBU_DEBUG
 				ddprintf("lexer: l = %u, a = %u, b = %u\n", l, a, b);
 				#endif
 				
@@ -186,7 +186,7 @@ int main()
 					if (b)
 					{
 						l = a, t = b, f = lexer++;
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: l = %u, t == %u, f = %p (saved)\n", l, t, f);
 						#endif
 					}
@@ -194,27 +194,27 @@ int main()
 					{
 						l = a;
 						if (c) lexer++;
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: l == %u\n", l);
 						#endif
 					}
 				}
 				else if (b)
 				{
-					#ifdef DEBUG
+					#ifdef ZEBU_DEBUG
 					ddprintf("lexer: \"%.*s\"\n", lexer - begin, begin);
 					#endif
 					
 					if (b == 1)
 					{
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: whitespace: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						l = original_l, begin = lexer, f = NULL;
 					}
 					else
 					{
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: token: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						struct token* token = malloc(sizeof(*token));
@@ -229,7 +229,7 @@ int main()
 				{
 					if (t == 1)
 					{
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: falling back to whitespace: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						
@@ -239,7 +239,7 @@ int main()
 					{
 						lexer = f;
 						
-						#ifdef DEBUG
+						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: falling back to token: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						
@@ -262,7 +262,7 @@ int main()
 		
 		read_token({{PREFIX}}_lexer_starts[y]);
 		
-		#ifdef DEBUG
+		#ifdef ZEBU_DEBUG
 		ddprintf("y = %u, t == %u (%s)\n", y, t, {{PREFIX}}_token_names[t]);
 		#endif
 		
@@ -276,7 +276,7 @@ int main()
 				
 				read_token({{PREFIX}}_lexer_starts[y]);
 				
-				#ifdef DEBUG
+				#ifdef ZEBU_DEBUG
 				ddprintf("t == %u (%s)\n", t, {{PREFIX}}_token_names[t]);
 				#endif
 			}
@@ -286,7 +286,7 @@ int main()
 				
 				void* d;
 				
-				#ifdef DEBUG
+				#ifdef ZEBU_DEBUG
 				ddprintf("r = %u\n", r);
 				#endif
 				
@@ -301,7 +301,7 @@ int main()
 				{
 					y = yacc.data[yacc.n - 1];
 					
-					#ifdef DEBUG
+					#ifdef ZEBU_DEBUG
 					ddprintf("y = %u\n", y);
 					#endif
 					
@@ -309,7 +309,7 @@ int main()
 					
 					s = {{PREFIX}}_gotos[y][g];
 					
-					#ifdef DEBUG
+					#ifdef ZEBU_DEBUG
 					ddprintf("s = %u\n", s);
 					#endif
 					

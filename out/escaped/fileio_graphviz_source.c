@@ -1,5 +1,6 @@
 const char* fileio_graphviz_source = ""
 	"" "\n"
+	"#if 0" "\n"
 	"#define _GNU_SOURCE" "\n"
 	"" "\n"
 	"#include <string.h>" "\n"
@@ -428,4 +429,5 @@ const char* fileio_graphviz_source = ""
 	"" "\n"
 	"" "\n"
 	"" "\n"
+	"#endif" "\n"
 	"";

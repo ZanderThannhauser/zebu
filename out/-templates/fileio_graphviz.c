@@ -1,4 +1,5 @@
 
+#if 0
 #define _GNU_SOURCE
 
 #include <string.h>
@@ -427,3 +428,4 @@ int main(int argc, char* const* argv)
 
 
 
+#endif
