@@ -55,7 +55,7 @@ int main(int argc, const char** argv)
 	
 	free_scope(scope);
 	
-	free_zebu_$start_ptree(start);
+	free_zebu_$start(start);
 	
 	fclose(stream);
 	

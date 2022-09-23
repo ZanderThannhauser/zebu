@@ -17,7 +17,7 @@ int main()
 		
 		printf("%g\n", result);
 		
-		free_zebu_$start_ptree(root);
+		free_zebu_$start(root);
 	}
 	
 	return 0;
