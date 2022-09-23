@@ -91,14 +91,11 @@ void print_free_functions(
 				
 				case snt_token_array:
 				{
-					TODO;
-					#if 0
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
 						"\t" "\t" "\t" "free_token(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
 					"", field, field, field);
-					#endif
 					break;
 				}
 				

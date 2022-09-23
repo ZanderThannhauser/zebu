@@ -8,10 +8,6 @@
 
 void* smalloc(size_t size)
 {
-	ENTER;
-	
-	dpv(size);
-	
 	void* ptr = malloc(size);
 	
 	if (!ptr)
@@ -19,9 +15,6 @@ void* smalloc(size_t size)
 		TODO;
 	}
 	
-	dpv(ptr);
-	
-	EXIT;
 	return ptr;
 }
 

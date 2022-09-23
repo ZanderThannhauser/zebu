@@ -34,7 +34,7 @@ void print_tree_function_prototypes(
 		struct structinfo* const ele = node->item;
 		
 		fprintf(stream, ""
-			"extern void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
+			"extern void print_%s_%s(struct link* links, enum prefix p, const char* name, struct %s* ptree);" "\n"
 			"\n"
 		"", output_prefix, name->chars, name->chars);
 	}
@@ -163,7 +163,7 @@ void print_tree_functions(
 		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
-			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree);" "\n"
+			"void print_%s_%s(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree);" "\n"
 			"\n"
 		"", output_prefix, name, output_prefix, name);
 	};
@@ -177,7 +177,7 @@ void print_tree_functions(
 		struct structinfo* const structinfo = ele->structinfo;
 		
 		fprintf(stream, ""
-			"void print_%s_%s_ptree(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree)" "\n"
+			"void print_%s_%s(struct link* links, enum prefix p, const char* name, struct %s_%s* ptree)" "\n"
 			"{" "\n"
 				"\t" "print_links(links);" "\n"
 				"\t" "\n"
@@ -228,8 +228,6 @@ void print_tree_functions(
 				
 				case snt_token_array:
 				{
-					TODO;
-					#if 0
 					fprintf(stream, ""
 						"\t" "if (ptree->%s.n)" "\n"
 						"\t" "{" "\n"
@@ -250,7 +248,6 @@ void print_tree_functions(
 					field,
 					prefix, field,
 					prefix, field);
-					#endif
 					break;
 				}
 				
@@ -260,7 +257,7 @@ void print_tree_functions(
 					
 					fprintf(stream, ""
 						"\t" "if (ptree->%s)" "\n"
-						"\t" "\t" "print_%s_%s_ptree(new ?: links, %s, \"%s\", ptree->%s);" "\n"
+						"\t" "\t" "print_%s_%s(new ?: links, %s, \"%s\", ptree->%s);" "\n"
 						"\t" "else" "\n"
 						"\t" "\t" "print_empty_leaf(new ?: links, %s, \"%s\", \"%s\");" "\n"
 					"", field,
@@ -280,7 +277,7 @@ void print_tree_functions(
 						"\t" "\t" "{" "\n"
 						"\t" "\t" "\t" "char label[%lu + 30];" "\n"
 						"\t" "\t" "\t" "snprintf(label, sizeof(label), \"%s[%%u]\", i);" "\n"
-						"\t" "\t" "\t" "print_%s_%s_ptree(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "print_%s_%s(new ?: links, i + 1 < n ? p_not_last_child : %s, label, ptree->%s.data[i]);" "\n"
 						"\t" "\t" "}" "\n"
 						"\t" "}" "\n"
 						"\t" "else" "\n"

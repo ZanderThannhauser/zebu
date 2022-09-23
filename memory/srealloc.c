@@ -8,11 +8,6 @@
 
 void* srealloc(void* ptr, size_t newsize)
 {
-	ENTER;
-	
-	dpv(ptr);
-	dpv(newsize);
-	
 	void* newptr = realloc(ptr, newsize);
 	
 	if (!newptr)
@@ -20,9 +15,6 @@ void* srealloc(void* ptr, size_t newsize)
 		TODO;
 	}
 	
-	dpv(newptr);
-	
-	EXIT;
 	return newptr;
 }
 

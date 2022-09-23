@@ -27,7 +27,7 @@ void print_inc_function_prototypes(
 		const char* type = ele->name->chars;
 		
 		fprintf(stream, ""
-			"extern struct %s_%s* inc_%s_%s_ptree(struct %s_%s* ptree);" "\n"
+			"extern struct %s_%s* inc_%s_%s(struct %s_%s* ptree);" "\n"
 		"", prefix, type, prefix, type, prefix, type);
 	}
 	
@@ -56,7 +56,7 @@ void print_inc_functions(
 		const char* type = ele->name->chars;
 		
 		fprintf(stream, ""
-			"struct %s_%s* inc_%s_%s_ptree(struct %s_%s* ptree)" "\n"
+			"struct %s_%s* inc_%s_%s(struct %s_%s* ptree)" "\n"
 			"{" "\n"
 				"\t" "if (ptree) ptree->refcount++;" "\n"
 				"\t" "return ptree;" "\n"
