@@ -267,7 +267,7 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse()
 	
 	assert(!data.n);
 	
-	print_{{PREFIX}}_$start_ptree(NULL, p_root, "start", root);
+	print_{{PREFIX}}_$start(NULL, p_root, "start", root);
 	
 	add_history(line);
 	

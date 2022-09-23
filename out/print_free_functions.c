@@ -32,7 +32,7 @@ void print_free_function_prototypes(
 		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
-			"extern void free_%s_%s_ptree(struct %s_%s* ptree);" "\n"
+			"extern void free_%s_%s(struct %s_%s* ptree);" "\n"
 			"" "\n"
 		"", prefix, name, prefix, name);
 	}
@@ -67,7 +67,7 @@ void print_free_functions(
 		char* const name = ele->name->chars;
 		
 		fprintf(stream, ""
-			"void free_%s_%s_ptree(struct %s_%s* ptree)" "\n"
+			"void free_%s_%s(struct %s_%s* ptree)" "\n"
 			"{" "\n"
 			"\t" "if (ptree && !--ptree->refcount)" "\n"
 			"\t" "{" "\n"
@@ -102,7 +102,7 @@ void print_free_functions(
 				case snt_grammar_scalar:
 				{
 					fprintf(stream, ""
-						"\t" "\t" "free_%s_%s_ptree(ptree->%s);" "\n"
+						"\t" "\t" "free_%s_%s(ptree->%s);" "\n"
 					"", prefix, ele->grammar.name->chars, field);
 					break;
 				}
@@ -111,7 +111,7 @@ void print_free_functions(
 				{
 					fprintf(stream, ""
 						"\t" "\t" "for (unsigned i = 0, n = ptree->%s.n; i < n; i++)" "\n"
-						"\t" "\t" "\t" "free_%s_%s_ptree(ptree->%s.data[i]);" "\n"
+						"\t" "\t" "\t" "free_%s_%s(ptree->%s.data[i]);" "\n"
 						"\t" "\t" "free(ptree->%s.data);" "\n"
 					"", field, prefix, ele->grammar.name->chars, field, field);
 					break;

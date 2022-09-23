@@ -324,9 +324,9 @@ int main()
 		
 		assert(!data.n);
 		
-		print_zebu_$start_ptree(NULL, p_root, "start", root);
+		print_zebu_$start(NULL, p_root, "start", root);
 		
-		free_zebu_$start_ptree(root);
+		free_zebu_$start(root);
 		
 		add_history(line);
 		

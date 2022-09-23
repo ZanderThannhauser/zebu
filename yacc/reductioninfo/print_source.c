@@ -111,7 +111,7 @@ void reductioninfo_print_source(
 							if (once)
 							{
 								fprintf(stream, ""
-									"\t" "\t" "free_%s_%s_ptree(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
+									"\t" "\t" "free_%s_%s(value->%s), value->%s = data.data[--yacc.n, --data.n];" "\n"
 								"", prefix, datatype, name_chars, name_chars);
 								once = false;
 							}
@@ -165,7 +165,7 @@ void reductioninfo_print_source(
 			if (structinfo_is_empty(this->structinfo))
 			{
 				fprintf(stream, ""
-					"\t" "\t" "free_%s_%s_ptree(data.data[--yacc.n, --data.n]);" "\n"
+					"\t" "\t" "free_%s_%s(data.data[--yacc.n, --data.n]);" "\n"
 				"", prefix, datatype);
 			}
 			
@@ -228,7 +228,7 @@ void reductioninfo_print_source(
 						{
 							const char* const grammar_chars = grammar->chars;
 							fprintf(stream, ""
-								"\t" "\t" "\t" "if (trie->%s) { free_%s_%s_ptree(value->%s); value->%s = inc_%s_%s_ptree(trie->%s); }" "\n"
+								"\t" "\t" "\t" "if (trie->%s) { free_%s_%s(value->%s); value->%s = inc_%s_%s(trie->%s); }" "\n"
 							"", name_chars, prefix, grammar_chars, name_chars, name_chars, prefix, grammar_chars, name_chars);
 							break;
 						}
@@ -247,7 +247,7 @@ void reductioninfo_print_source(
 								"\t" "\t" "\t" "\t" "}" "\n"
 								"\t" "\t" "\t" "\t" "memmove(value->%s.data + trie->%s.n, value->%s.data, sizeof(*value->%s.data) * value->%s.n);" "\n"
 								"\t" "\t" "\t" "\t" "for (unsigned i = 0, n = trie->%s.n; i < n; i++)" "\n"
-								"\t" "\t" "\t" "\t" "\t" "value->%s.data[i] = inc_%s_%s_ptree(trie->%s.data[i]);" "\n"
+								"\t" "\t" "\t" "\t" "\t" "value->%s.data[i] = inc_%s_%s(trie->%s.data[i]);" "\n"
 								"\t" "\t" "\t" "\t" "value->%s.n += trie->%s.n;" "\n"
 								"\t" "\t" "\t" "}" "\n"
 							"", name_chars,
@@ -273,7 +273,7 @@ void reductioninfo_print_source(
 			}));
 			
 			fprintf(stream, ""
-				"\t" "\t" "\t" "free_%s_%s_ptree(trie);" "\n"
+				"\t" "\t" "\t" "free_%s_%s(trie);" "\n"
 				"\t" "\t" "}" "\n"
 			"", prefix, grammar);
 			break;

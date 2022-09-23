@@ -349,7 +349,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 	}
 	
 	#ifdef ZEBU_DEBUG
-	print_{{PREFIX}}_$start_ptree(NULL, p_root, "start", root);
+	print_{{PREFIX}}_$start(NULL, p_root, "start", root);
 	#endif
 	
 	free(yacc.data);

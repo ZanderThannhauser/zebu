@@ -420,10 +420,10 @@ int main(int argc, char* const* argv)
 	void* root = parse(input);
 	
 	#ifdef ZEBU_DEBUG
-	print_zebu_$start_ptree(NULL, p_root, "start", root);
+	print_zebu_$start(NULL, p_root, "start", root);
 	#endif
 	
-	free_zebu_$start_ptree(root);
+	free_zebu_$start(root);
 	
 	fclose(input);
 	
