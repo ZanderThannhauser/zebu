@@ -33,7 +33,10 @@ static const enum tokenizer_state {
 	ts_array_hashtag,
 	ts_absolute_path,
 	ts_scalar_hashtag,
+	ts_octal_literal,
 	ts_string_literal,
+	ts_decimal_literal,
+	ts_hexadecimal_literal,
 	
 	// backets:
 	ts_oparen, ts_cparen,
@@ -75,10 +78,15 @@ static const enum tokenizer_state {
 	ts_read_string_literal,
 	ts_reading_absolute_path,
 	ts_reading_string_escape,
+	ts_reading_decimal_literal,
 	ts_reading_string_literal,
 	ts_reading_character_escape,
+	ts_reading_hexadecimal_literal,
+	ts_reading_numeric_literal,
 	ts_reading_character_literal1,
 	ts_reading_character_literal2,
+	ts_reading_octal_literal,
+	ts_reading_hexadecimal_literal2,
 	ts_reading_character_literal3,
 	
 	
@@ -168,6 +176,23 @@ static const enum tokenizer_state {
 			[ts_reading_hashtag2]['['] = ts_reading_hashtag3,
 				[ts_reading_hashtag3][']'] = ts_reading_hashtag4,
 					[ts_reading_hashtag4][ANY] = ts_array_hashtag,
+	
+	[ts_start]['0'] = ts_reading_numeric_literal,
+		[ts_reading_numeric_literal][ANY] = ts_decimal_literal,
+		[ts_reading_numeric_literal]['x'] = ts_reading_hexadecimal_literal,
+			[ts_reading_hexadecimal_literal]['0' ... '9'] = ts_reading_hexadecimal_literal2,
+			[ts_reading_hexadecimal_literal]['a' ... 'f'] = ts_reading_hexadecimal_literal2,
+			[ts_reading_hexadecimal_literal]['A' ... 'F'] = ts_reading_hexadecimal_literal2,
+				[ts_reading_hexadecimal_literal2][    ANY    ] = ts_hexadecimal_literal,
+				[ts_reading_hexadecimal_literal2]['0' ... '9'] = ts_reading_hexadecimal_literal2,
+				[ts_reading_hexadecimal_literal2]['a' ... 'f'] = ts_reading_hexadecimal_literal2,
+				[ts_reading_hexadecimal_literal2]['A' ... 'F'] = ts_reading_hexadecimal_literal2,
+		[ts_reading_numeric_literal]['0' ... '7'] = ts_reading_octal_literal,
+			[ts_reading_octal_literal][ANY] = ts_octal_literal,
+			[ts_reading_octal_literal]['0' ... '7'] = ts_reading_octal_literal,
+	[ts_start]['1' ... '9'] = ts_reading_decimal_literal,
+		[ts_reading_decimal_literal][ANY] = ts_decimal_literal,
+		[ts_reading_decimal_literal]['0' ... '9'] = ts_reading_decimal_literal,
 
 	// identifier:
 	[ts_start]['a' ... 'z'] = ts_reading_identifier,
@@ -373,6 +398,21 @@ enum token read_token(struct tokenizer* this)
 			this->tokenchars.n -= 3;
 			append(this, 0);
 			this->token = t_array_hashtag;
+			break;
+		
+		case ts_octal_literal:
+			append(this, 0);
+			this->token = t_octal_literal;
+			break;
+		
+		case ts_decimal_literal:
+			append(this, 0);
+			this->token = t_decimal_literal;
+			break;
+		
+		case ts_hexadecimal_literal:
+			append(this, 0);
+			this->token = t_hexadecimal_literal;
 			break;
 		
 		// identifier:

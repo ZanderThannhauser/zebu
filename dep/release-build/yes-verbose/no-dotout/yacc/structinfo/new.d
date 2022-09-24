@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./yacc/structinfo/new.o: \
+bin/release-build/yes-verbose/no-dotout/./yacc/structinfo/new.o: \
  yacc/structinfo/new.c debug.h avl/alloc_tree.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h memory/smalloc.h \
  string/inc.h string/compare.h string/free.h yacc/structinfo/node.h \

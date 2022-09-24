@@ -26,9 +26,12 @@ struct rbundle read_concat_token_expression(
 		case t_oparen:
 		case t_osquare:
 		case t_identifier:
-		case t_string_literal:
-		case t_character_literal:
 		case t_dot:
+		case t_octal_literal:
+		case t_string_literal:
+		case t_decimal_literal:
+		case t_character_literal:
+		case t_hexadecimal_literal:
 		{
 			struct rbundle right = read_concat_token_expression(tokenizer, scope);
 			

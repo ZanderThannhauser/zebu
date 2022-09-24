@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/no-dotout/./yacc/structinfo/add_token_array_field.o: \
+bin/debug-build/no-verbose/no-dotout/./yacc/structinfo/add_token_array_field.o: \
  yacc/structinfo/add_token_array_field.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

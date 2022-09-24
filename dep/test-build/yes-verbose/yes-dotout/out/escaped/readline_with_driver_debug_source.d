@@ -1,2 +1,2 @@
-gen/test-build/yes-verbose/yes-dotout/./out/escaped/readline_with_driver_debug_source.o: \
+bin/test-build/yes-verbose/yes-dotout/./out/escaped/readline_with_driver_debug_source.o: \
  out/escaped/readline_with_driver_debug_source.c

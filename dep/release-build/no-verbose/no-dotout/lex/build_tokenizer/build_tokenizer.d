@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./lex/build_tokenizer/build_tokenizer.o: \
+bin/release-build/no-verbose/no-dotout/./lex/build_tokenizer/build_tokenizer.o: \
  lex/build_tokenizer/build_tokenizer.c debug.h avl/insert.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/search.h set/ptr/new.h \
  set/ptr/add.h set/ptr/free.h set/unsigned/foreach.h \

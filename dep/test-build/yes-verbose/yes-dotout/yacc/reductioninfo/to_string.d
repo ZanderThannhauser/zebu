@@ -1,4 +1,4 @@
-gen/test-build/yes-verbose/yes-dotout/./yacc/reductioninfo/to_string.o: \
+bin/test-build/yes-verbose/yes-dotout/./yacc/reductioninfo/to_string.o: \
  yacc/reductioninfo/to_string.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

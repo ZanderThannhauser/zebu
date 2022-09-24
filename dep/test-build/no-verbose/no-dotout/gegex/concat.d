@@ -1,1 +1,1 @@
-gen/test-build/no-verbose/no-dotout/./gegex/concat.o: gegex/concat.c
+bin/test-build/no-verbose/no-dotout/./gegex/concat.o: gegex/concat.c

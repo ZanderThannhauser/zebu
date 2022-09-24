@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/grammar/highest/gravemark.o: \
+bin/release-build/no-verbose/no-dotout/./parser/grammar/highest/gravemark.o: \
  parser/grammar/highest/gravemark.c debug.h enums/error.h string/new.h \
  string/free.h set/unsigned/new.h set/unsigned/add.h set/unsigned/free.h \
  parser/tokenizer/struct.h parser/tokenizer/token.h \

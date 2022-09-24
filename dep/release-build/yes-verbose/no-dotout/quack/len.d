@@ -1,2 +1,2 @@
-gen/release-build/yes-verbose/no-dotout/./quack/len.o: quack/len.c \
+bin/release-build/yes-verbose/no-dotout/./quack/len.o: quack/len.c \
  quack/struct.h quack/len.h

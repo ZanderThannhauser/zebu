@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/read_inline_grammar.o: \
+bin/release-build/no-verbose/no-dotout/./parser/read_inline_grammar.o: \
  parser/read_inline_grammar.c debug.h string/new.h string/free.h \
  enums/error.h gegex/struct.h gegex/nfa_to_dfa.h gegex/gbundle.h \
  gegex/simplify_dfa.h gegex/free.h parser/grammar/root.h gegex/gbundle.h \

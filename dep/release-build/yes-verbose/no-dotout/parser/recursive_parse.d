@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./parser/recursive_parse.o: \
+bin/release-build/yes-verbose/no-dotout/./parser/recursive_parse.o: \
  parser/recursive_parse.c debug.h parser/tokenizer/struct.h \
  parser/tokenizer/token.h parser/tokenizer/new.h \
  parser/tokenizer/read_char.h parser/tokenizer/read_token.h \

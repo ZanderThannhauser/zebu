@@ -1,1 +1,1 @@
-gen/release-build/yes-verbose/yes-dotout/./debug.o: debug.c
+bin/release-build/yes-verbose/yes-dotout/./debug.o: debug.c

@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./gegex/nfa_to_dfa.o: \
+bin/release-build/yes-verbose/yes-dotout/./gegex/nfa_to_dfa.o: \
  gegex/nfa_to_dfa.c debug.h memory/smalloc.h string/compare.h \
  string/are_equal.h avl/alloc_tree.h avl/tree_t.h avl/freeitem_t.h \
  avl/compare_t.h avl/node_t.h avl/insert.h avl/search.h avl/free_tree.h \

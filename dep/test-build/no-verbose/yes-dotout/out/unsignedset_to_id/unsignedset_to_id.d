@@ -1,4 +1,4 @@
-gen/test-build/no-verbose/yes-dotout/./out/unsignedset_to_id/unsignedset_to_id.o: \
+bin/test-build/no-verbose/yes-dotout/./out/unsignedset_to_id/unsignedset_to_id.o: \
  out/unsignedset_to_id/unsignedset_to_id.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

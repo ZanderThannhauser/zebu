@@ -57,12 +57,13 @@
 /*#include "../tokenizer/machines/regex/root.h"*/
 /*#include "../tokenizer/machines/charset/root.h"*/
 
-#include "highest/character_literal.h"
-#include "highest/string_literal.h"
-#include "highest/parenthesis.h"
-#include "highest/identifier.h"
-#include "highest/gravemark.h"
 #include "highest/square.h"
+#include "highest/gravemark.h"
+#include "highest/identifier.h"
+#include "highest/parenthesis.h"
+#include "highest/string_literal.h"
+#include "highest/numeric_literal.h"
+#include "highest/character_literal.h"
 
 #include "root.h"
 #include "0.highest.h"
@@ -91,6 +92,12 @@ struct gbundle read_highest_production(
 		
 		case t_identifier:
 			retval = read_identifier_production(tokenizer, scope, lex);
+			break;
+		
+		case t_octal_literal:
+		case t_decimal_literal:
+		case t_hexadecimal_literal:
+			retval = read_numeric_literal_production(tokenizer, scope, lex);
 			break;
 		
 		case t_string_literal:

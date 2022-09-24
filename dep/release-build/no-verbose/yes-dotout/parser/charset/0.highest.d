@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./parser/charset/0.highest.o: \
+bin/release-build/no-verbose/yes-dotout/./parser/charset/0.highest.o: \
  parser/charset/0.highest.c debug.h enums/error.h \
  parser/charset/../tokenizer/struct.h parser/charset/../tokenizer/token.h \
  parser/charset/../tokenizer/read_token.h \

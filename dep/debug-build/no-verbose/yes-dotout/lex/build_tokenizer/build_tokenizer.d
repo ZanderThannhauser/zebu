@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/yes-dotout/./lex/build_tokenizer/build_tokenizer.o: \
+bin/debug-build/no-verbose/yes-dotout/./lex/build_tokenizer/build_tokenizer.o: \
  lex/build_tokenizer/build_tokenizer.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

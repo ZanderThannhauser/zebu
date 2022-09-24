@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./yacc/calc_firsts.o: \
+bin/release-build/yes-verbose/yes-dotout/./yacc/calc_firsts.o: \
  yacc/calc_firsts.c debug.h memory/smalloc.h string/inc.h \
  string/compare.h string/free.h avl/search.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/foreach.h \

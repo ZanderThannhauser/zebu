@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./yacc/expand_stateinfo.o: \
+bin/release-build/no-verbose/no-dotout/./yacc/expand_stateinfo.o: \
  yacc/expand_stateinfo.c debug.h memory/smalloc.h avl/search.h \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h \
  avl/alloc_tree.h avl/insert.h avl/free_tree.h quack/new.h quack/append.h \

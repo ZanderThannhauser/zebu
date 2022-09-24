@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./parser/read_charset.o: \
+bin/release-build/yes-verbose/no-dotout/./parser/read_charset.o: \
  parser/read_charset.c debug.h string/new.h string/free.h enums/error.h \
  parser/charset/root.h parser/charset/charset.h parser/tokenizer/struct.h \
  parser/tokenizer/token.h parser/tokenizer/read_token.h \

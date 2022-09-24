@@ -1,1 +1,1 @@
-gen/release-build/yes-verbose/yes-dotout/./regex/concat.o: regex/concat.c
+bin/release-build/yes-verbose/yes-dotout/./regex/concat.o: regex/concat.c

@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./parser/regex/4.or.o: \
+bin/release-build/yes-verbose/no-dotout/./parser/regex/4.or.o: \
  parser/regex/4.or.c debug.h regex/dfa_to_nfa.h regex/rbundle.h \
  regex/dotout.h regex/add_lambda_transition.h \
  parser/regex/../tokenizer/struct.h parser/regex/../tokenizer/token.h \

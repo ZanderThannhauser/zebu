@@ -1,4 +1,4 @@
-gen/test-build/yes-verbose/no-dotout/./gegex/add_lambda_transition.o: \
+bin/test-build/yes-verbose/no-dotout/./gegex/add_lambda_transition.o: \
  gegex/add_lambda_transition.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

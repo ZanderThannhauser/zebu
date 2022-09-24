@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/grammar/highest/identifier.o: \
+bin/release-build/no-verbose/no-dotout/./parser/grammar/highest/identifier.o: \
  parser/grammar/highest/identifier.c debug.h string/new.h string/free.h \
  parser/tokenizer/struct.h parser/tokenizer/token.h \
  parser/tokenizer/read_token.h parser/scope/lookup/inline_grammar.h \

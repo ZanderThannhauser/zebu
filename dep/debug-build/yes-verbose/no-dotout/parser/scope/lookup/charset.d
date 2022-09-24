@@ -1,4 +1,4 @@
-gen/debug-build/yes-verbose/no-dotout/./parser/scope/lookup/charset.o: \
+bin/debug-build/yes-verbose/no-dotout/./parser/scope/lookup/charset.o: \
  parser/scope/lookup/charset.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

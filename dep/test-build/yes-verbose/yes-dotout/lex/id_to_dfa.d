@@ -1,4 +1,4 @@
-gen/test-build/yes-verbose/yes-dotout/./lex/id_to_dfa.o: lex/id_to_dfa.c \
+bin/test-build/yes-verbose/yes-dotout/./lex/id_to_dfa.o: lex/id_to_dfa.c \
  avl/search.h avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h \
  debug.h enums/error.h enums/token_kind.h macros/strequals.h \
  memory/smalloc.h memory/srealloc.h string/struct.h string/new.h \

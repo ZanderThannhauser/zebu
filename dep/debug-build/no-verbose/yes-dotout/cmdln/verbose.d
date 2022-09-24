@@ -1,1 +1,1 @@
-gen/debug-build/no-verbose/yes-dotout/./cmdln/verbose.o: cmdln/verbose.c
+bin/debug-build/no-verbose/yes-dotout/./cmdln/verbose.o: cmdln/verbose.c

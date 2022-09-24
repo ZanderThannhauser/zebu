@@ -9,9 +9,8 @@
 #include "string_literal.h"
 
 struct rbundle read_string_literal_token_expression(
-	struct tokenizer* tokenizer,
-	struct scope* scope
-) {
+	struct tokenizer* tokenizer)
+{
 	ENTER;
 	
 	dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);

@@ -1,4 +1,4 @@
-gen/debug-build/yes-verbose/yes-dotout/./parser/tokenizer/read_char.o: \
+bin/debug-build/yes-verbose/yes-dotout/./parser/tokenizer/read_char.o: \
  parser/tokenizer/read_char.c enums/error.h debug.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

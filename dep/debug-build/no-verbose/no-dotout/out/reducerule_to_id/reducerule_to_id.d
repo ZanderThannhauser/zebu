@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/no-dotout/./out/reducerule_to_id/reducerule_to_id.o: \
+bin/debug-build/no-verbose/no-dotout/./out/reducerule_to_id/reducerule_to_id.o: \
  out/reducerule_to_id/reducerule_to_id.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

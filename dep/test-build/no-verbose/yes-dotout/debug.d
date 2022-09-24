@@ -1,1 +1,1 @@
-gen/test-build/no-verbose/yes-dotout/./debug.o: debug.c
+bin/test-build/no-verbose/yes-dotout/./debug.o: debug.c

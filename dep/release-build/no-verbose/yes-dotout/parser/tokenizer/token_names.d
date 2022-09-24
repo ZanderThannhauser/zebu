@@ -1,3 +1,3 @@
-gen/release-build/no-verbose/yes-dotout/./parser/tokenizer/token_names.o: \
+bin/release-build/no-verbose/yes-dotout/./parser/tokenizer/token_names.o: \
  parser/tokenizer/token_names.c parser/tokenizer/token.h \
  parser/tokenizer/token_names.h

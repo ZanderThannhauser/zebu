@@ -1,1 +1,1 @@
-gen/debug-build/yes-verbose/no-dotout/./regex/dotout.o: regex/dotout.c
+bin/debug-build/yes-verbose/no-dotout/./regex/dotout.o: regex/dotout.c

@@ -1,4 +1,4 @@
-gen/test-build/no-verbose/yes-dotout/./named/regex/free.o: \
+bin/test-build/no-verbose/yes-dotout/./named/regex/free.o: \
  named/regex/free.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

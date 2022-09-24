@@ -1,2 +1,2 @@
-gen/test-build/yes-verbose/no-dotout/./out/escaped/readline_source.o: \
+bin/test-build/yes-verbose/no-dotout/./out/escaped/readline_source.o: \
  out/escaped/readline_source.c

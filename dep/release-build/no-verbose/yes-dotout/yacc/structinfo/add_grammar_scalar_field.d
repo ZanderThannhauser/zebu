@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./yacc/structinfo/add_grammar_scalar_field.o: \
+bin/release-build/no-verbose/yes-dotout/./yacc/structinfo/add_grammar_scalar_field.o: \
  yacc/structinfo/add_grammar_scalar_field.c debug.h avl/search.h \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h \
  memory/smalloc.h string/inc.h yacc/structinfo/node.h \

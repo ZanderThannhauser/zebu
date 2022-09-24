@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./lex/find_shortest_accepting.o: \
+bin/release-build/no-verbose/yes-dotout/./lex/find_shortest_accepting.o: \
  lex/find_shortest_accepting.c debug.h memory/smalloc.h avl/alloc_tree.h \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/search.h \
  avl/insert.h avl/free_tree.h quack/new.h quack/append.h \

@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./parser/grammar/highest/string_literal.o: \
+bin/release-build/yes-verbose/yes-dotout/./parser/grammar/highest/string_literal.o: \
  parser/grammar/highest/string_literal.c debug.h string/new.h \
  string/free.h parser/tokenizer/struct.h parser/tokenizer/token.h \
  parser/tokenizer/read_token.h set/unsigned/new.h set/unsigned/add.h \

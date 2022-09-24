@@ -14,7 +14,7 @@ CPPFLAGS += -D RELEASE
 CFLAGS += -O2
 CFLAGS += -flto
 
-LDFLAGS += -flto=auto
+LDFLAGS += -flto=auto -static
 
 else ifeq ($(buildtype), test)
 CPPFLAGS += -D TESTING
@@ -63,7 +63,7 @@ else
 $(error "invalid on_error option!");
 endif
 
-buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
+buildprefix = bin/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 depprefix   = dep/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 
 default: $(buildprefix)/zebu
@@ -83,9 +83,9 @@ ARGS += --verbose
 ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -127,9 +127,11 @@ valrun-leak: $(buildprefix)/zebu
 tracerun: $(buildprefix)/zebu
 	strace $< $(ARGS)
 
+PREFIX ?= ~/bin
+
 install: $(buildprefix)/zebu
-	@ mkdir -vp ~/bin/
-	@ cp -vau $(buildprefix)/zebu ~/bin/zebu
+	@ mkdir -vp $(PREFIX)
+	@ cp -vau $(buildprefix)/zebu $(PREFIX)/zebu
 
 .PRECIOUS: %/
 
@@ -138,7 +140,7 @@ install: $(buildprefix)/zebu
 
 srclist.mk:
 	@ echo "searching for source files..."
-	@ find -name '*.c' -! -path '*/-*' | sort -Vr | sed 's/^/srcs += /' > $@
+	@ find -name '*.c' -! -path '*/-*' | sort -V | sed 's/^/srcs += /' > $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
 include srclist.mk
@@ -170,18 +172,18 @@ $(buildprefix)/zebu: $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
-$(buildprefix)/escape: ./-escape.c | $(buildprefix)/
+bin/escape: ./-escape.c | bin/
 	@ echo "compiling $<"
 	@ $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) ./$< $(LOADLIBES) $(LDLIBS) -o $@
 
 .PRECIOUS: ./out/escaped/%_source.c
 .PRECIOUS: ./out/escaped/%_header.c
 
-./out/escaped/%_source.c: $(buildprefix)/escape ./out/-templates/%.c
+./out/escaped/%_source.c: bin/escape ./out/-templates/%.c | bin/
 	@ echo "escaping $*"
 	@ $^ -v $*_source -o $@
 
-./out/escaped/%_header.c: $(buildprefix)/escape ./out/-templates/%.h
+./out/escaped/%_header.c: bin/escape ./out/-templates/%.h | bin/
 	@ echo "escaping $*"
 	@ $^ -v $*_header -o $@
 

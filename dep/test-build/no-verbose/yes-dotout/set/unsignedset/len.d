@@ -1,2 +1,2 @@
-gen/test-build/no-verbose/yes-dotout/./set/unsignedset/len.o: \
+bin/test-build/no-verbose/yes-dotout/./set/unsignedset/len.o: \
  set/unsignedset/len.c

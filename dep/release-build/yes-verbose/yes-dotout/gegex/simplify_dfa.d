@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./gegex/simplify_dfa.o: \
+bin/release-build/yes-verbose/yes-dotout/./gegex/simplify_dfa.o: \
  gegex/simplify_dfa.c debug.h memory/smalloc.h string/are_equal.h \
  avl/foreach.h avl/alloc_tree.h avl/tree_t.h avl/freeitem_t.h \
  avl/compare_t.h avl/node_t.h avl/search.h avl/insert.h avl/free_tree.h \

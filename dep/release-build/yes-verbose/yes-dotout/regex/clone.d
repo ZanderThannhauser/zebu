@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./regex/clone.o: regex/clone.c \
+bin/release-build/yes-verbose/yes-dotout/./regex/clone.o: regex/clone.c \
  debug.h memory/smalloc.h avl/search.h avl/tree_t.h avl/freeitem_t.h \
  avl/compare_t.h avl/node_t.h avl/insert.h avl/free_tree.h \
  avl/alloc_tree.h quack/new.h quack/append.h quack/is_nonempty.h \

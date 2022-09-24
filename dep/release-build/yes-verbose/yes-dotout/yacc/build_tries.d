@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./yacc/build_tries.o: \
+bin/release-build/yes-verbose/yes-dotout/./yacc/build_tries.o: \
  yacc/build_tries.c debug.h memory/smalloc.h string/new.h string/inc.h \
  string/free.h quack/new.h quack/append.h quack/is_nonempty.h quack/pop.h \
  quack/free.h avl/alloc_tree.h avl/tree_t.h avl/freeitem_t.h \

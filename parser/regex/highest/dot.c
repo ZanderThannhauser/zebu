@@ -7,9 +7,8 @@
 #include "dot.h"
 
 struct rbundle read_dot_token_expression(
-	struct tokenizer* tokenizer,
-	struct scope* scope
-) {
+	struct tokenizer* tokenizer)
+{
 	ENTER;
 	
 	struct regex* regex = regex_from_dot();

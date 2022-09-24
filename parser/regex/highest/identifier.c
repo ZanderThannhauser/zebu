@@ -12,8 +12,8 @@
 
 struct rbundle read_identifier_token_expression(
 	struct tokenizer* tokenizer,
-	struct scope* scope
-) {
+	struct scope* scope)
+{
 	ENTER;
 	
 	dpvs(tokenizer->tokenchars.chars);

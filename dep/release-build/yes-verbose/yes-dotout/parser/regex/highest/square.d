@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./parser/regex/highest/square.o: \
+bin/release-build/yes-verbose/yes-dotout/./parser/regex/highest/square.o: \
  parser/regex/highest/square.c debug.h enums/error.h \
  parser/charset/root.h parser/charset/charset.h parser/tokenizer/struct.h \
  parser/tokenizer/token.h parser/tokenizer/read_token.h \

@@ -1,4 +1,4 @@
-gen/debug-build/yes-verbose/no-dotout/./set/ptr/is_nonempty.o: \
+bin/debug-build/yes-verbose/no-dotout/./set/ptr/is_nonempty.o: \
  set/ptr/is_nonempty.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

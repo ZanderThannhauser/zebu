@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/yes-dotout/./lex/new.o: lex/new.c debug.h \
+bin/debug-build/no-verbose/yes-dotout/./lex/new.o: lex/new.c debug.h \
  enums/error.h enums/token_kind.h macros/strequals.h memory/smalloc.h \
  memory/srealloc.h string/struct.h string/new.h string/are_equal.h \
  string/compare.h string/inc.h string/free.h avl/alloc_tree.h \

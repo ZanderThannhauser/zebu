@@ -1,2 +1,2 @@
-gen/test-build/yes-verbose/yes-dotout/./out/escaped/fileio_source.o: \
+bin/test-build/yes-verbose/yes-dotout/./out/escaped/fileio_source.o: \
  out/escaped/fileio_source.c

@@ -1,2 +1,2 @@
-gen/release-build/no-verbose/no-dotout/./yacc/state/dotout.o: \
+bin/release-build/no-verbose/no-dotout/./yacc/state/dotout.o: \
  yacc/state/dotout.c

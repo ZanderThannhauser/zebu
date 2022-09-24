@@ -1,4 +1,4 @@
-gen/test-build/yes-verbose/no-dotout/./yacc/state/add_grammar_transition.o: \
+bin/test-build/yes-verbose/no-dotout/./yacc/state/add_grammar_transition.o: \
  yacc/state/add_grammar_transition.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

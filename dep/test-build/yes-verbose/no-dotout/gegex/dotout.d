@@ -1,1 +1,1 @@
-gen/test-build/yes-verbose/no-dotout/./gegex/dotout.o: gegex/dotout.c
+bin/test-build/yes-verbose/no-dotout/./gegex/dotout.o: gegex/dotout.c

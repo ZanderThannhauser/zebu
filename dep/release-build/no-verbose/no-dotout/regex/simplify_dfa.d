@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./regex/simplify_dfa.o: \
+bin/release-build/no-verbose/no-dotout/./regex/simplify_dfa.o: \
  regex/simplify_dfa.c debug.h avl/foreach.h avl/alloc_tree.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/search.h avl/insert.h \
  avl/free_tree.h memory/smalloc.h quack/new.h quack/is_nonempty.h \

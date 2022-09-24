@@ -1,1 +1,1 @@
-gen/release-build/yes-verbose/no-dotout/./gegex/dotout.o: gegex/dotout.c
+bin/release-build/yes-verbose/no-dotout/./gegex/dotout.o: gegex/dotout.c

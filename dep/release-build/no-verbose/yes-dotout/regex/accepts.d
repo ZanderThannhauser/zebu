@@ -1,2 +1,2 @@
-gen/release-build/no-verbose/yes-dotout/./regex/accepts.o: \
+bin/release-build/no-verbose/yes-dotout/./regex/accepts.o: \
  regex/accepts.c

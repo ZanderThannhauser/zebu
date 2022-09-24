@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./parser/regex/3.and.o: \
+bin/release-build/yes-verbose/yes-dotout/./parser/regex/3.and.o: \
  parser/regex/3.and.c debug.h regex/struct.h enums/token_kind.h \
  regex/free.h regex/intersect_dfas.h regex/nfa_to_dfa.h regex/rbundle.h \
  regex/complement.h regex/simplify_dfa.h \

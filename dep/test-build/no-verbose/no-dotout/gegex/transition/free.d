@@ -1,4 +1,4 @@
-gen/test-build/no-verbose/no-dotout/./gegex/transition/free.o: \
+bin/test-build/no-verbose/no-dotout/./gegex/transition/free.o: \
  gegex/transition/free.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

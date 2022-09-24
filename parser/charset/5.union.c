@@ -26,7 +26,10 @@ charset_t read_union_charset(
 		case t_comma:
 			read_token(tokenizer);
 		case t_oparen:
+		case t_octal_literal:
+		case t_decimal_literal:
 		case t_character_literal:
+		case t_hexadecimal_literal:
 		{
 			charset_t right = read_xor_charset(tokenizer, scope);
 			left |= right;

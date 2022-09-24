@@ -1,2 +1,2 @@
-gen/test-build/no-verbose/no-dotout/./lex/state/dotout.o: \
+bin/test-build/no-verbose/no-dotout/./lex/state/dotout.o: \
  lex/state/dotout.c

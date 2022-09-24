@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./regex/intersect_dfas.o: \
+bin/release-build/yes-verbose/no-dotout/./regex/intersect_dfas.o: \
  regex/intersect_dfas.c debug.h avl/alloc_tree.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h avl/search.h \
  avl/free_tree.h memory/smalloc.h quack/new.h quack/append.h \

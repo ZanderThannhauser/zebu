@@ -434,18 +434,6 @@ void out(struct yacc_state* start)
 			{
 				print_structs(structinfos, output_prefix, stream);
 			}
-			else if (!strncmp(old, "START_GRAMMAR_ID", len))
-			{
-				struct string* start = new_string("$start");
-				
-				fprintf(stream, "%u", string_to_id(stoi, start));
-				
-				free_string(start);
-			}
-			else if (!strncmp(old, "TOKEN_IDS_TO_SETS", len))
-			{
-				unsignedset_to_id_print_source(ustoi, output_prefix, stream);
-			}
 			else if (!strncmp(old, "PARSE_TREE_PRINT_TREE_FUNCTIONS", len))
 			{
 				print_tree_functions(structinfos, output_prefix, stream);
@@ -457,6 +445,18 @@ void out(struct yacc_state* start)
 			else if (!strncmp(old, "PARSE_TREE_FREE_FUNCTIONS", len))
 			{
 				print_free_functions(structinfos, output_prefix, stream);
+			}
+			else if (!strncmp(old, "START_GRAMMAR_ID", len))
+			{
+				struct string* start = new_string("$start");
+				
+				fprintf(stream, "%u", string_to_id(stoi, start));
+				
+				free_string(start);
+			}
+			else if (!strncmp(old, "TOKEN_IDS_TO_SETS", len))
+			{
+				unsignedset_to_id_print_source(ustoi, output_prefix, stream);
 			}
 			else
 			{

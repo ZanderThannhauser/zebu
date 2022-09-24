@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./yacc/yacc.o: yacc/yacc.c \
+bin/release-build/no-verbose/yes-dotout/./yacc/yacc.o: yacc/yacc.c \
  debug.h enums/error.h memory/smalloc.h string/inc.h string/compare.h \
  string/are_equal.h string/free.h avl/search.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h avl/foreach.h \

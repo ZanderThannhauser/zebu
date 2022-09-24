@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./parser/grammar/2.subdefinitions.o: \
+bin/release-build/yes-verbose/no-dotout/./parser/grammar/2.subdefinitions.o: \
  parser/grammar/2.subdefinitions.c debug.h \
  parser/grammar/../tokenizer/struct.h parser/grammar/../tokenizer/token.h \
  parser/grammar/../tokenizer/read_token.h parser/grammar/../scope/push.h \

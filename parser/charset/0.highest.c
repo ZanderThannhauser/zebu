@@ -39,52 +39,34 @@ charset_t read_highest_charset(
 		
 		case t_octal_literal:
 		{
-			TODO;
-			#if 0
-			dpvs(tokenizer->tokenchars.chars);
-			
 			errno = 0;
 			const char* start = (void*) tokenizer->tokenchars.chars;
 			unsigned long int value = strtoul(start, NULL, 8);
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: literal '%lu' must be bewteen 0 and 255\n", value);
+				fprintf(stderr, "zebu: error when reading character-set: literal '0%lo' must be bewteen 0 and 255\n", value);
 				exit(e_syntax_error);
 			}
 			
-			charset_t charset = {};
-			
-			charset[value >> 4] |= 1 << (value & 0xF);
-			
-			TODO;
-			#if 0
-			read_token(tokenizer, charset_after_highest_machine);
-			#endif
-			
-			EXIT;
-			return charset;
-			#endif
+			retval[value >> 4] |= 1 << (value & 0xF);
+			break;
 		}
 		
 		case t_decimal_literal:
 		{
-			TODO;
-			#if 0
-			dpvs(tokenizer->tokenchars.chars);
-			
 			errno = 0;
 			const char* start = (void*) tokenizer->tokenchars.chars;
 			unsigned long int value = strtoul(start, NULL, 10);
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
@@ -93,51 +75,29 @@ charset_t read_highest_charset(
 				exit(e_syntax_error);
 			}
 			
-			charset_t charset = {};
-			
-			charset[value >> 4] |= 1 << (value & 0xF);
-			
-			TODO;
-			#if 0
-			read_token(tokenizer, charset_after_highest_machine);
-			#endif
-			
-			EXIT;
-			return charset;
-			#endif
+			retval[value >> 4] |= 1 << (value & 0xF);
+			break;
 		}
 		
 		case t_hexadecimal_literal:
 		{
-			TODO;
-			#if 0
-			dpvs(tokenizer->tokenchars.chars);
-			
 			errno = 0;
 			const char* start = (void*) tokenizer->tokenchars.chars;
 			unsigned long int value = strtoul(start, NULL, 16);
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: literal '0x%lX' must be bewteen 0 and 255\n", value);
+				fprintf(stderr, "zebu: error when reading character-set: literal '0x%lx' must be bewteen 0 and 255\n", value);
 				exit(e_syntax_error);
 			}
 			
-			charset_t charset = {};
-			
-			charset[value >> 4] |= 1 << (value & 0xF);
-			
-			TODO
-/*			read_token(tokenizer, charset_after_highest_machine);*/
-			
-			EXIT;
-			return charset;
-			#endif
+			retval[value >> 4] |= 1 << (value & 0xF);
+			break;
 		}
 		
 		case t_identifier:

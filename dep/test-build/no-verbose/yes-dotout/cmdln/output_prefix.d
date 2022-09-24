@@ -1,2 +1,2 @@
-gen/test-build/no-verbose/yes-dotout/./cmdln/output_prefix.o: \
+bin/test-build/no-verbose/yes-dotout/./cmdln/output_prefix.o: \
  cmdln/output_prefix.c

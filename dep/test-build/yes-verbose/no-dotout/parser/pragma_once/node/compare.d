@@ -1,4 +1,4 @@
-gen/test-build/yes-verbose/no-dotout/./parser/pragma_once/node/compare.o: \
+bin/test-build/yes-verbose/no-dotout/./parser/pragma_once/node/compare.o: \
  parser/pragma_once/node/compare.c debug.h enums/error.h \
  enums/token_kind.h macros/strequals.h memory/smalloc.h memory/srealloc.h \
  string/struct.h string/new.h string/are_equal.h string/compare.h \

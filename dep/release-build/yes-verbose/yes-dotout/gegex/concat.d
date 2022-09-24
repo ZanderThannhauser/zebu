@@ -1,1 +1,1 @@
-gen/release-build/yes-verbose/yes-dotout/./gegex/concat.o: gegex/concat.c
+bin/release-build/yes-verbose/yes-dotout/./gegex/concat.o: gegex/concat.c

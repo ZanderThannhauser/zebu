@@ -1,1 +1,1 @@
-gen/test-build/no-verbose/no-dotout/./misc/escape.o: misc/escape.c
+bin/test-build/no-verbose/no-dotout/./misc/escape.o: misc/escape.c

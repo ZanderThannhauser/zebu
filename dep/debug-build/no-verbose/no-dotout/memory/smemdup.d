@@ -1,1 +1,1 @@
-gen/debug-build/no-verbose/no-dotout/./memory/smemdup.o: memory/smemdup.c
+bin/debug-build/no-verbose/no-dotout/./memory/smemdup.o: memory/smemdup.c

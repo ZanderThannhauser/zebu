@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/no-dotout/./parser/grammar/highest/square.o: \
+bin/release-build/yes-verbose/no-dotout/./parser/grammar/highest/square.o: \
  parser/grammar/highest/square.c debug.h string/new.h string/free.h \
  set/unsigned/new.h set/unsigned/add.h set/unsigned/free.h \
  parser/charset/root.h parser/charset/charset.h parser/tokenizer/struct.h \

@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./yacc/build_structinfo.o: \
+bin/release-build/no-verbose/yes-dotout/./yacc/build_structinfo.o: \
  yacc/build_structinfo.c debug.h avl/foreach.h gegex/grammar/struct.h \
  gegex/transition/struct.h gegex/struct.h named/gegex/struct.h \
  quack/new.h quack/append.h quack/is_nonempty.h quack/pop.h \

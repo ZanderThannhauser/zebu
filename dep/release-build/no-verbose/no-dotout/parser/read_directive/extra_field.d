@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/read_directive/extra_field.o: \
+bin/release-build/no-verbose/no-dotout/./parser/read_directive/extra_field.o: \
  parser/read_directive/extra_field.c debug.h string/new.h string/free.h \
  avl/search.h avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h \
  avl/insert.h yacc/structinfo/new.h \

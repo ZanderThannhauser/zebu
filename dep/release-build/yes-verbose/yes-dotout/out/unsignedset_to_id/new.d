@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./out/unsignedset_to_id/new.o: \
+bin/release-build/yes-verbose/yes-dotout/./out/unsignedset_to_id/new.o: \
  out/unsignedset_to_id/new.c debug.h memory/smalloc.h avl/alloc_tree.h \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h \
  set/unsigned/compare.h set/unsigned/free.h \

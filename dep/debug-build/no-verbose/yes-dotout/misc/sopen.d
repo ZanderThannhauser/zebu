@@ -1,1 +1,1 @@
-gen/debug-build/no-verbose/yes-dotout/./misc/sopen.o: misc/sopen.c
+bin/debug-build/no-verbose/yes-dotout/./misc/sopen.o: misc/sopen.c

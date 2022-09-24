@@ -1,1 +1,1 @@
-gen/release-build/yes-verbose/no-dotout/./misc/escape.o: misc/escape.c
+bin/release-build/yes-verbose/no-dotout/./misc/escape.o: misc/escape.c

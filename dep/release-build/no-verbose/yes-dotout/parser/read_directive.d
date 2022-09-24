@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./parser/read_directive.o: \
+bin/release-build/no-verbose/yes-dotout/./parser/read_directive.o: \
  parser/read_directive.c debug.h macros/strequals.h enums/error.h \
  parser/tokenizer/struct.h parser/tokenizer/token.h \
  parser/tokenizer/read_token.h parser/read_directive.h \

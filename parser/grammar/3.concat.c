@@ -23,12 +23,15 @@ struct gbundle read_concat_production(
 	
 	again: switch (tokenizer->token)
 	{
-		case t_string_literal:
-		case t_character_literal:
 		case t_oparen:
-		case t_identifier:
-		case t_gravemark:
 		case t_osquare:
+		case t_gravemark:
+		case t_identifier:
+		case t_octal_literal:
+		case t_string_literal:
+		case t_decimal_literal:
+		case t_character_literal:
+		case t_hexadecimal_literal:
 		{
 			struct gbundle right = read_concat_production(tokenizer, scope, lex);
 			

@@ -1,2 +1,2 @@
-gen/debug-build/yes-verbose/yes-dotout/./memory/smemdup.o: \
+bin/debug-build/yes-verbose/yes-dotout/./memory/smemdup.o: \
  memory/smemdup.c

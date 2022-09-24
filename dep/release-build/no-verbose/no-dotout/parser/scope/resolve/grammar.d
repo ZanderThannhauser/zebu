@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/scope/resolve/grammar.o: \
+bin/release-build/no-verbose/no-dotout/./parser/scope/resolve/grammar.o: \
  parser/scope/resolve/grammar.c debug.h enums/error.h string/struct.h \
  string/inc.h string/new.h avl/search.h avl/tree_t.h avl/freeitem_t.h \
  avl/compare_t.h avl/node_t.h parser/scope/resolve/../struct.h \

@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/yes-dotout/./parser/regex/4.or.o: \
+bin/debug-build/no-verbose/yes-dotout/./parser/regex/4.or.o: \
  parser/regex/4.or.c debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \
  string/new.h string/are_equal.h string/compare.h string/inc.h \

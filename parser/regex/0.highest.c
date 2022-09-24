@@ -21,12 +21,13 @@
 /*#include <regex/from_charset.h>*/
 /*#include <regex/from_literal.h>*/
 
-#include "highest/character_literal.h"
-#include "highest/string_literal.h"
-#include "highest/parenthesis.h"
-#include "highest/identifier.h"
-#include "highest/square.h"
 #include "highest/dot.h"
+#include "highest/square.h"
+#include "highest/identifier.h"
+#include "highest/parenthesis.h"
+#include "highest/string_literal.h"
+#include "highest/numeric_literal.h"
+#include "highest/character_literal.h"
 
 #include "root.h"
 #include "0.highest.h"
@@ -41,7 +42,7 @@ struct rbundle read_highest_token_expression(
 	switch (tokenizer->token)
 	{
 		case t_dot:
-			retval = read_dot_token_expression(tokenizer, scope);
+			retval = read_dot_token_expression(tokenizer);
 			break;
 		
 		case t_oparen:
@@ -56,12 +57,18 @@ struct rbundle read_highest_token_expression(
 			retval = read_identifier_token_expression(tokenizer, scope);
 			break;
 		
+		case t_octal_literal:
+		case t_decimal_literal:
+		case t_hexadecimal_literal:
+			retval = read_numeric_literal_token_expression(tokenizer);
+			break;
+		
 		case t_string_literal:
-			retval = read_string_literal_token_expression(tokenizer, scope);
+			retval = read_string_literal_token_expression(tokenizer);
 			break;
 		
 		case t_character_literal:
-			retval = read_character_literal_token_expression(tokenizer, scope);
+			retval = read_character_literal_token_expression(tokenizer);
 			break;
 		
 		default:

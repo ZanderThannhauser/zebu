@@ -1,4 +1,4 @@
-gen/debug-build/no-verbose/no-dotout/./set/string/add.o: set/string/add.c \
+bin/debug-build/no-verbose/no-dotout/./set/string/add.o: set/string/add.c \
  debug.h enums/error.h enums/token_kind.h macros/strequals.h \
  memory/smalloc.h memory/srealloc.h string/struct.h string/new.h \
  string/are_equal.h string/compare.h string/inc.h string/free.h \

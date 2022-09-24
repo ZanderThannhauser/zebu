@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./lex/build_tokenizer/dfas_to_dfa.o: \
+bin/release-build/no-verbose/no-dotout/./lex/build_tokenizer/dfas_to_dfa.o: \
  lex/build_tokenizer/dfas_to_dfa.c debug.h memory/smalloc.h \
  avl/alloc_tree.h avl/tree_t.h avl/freeitem_t.h avl/compare_t.h \
  avl/node_t.h avl/insert.h avl/search.h avl/free_tree.h quack/new.h \

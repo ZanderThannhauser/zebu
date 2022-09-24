@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./out/reducerule_to_id/print_source.o: \
+bin/release-build/yes-verbose/yes-dotout/./out/reducerule_to_id/print_source.o: \
  out/reducerule_to_id/print_source.c debug.h avl/tree_t.h \
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h string/struct.h \
  yacc/structinfo/struct.h yacc/reductioninfo/print_source.h \

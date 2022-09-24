@@ -1,2 +1,2 @@
-gen/test-build/no-verbose/no-dotout/./gegex/from_empty.o: \
+bin/test-build/no-verbose/no-dotout/./gegex/from_empty.o: \
  gegex/from_empty.c

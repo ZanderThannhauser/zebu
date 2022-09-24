@@ -1,1 +1,1 @@
-gen/debug-build/yes-verbose/no-dotout/./misc/strfandr.o: misc/strfandr.c
+bin/debug-build/yes-verbose/no-dotout/./misc/strfandr.o: misc/strfandr.c

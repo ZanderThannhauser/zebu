@@ -1,4 +1,4 @@
-gen/debug-build/yes-verbose/yes-dotout/./parser/pragma_once/free.o: \
+bin/debug-build/yes-verbose/yes-dotout/./parser/pragma_once/free.o: \
  parser/pragma_once/free.c avl/free_tree.h avl/tree_t.h avl/freeitem_t.h \
  avl/compare_t.h avl/node_t.h debug.h enums/error.h enums/token_kind.h \
  macros/strequals.h memory/smalloc.h memory/srealloc.h string/struct.h \

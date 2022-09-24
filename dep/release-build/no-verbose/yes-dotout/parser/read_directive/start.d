@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./parser/read_directive/start.o: \
+bin/release-build/no-verbose/yes-dotout/./parser/read_directive/start.o: \
  parser/read_directive/start.c debug.h enums/error.h string/new.h \
  string/free.h gegex/struct.h gegex/free.h gegex/nfa_to_dfa.h \
  gegex/gbundle.h gegex/simplify_dfa.h \

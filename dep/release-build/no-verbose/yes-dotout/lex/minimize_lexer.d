@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/yes-dotout/./lex/minimize_lexer.o: \
+bin/release-build/no-verbose/yes-dotout/./lex/minimize_lexer.o: \
  lex/minimize_lexer.c debug.h memory/smalloc.h avl/foreach.h avl/search.h \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h \
  avl/alloc_tree.h avl/free_tree.h quack/new.h quack/pop.h \

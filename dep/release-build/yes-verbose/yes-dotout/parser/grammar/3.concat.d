@@ -1,4 +1,4 @@
-gen/release-build/yes-verbose/yes-dotout/./parser/grammar/3.concat.o: \
+bin/release-build/yes-verbose/yes-dotout/./parser/grammar/3.concat.o: \
  parser/grammar/3.concat.c debug.h gegex/add_lambda_transition.h \
  gegex/dotout.h parser/grammar/../tokenizer/struct.h \
  parser/grammar/../tokenizer/token.h \

@@ -1,4 +1,4 @@
-gen/release-build/no-verbose/no-dotout/./parser/charset/3.intersect.o: \
+bin/release-build/no-verbose/no-dotout/./parser/charset/3.intersect.o: \
  parser/charset/3.intersect.c debug.h \
  parser/charset/../tokenizer/struct.h parser/charset/../tokenizer/token.h \
  parser/charset/../tokenizer/read_token.h parser/charset/2.range.h \

@@ -1,1 +1,1 @@
-gen/test-build/yes-verbose/yes-dotout/./quack/push.o: quack/push.c
+bin/test-build/yes-verbose/yes-dotout/./quack/push.o: quack/push.c
