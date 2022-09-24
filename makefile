@@ -64,6 +64,7 @@ $(error "invalid on_error option!");
 endif
 
 buildprefix = gen/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
+depprefix   = dep/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 
 default: $(buildprefix)/zebu
 
@@ -82,7 +83,7 @@ ARGS += --verbose
 ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
 
 #ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
@@ -96,8 +97,6 @@ ARGS += --template=fileio
 #ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
 #ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
 #ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
-
-ARGS += -i /home/zander/wmu/maia/repo/dev/parse/parser.zb -o /tmp/out
 
 #ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
@@ -137,12 +136,12 @@ install: $(buildprefix)/zebu
 %/:
 	@ mkdir -p $@
 
-gen/srclist.mk: | gen/
+srclist.mk:
 	@ echo "searching for source files..."
 	@ find -name '*.c' -! -path '*/-*' | sort -Vr | sed 's/^/srcs += /' > $@
 
 ifneq "$(MAKECMDGOALS)" "clean"
-include gen/srclist.mk
+include srclist.mk
 
 srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
 srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
@@ -155,18 +154,17 @@ srcs += ./out/escaped/readline_with_driver_source.c       ./out/escaped/readline
 srcs += ./out/escaped/fileio_with_driver_source.c       ./out/escaped/fileio_with_driver_header.c
 #srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
 #srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
-
 endif
 
 objs := $(patsubst %.c,$(buildprefix)/%.o,$(srcs))
 objs := $(patsubst %.S,$(buildprefix)/%.o,$(objs))
 
-deps := $(patsubst %.c,$(buildprefix)/%.d,$(srcs))
-deps := $(patsubst %.S,$(buildprefix)/%.d,$(deps))
+deps := $(patsubst %.c,$(depprefix)/%.d,$(srcs))
+deps := $(patsubst %.S,$(depprefix)/%.d,$(deps))
 
-$(buildprefix)/%.o $(buildprefix)/%.d: %.c | $(buildprefix)/%/
+$(buildprefix)/%.o $(depprefix)/%.d: %.c | $(buildprefix)/%/ $(depprefix)/%/
 	@ echo "compiling $<"
-	@ $(CC) -c $(CPPFLAGS) $(CFLAGS) $< -MD -o $(buildprefix)/$*.o $(ON_ERROR)
+	@ $(CC) -c $(CPPFLAGS) $(CFLAGS) $< -MMD -o $(buildprefix)/$*.o -MF $(depprefix)/$*.d $(ON_ERROR)
 
 $(buildprefix)/zebu: $(objs)
 	@ echo "linking $@"
