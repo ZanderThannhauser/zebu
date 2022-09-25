@@ -1,5 +1,7 @@
 const char* readline_with_driver_source = ""
 	"" "\n"
+	"#define _GNU_SOURCE" "\n"
+	"" "\n"
 	"#include <readline/readline.h>" "\n"
 	"#include <readline/history.h>" "\n"
 	"" "\n"

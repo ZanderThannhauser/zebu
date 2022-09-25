@@ -1,4 +1,6 @@
 
+#define _GNU_SOURCE
+
 #include <readline/readline.h>
 #include <readline/history.h>
 
