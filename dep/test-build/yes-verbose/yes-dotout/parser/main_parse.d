@@ -7,7 +7,8 @@ bin/test-build/yes-verbose/yes-dotout/./parser/main_parse.o: \
  avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h cmdln/input_path.h \
- lex/add_EOF_token.h misc/break_and_open_path.h parser/scope/new.h \
- parser/scope/free.h parser/pragma_once/new.h parser/pragma_once/free.h \
+ cmdln/make_dependencies.h lex/add_EOF_token.h misc/break_and_open_path.h \
+ parser/scope/new.h parser/scope/free.h parser/pragma_once/new.h \
+ parser/pragma_once/print_dependencies.h parser/pragma_once/free.h \
  parser/main_parse.h parser/resolve_grammar_names.h \
  parser/recursive_parse.h

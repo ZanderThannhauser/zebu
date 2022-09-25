@@ -8,10 +8,9 @@
 #include "sopenat.h"
 #include "break_and_open_path.h"
 
-struct br_rettype break_and_open_path(int old_dirfd, const unsigned char* upath)
+struct br_rettype break_and_open_path(int old_dirfd, const char* path)
 {
 	int dirfd, fd;
-	const char* path = (void*) upath;
 	ENTER;
 	
 	dpvs(path);

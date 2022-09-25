@@ -7,6 +7,7 @@
 #include <debug.h>
 
 #include <cmdln/input_path.h>
+#include <cmdln/make_dependencies.h>
 
 #include <lex/add_EOF_token.h>
 
@@ -16,6 +17,7 @@
 #include "scope/free.h"
 
 #include "pragma_once/new.h"
+#include "pragma_once/print_dependencies.h"
 #include "pragma_once/free.h"
 
 #include "main_parse.h"
@@ -52,9 +54,7 @@ void main_parse(
 	lex_add_EOF_token(lex);
 	
 	if (make_dependencies)
-	{
-		TODO;
-	}
+		pragma_once_print_dependencies(pragma_once);
 	
 	if (br.dirfd > 0)
 		close(br.dirfd);

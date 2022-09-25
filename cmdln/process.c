@@ -13,12 +13,13 @@
 
 #include "usage.h"
 #include "verbose.h"
+#include "process.h"
 #include "input_path.h"
 #include "output_path.h"
 #include "output_prefix.h"
-#include "parser_template.h"
 #include "minimize_lexer.h"
-#include "process.h"
+#include "parser_template.h"
+#include "make_dependencies.h"
 
 void cmdln_process(int argc, char* const* argv)
 {
@@ -31,12 +32,13 @@ void cmdln_process(int argc, char* const* argv)
 		{"prefix",   required_argument, 0, 'p'},
 		{"template", required_argument, 0, 't'},
 		{"minimize-lexer", no_argument, 0, 'm'},
+		{"make-dependencies", no_argument, 0, 'M'},
 		{"verbose",        no_argument, 0, 'v'},
 		{"help",           no_argument, 0, 'h'},
-		{ 0,                            0, 0,  0 },
+		{ 0,                         0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "M" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -79,6 +81,10 @@ void cmdln_process(int argc, char* const* argv)
 			
 			case 'm':
 				minimize_lexer = true;
+				break;
+			
+			case 'M':
+				make_dependencies = true;
 				break;
 			
 			case 'v':

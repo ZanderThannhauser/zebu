@@ -47,7 +47,7 @@ void read_include_directive(
 	
 	dpvs(tokenizer->tokenchars.chars);
 	
-	struct br_rettype br = break_and_open_path(dirfd, tokenizer->tokenchars.chars);
+	struct br_rettype br = break_and_open_path(dirfd, (void*) tokenizer->tokenchars.chars);
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
