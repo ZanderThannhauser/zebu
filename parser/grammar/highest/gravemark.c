@@ -27,6 +27,9 @@
 #include <lex/struct.h>
 #include <lex/add_token.h>
 
+#include <misc/format_flags/new.h>
+#include <misc/format_flags/free.h>
+
 #include <regex/dfa_to_nfa.h>
 #include <regex/clone.h>
 #include <regex/dotout.h>
@@ -37,6 +40,7 @@
 #include <regex/add_lambda_transition.h>
 
 #include <yacc/structinfo/new.h>
+#include <yacc/structinfo/add_scanf_scalar_field.h>
 #include <yacc/structinfo/add_token_scalar_field.h>
 #include <yacc/structinfo/add_token_array_field.h>
 #include <yacc/structinfo/free.h>
@@ -71,9 +75,21 @@ struct gbundle read_gravemark_production(
 		simp = regex.start;
 	}
 	
-	unsigned token_id = lex_add_token(lex, simp, tk_regex);
+	struct format_flags* fflags = NULL;
 	
-	dpv(token_id);
+	if (tokenizer->token == t_colon)
+	{
+		read_token(tokenizer);
+		
+		if (tokenizer->token != t_string_literal)
+		{
+			TODO;
+		}
+		
+		fflags = new_format_flags(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+		
+		read_token(tokenizer);
+	}
 	
 	if (tokenizer->token != t_gravemark)
 	{
@@ -93,6 +109,10 @@ struct gbundle read_gravemark_production(
 	
 	read_token(tokenizer);
 	
+	unsigned token_id = lex_add_token(lex, simp, tk_regex);
+	
+	dpv(token_id);
+	
 	struct structinfo* structinfo = new_structinfo();
 	
 	while (false
@@ -104,12 +124,26 @@ struct gbundle read_gravemark_production(
 		switch (tokenizer->token)
 		{
 			case t_scalar_hashtag:
-				structinfo_add_token_scalar_field(structinfo, tag);
+			{
+				if (fflags)
+					structinfo_add_scanf_scalar_field(structinfo, fflags, tag);
+				else
+					structinfo_add_token_scalar_field(structinfo, tag);
 				break;
+			}
 			
 			case t_array_hashtag:
-				structinfo_add_token_array_field(structinfo, tag);
+			{
+				if (fflags)
+				{
+					TODO;
+				}
+				else
+				{
+					structinfo_add_token_array_field(structinfo, tag);
+				}
 				break;
+			}
 			
 			default:
 				TODO;
@@ -138,6 +172,8 @@ struct gbundle read_gravemark_production(
 	#endif
 	
 	free_structinfo(structinfo), free_unsignedset(whitespace);
+	
+	free_format_flags(fflags);
 	
 	EXIT;
 	return (struct gbundle) {start, end};

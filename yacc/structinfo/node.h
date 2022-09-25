@@ -9,8 +9,7 @@ struct structinfo_node
 	
 	union
 	{
-		struct
-		{
+		struct {
 			struct string* name;
 		} grammar;
 		
@@ -18,6 +17,10 @@ struct structinfo_node
 			struct string* type;
 			struct string* destructor;
 		} user_defined;
+		
+		struct {
+			struct format_flags* fflags;
+		} scanf;
 	};
 	unsigned refcount;
 };

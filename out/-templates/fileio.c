@@ -1,4 +1,5 @@
 
+#include <limits.h>
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
@@ -241,10 +242,11 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 					ddprintf("lexer: i = %u\n", i);
 					#endif
 					
-					struct token* token = malloc(sizeof(*token));
+					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(i), lexer.data, i);
+					token->data = memcpy(malloc(i + 1), lexer.data, i);
 					token->len = i;
+					token->data[i] = 0;
 					t = b, td = token;
 					
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i;
@@ -268,10 +270,11 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 					ddprintf("lexer: falling back to token: \"%.*s\"\n", f, lexer.data);
 					#endif
 					
-					struct token* token = malloc(sizeof(*token));
+					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(f), lexer.data, f);
+					token->data = memcpy(malloc(f + 1), lexer.data, f);
 					token->len = f;
+					token->data[f] = 0;
 					td = token;
 					
 					memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f, f = 0;
@@ -320,7 +323,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{
-				free_token(td);
+				free_{{PREFIX}}_token(td);
 				yacc.n = 0, root = d;
 			}
 			else

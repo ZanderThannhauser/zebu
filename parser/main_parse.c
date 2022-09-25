@@ -51,6 +51,11 @@ void main_parse(
 	
 	lex_add_EOF_token(lex);
 	
+	if (make_dependencies)
+	{
+		TODO;
+	}
+	
 	if (br.dirfd > 0)
 		close(br.dirfd);
 	

@@ -1,4 +1,6 @@
 
+#ifdef DOTOUT
+
 #include <assert.h>
 #include <string.h>
 #include <stddef.h>
@@ -10,6 +12,8 @@
 #include <memory/srealloc.h>
 
 #include <avl/foreach.h>
+
+#include <misc/format_flags/struct.h>
 
 #include "node.h"
 #include "struct.h"
@@ -63,6 +67,14 @@ char* structinfo_to_string(struct structinfo* this)
 					append("* "), append(node->name->chars), append("[];\\l");
 					break;
 				
+				case snt_scanf_scalar:
+					append(node->scanf.fflags->ctype), append(node->name->chars), append(";\\l");
+					break;
+				
+				case snt_scanf_array:
+					append(node->scanf.fflags->ctype), append(node->name->chars), append("[];\\l");
+					break;
+				
 				default:
 					TODO;
 					break;
@@ -93,3 +105,4 @@ char* structinfo_to_string(struct structinfo* this)
 
 
 
+#endif

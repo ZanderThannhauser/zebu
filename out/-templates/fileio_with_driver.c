@@ -1,6 +1,7 @@
 
 #define _GNU_SOURCE
 
+#include <limits.h>
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
@@ -291,9 +292,10 @@ void* parse(FILE* stream)
 					ddprintf("lexer: i = %u\n", i);
 					#endif
 					
-					struct token* token = malloc(sizeof(*token));
+					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(i), lexer.data, i);
+					token->data = memcpy(malloc(i + 1), lexer.data, i);
+					token->data[i] = 0;
 					token->len = i;
 					t = b, td = token;
 					
@@ -318,9 +320,10 @@ void* parse(FILE* stream)
 					ddprintf("lexer: falling back to token: \"%.*s\"\n", f, lexer.data);
 					#endif
 					
-					struct token* token = malloc(sizeof(*token));
+					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(f), lexer.data, f);
+					token->data = memcpy(malloc(f + 1), lexer.data, f);
+					token->data[f] = 0;
 					token->len = f;
 					td = token;
 					
@@ -370,7 +373,7 @@ void* parse(FILE* stream)
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{
-				free_token(td);
+				free_{{PREFIX}}_token(td);
 				yacc.n = 0, root = d;
 			}
 			else

@@ -46,6 +46,5 @@ void structinfo_add_user_defined_field(
 		avl_insert(this->tree, node);
 	}
 	
-	
 	EXIT;
 }

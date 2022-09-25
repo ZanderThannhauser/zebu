@@ -15,25 +15,7 @@ static double evaluate_highest(struct zebu_highest* highest)
 {
 	double retval;
 	
-	if (highest->number)
-	{
-		char* buffer = malloc(highest->number->len + 1);
-		memcpy(buffer, highest->number->data, highest->number->len);
-		buffer[highest->number->len] = 0;
-		
-		errno = 0;
-		
-		retval = strtod(buffer, NULL);
-		
-		if (errno)
-		{
-			fprintf(stderr, "strtod: %m\n");
-			exit(1);
-		}
-		
-		free(buffer);
-	}
-	else if (highest->subexpression)
+	if (highest->subexpression)
 	{
 		retval = evaluate_add(highest->subexpression->add);
 	}
@@ -73,7 +55,7 @@ static double evaluate_highest(struct zebu_highest* highest)
 	}
 	else
 	{
-		assert(!"TODO");
+		retval = highest->number;
 	}
 	
 	return retval;

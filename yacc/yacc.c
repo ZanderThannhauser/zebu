@@ -337,20 +337,15 @@ static void add_reduce(
 	
 	if (node)
 	{
+		#ifdef DEBUGGING
 		dpvs(reduce_as);
 		
-		TODO;
-		#if 0
 		struct reduce_node* old = node->item;
 		
-		if (strcmp(old->reduce_as, reduce_as))
-		{
-			dpvs(old->reduce_as);
-			dpv(reduce_as);
-			
-			TODO;
-		}
+		dpvs(old->reduce_as);
 		#endif
+		
+		TODO;
 	}
 	else
 	{

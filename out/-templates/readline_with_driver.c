@@ -2,6 +2,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include <errno.h>
+#include <limits.h>
 #include <assert.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -38,7 +40,7 @@
 #define N(array) (sizeof(array) / sizeof(*array))
 
 #ifdef ZEBU_DEBUG
-static void escape(char *out, char in)
+static void escape(char *out, unsigned char in)
 {
 	switch (in)
 	{
@@ -79,13 +81,13 @@ static void escape(char *out, char in)
 		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
 		
 		default:
-			sprintf(out, "\\x%02X", in);
+			sprintf(out, "\\x%02hhX", in);
 			break;
 	}
 }
 #endif
 
-int main()
+int main(int argc, char** argv)
 {
 	struct { unsigned* data, n, cap; } yacc = {};
 	
@@ -150,7 +152,8 @@ int main()
 			
 			char* begin = lexer, *f = NULL;
 			
-			unsigned a, b, c;
+			unsigned a, b;
+			unsigned char c;
 			
 			while (1)
 			{
@@ -217,10 +220,11 @@ int main()
 						#ifdef ZEBU_DEBUG
 						ddprintf("lexer: token: \"%.*s\"\n", lexer - begin, begin);
 						#endif
-						struct token* token = malloc(sizeof(*token));
+						struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 						token->refcount = 1;
-						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+						token->data = memcpy(malloc(lexer - begin + 1), begin, lexer - begin);
 						token->len = lexer - begin;
+						token->data[token->len] = '\0';
 						t = b, td = token;
 						break;
 					}
@@ -243,10 +247,11 @@ int main()
 						ddprintf("lexer: falling back to token: \"%.*s\"\n", lexer - begin, begin);
 						#endif
 						
-						struct token* token = malloc(sizeof(*token));
+						struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 						token->refcount = 1;
-						token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+						token->data = memcpy(malloc(lexer - begin + 1), begin, lexer - begin);
 						token->len = lexer - begin;
+						token->data[token->len] = '\0';
 						td = token;
 						break;
 					}
@@ -294,7 +299,7 @@ int main()
 				
 				if (g == {{START_GRAMMAR_ID}})
 				{
-					free_token(td);
+					free_{{PREFIX}}_token(td);
 					yacc.n = 0, root = d;
 				}
 				else

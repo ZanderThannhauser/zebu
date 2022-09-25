@@ -1,7 +1,11 @@
 
+#define _GNU_SOURCE
+
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include <errno.h>
+#include <limits.h>
 #include <assert.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -187,10 +191,11 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse()
 				}
 				else
 				{
-					struct token* token = malloc(sizeof(*token));
+					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
-					token->data = memcpy(malloc(lexer - begin), begin, lexer - begin);
+					token->data = memcpy(malloc(lexer - begin + 1), begin, lexer - begin);
 					token->len = lexer - begin;
+					token->data[token->len] = 0;
 					t = b, td = token;
 					break;
 				}
@@ -241,7 +246,7 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse()
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{
-				free_token(td);
+				free_{{PREFIX}}_token(td);
 				yacc.n = 0, root = d;
 			}
 			else

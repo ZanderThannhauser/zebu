@@ -17,13 +17,13 @@ void print_structs(
 	ENTER;
 	
 	fprintf(stream, ""
-		"struct token" "\n"
+		"struct %s_token" "\n"
 		"{" "\n"
 			"\t" "unsigned char* data;" "\n"
 			"\t" "unsigned len, refcount;" "\n"
 		"};" "\n"
 		"\n"
-	"");
+	"", prefix);
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{

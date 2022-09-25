@@ -17,8 +17,8 @@ void print_inc_function_prototypes(
 	ENTER;
 	
 	fprintf(stream, ""
-		"extern struct token* inc_token(struct token* this);" "\n"
-	"");
+		"extern struct %s_token* inc_%s_token(struct %s_token* this);" "\n"
+	"", prefix, prefix, prefix);
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{
@@ -42,12 +42,12 @@ void print_inc_functions(
 	ENTER;
 	
 	fprintf(stream, ""
-		"struct token* inc_token(struct token* this)" "\n"
+		"struct %s_token* inc_%s_token(struct %s_token* this)" "\n"
 		"{" "\n"
 			"\t" "if (this) this->refcount++;" "\n"
 			"\t" "return this;" "\n"
 		"}" "\n"
-	"");
+	"", prefix, prefix, prefix);
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
 	{

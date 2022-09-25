@@ -163,10 +163,6 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 	signal(SIGALRM, handler);
 	#endif
 	
-	#ifdef DOTOUT
-	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
-	#endif
-	
 	while (quack_is_nonempty(todo))
 	{
 		#ifdef VERBOSE

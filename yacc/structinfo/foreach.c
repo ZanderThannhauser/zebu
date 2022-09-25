@@ -9,17 +9,14 @@
 
 void structinfo_foreach(
 	struct structinfo* this,
-	void (*runme)(
-		struct string* name,
-		enum structinfo_node_type type,
-		struct string* grammar))
+	void (*runme)(struct structinfo_node* ele))
 {
 	ENTER;
 	
 	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
 	{
 		struct structinfo_node* const ele = node->item;
-		runme(ele->name, ele->type, ele->grammar.name);
+		runme(ele);
 	}
 	
 	EXIT;

@@ -7,5 +7,6 @@ bin/debug-build/yes-verbose/no-dotout/./out/print_tree_functions.o: \
  avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h named/structinfo/struct.h \
- yacc/structinfo/node.h yacc/structinfo/node_type.h \
- yacc/structinfo/struct.h out/print_tree_functions.h
+ misc/format_flags/struct.h yacc/structinfo/node.h \
+ yacc/structinfo/node_type.h yacc/structinfo/struct.h \
+ out/print_tree_functions.h

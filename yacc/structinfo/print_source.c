@@ -5,6 +5,8 @@
 
 #include <avl/tree_t.h>
 
+#include <misc/format_flags/struct.h>
+
 #include <string/struct.h>
 
 #include "node.h"
@@ -34,17 +36,17 @@ void structinfo_print_source(
 		{
 			case snt_token_scalar:
 				fprintf(stream, ""
-					"\t" "struct token* %s;" "\n"
-				"", name);
+					"\t" "struct %s_token* %s;" "\n"
+				"", prefix, name);
 				break;
 			
 			case snt_token_array:
 				fprintf(stream, ""
 					"\t" "struct {" "\n"
-					"\t" "\t" "struct token** data;" "\n"
+					"\t" "\t" "struct %s_token** data;" "\n"
 					"\t" "\t" "unsigned n, cap;" "\n"
 					"\t" "} %s;" "\n"
-				"", name);
+				"", prefix, name);
 				break;
 			
 			case snt_grammar_scalar:
@@ -69,6 +71,18 @@ void structinfo_print_source(
 				"", prefix, grammar, name);
 				break;
 			}
+			
+			case snt_scanf_scalar:
+			{
+				fprintf(stream, ""
+					"\t" "%s %s;" "\n"
+				"", ele->scanf.fflags->ctype, name);
+				break;
+			}
+			
+			case snt_scanf_array:
+				TODO;
+				break;
 			
 			case snt_user_defined:
 			{

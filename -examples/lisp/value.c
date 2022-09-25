@@ -17,23 +17,6 @@ struct value* new_value_from_ptree(struct zebu_value* ptree)
 		else
 			return new_boolean_value(false);
 	}
-	else if (ptree->number)
-	{
-		char* temp = strndup((void*) ptree->number->data, ptree->number->len);
-		char* m;
-		errno = 0;
-		
-		signed long value = strtol(temp, &m, 0);
-		
-		if (errno || *m)
-		{
-			fprintf(stderr, "%s: strtol(\"%s\"): %m\n", argv0, temp);
-			exit(1);
-		}
-		
-		free(temp);
-		return new_integer_value(value);
-	}
 	else if (ptree->string)
 	{
 		return new_string_value((void*) (ptree->string->data + 1), ptree->string->len - 2);
@@ -60,7 +43,7 @@ struct value* new_value_from_ptree(struct zebu_value* ptree)
 	}
 	else
 	{
-		assert(!"TODO");
+		return new_integer_value(ptree->number);
 	}
 }
 

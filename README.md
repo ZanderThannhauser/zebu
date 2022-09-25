@@ -31,17 +31,14 @@ This enables reading multiple languages (with different keywords or comment-styl
    "dir/foo.c" and "dir/foo.h", one would invoke zebu with `-o dir/foo`.
  - `-p <PREFIX>` (`--prefix=<PREFIX>`): Sets the prefix for the names used in
    the generated code. This is can be used for avoiding symbol conflicts
-   between multiple generated parsers in the same program. <br>
-   The default prefix is "zebu".
+   between multiple generated parsers in the same program. The default prefix is "zebu".
  - `-m` (`--minimize-lexer`): Tells zebu to combine and simplify all tokenizers
    generated across all parser-contexts. By default this operation is not
    performed as its duration depends on the language.
  - `-M` (`--make-dependencies`): *TODO*
- - `-F` (`--make-dependencies-file=<PATH>`): *TODO*
+ - `-F <PATH>` (`--make-dependencies-file=<PATH>`): *TODO*
  - `-t <TEMPLATE>` (`--template=<TEMPLATE>`): Sets which parser-template zebu
-   should use when generating its output. <br>
-   The default value is "just-tables".
- - `-T <PATH>` (`--template-path=<PATH>`): *TODO*
+   should use when generating its output. The default value is "just-tables".
  - `-v` (`--verbose`): Enables progress-percentage print-outs to the terminal
    for the most time-consuming algorithms: NFA-to-DFA, DFA simplification, lexer
    minimization (see above), and LL parser generation.
@@ -113,7 +110,7 @@ of these items, names cannot be reused.
 Inside of either a regular-expression or grammar-rule context, one enters the
 character-set-expression context using `'['` and `']'`. One can name a
 character-set using `[name]: <character-set-expression>;` syntax in the
-root-level of input files to zebu.
+root-level of input files.
 
 Remember that one can also refer to the value of a defined character-set by
 name inside of other character-set expressions. The referenced character-set
@@ -160,9 +157,9 @@ can be used to raise the precedence of low-precedence operators.
     and 'c'.
  - `[('a','b') ^ ('b','c')]`: Describes a character-set containing the letters
     'a' and 'c'.
- - `[!(!('a'-'c') & !('b'-'d'))]` or `['a'-'c' | 'b'-'d']`: Describes
+ - `['a'-'c' | 'b'-'d']` or `[!(!('a'-'c') & !('b'-'d'))]`: Describes
     the character-set containing 'a', 'b', 'c' and 'd'.
- - `[!(!('a'-'c') | !('b'-'d'))]` or `['a'-'c' & 'b'-'d']`: Describes
+ - `['a'-'c' & 'b'-'d']` or `[!(!('a'-'c') | !('b'-'d'))]`: Describes
     the character-set containing 'b' and 'c'.
  - `['a'-'z' & !('a','e','i','o','u')]`: Describes a character-set containing
     all English consonants.
@@ -171,8 +168,8 @@ can be used to raise the precedence of low-precedence operators.
 ### Regular Expressions
 
 Inside of a grammar-rule context, one can enter the regular-expression context
-using a backtick ('\`'). One can also define a name as representing the value
-of a regular-expression to using `\`\[name\]\`: value;` syntax.
+using a backtick ('\`'). One can also name a regular-expression
+using `\`[name]\`: value;` syntax on the root-level of a zebu input-file.
 
 Either C-style character-literals, integer-literals, or string-literals can be
 used in regular-expressions. The dot ('.') literal can be used as a shorthand

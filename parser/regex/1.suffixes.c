@@ -88,15 +88,13 @@ struct rbundle read_suffixes_token_expression(
 		
 		case t_ocurly:
 		{
-			TODO;
-			#if 0
 			struct rbundle original;
 			
 			// convert into nfa:
-			if (retval.is_nfa)
+			if (retval.accepts)
 				original = retval;
 			else
-				original = regex_dfa_to_nfa(retval.dfa);
+				original = regex_dfa_to_nfa(retval.start);
 			
 			struct limit {
 				bool has;
@@ -181,11 +179,11 @@ struct rbundle read_suffixes_token_expression(
 			{
 				for (; i < min.value; i++)
 				{
-					struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
+					struct rbundle clone = regex_clone2(original);
 					
-					regex_add_lambda_transition(moving, clone.nfa.start);
+					regex_add_lambda_transition(moving, clone.start);
 					
-					moving = clone.nfa.accepts;
+					moving = clone.accepts;
 				}
 			}
 			
@@ -197,34 +195,32 @@ struct rbundle read_suffixes_token_expression(
 			{
 				for (; i < max.value; i++)
 				{
-					struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
+					struct rbundle clone = regex_clone2(original);
 					
-					regex_add_lambda_transition(moving, clone.nfa.start);
+					regex_add_lambda_transition(moving, clone.start);
 					
-					moving = clone.nfa.accepts;
+					moving = clone.accepts;
 					
 					regex_add_lambda_transition(moving, accepts);
 				}
 			}
 			else
 			{
-				struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
+				struct rbundle clone = regex_clone2(original);
 				
-				regex_add_lambda_transition(moving, clone.nfa.start);
+				regex_add_lambda_transition(moving, clone.start);
 				
-				regex_add_lambda_transition(clone.nfa.accepts, moving);
+				regex_add_lambda_transition(clone.accepts, moving);
 			}
 			
-			retval.is_nfa = true;
-			retval.nfa.start = start;
-			retval.nfa.accepts = accepts;
+			retval.start = start;
+			retval.accepts = accepts;
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(retval.start, __PRETTY_FUNCTION__);
 			#endif
 			
-			free_regex(original.nfa.start);
-			#endif
+			free_regex(original.start);
 			break;
 		}
 		

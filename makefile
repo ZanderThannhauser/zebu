@@ -78,9 +78,9 @@ ARGS += --verbose
 #ARGS += --template=just-tables
 
 #ARGS += --template=readline
-#ARGS += --template=readline-with-driver
+ARGS += --template=readline-with-driver
 
-ARGS += --template=fileio
+#ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
@@ -99,11 +99,11 @@ ARGS += --template=fileio
 
 #ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
 
-#ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
+ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 
 #ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
-ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
+#ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
 #ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
 
