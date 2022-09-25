@@ -8,21 +8,8 @@ struct regex;
 
 struct rbundle
 {
-	bool is_nfa;
-	
-	union
-	{
-		struct
-		{
-			struct regex* start;
-			struct regex* accepts;
-		} nfa;
-		
-		struct
-		{
-			struct regex* dfa;
-		};
-	};
+	struct regex* start;
+	struct regex* accepts; // if NULL: state machine is a DFA
 };
 
 #endif

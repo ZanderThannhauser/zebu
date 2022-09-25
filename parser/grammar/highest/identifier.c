@@ -40,7 +40,9 @@ struct gbundle read_identifier_production(
 	
 	if ((inlined = scope_lookup_inline_grammar(scope, (void*) tokenizer->tokenchars.chars)))
 	{
-		retval = gegex_dfa_to_nfa(gegex_clone(inlined));
+		struct gbundle clone = gegex_clone2((struct gbundle) {inlined, NULL});
+		
+		retval = gegex_dfa_to_nfa(clone.start);
 		
 		read_token(tokenizer);
 	}
@@ -50,7 +52,7 @@ struct gbundle read_identifier_production(
 		
 		struct string* full_name = scope_build_absolute_name(scope, base_name);
 		
-		struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+		struct structinfo* structinfo = new_structinfo();
 		
 		read_token(tokenizer);
 		

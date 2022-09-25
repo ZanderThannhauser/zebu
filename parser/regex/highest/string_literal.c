@@ -3,7 +3,6 @@
 
 #include <parser/tokenizer/struct.h>
 
-#include <regex/dotout.h>
 #include <regex/from_literal.h>
 
 #include "string_literal.h"
@@ -16,16 +15,9 @@ struct rbundle read_string_literal_token_expression(
 	dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 	
 	struct regex* start = regex_from_literal(
-		/* chars:      */ tokenizer->tokenchars.chars,
-		/* strlen:     */ tokenizer->tokenchars.n);
-	
-	#ifdef DOTOUT
-	regex_dotout(start, __PRETTY_FUNCTION__);
-	#endif
+		/* chars:  */ tokenizer->tokenchars.chars,
+		/* strlen: */ tokenizer->tokenchars.n);
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = start,
-	};
+	return (struct rbundle) {start, NULL};
 }

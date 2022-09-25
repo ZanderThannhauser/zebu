@@ -1,4 +1,6 @@
 
+#include <assert.h>
+
 #include <debug.h>
 
 #include <parser/tokenizer/struct.h>
@@ -13,20 +15,17 @@ struct rbundle read_character_literal_token_expression(
 {
 	ENTER;
 	
-	dpvc(tokenizer->tokenchars.chars[0]);
+	unsigned char code = tokenizer->tokenchars.chars[0];
 	
-	struct regex* dfa = regex_from_literal(
-		/* chars:  */ tokenizer->tokenchars.chars,
-		/* strlen: */ 1);
+	dpvc(code);
+	
+	struct regex* start = regex_from_literal(&code, 1);
 	
 	#ifdef DOTOUT
-	regex_dotout(dfa, __PRETTY_FUNCTION__);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = dfa,
-	};
+	return (struct rbundle) {start, NULL};
 }
 

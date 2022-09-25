@@ -35,27 +35,19 @@ struct rbundle read_concat_token_expression(
 		{
 			struct rbundle right = read_concat_token_expression(tokenizer, scope);
 			
-			if (!left.is_nfa)
-			{
-				left = regex_dfa_to_nfa(left.dfa);
-			}
+			if (!left.accepts)
+				left = regex_dfa_to_nfa(left.start);
 			
-			if (!right.is_nfa)
-			{
-				right = regex_dfa_to_nfa(right.dfa);
-			}
+			if (!right.accepts)
+				right = regex_dfa_to_nfa(right.start);
 			
-			regex_add_lambda_transition(left.nfa.accepts, right.nfa.start);
+			regex_add_lambda_transition(left.accepts, right.start);
 			
 			#ifdef DOTOUT
-			regex_dotout(left.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(left.start, __PRETTY_FUNCTION__);
 			#endif
 			
-			left = (struct rbundle) {
-				.is_nfa = true,
-				.nfa.start = left.nfa.start,
-				.nfa.accepts = right.nfa.accepts,
-			};
+			left = (struct rbundle) {left.start, right.accepts};
 			goto again;
 		}
 		

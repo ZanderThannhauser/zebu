@@ -16,19 +16,33 @@ struct rbundle read_identifier_token_expression(
 {
 	ENTER;
 	
-	dpvs(tokenizer->tokenchars.chars);
+	const char* name = (void*) tokenizer->tokenchars.chars;
 	
-	struct regex* original = scope_lookup_fragment(scope, (void*) tokenizer->tokenchars.chars);
+	dpvs(name);
 	
-	struct regex* start = regex_clone(original);
+	struct regex* original = scope_lookup_fragment(scope, name);
+	
+	struct rbundle retval = regex_clone2((struct rbundle){original, NULL});
 	
 	#ifdef DOTOUT
-	regex_dotout(start, __PRETTY_FUNCTION__);
+	regex_dotout(retval.start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = start,
-	};
+	return retval;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

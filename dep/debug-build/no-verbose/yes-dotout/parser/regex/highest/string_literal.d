@@ -7,5 +7,5 @@ bin/debug-build/no-verbose/yes-dotout/./parser/regex/highest/string_literal.o: \
  avl/delete.h avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h parser/tokenizer/struct.h \
- parser/tokenizer/token.h regex/dotout.h regex/from_literal.h \
+ parser/tokenizer/token.h regex/from_literal.h \
  parser/regex/highest/string_literal.h regex/rbundle.h

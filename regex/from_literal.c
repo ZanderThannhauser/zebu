@@ -18,18 +18,18 @@ struct regex* regex_from_literal(const unsigned char* string, unsigned len)
 	
 	struct regex* start = new_regex();
 	
-	struct regex* accept = start;
+	struct regex* accepts = start;
 	
 	while (len--)
 	{
 		struct regex* temp = new_regex();
 		
-		accept->transitions[*string++] = temp;
+		accepts->transitions[*string++] = temp;
 		
-		accept = temp;
+		accepts = temp;
 	}
 	
-	accept->accepts = true;
+	accepts->accepts = true;
 	
 	#ifdef DOTOUT
 	regex_dotout(start, __PRETTY_FUNCTION__);

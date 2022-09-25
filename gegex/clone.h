@@ -1,4 +1,4 @@
 
-struct gegex* gegex_clone(
-	struct gegex* in);
+#include "gbundle.h"
 
+struct gbundle gegex_clone2(struct gbundle original);

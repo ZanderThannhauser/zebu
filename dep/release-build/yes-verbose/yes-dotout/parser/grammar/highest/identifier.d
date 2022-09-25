@@ -3,7 +3,7 @@ bin/release-build/yes-verbose/yes-dotout/./parser/grammar/highest/identifier.o: 
  parser/tokenizer/struct.h parser/tokenizer/token.h \
  parser/tokenizer/read_token.h parser/scope/lookup/inline_grammar.h \
  parser/scope/build_absolute_name.h gegex/new.h gegex/dotout.h \
- gegex/clone.h gegex/dfa_to_nfa.h gegex/gbundle.h \
+ gegex/clone.h gegex/gbundle.h gegex/dfa_to_nfa.h \
  gegex/add_grammar_transition.h yacc/structinfo/new.h \
  yacc/structinfo/add_grammar_scalar_field.h \
  yacc/structinfo/add_grammar_array_field.h yacc/structinfo/free.h \

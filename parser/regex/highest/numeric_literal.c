@@ -20,18 +20,15 @@ struct rbundle read_numeric_literal_token_expression(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	int base;
 	switch (tokenizer->token)
 	{
 		case t_octal_literal: base = 8; break;
-		
 		case t_decimal_literal: base = 10; break;
-		
 		case t_hexadecimal_literal: base = 16; break;
-		
-		default:
-			TODO;
-			break;
+		default: TODO; break;
 	}
 	
 	dpvs(tokenizer->tokenchars.chars);
@@ -64,6 +61,7 @@ struct rbundle read_numeric_literal_token_expression(
 		.is_nfa = false,
 		.dfa = dfa,
 	};
+	#endif
 }
 
 

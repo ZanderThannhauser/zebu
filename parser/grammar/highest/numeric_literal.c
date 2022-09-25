@@ -49,6 +49,8 @@ struct gbundle read_numeric_literal_production(
 {
 	ENTER;
 	
+	TODO;
+	#if 0
 	int base;
 	switch (tokenizer->token)
 	{
@@ -140,6 +142,7 @@ struct gbundle read_numeric_literal_production(
 	
 	EXIT;
 	return (struct gbundle) {start, end};
+	#endif
 }
 
 

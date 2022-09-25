@@ -227,7 +227,7 @@ A list of operators and their meaning is listed below. Remember that parentheses
    Example: `'a'{3}` would match "aaa". <br>
    Example: `'a'{,3}` would match "", "a", "aa", "aaa". <br>
    Example: `'a'{3,}` would match "aaa", "aaaa", "aaaaa", etc. <br>
-   Example: `'a'{2,4}` would match "aa", "aaa", "aaaa".
+   Example: `'a'{2,4}` would match "aa", "aaa", "aaaa". <br>
 2. `$1 $2`: Binary operator, indicates concatenation/juxtaposition,
    left-associative. Returns a regular expression that would match the strings
    made of concatenating all the strings that would match the first given
@@ -266,7 +266,7 @@ A list of operators and their meaning is listed below. Remember that parentheses
    be repeated more than once.
  - `'a'? 'b'? 'c'?`: Describes all the alphabetically-sorted strings made only
    from 'a', 'b' and 'c' where no letter can be repeated.
- - Describes all UTF8-encoded strings: `([0x00-0x7F][0x80-0xBF]{0}|[0xC0-0xDF][0x80-0xBF]{1}|[0xE0-0xEF][0x80-0xBF]{2}|[0xF0-0xF7][0x80-0xBF]{3}|[0xF8-0xFB][0x80-0xBF]{4}|[0xFC-0xFD][0x80-0xBF]{5})*`
+ - `[0x00-0x7F]|[0xC0-0xDF][0x80-0xBF]{1}|[0xE0-0xEF][0x80-0xBF]{2}|[0xF0-0xF7][0x80-0xBF]{3}|[0xF8-0xFB][0x80-0xBF]{4}|[0xFC-0xFD][0x80-0xBF]{5}`: Describes all UTF8-encoded multi-byte characters.
 
 ### Grammar Rule Expressions
 
@@ -281,18 +281,27 @@ a regular expression, described above.
 
 Grammar-rule operators follow a similar syntax and behavior as the
 regular-expression operators above. Grammar-rules do not (currently) support
-the intersection operator or the `{N}`,`{N,}`,`{,M}``{N,M}` suffix repetition
-operators. Remember that parentheses (`(` & `)`) can be used to raise the
+the intersection operator. Remember that parentheses (`(` & `)`) can be used to raise the
 precedence of low-precedence operators.
 
-1. `$1?`, `$1*`, `$1+`: Unary operators, indicates repetition. Results in a
-   grammar-rule that would parse the language described by the subgrammar
-   repeated 0 or 1 times, 0 or more times and 1 or more times, respectively.
-2. `$1 $2`: Binary operator, indicates concatenation/juxtaposition,
+1. `$1?`, `$1*`, `$1+`, `$1{N}`, `$1{N,}`, `$1{,N}`, `$1{N,M}`: Unary
+   Operators, indicates repetition. Describes a grammar-rule that would accept
+   the strings that would be accepted by the subgrammar-rule repeated 0 or 1
+   times, 0 or more times, 1 or more times, `N` times (where 'N' must be a
+   numeric literal), `N` or more times, up to `N` times (inclusive), between
+   `N` to `M` times (inclusive, where 'M' is a numeric literal), respectively. <br>
+   Example: `A: 'a'; B:'b'; %start: A? B` would match "b", "ab". <br>
+   Example: `A: 'a'; B:'b'; %start: A* B` would match "b", "ab", "aab", "aaab", etc. <br>
+   Example: `A: 'a'; B:'b'; %start: A+ B` would match "ab", "aab", "aaab", etc. <br>
+   Example: `A: 'a'; B:'b'; %start: A{3} B` would *just* match "aaab". <br>
+   Example: `A: 'a'; B:'b'; %start: A{,3} B` would match "b", "ab", "aab", "aaab". <br>
+   Example: `A: 'a'; B:'b'; %start: A{3,} B` would match "aaab", "aaaab", "aaaaab", etc. <br>
+   Example: `A: 'a'; B:'b'; %start: A{2,4} B` would *just* match "aab", "aaab", "aaaab". <br>
+2. `%<name>:<expression>, <name>:<expression>, ...: $1`: Subdefinitions.
+3. `$1 $2`: Binary operator, indicates concatenation/juxtaposition,
    left-associative.
-3. `$1 | $2`: Binary operator, union, left-associative. Results in a grammar-rule
-   that would parse the union of the languages that would be parsed by either
-   the first or second given regular expression.
+4. `$1 | $2`: Binary operator, union, left-associative. Parses the grammars
+   described by either subgrammar rule.
 
 #### Tags
 

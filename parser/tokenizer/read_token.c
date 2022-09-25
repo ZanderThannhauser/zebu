@@ -6,6 +6,8 @@
 
 #include <debug.h>
 
+#include <enums/error.h>
+
 #include "struct.h"
 #include "read_char.h"
 #include "read_token.h"
@@ -25,6 +27,8 @@ static const enum tokenizer_state {
 	ts_minus,
 	ts_qmark,
 	ts_emark,
+	ts_ocurly,
+	ts_ccurly,
 	ts_percent,
 	ts_asterisk,
 	ts_ampersand,
@@ -58,9 +62,11 @@ static const enum tokenizer_state {
 	ts_read_colon,
 	ts_read_qmark,
 	ts_read_emark,
-	ts_read_oparen,
 	ts_after_slash,
+	ts_read_oparen,
 	ts_read_cparen,
+	ts_read_ocurly,
+	ts_read_ccurly,
 	ts_read_osquare,
 	ts_read_csquare,
 	ts_read_percent,
@@ -78,16 +84,16 @@ static const enum tokenizer_state {
 	ts_read_string_literal,
 	ts_reading_absolute_path,
 	ts_reading_string_escape,
-	ts_reading_decimal_literal,
+	ts_reading_octal_literal,
 	ts_reading_string_literal,
-	ts_reading_character_escape,
-	ts_reading_hexadecimal_literal,
+	ts_reading_decimal_literal,
 	ts_reading_numeric_literal,
+	ts_reading_character_escape,
 	ts_reading_character_literal1,
 	ts_reading_character_literal2,
-	ts_reading_octal_literal,
-	ts_reading_hexadecimal_literal2,
 	ts_reading_character_literal3,
+	ts_reading_hexadecimal_literal,
+	ts_reading_hexadecimal_literal2,
 	
 	
 	number_of_tokenizer_states,
@@ -145,6 +151,10 @@ static const enum tokenizer_state {
 		[ts_read_osquare][ANY] = ts_osquare,
 	[ts_start][']'] = ts_read_csquare,
 		[ts_read_csquare][ANY] = ts_csquare,
+	[ts_start]['{'] = ts_read_ocurly,
+		[ts_read_ocurly][ANY] = ts_ocurly,
+	[ts_start]['}'] = ts_read_ccurly,
+		[ts_read_ccurly][ANY] = ts_ccurly,
 	
 	// literals:
 	[ts_start]['\''] = ts_reading_character_literal1,
@@ -164,18 +174,6 @@ static const enum tokenizer_state {
 			[ts_reading_string_escape][ANY] = ts_reading_string_literal,
 		[ts_reading_string_literal]['\"'] = ts_read_string_literal,
 			[ts_read_string_literal][ANY] = ts_string_literal,
-	
-	[ts_start]['#'] = ts_reading_hashtag,
-		[ts_reading_hashtag]['a' ... 'z'] = ts_reading_hashtag2,
-		[ts_reading_hashtag]['A' ... 'Z'] = ts_reading_hashtag2,
-			[ts_reading_hashtag2][ANY] = ts_scalar_hashtag,
-			[ts_reading_hashtag2]['_'] = ts_reading_hashtag2,
-			[ts_reading_hashtag2]['1' ... '9'] = ts_reading_hashtag2,
-			[ts_reading_hashtag2]['a' ... 'z'] = ts_reading_hashtag2,
-			[ts_reading_hashtag2]['A' ... 'Z'] = ts_reading_hashtag2,
-			[ts_reading_hashtag2]['['] = ts_reading_hashtag3,
-				[ts_reading_hashtag3][']'] = ts_reading_hashtag4,
-					[ts_reading_hashtag4][ANY] = ts_array_hashtag,
 	
 	[ts_start]['0'] = ts_reading_numeric_literal,
 		[ts_reading_numeric_literal][ANY] = ts_decimal_literal,
@@ -201,6 +199,18 @@ static const enum tokenizer_state {
 		[ts_reading_identifier]['_'] = ts_reading_identifier,
 		[ts_reading_identifier]['a' ... 'z'] = ts_reading_identifier,
 		[ts_reading_identifier]['A' ... 'Z'] = ts_reading_identifier,
+	
+	[ts_start]['#'] = ts_reading_hashtag,
+		[ts_reading_hashtag]['a' ... 'z'] = ts_reading_hashtag2,
+		[ts_reading_hashtag]['A' ... 'Z'] = ts_reading_hashtag2,
+			[ts_reading_hashtag2][ANY] = ts_scalar_hashtag,
+			[ts_reading_hashtag2]['_'] = ts_reading_hashtag2,
+			[ts_reading_hashtag2]['1' ... '9'] = ts_reading_hashtag2,
+			[ts_reading_hashtag2]['a' ... 'z'] = ts_reading_hashtag2,
+			[ts_reading_hashtag2]['A' ... 'Z'] = ts_reading_hashtag2,
+			[ts_reading_hashtag2]['['] = ts_reading_hashtag3,
+				[ts_reading_hashtag3][']'] = ts_reading_hashtag4,
+					[ts_reading_hashtag4][ANY] = ts_array_hashtag,
 	
 	// absolute path:
 	[ts_start]['<'] = ts_reading_absolute_path,
@@ -273,7 +283,7 @@ enum token read_token(struct tokenizer* this)
 				"unexpected character after \"%.*s\": '%c' (0x%X)!\n",
 				this->line, (int) this->tokenchars.n, this->tokenchars.chars,
 				this->c, this->c);
-			exit(1);
+			exit(e_syntax_error);
 			break;
 		}
 		
@@ -334,6 +344,12 @@ enum token read_token(struct tokenizer* this)
 			break;
 		case ts_csquare:
 			this->token = t_csquare;
+			break;
+		case ts_ocurly:
+			this->token = t_ocurly;
+			break;
+		case ts_ccurly:
+			this->token = t_ccurly;
 			break;
 		
 		void escapes()

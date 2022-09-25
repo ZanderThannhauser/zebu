@@ -21,32 +21,28 @@ struct rbundle read_or_token_expression(
 	
 	struct rbundle left = read_and_token_expression(tokenizer, scope);
 	
-	if (tokenizer->token == t_vbar)
+	while (tokenizer->token == t_vbar)
 	{
-		if (!left.is_nfa)
+		read_token(tokenizer);
+		
+		struct rbundle right = read_and_token_expression(tokenizer, scope);
+		
+		if (!left.accepts)
 		{
-			left = regex_dfa_to_nfa(left.dfa);
+			left = regex_dfa_to_nfa(left.start);
 		}
 		
-		do
+		if (!right.accepts)
 		{
-			read_token(tokenizer);
-			
-			struct rbundle right = read_and_token_expression(tokenizer, scope);
-			
-			if (!right.is_nfa)
-			{
-				right = regex_dfa_to_nfa(right.dfa);
-			}
-			
-			regex_add_lambda_transition(left.nfa.start, right.nfa.start);
-			regex_add_lambda_transition(right.nfa.accepts, left.nfa.accepts);
-			
-			#ifdef DOTOUT
-			regex_dotout(left.nfa.start, __PRETTY_FUNCTION__);
-			#endif
+			right = regex_dfa_to_nfa(right.start);
 		}
-		while (tokenizer->token == t_vbar);
+		
+		regex_add_lambda_transition(left.start, right.start);
+		regex_add_lambda_transition(right.accepts, left.accepts);
+		
+		#ifdef DOTOUT
+		regex_dotout(left.start, __PRETTY_FUNCTION__);
+		#endif
 	}
 	
 	EXIT;

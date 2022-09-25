@@ -58,17 +58,17 @@ struct gbundle read_gravemark_production(
 	
 	struct regex* simp;
 	
-	if (regex.is_nfa)
+	if (regex.accepts)
 	{
 		struct regex* dfa = regex_nfa_to_dfa(regex);
 		
 		simp = regex_simplify_dfa(dfa);
 		
-		free_regex(regex.nfa.start), free_regex(dfa);
+		free_regex(regex.start), free_regex(dfa);
 	}
 	else
 	{
-		simp = regex.dfa;
+		simp = regex.start;
 	}
 	
 	unsigned token_id = lex_add_token(lex, simp, tk_regex);
@@ -93,7 +93,7 @@ struct gbundle read_gravemark_production(
 	
 	read_token(tokenizer);
 	
-	struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+	struct structinfo* structinfo = new_structinfo();
 	
 	while (false
 		|| tokenizer->token == t_scalar_hashtag

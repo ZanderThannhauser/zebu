@@ -101,6 +101,8 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 {
 	ENTER;
 	
+	assert(original.accepts);
+	
 	struct quack* todo = new_quack();
 	
 	#ifdef VERBOSE
@@ -132,9 +134,9 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 	{
 		struct ptrset* start_set = new_ptrset();
 		
-		original.nfa.accepts->accepts = true;
+		original.accepts->accepts = true;
 		
-		add_lambda_states(start_set, original.nfa.start);
+		add_lambda_states(start_set, original.start);
 		
 		struct mapping* mapping = new_mapping(start_set, new_start);
 		
@@ -144,10 +146,6 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 		
 		free_ptrset(start_set);
 	}
-	
-	#ifdef DOTOUT
-	regex_dotout(new_start, __PRETTY_FUNCTION__);
-	#endif
 	
 	while (quack_is_nonempty(todo))
 	{
@@ -264,11 +262,11 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 			
 			free_ptrset(subptrset);
 		}
-		
-		#ifdef DOTOUT
-		regex_dotout(new_start, __PRETTY_FUNCTION__);
-		#endif
 	}
+	
+	#ifdef DOTOUT
+	regex_dotout(new_start, __PRETTY_FUNCTION__);
+	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);

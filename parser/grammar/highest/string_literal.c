@@ -47,11 +47,11 @@ struct gbundle read_string_literal_production(
 	
 	dpvsn(tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 	
-	struct regex* regex_start = regex_from_literal(
+	struct regex* regex = regex_from_literal(
 		/* chars:  */ tokenizer->tokenchars.chars,
 		/* strlen: */ tokenizer->tokenchars.n);
 	
-	unsigned token_id = lex_add_token(lex, regex_start, tk_literal);
+	unsigned token_id = lex_add_token(lex, regex, tk_literal);
 	
 	dpv(token_id);
 	

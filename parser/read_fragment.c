@@ -70,7 +70,7 @@ void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 	
 	struct rbundle regex = read_root_token_expression(tokenizer, scope);
 	
-	if (regex.is_nfa)
+	if (regex.accepts)
 	{
 		struct regex* dfa = regex_nfa_to_dfa(regex);
 		
@@ -78,19 +78,11 @@ void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 		
 		scope_declare_fragment(scope, name, simp);
 		
-		free_regex(regex.nfa.start), free_regex(dfa);
+		free_regex(regex.start), free_regex(dfa);
 	}
 	else
 	{
-		scope_declare_fragment(scope, name, regex.dfa);
-	}
-	
-	if (true
-		&& tokenizer->token != t_semicolon
-		&& tokenizer->token != t_colon)
-	{
-		TODO;
-		exit(e_syntax_error);
+		scope_declare_fragment(scope, name, regex.start);
 	}
 	
 	free_string(name);

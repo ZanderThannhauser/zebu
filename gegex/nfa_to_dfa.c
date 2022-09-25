@@ -263,7 +263,7 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 				
 				struct ptrset* subptrset = new_ptrset();
 				
-				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+				struct structinfo* structinfo = new_structinfo();
 				
 				do
 				{
@@ -368,7 +368,7 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 				
 				struct ptrset* subptrset = new_ptrset();
 				
-				struct structinfo* structinfo = new_structinfo(/* name: */ NULL);
+				struct structinfo* structinfo = new_structinfo();
 				
 				while (heap_is_nonempty(heap) && strings_are_equal((transition = (iterator = heap_head(heap))->i[0])->grammar, min_grammar))
 				{

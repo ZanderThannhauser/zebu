@@ -76,10 +76,10 @@ jobs:
     - name: Generate JSON Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-    - name: Compile JSON Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -o /tmp/json
+    - name: Compile JSON Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/json/json.c -o /tmp/json
 
-    - name: Run JSON Example (-D DEBUG)
+    - name: Run JSON Example (-D ZEBU_DEBUG)
       run: valgrind /tmp/json ./-examples/json/input.json
 
     - name: Compile JSON Example
@@ -101,10 +101,10 @@ jobs:
     - name: Generate JSON Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t readline-with-driver -i ./-examples/json/json.zb -o ./-examples/json/json"
 
-    - name: Compile JSON Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/json/json.c -lreadline -o /tmp/json
+    - name: Compile JSON Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/json/json.c -lreadline -o /tmp/json
 
-    - name: Run JSON Example (-D DEBUG)
+    - name: Run JSON Example (-D ZEBU_DEBUG)
       run: echo '[1, 2, 3]' | valgrind /tmp/json ./-examples/json/input.json
 
     - name: Compile JSON Example
@@ -182,10 +182,10 @@ jobs:
     - name: Generate Iloc Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1"
 
-    - name: Compile Iloc Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc1.c -o /tmp/test
+    - name: Compile Iloc Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/iloc/iloc1.c -o /tmp/test
 
-    - name: Run Iloc Example (-D DEBUG)
+    - name: Run Iloc Example (-D ZEBU_DEBUG)
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
     - name: Compile Iloc Example
@@ -221,10 +221,10 @@ jobs:
     - name: Generate Iloc Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
-    - name: Compile Iloc Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
+    - name: Compile Iloc Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
 
-    - name: Run Iloc Example (-D DEBUG)
+    - name: Run Iloc Example (-D ZEBU_DEBUG)
       run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
     - name: Compile Iloc Example
@@ -262,10 +262,10 @@ jobs:
 #    - name: Generate Iloc Example
 #      run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3"
 
-#    - name: Compile Iloc Example (-D DEBUG)
-#      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc3.c -o /tmp/test
+#    - name: Compile Iloc Example (-D ZEBU_DEBUG)
+#      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/iloc/iloc3.c -o /tmp/test
 
-#    - name: Run Iloc Example (-D DEBUG)
+#    - name: Run Iloc Example (-D ZEBU_DEBUG)
 #      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
 
 #    - name: Compile Iloc Example
@@ -331,10 +331,10 @@ jobs:
     - name: Generate Zebu Example
       run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
 
-    - name: Compile Zebu Example (-D DEBUG)
-      run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
+    - name: Compile Zebu Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/zebu/zebu.c -o /tmp/test
 
-    - name: Run Zebu Example (-D DEBUG)
+    - name: Run Zebu Example (-D ZEBU_DEBUG)
       run: valgrind /tmp/test ./-examples/zebu/zebu.zb
 
     - name: Compile Zebu Example
@@ -371,7 +371,7 @@ jobs:
 #      run: make buildtype=test verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2"
 
 #    - name: Compile Iloc Example
-#      run: gcc -Wall -Werror -D DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
+#      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/iloc/iloc2.c -o /tmp/test
 
 #    - name: Run Iloc Example
 #      run: valgrind /tmp/test ./-examples/iloc/dynamic.il
@@ -389,7 +389,7 @@ jobs:
 #      run: make buildtype=test verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu"
 
 #    - name: Compile Zebu Example
-#      run: gcc -Wall -Werror -D DEBUG ./-examples/zebu/zebu.c -o /tmp/test
+#      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/zebu/zebu.c -o /tmp/test
 
 #    - name: Run Zebu Example
 #      run: valgrind /tmp/test ./-examples/zebu/zebu.zb

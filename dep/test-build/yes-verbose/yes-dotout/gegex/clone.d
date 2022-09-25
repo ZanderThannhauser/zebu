@@ -11,4 +11,4 @@ bin/test-build/yes-verbose/yes-dotout/./gegex/clone.o: gegex/clone.c \
  misc/default_sighandler.h quack/len.h gegex/transition/struct.h \
  gegex/grammar/struct.h gegex/add_transition.h \
  gegex/add_lambda_transition.h gegex/add_grammar_transition.h \
- gegex/dotout.h gegex/clone.h
+ gegex/dotout.h gegex/clone.h gegex/gbundle.h

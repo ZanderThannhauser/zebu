@@ -1,4 +1,6 @@
 
+#include <stddef.h>
+
 #include <debug.h>
 
 #include <regex/from_dot.h>
@@ -11,15 +13,12 @@ struct rbundle read_dot_token_expression(
 {
 	ENTER;
 	
-	struct regex* regex = regex_from_dot();
+	struct regex* start = regex_from_dot();
 	
 	#ifdef DOTOUT
-	regex_dotout(regex, __PRETTY_FUNCTION__);
+	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = regex,
-	};
+	return (struct rbundle) {start, NULL};
 }

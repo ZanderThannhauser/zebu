@@ -10,4 +10,4 @@ bin/debug-build/no-verbose/no-dotout/./gegex/clone.o: gegex/clone.c \
  quack/pop.h quack/free.h gegex/struct.h gegex/new.h \
  gegex/transition/struct.h gegex/grammar/struct.h gegex/add_transition.h \
  gegex/add_lambda_transition.h gegex/add_grammar_transition.h \
- gegex/dotout.h gegex/clone.h
+ gegex/dotout.h gegex/clone.h gegex/gbundle.h

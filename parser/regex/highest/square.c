@@ -47,10 +47,7 @@ struct rbundle read_square_token_expression(
 	struct regex* start = regex_from_charset(charset);
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = start,
-	};
+	return (struct rbundle){start, NULL};
 }
 
 

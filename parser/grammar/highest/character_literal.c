@@ -48,13 +48,13 @@ struct gbundle read_character_literal_production(
 	
 	dpvc(code);
 	
-	struct regex* regex_start = regex_from_literal(&code, 1);
+	struct regex* regex = regex_from_literal(&code, 1);
 	
-	unsigned token_id = lex_add_token(lex, regex_start, tk_literal);
+	unsigned token_id = lex_add_token(lex, regex, tk_literal);
 	
 	dpv(token_id);
 	
-	struct structinfo* tags = new_structinfo(/* name: */ NULL);
+	struct structinfo* tags = new_structinfo();
 	
 	read_token(tokenizer);
 	

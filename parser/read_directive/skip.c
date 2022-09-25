@@ -43,12 +43,10 @@ void read_skip_directive(
 	
 	struct rbundle regex = read_root_token_expression(tokenizer, scope);
 	
-	if (!regex.is_nfa)
-	{
-		regex = regex_dfa_to_nfa(regex.dfa);
-	}
+	if (!regex.accepts)
+		regex = regex_dfa_to_nfa(regex.start);
 	
-	regex_add_lambda_transition(regex.nfa.accepts, regex.nfa.start);
+	regex_add_lambda_transition(regex.accepts, regex.start);
 	
 	struct regex* dfa = regex_nfa_to_dfa(regex);
 	
@@ -60,7 +58,7 @@ void read_skip_directive(
 	
 	lex->whitespace_token_id = token_id;
 	
-	free_regex(regex.nfa.start), free_regex(dfa);
+	free_regex(regex.start), free_regex(dfa);
 	
 	EXIT;
 }

@@ -88,7 +88,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 				"\"%p\" -> \"%p\" [" "\n"
 					"\t" "label = \"%s#%u token %s\"" "\n"
 				"]" "\n"
-			"", state, transition->to, whitespace, transition->token, label);
+			"", state, transition->to, whitespace ?: "", transition->token, label);
 			
 			if (ptrset_add(queued, transition->to))
 				quack_append(todo, transition->to);

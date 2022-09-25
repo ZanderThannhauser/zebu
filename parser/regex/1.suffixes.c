@@ -34,15 +34,15 @@ struct rbundle read_suffixes_token_expression(
 		case t_qmark:
 		{
 			// convert into nfa:
-			if (!retval.is_nfa)
+			if (!retval.accepts)
 			{
-				retval = regex_dfa_to_nfa(retval.dfa);
+				retval = regex_dfa_to_nfa(retval.start);
 			}
 			
-			regex_add_lambda_transition(retval.nfa.start, retval.nfa.accepts);
+			regex_add_lambda_transition(retval.start, retval.accepts);
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(retval.start, __PRETTY_FUNCTION__);
 			#endif
 			
 			read_token(tokenizer);
@@ -52,16 +52,16 @@ struct rbundle read_suffixes_token_expression(
 		case t_asterisk:
 		{
 			// convert into nfa:
-			if (!retval.is_nfa)
+			if (!retval.accepts)
 			{
-				retval = regex_dfa_to_nfa(retval.dfa);
+				retval = regex_dfa_to_nfa(retval.start);
 			}
 			
-			regex_add_lambda_transition(retval.nfa.accepts, retval.nfa.start);
-			regex_add_lambda_transition(retval.nfa.start, retval.nfa.accepts);
+			regex_add_lambda_transition(retval.accepts, retval.start);
+			regex_add_lambda_transition(retval.start,   retval.accepts);
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(retval.start, __PRETTY_FUNCTION__);
 			#endif
 			
 			read_token(tokenizer);
@@ -71,15 +71,15 @@ struct rbundle read_suffixes_token_expression(
 		case t_plus:
 		{
 			// convert into nfa:
-			if (!retval.is_nfa)
+			if (!retval.accepts)
 			{
-				retval = regex_dfa_to_nfa(retval.dfa);
+				retval = regex_dfa_to_nfa(retval.start);
 			}
 			
-			regex_add_lambda_transition(retval.nfa.accepts, retval.nfa.start);
+			regex_add_lambda_transition(retval.accepts, retval.start);
 			
 			#ifdef DOTOUT
-			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
+			regex_dotout(retval.start, __PRETTY_FUNCTION__);
 			#endif
 			
 			read_token(tokenizer);
@@ -105,41 +105,31 @@ struct rbundle read_suffixes_token_expression(
 			
 			void set_limit(struct limit* l)
 			{
+				int base;
+				
 				switch (tokenizer->token)
 				{
-					case t_octal_literal:
-						TODO;
-						break;
-					
-					case t_decimal_literal:
-					{
-						errno = 0;
-						
-						const char* start = (void*) tokenizer->tokenchars.chars;
-						unsigned long int value = strtoul(start, NULL, 10);
-						
-						if (errno)
-						{
-							fprintf(stderr, "zebu: error when reading character-set: strtoul(): %m\n");
-							exit(e_syntax_error);
-						}
-						
-						l->has = true;
-						l->value = value;
-						break;
-					}
-					
-					case t_hexadecimal_literal:
-						TODO;
-						break;
-					
-					default:
-						TODO;
-						break;
+					case t_octal_literal: base = 8; break;
+					case t_decimal_literal: base = 10; break;
+					case t_hexadecimal_literal: base = 16; break;
+					default: TODO; break;
 				}
+				
+				errno = 0;
+				const char* start = (void*) tokenizer->tokenchars.chars;
+				unsigned long int value = strtoul(start, NULL, base);
+				
+				if (errno)
+				{
+					fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %m\n", start);
+					exit(e_syntax_error);
+				}
+				
+				l->has = true;
+				l->value = value;
 			}
 			
-			read_token(tokenizer, numeric_or_comma_machine);
+			read_token(tokenizer);
 			
 			if (false
 				|| tokenizer->token == t_octal_literal
@@ -147,17 +137,13 @@ struct rbundle read_suffixes_token_expression(
 				|| tokenizer->token == t_hexadecimal_literal)
 			{
 				set_limit(&min);
-				read_token(tokenizer, comma_or_ccurly_machine);
+				read_token(tokenizer);
 			}
 			
 			if (tokenizer->token == t_comma)
-			{
-				read_token(tokenizer, numeric_or_ccurly_machine);
-			}
+				read_token(tokenizer);
 			else
-			{
 				max = min;
-			}
 			
 			if (false
 				|| tokenizer->token == t_octal_literal
@@ -165,8 +151,16 @@ struct rbundle read_suffixes_token_expression(
 				|| tokenizer->token == t_hexadecimal_literal)
 			{
 				set_limit(&max);
-				read_token(tokenizer, ccurly_machine);
+				read_token(tokenizer);
 			}
+			
+			if (tokenizer->token != t_ccurly)
+			{
+				TODO;
+				exit(1);
+			}
+			
+			read_token(tokenizer);
 			
 			if (!min.has && !max.has)
 			{
@@ -187,49 +181,47 @@ struct rbundle read_suffixes_token_expression(
 			{
 				for (; i < min.value; i++)
 				{
-					struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+					struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
 					
-					regex_add_lambda_transition(moving, clone.start);
+					regex_add_lambda_transition(moving, clone.nfa.start);
 					
-					moving = clone.end;
+					moving = clone.nfa.accepts;
 				}
 			}
 			
-			struct regex* end = new_regex();
+			struct regex* accepts = new_regex();
 			
-			regex_add_lambda_transition(moving, end);
+			regex_add_lambda_transition(moving, accepts);
 			
 			if (max.has)
 			{
 				for (; i < max.value; i++)
 				{
-					struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+					struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
 					
-					regex_add_lambda_transition(moving, clone.start);
+					regex_add_lambda_transition(moving, clone.nfa.start);
 					
-					moving = clone.end;
+					moving = clone.nfa.accepts;
 					
-					regex_add_lambda_transition(moving, end);
+					regex_add_lambda_transition(moving, accepts);
 				}
 			}
 			else
 			{
-				struct clone_nfa_bundle clone = regex_clone_nfa(original.nfa.start, original.nfa.end);
+				struct rbundle clone = regex_clone_nfa(original.nfa.start, original.nfa.accepts);
 				
-				regex_add_lambda_transition(moving, clone.start);
+				regex_add_lambda_transition(moving, clone.nfa.start);
 				
-				regex_add_lambda_transition(clone.end, moving);
+				regex_add_lambda_transition(clone.nfa.accepts, moving);
 			}
 			
 			retval.is_nfa = true;
 			retval.nfa.start = start;
-			retval.nfa.end = end;
+			retval.nfa.accepts = accepts;
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.nfa.start, __PRETTY_FUNCTION__);
 			#endif
-			
-			read_token(tokenizer, regex_after_suffix_machine);
 			
 			free_regex(original.nfa.start);
 			#endif

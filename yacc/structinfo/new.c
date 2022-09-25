@@ -56,7 +56,7 @@ static void free_node(void* ptr)
 	}
 }
 
-struct structinfo* new_structinfo()
+struct structinfo* new_structinfo(void)
 {
 	ENTER;
 	

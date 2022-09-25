@@ -1,2 +1,2 @@
 
-struct structinfo* new_structinfo();
+struct structinfo* new_structinfo(void);
