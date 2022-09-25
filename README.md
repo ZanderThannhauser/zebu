@@ -94,10 +94,10 @@ of these items, names cannot be reused.
    *below* it.
    Common usages are listed below:
    - `%skip: ' ' | '\t' | '\n';` (Ignores space, tab and newline characters)
-   - `%skip: ' ' | '\t' | '\n' | "#" [!'\n']* "\n";` (Ignores space, tab and
-     newline characters, and shell-style comments)
-   - `%skip: ' ' | '\t' | '\n' | "//" [!'\n']* "\n";` (Ignores space, tab and
-     newline characters, and C++-style comments)
+   - `%skip: ' ' | '\t' | '\n' | "#" [!'\n']* "\n";` (Ignores shell-style
+     comments, in addition to space, tab and newline characters)
+   - `%skip: ' ' | '\t' | '\n' | "//" [!'\n']* "\n";` (Ignores C++-style
+     comments, in addition to space, tab and newline characters)
    - `%skip: [128 - 255];` (Ignores all bytes with their high-bit set)
  - `%extra_field`: *TODO*: grammar-name, type (as string), field-name (as
    identifier), optional function name.
@@ -105,23 +105,23 @@ of these items, names cannot be reused.
    The former will resolve the path relative to the current file, and the latter
    will resolve the path relative to the first file zebu was given on the
    command-line. Each file does *not* have its own namespace; all of the defined
-   character sets, regular expressions, and grammars will be copied into the
+   character-sets, regular expressions, and grammars will be copied into the
    global scope. A file *included* more than once will not be *read* more than once.
 
-### Character Sets
+### Character-Sets
 
 Inside of either a regular-expression or grammar-rule context, one enters the
-character-set-expression context using `'['` and `']'`. One can associate a
-character-set to a name using `[name]: <character-set-expression>;` syntax in the
+character-set-expression context using `'['` and `']'`. One can name a
+character-set using `[name]: <character-set-expression>;` syntax in the
 root-level of input files to zebu.
-
-Either C-style single-quote character literals or C-style integer-literals can
-be used inside a character set to describe a character. For example, the letter
-'a' can be indicated by `'a'`, or `97`, or `0x61`.
 
 Remember that one can also refer to the value of a defined character-set by
 name inside of other character-set expressions. The referenced character-set
 must be defined before its usage.
+
+Either C-style single-quote character literals or C-style integer-literals can
+be used inside a character-set to describe a character. For example, the letter
+'a' can be indicated by `'a'`, or `97`, or `0x61`.
 
 #### Operators:
 
