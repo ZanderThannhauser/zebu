@@ -121,27 +121,28 @@ must be defined before its usage.
 
 Either C-style single-quote character literals or C-style integer-literals can
 be used inside a character-set to describe a character. For example, the letter
-'a' can be indicated by `'a'`, or `97`, or `0x61`.
+'a' can be indicated by `'a'`, `0141`, `97`, or `0x61`.
 
 #### Operators:
 
-A list of operators and their meaning is listed below. Remember that parenthesis
-(`(` & `)`) can be used to raise the precedence of low-precedence operators.
+A list of operators and their meaning is listed below. Parenthesis (`(` & `)`)
+can be used to raise the precedence of low-precedence operators.
 
-1. `!$1`: Unary operator. Results the complement of the given character-set.
+1. `!$1`: Unary operator. Results in a character-set of all the characters
+   *not* in the given character-set.
 2. `$1 - $2`: Binary operator, not associative.
    If given two Literals, returns a character-set containing all of the
    characters between the first character literal up-to-and-including the
    second character literal. If the first operand is a character-set, it will
    use the minimum character contained in the set. If the second operand is a
    is character-set, it will use the maximum character contained in the set. <br>
-   Example: `['a' - 'c']` yields `['a', 'b', 'c']`. <br>
-   Example: `[('a', 'b') - ('c', 'd')]` yields `['a', 'b', 'c', 'd']`.
+   Example: `['a'-'c']` yields `['a','b','c']`. <br>
+   Example: `[('a','b') - ('c','d')]` yields `['a','b','c','d']`.
 3. `$1 & $2`: Binary operator, intersection, left-associative.
    Results a character-set of all the elements that are contained in *both* of
    the two given character-sets. <br>
-   Example: `[('a','b','c') & ('b','c','d')]` yields `['b', 'c']`. <br>
-   Example: `[('a','b','c') & !'a']` yields `['b', 'c']`.
+   Example: `[('a','b','c') & ('b','c','d')]` yields `['b','c']`. <br>
+   Example: `[('a','b','c') & !'a']` yields `['b','c']`.
 4. `$1 ^ $2`: Binary operator, symmetric-difference, Left-associative.
    Results a character-set of all the elements that are
    contained in *only one* of the two given character-sets. <br>
@@ -150,18 +151,18 @@ A list of operators and their meaning is listed below. Remember that parenthesis
    Results a character-set of all elements that are contained in *either* given
    character-set. This is the default behavior if no operator is given between
    two character-sets. <br>
-   Example: `[('a','b','c') | ('b','c','d')]` yields `['a', 'b', 'c', 'd']`.
+   Example: `[('a','b','c') | ('b','c','d')]` yields `['a','b','c','d']`.
 
-#### Examples:
+#### Examples
 
- - `['a' 'b' 'c']` or `['a', 'b', 'c']` or `['a' | 'b' | 'c']` or `['a' - 'c']`
+ - `['a' 'b' 'c']` or `['a','b','c']` or `['a'|'b'|'c']` or `['a'-'c']`
     or `[97 - 99]`: Describes a character-set containing the letters 'a', 'b'
     and 'c'.
- - `[('a', 'b') ^ ('b', 'c')]`: Describes a character-set containing the letters
+ - `[('a','b') ^ ('b','c')]`: Describes a character-set containing the letters
     'a' and 'c'.
- - `[!(!('a' - 'c') & !('b' - 'd'))]` or `['a' - 'c' | 'b' - 'd']`: Describes
+ - `[!(!('a'-'c') & !('b'-'d'))]` or `['a'-'c' | 'b'-'d']`: Describes
     the character-set containing 'a', 'b', 'c' and 'd'.
- - `[!(!('a' - 'c') | !('b' - 'd'))]` or `['a' - 'c' & 'b' - 'd']`: Describes
+ - `[!(!('a'-'c') | !('b'-'d'))]` or `['a'-'c' & 'b'-'d']`: Describes
     the character-set containing 'b' and 'c'.
  - `['a'-'z' & !('a','e','i','o','u')]`: Describes a character-set containing
     all English consonants.
@@ -223,7 +224,7 @@ A list of operators and their meaning is listed below. Remember that parentheses
    Example: `"a" | "b"` would match "a" or "b". <br>
    Example: `("a" | "b")*` would match "", "a", "b", "ab", "ba", etc.
 
-#### Examples:
+#### Examples
 
  - `[!'b']* 'b' [!'b']* 'b' [!'b']*`: Would match any string containing exactly
    two 'b's.
