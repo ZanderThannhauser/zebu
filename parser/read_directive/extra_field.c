@@ -1,8 +1,11 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <string/new.h>
 #include <string/free.h>
@@ -14,9 +17,11 @@
 #include <yacc/structinfo/add_user_defined_field.h>
 #include <yacc/structinfo/free.h>
 
+#include <named/structinfo/struct.h>
 #include <named/structinfo/new.h>
 
 #include "../tokenizer/struct.h"
+#include "../tokenizer/token_names.h"
 #include "../tokenizer/read_token.h"
 
 #include "extra_field.h"
@@ -33,8 +38,12 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error when reading "
+			"%%extra_field directive: unexpected '%s', expecting '%s'!\n",
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
@@ -131,7 +140,9 @@ void read_extra_field_directive(
 	
 	if (node)
 	{
-		TODO;
+		struct named_structinfo* nstructinfo = node->item;
+		
+		structinfo_add_user_defined_field(nstructinfo->structinfo, type, name, destructor);
 	}
 	else
 	{

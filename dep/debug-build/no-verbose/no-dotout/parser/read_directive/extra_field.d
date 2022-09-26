@@ -8,7 +8,9 @@ bin/debug-build/no-verbose/no-dotout/./parser/read_directive/extra_field.o: \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h yacc/structinfo/new.h \
  yacc/structinfo/add_user_defined_field.h yacc/structinfo/free.h \
- named/structinfo/new.h parser/read_directive/../tokenizer/struct.h \
+ named/structinfo/struct.h named/structinfo/new.h \
+ parser/read_directive/../tokenizer/struct.h \
  parser/read_directive/../tokenizer/token.h \
+ parser/read_directive/../tokenizer/token_names.h \
  parser/read_directive/../tokenizer/read_token.h \
  parser/read_directive/extra_field.h

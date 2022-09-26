@@ -38,3 +38,16 @@ struct string* scope_build_absolute_name(
 	EXIT;
 	return retval;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

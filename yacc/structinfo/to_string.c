@@ -75,6 +75,10 @@ char* structinfo_to_string(struct structinfo* this)
 					append(node->scanf.fflags->ctype), append(node->name->chars), append("[];\\l");
 					break;
 				
+				case snt_user_defined:
+					append(node->user_defined.type->chars), append(node->name->chars), append("[];\\l");
+					break;
+				
 				default:
 					TODO;
 					break;
