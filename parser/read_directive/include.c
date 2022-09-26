@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <unistd.h>
 
@@ -45,9 +47,11 @@ void read_include_directive(
 			break;
 	}
 	
-	dpvs(tokenizer->tokenchars.chars);
+	char* path = strndup((char*) tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
 	
-	struct br_rettype br = break_and_open_path(dirfd, (void*) tokenizer->tokenchars.chars);
+	dpvs(path);
+	
+	struct br_rettype br = break_and_open_path(dirfd, path);
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
@@ -62,6 +66,8 @@ void read_include_directive(
 		close(br.dirfd);
 	
 	close(br.fd);
+	
+	free(path);
 	
 	EXIT;
 }
