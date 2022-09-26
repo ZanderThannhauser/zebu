@@ -21,6 +21,8 @@
 
 #include <named/gegex/struct.h>
 
+#include <yacc/structinfo/resolve_grammar_names.h>
+
 /*#include <set/gegex/new.h>*/
 /*#include <set/gegex/add.h>*/
 /*#include <set/gegex/free.h>*/
@@ -73,6 +75,8 @@ void resolve_grammar_names(struct scope* scope)
 			dpvs(new);
 			
 			free_string(ele->grammar), ele->grammar = new;
+			
+			structinfo_resolve_grammar_names(ele->structinfo, new);
 			
 			if (ptrset_add(queued, ele->to))
 				quack_append(todo, ele->to);

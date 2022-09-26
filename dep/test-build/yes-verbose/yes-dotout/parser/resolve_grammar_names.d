@@ -9,5 +9,5 @@ bin/test-build/yes-verbose/yes-dotout/./parser/resolve_grammar_names.o: \
  set/ptr/is_nonempty.h set/ptr/free.h quack/new.h quack/append.h \
  quack/is_nonempty.h quack/pop.h quack/free.h gegex/grammar/struct.h \
  gegex/transition/struct.h gegex/struct.h named/gegex/struct.h \
- parser/scope/struct.h parser/scope/resolve/grammar.h \
- parser/resolve_grammar_names.h
+ yacc/structinfo/resolve_grammar_names.h parser/scope/struct.h \
+ parser/scope/resolve/grammar.h parser/resolve_grammar_names.h

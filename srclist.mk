@@ -352,6 +352,7 @@ srcs += ./yacc/structinfo/inc.c
 srcs += ./yacc/structinfo/is_empty.c
 srcs += ./yacc/structinfo/new.c
 srcs += ./yacc/structinfo/print_source.c
+srcs += ./yacc/structinfo/resolve_grammar_names.c
 srcs += ./yacc/structinfo/to_hashtagstring.c
 srcs += ./yacc/structinfo/to_string.c
 srcs += ./yacc/structinfo/update.c

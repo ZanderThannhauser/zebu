@@ -13,7 +13,7 @@ value
 	| `['0' - '9']+:"%u"` #number
 	| `string` #string
 	| "[" value #elements[] ("," value #elements[])* "]"
-	| ("{" keyvalue #dict[] ("," keyvalue #dict[])* "}")
+	| "{" keyvalue #dict[] ("," keyvalue #dict[])* "}"
 	;
 
 

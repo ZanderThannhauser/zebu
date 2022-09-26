@@ -30,6 +30,8 @@ struct string* scope_resolve_grammar(
 	struct avl_node_t* node;
 	ENTER;
 	
+	dpvs(original);
+	
 	char* copy = strdup(original->chars);
 	
 	dpvs(copy);
