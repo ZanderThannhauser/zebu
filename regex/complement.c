@@ -10,9 +10,9 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
-/*#include <set/regex/new.h>*/
-/*#include <set/regex/add.h>*/
-/*#include <set/regex/free.h>*/
+#include <set/ptr/new.h>
+#include <set/ptr/add.h>
+#include <set/ptr/free.h>
 
 #include "struct.h"
 #include "new.h"
@@ -23,9 +23,7 @@ void regex_complement(struct regex* start)
 {
 	ENTER;
 	
-	TODO;
-	#if 0
-	struct regexset* queued = new_regexset();
+	struct ptrset* queued = new_ptrset();
 	struct quack* todo = new_quack();
 	
 	quack_append(todo, start);
@@ -36,7 +34,7 @@ void regex_complement(struct regex* start)
 	{
 		struct regex* const state = quack_pop(todo);
 		
-		state->is_accepting = !state->is_accepting;
+		state->accepts = !state->accepts;
 		
 		// normal transitions:
 		for (unsigned i = 0, n = 256; i < n; i++)
@@ -45,7 +43,7 @@ void regex_complement(struct regex* start)
 			
 			if (to)
 			{
-				if (regexset_add(queued, to))
+				if (ptrset_add(queued, to))
 					quack_append(todo, to);
 			}
 			else
@@ -54,7 +52,7 @@ void regex_complement(struct regex* start)
 				{
 					phi = new_regex();
 					
-					phi->is_accepting = true;
+					phi->accepts = true;
 					
 					for (unsigned i = 0, n = 256; i < n; i++)
 						phi->transitions[i] = phi;
@@ -65,7 +63,7 @@ void regex_complement(struct regex* start)
 		}
 		
 		// lambda transitions:
-		for (unsigned i = 0, n = state->lambda_transitions.n; i < n; i++)
+		for (unsigned i = 0, n = state->lambdas.n; i < n; i++)
 		{
 			TODO;
 			#if 0
@@ -78,10 +76,9 @@ void regex_complement(struct regex* start)
 	regex_dotout(start, __PRETTY_FUNCTION__);
 	#endif
 	
-	free_regexset(queued);
+	free_ptrset(queued);
 	
 	free_quack(todo);
-	#endif
 	
 	EXIT;
 }
