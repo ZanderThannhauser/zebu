@@ -416,9 +416,9 @@ static void shift_reduce_error(
 }
 
 struct yacc_state* yacc(
+	struct lex* lex,
 	struct avl_tree_t* named_gegexes,
-	struct avl_tree_t* extra_fields,
-	struct lex* lex)
+	struct avl_tree_t* extra_fields)
 {
 	ENTER;
 	
@@ -490,9 +490,11 @@ struct yacc_state* yacc(
 		
 		expand_stateinfo(stateinfo, named_tries, named_firsts);
 		
-		quack_append(todo, new_mapping(stateinfo, start));
+		struct mapping* mapping = new_mapping(stateinfo, start);
 		
-		avl_insert(mappings, stateinfo);
+		quack_append(todo, mapping);
+		
+		avl_insert(mappings, mapping);
 		
 		free_unsignedset(lookahead_tokens);
 		
@@ -769,8 +771,6 @@ struct yacc_state* yacc(
 		completed++;
 		#endif
 		
-		free_unsignedset(all_tokens);
-		
 		free_unsignedsetset(tokens);
 		
 		avl_free_tree(shift_tokens);
@@ -778,6 +778,8 @@ struct yacc_state* yacc(
 		avl_free_tree(reduce_tokens);
 		
 		avl_free_tree(subgrammars);
+		
+		free_unsignedset(all_tokens);
 	}
 	
 	#ifdef VERBOSE

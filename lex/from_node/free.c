@@ -16,6 +16,7 @@ void free_dfa_from_id_node(void* this)
 	struct dfa_from_id_node* node = this;
 	
 	free_regex(node->token);
+	
 	free(this);
 	
 	EXIT;

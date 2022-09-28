@@ -49,7 +49,10 @@ void free_trie(struct trie* this)
 	}
 	
 	free(this->transitions.data);
+	
 	free(this->grammars.data);
+	
+	free(this);
 	
 	EXIT;
 }

@@ -12,6 +12,8 @@
 
 void free_named_trie(void* ptr)
 {
+	ENTER;
+	
 	struct named_trie* this = ptr;
 	
 	free_string(this->name);
@@ -19,5 +21,7 @@ void free_named_trie(void* ptr)
 	free_trie(this->trie);
 	
 	free(this);
+	
+	EXIT;
 }
 

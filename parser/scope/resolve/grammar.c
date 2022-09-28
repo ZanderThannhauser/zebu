@@ -60,7 +60,7 @@ struct string* scope_resolve_grammar(
 	}
 	
 	EXIT;
-	return initially_found ? inc_string(original) : new_string_without_copy(copy);
+	return initially_found ? (free(copy), inc_string(original)) : new_string_without_copy(copy);
 }
 
 

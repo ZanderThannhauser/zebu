@@ -9,7 +9,7 @@ bin/test-build/yes-verbose/yes-dotout/./yacc/build_structinfo.o: \
  set/ptr/is_nonempty.h set/ptr/free.h avl/foreach.h \
  gegex/grammar/struct.h gegex/transition/struct.h gegex/struct.h \
  named/gegex/struct.h quack/new.h quack/append.h quack/is_nonempty.h \
- quack/pop.h set/string/foreach.h misc/frame_counter.h set/ptr/contains.h \
- quack/free.h yacc/structinfo/new.h yacc/structinfo/update.h \
+ quack/pop.h quack/free.h set/string/foreach.h misc/frame_counter.h \
+ set/ptr/contains.h yacc/structinfo/new.h yacc/structinfo/update.h \
  yacc/structinfo/to_string.h yacc/structinfo/to_hashtagstring.h \
  yacc/build_structinfo.h

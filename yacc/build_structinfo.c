@@ -14,6 +14,7 @@
 #include <quack/append.h>
 #include <quack/is_nonempty.h>
 #include <quack/pop.h>
+#include <quack/free.h>
 
 #include <set/string/foreach.h>
 
@@ -200,6 +201,8 @@ struct structinfo* build_structinfo(
 	}
 	
 	free_ptrset(queued);
+	
+	free_quack(todo);
 	
 	EXIT;
 	return info;

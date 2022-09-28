@@ -399,6 +399,8 @@ void build_tries(
 				avl_insert(gegex_to_trie, new_gegex_to_trie_name(to, name));
 				
 				avl_insert(named_tries, new);
+				
+				free_string(name);
 			}
 		}
 		

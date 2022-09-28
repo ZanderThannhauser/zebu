@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 	
 	main_parse(grammar, extra_fields, lex);
 	
-	struct yacc_state* parser = yacc(grammar, extra_fields, lex);
+	struct yacc_state* parser = yacc(lex, grammar, extra_fields);
 	
 	out(parser);
 	

@@ -21,37 +21,40 @@ void free_lex_state(struct ptrset* freed, struct lex_state* start)
 {
 	ENTER;
 	
-	struct quack* todo = new_quack();
-	
-	if (ptrset_add(freed, start))
-		quack_append(todo, start);
-	
-	while (quack_is_nonempty(todo))
+	if (start)
 	{
-		struct lex_state* state = quack_pop(todo);
+		struct quack* todo = new_quack();
 		
-		free_unsignedset(state->accepts);
+		if (ptrset_add(freed, start))
+			quack_append(todo, start);
 		
-		for (unsigned i = 0, n = 256; i < n; i++)
+		while (quack_is_nonempty(todo))
 		{
-			struct lex_state* to = state->transitions[i];
+			struct lex_state* state = quack_pop(todo);
 			
-			if (to && ptrset_add(freed, to))
-				quack_append(todo, to);
+			free_unsignedset(state->accepts);
+			
+			for (unsigned i = 0, n = 256; i < n; i++)
+			{
+				struct lex_state* to = state->transitions[i];
+				
+				if (to && ptrset_add(freed, to))
+					quack_append(todo, to);
+			}
+			
+			if (state->EOF_transition_to)
+			{
+				struct lex_state* to = state->EOF_transition_to;
+				
+				if (ptrset_add(freed, to))
+					quack_append(todo, to);
+			}
+			
+			free(state);
 		}
 		
-		if (state->EOF_transition_to)
-		{
-			struct lex_state* to = state->EOF_transition_to;
-			
-			if (ptrset_add(freed, to))
-				quack_append(todo, to);
-		}
-		
-		free(state);
+		free_quack(todo);
 	}
-	
-	free_quack(todo);
 	
 	EXIT;
 }

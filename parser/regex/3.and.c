@@ -73,6 +73,7 @@ struct rbundle read_and_token_expression(
 		
 		struct regex* outgoing = regex_simplify_dfa(intersected);
 		
+		free_regex(left_machine), free_regex(right_machine);
 		free_regex(intersected);
 		
 		left = (struct rbundle) {outgoing, NULL};

@@ -6,6 +6,7 @@
 
 #include <string/struct.h>
 #include <string/new.h>
+#include <string/free.h>
 
 #include <named/gegex/new.h>
 
@@ -36,7 +37,11 @@ void scope_declare_grammar(
 		
 		dpvs(full);
 		
-		avl_insert(this->grammar, new_named_gegex(new_string_without_copy(full), grammar));
+		struct string* full_name = new_string_without_copy(full);
+		
+		avl_insert(this->grammar, new_named_gegex(full_name, grammar));
+		
+		free_string(full_name);
 	}
 	else
 	{
