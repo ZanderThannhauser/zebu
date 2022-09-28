@@ -7,5 +7,5 @@ bin/test-build/no-verbose/yes-dotout/./regex/complement.o: \
  avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h quack/new.h quack/append.h \
- quack/len.h quack/pop.h quack/free.h regex/struct.h regex/new.h \
- regex/dotout.h regex/complement.h
+ quack/is_nonempty.h quack/len.h quack/pop.h quack/free.h regex/struct.h \
+ regex/new.h regex/dotout.h regex/complement.h

@@ -6,6 +6,7 @@
 
 #include <quack/new.h>
 #include <quack/append.h>
+#include <quack/is_nonempty.h>
 #include <quack/len.h>
 #include <quack/pop.h>
 #include <quack/free.h>
@@ -30,7 +31,7 @@ void regex_complement(struct regex* start)
 	
 	struct regex* phi = NULL;
 	
-	while (quack_len(todo))
+	while (quack_is_nonempty(todo))
 	{
 		struct regex* const state = quack_pop(todo);
 		
