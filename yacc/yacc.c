@@ -124,11 +124,15 @@ static int compare_mappings(const void* a, const void* b)
 
 static void free_mapping(void* ptr)
 {
+	ENTER;
+	
 	struct mapping* this = ptr;
 	
 	free_stateinfo(this->stateinfo);
 	
 	free(this);
+	
+	EXIT;
 }
 
 struct shift_node
