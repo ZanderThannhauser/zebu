@@ -13,6 +13,8 @@
 #include <string/compare.h>
 #include <string/free.h>
 
+#include <misc/format_flags/free.h>
+
 #include "node.h"
 #include "struct.h"
 #include "new.h"
@@ -40,6 +42,14 @@ static void free_node(void* ptr)
 			case snt_grammar_scalar:
 			case snt_grammar_array:
 				free_string(node->grammar.name);
+				break;
+			
+			case snt_scanf_scalar:
+				free_format_flags(node->scanf.fflags);
+				break;
+			
+			case snt_scanf_array:
+				TODO;
 				break;
 			
 			case snt_user_defined:
