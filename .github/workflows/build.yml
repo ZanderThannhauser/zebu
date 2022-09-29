@@ -175,11 +175,11 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate Example
-      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vm -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
     - name: Generate Just Tables
-      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
     - name: Generate Really Just Tables
-      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t really-just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t really-just-tables -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
 
   iloc1-test-fileio-with-driver:
     runs-on: ubuntu-latest
