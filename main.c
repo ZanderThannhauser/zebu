@@ -34,6 +34,7 @@
 #ifdef VERBOSE
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #endif
 
 #ifdef DOTOUT
@@ -82,6 +83,22 @@ int main(int argc, char* argv[])
 	struct yacc_state* parser = yacc(lex, grammar, extra_fields);
 	
 	out(parser);
+	
+	#ifdef VERBOSE
+	void handler(int _)
+	{
+		char ptr[100] = {};
+		
+		size_t len = snprintf(ptr, 100, "\e[K" "zebu: freeing data structures ...\r");
+		
+		if (write(1, ptr, len) != len)
+		{
+			abort();
+		}
+	}
+	
+	signal(SIGALRM, handler);
+	#endif
 	
 	free_yacc_state(parser);
 	
