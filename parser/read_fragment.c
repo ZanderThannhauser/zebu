@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -25,6 +26,7 @@
 #include "scope/declare/fragment.h"
 
 #include "tokenizer/struct.h"
+#include "tokenizer/token_names.h"
 #include "tokenizer/read_token.h"
 
 #include "regex/root.h"
@@ -42,8 +44,12 @@ void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 	
 	if (tokenizer->token != t_identifier)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_identifier]);
+		exit(e_syntax_error);
 	}
 	
 	dpvs(tokenizer->tokenchars.chars);
@@ -54,16 +60,24 @@ void read_fragment(struct tokenizer* tokenizer, struct scope* scope)
 	
 	if (tokenizer->token != t_gravemark)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_gravemark]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
 	
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);

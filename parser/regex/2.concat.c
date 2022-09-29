@@ -57,10 +57,23 @@ struct rbundle read_concat_token_expression(
 		case t_vbar:
 		case t_semicolon:
 		case t_colon:
-			break;
-		
-		default:
-			TODO;
+		case t_EOF:
+		case t_error:
+		case t_plus:
+		case t_comma:
+		case t_minus:
+		case t_emark:
+		case t_qmark:
+		case t_caret:
+		case t_percent:
+		case t_asterisk:
+		case t_csquare:
+		case t_ocurly:
+		case t_ccurly:
+		case t_absolute_path:
+		case t_array_hashtag:
+		case t_scalar_hashtag:
+		case number_of_tokens:
 			break;
 	}
 	

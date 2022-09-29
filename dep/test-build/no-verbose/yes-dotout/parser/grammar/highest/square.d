@@ -10,7 +10,8 @@ bin/test-build/no-verbose/yes-dotout/./parser/grammar/highest/square.o: \
  set/unsigned/add.h set/unsigned/free.h parser/charset/root.h \
  parser/charset/charset.h parser/tokenizer/struct.h \
  parser/tokenizer/token.h parser/tokenizer/read_token.h \
- yacc/structinfo/new.h yacc/structinfo/add_token_scalar_field.h \
+ parser/tokenizer/token_names.h yacc/structinfo/new.h \
+ yacc/structinfo/add_token_scalar_field.h \
  yacc/structinfo/add_token_array_field.h yacc/structinfo/free.h \
  regex/from_charset.h parser/charset/charset.h regex/dfa_to_nfa.h \
  regex/rbundle.h regex/nfa_to_dfa.h regex/simplify_dfa.h regex/clone.h \

@@ -8,6 +8,6 @@ bin/test-build/no-verbose/yes-dotout/./parser/read_charset.o: \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h parser/charset/root.h \
  parser/charset/charset.h parser/tokenizer/struct.h \
- parser/tokenizer/token.h parser/tokenizer/read_token.h \
- parser/scope/declare/charset.h parser/charset/charset.h \
- parser/read_charset.h
+ parser/tokenizer/token.h parser/tokenizer/token_names.h \
+ parser/tokenizer/read_token.h parser/scope/declare/charset.h \
+ parser/charset/charset.h parser/read_charset.h

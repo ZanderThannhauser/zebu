@@ -7,6 +7,6 @@ bin/debug-build/no-verbose/yes-dotout/./parser/regex/highest/parenthesis.o: \
  avl/delete.h avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h parser/tokenizer/struct.h \
- parser/tokenizer/token.h parser/tokenizer/read_token.h \
- parser/regex/highest/../root.h regex/rbundle.h \
- parser/regex/highest/parenthesis.h
+ parser/tokenizer/token.h parser/tokenizer/token_names.h \
+ parser/tokenizer/read_token.h parser/regex/highest/../root.h \
+ regex/rbundle.h parser/regex/highest/parenthesis.h

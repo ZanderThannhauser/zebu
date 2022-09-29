@@ -114,8 +114,12 @@ charset_t read_highest_charset(
 			
 			if (tokenizer->token != t_cparen)
 			{
-				TODO;
-				exit(1);
+				fprintf(stderr, "zebu: encountered syntax error on line %u: "
+					"unexpected '%s', expecting '%s'!\n",
+					tokenizer->line,
+					token_names[tokenizer->token],
+					token_names[t_cparen]);
+				exit(e_syntax_error);
 			}
 			
 			break;

@@ -1,10 +1,14 @@
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 
 #include <debug.h>
 
+#include <enums/error.h>
+
 #include <parser/tokenizer/struct.h>
+#include <parser/tokenizer/token_names.h>
 #include <parser/tokenizer/read_token.h>
 
 #include "../root.h"
@@ -25,8 +29,12 @@ struct rbundle read_parenthesis_token_expression(
 	
 	if (tokenizer->token != t_cparen)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_cparen]);
+		exit(e_syntax_error);
 	}
 	
 	EXIT;

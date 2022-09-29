@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -25,6 +26,7 @@
 #include "scope/declare/inline_grammar.h"
 
 #include "tokenizer/struct.h"
+#include "tokenizer/token_names.h"
 #include "tokenizer/read_token.h"
 
 /*#include "scope/get_arena.h"*/
@@ -44,8 +46,12 @@ void read_inline_grammar(
 	
 	if (tokenizer->token != t_identifier)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_identifier]);
+		exit(e_syntax_error);
 	}
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
@@ -54,16 +60,24 @@ void read_inline_grammar(
 	
 	if (tokenizer->token != t_cparen)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_cparen]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
 	
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
@@ -75,14 +89,6 @@ void read_inline_grammar(
 	struct gegex* simp = gegex_simplify_dfa(dfa);
 	
 	scope_declare_inline_grammar(scope, name, simp);
-	
-	if (true
-		&& tokenizer->token != t_semicolon
-		&& tokenizer->token != t_colon)
-	{
-		TODO;
-		exit(e_syntax_error);
-	}
 	
 	free_gegex(nfa.start);
 	

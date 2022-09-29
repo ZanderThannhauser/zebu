@@ -38,8 +38,9 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_colon)
 	{
-		fprintf(stderr, "zebu: encountered syntax error when reading "
-			"%%extra_field directive: unexpected '%s', expecting '%s'!\n",
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
 			token_names[tokenizer->token],
 			token_names[t_colon]);
 		
@@ -50,8 +51,12 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_identifier)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_identifier]);
+		exit(e_syntax_error);
 	}
 	
 	struct string* grammar = new_string_from_tokenchars(tokenizer);
@@ -60,16 +65,24 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_comma)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_comma]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
 	
 	if (tokenizer->token != t_string_literal)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_string_literal]);
+		exit(e_syntax_error);
 	}
 	
 	struct string* type = new_string_from_tokenchars(tokenizer);
@@ -78,16 +91,24 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_comma)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_comma]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
 	
 	if (tokenizer->token != t_identifier)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_identifier]);
+		exit(e_syntax_error);
 	}
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
@@ -102,8 +123,12 @@ void read_extra_field_directive(
 		
 		if (tokenizer->token != t_identifier)
 		{
-			TODO;
-			exit(1);
+			fprintf(stderr, "zebu: encountered syntax error on line %u: "
+				"unexpected '%s', expecting '%s'!\n",
+				tokenizer->line,
+				token_names[tokenizer->token],
+				token_names[t_identifier]);
+			exit(e_syntax_error);
 		}
 		
 		destructor = new_string_from_tokenchars(tokenizer);
@@ -112,16 +137,24 @@ void read_extra_field_directive(
 		
 		if (tokenizer->token != t_oparen)
 		{
-			TODO;
-			exit(1);
+			fprintf(stderr, "zebu: encountered syntax error on line %u: "
+				"unexpected '%s', expecting '%s'!\n",
+				tokenizer->line,
+				token_names[tokenizer->token],
+				token_names[t_oparen]);
+			exit(e_syntax_error);
 		}
 		
 		read_token(tokenizer);
 		
 		if (tokenizer->token != t_cparen)
 		{
-			TODO;
-			exit(1);
+			fprintf(stderr, "zebu: encountered syntax error on line %u: "
+				"unexpected '%s', expecting '%s'!\n",
+				tokenizer->line,
+				token_names[tokenizer->token],
+				token_names[t_cparen]);
+			exit(e_syntax_error);
 		}
 		
 		read_token(tokenizer);
@@ -157,9 +190,15 @@ void read_extra_field_directive(
 	
 	if (tokenizer->token != t_semicolon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_semicolon]);
+		exit(e_syntax_error);
 	}
+	
+	read_token(tokenizer);
 	
 	free_string(grammar);
 	free_string(type);

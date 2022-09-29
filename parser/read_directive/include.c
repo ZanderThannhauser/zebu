@@ -51,6 +51,8 @@ void read_include_directive(
 	
 	dpvs(path);
 	
+	read_token(tokenizer);
+	
 	struct br_rettype br = break_and_open_path(dirfd, path);
 	
 	recursive_parse(

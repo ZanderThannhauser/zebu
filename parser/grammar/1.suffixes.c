@@ -16,6 +16,7 @@
 #include <gegex/free.h>
 
 #include "../tokenizer/struct.h"
+#include "../tokenizer/token_names.h"
 #include "../tokenizer/read_token.h"
 
 #include "0.highest.h"
@@ -131,17 +132,15 @@ struct gbundle read_suffixes_production(
 			
 			if (tokenizer->token != t_ccurly)
 			{
-				TODO;
-				exit(1);
+				fprintf(stderr, "zebu: encountered syntax error on line %u: "
+					"unexpected '%s', expecting '%s'!\n",
+					tokenizer->line,
+					token_names[tokenizer->token],
+					token_names[t_ccurly]);
+				exit(e_syntax_error);
 			}
 			
 			read_token(tokenizer);
-			
-			if (!min.has && !max.has)
-			{
-				TODO;
-				exit(1);
-			}
 			
 			if (min.has) { dpv(min.value); }
 			if (max.has) { dpv(max.value); }

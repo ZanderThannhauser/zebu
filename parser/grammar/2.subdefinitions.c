@@ -1,9 +1,14 @@
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 #include <debug.h>
 
+#include <enums/error.h>
+
 #include "../tokenizer/struct.h"
+#include "../tokenizer/token_names.h"
 #include "../tokenizer/read_token.h"
 
 /*#include "../options/struct.h"*/
@@ -56,6 +61,17 @@ struct gbundle read_subdefinitions_production(
 				default:
 					TODO;
 					break;
+			}
+			
+			if (tokenizer->token != t_semicolon && tokenizer->token != t_colon)
+			{
+				fprintf(stderr, "zebu: encountered syntax error on line %u: "
+					"unexpected '%s', expecting either '%s' or '%s'!\n",
+					tokenizer->line,
+					token_names[tokenizer->token],
+					token_names[t_semicolon],
+					token_names[t_colon]);
+				exit(e_syntax_error);
 			}
 			
 			if (tokenizer->token == t_semicolon)

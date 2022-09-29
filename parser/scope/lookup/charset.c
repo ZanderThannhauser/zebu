@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -7,6 +8,8 @@
 #include <avl/search.h>
 
 #include <named/charset/struct.h>
+
+#include <enums/error.h>
 
 #include "../struct.h"
 
@@ -40,8 +43,8 @@ charset_t scope_lookup_charset(
 	
 	if (!layer)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: reference to undefined character-set '%s'!\n", name);
+		exit(e_syntax_error);
 	}
 	
 	struct named_charset* ncs = node->item;

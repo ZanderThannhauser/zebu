@@ -453,7 +453,7 @@ enum token read_token(struct tokenizer* this)
 			fprintf(stderr, "zebu: on line %u: "
 				"internal error in tokenizer.\n", this->line);
 			
-			exit(1);
+			exit(e_syntax_error);
 			break;
 		}
 	}

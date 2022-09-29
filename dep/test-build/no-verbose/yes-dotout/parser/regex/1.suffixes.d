@@ -10,4 +10,5 @@ bin/test-build/no-verbose/yes-dotout/./parser/regex/1.suffixes.o: \
  regex/dotout.h regex/clone.h regex/new.h regex/free.h \
  regex/add_lambda_transition.h parser/regex/../tokenizer/struct.h \
  parser/regex/../tokenizer/token.h parser/regex/../tokenizer/read_token.h \
- parser/regex/0.highest.h regex/rbundle.h parser/regex/1.suffixes.h
+ parser/regex/../tokenizer/token_names.h parser/regex/0.highest.h \
+ regex/rbundle.h parser/regex/1.suffixes.h

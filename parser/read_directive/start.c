@@ -61,7 +61,20 @@ void read_start_directive(
 	
 	scope_declare_grammar(scope, name, simp);
 	
+	if (tokenizer->token != t_semicolon)
+	{
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_semicolon]);
+		exit(e_syntax_error);
+	}
+	
+	read_token(tokenizer);
+	
 	free_gegex(nfa.start), free_gegex(dfa);
+	
 	free_string(name);
 	
 	EXIT;

@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 
@@ -9,6 +10,8 @@
 #include <named/regex/struct.h>
 
 #include <string/struct.h>
+
+#include <enums/error.h>
 
 #include "../struct.h"
 
@@ -40,8 +43,8 @@ struct regex* scope_lookup_fragment(
 	
 	if (!layer)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: reference to undefined regular-expression '%s'!\n", name);
+		exit(e_syntax_error);
 	}
 	
 	struct named_regex* ntoken = node->item;

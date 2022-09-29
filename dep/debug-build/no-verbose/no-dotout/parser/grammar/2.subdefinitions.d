@@ -8,6 +8,7 @@ bin/debug-build/no-verbose/no-dotout/./parser/grammar/2.subdefinitions.o: \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
  set/ptr/is_nonempty.h set/ptr/free.h \
  parser/grammar/../tokenizer/struct.h parser/grammar/../tokenizer/token.h \
+ parser/grammar/../tokenizer/token_names.h \
  parser/grammar/../tokenizer/read_token.h parser/grammar/../scope/push.h \
  parser/grammar/../scope/pop.h parser/grammar/../read_charset.h \
  parser/grammar/../read_fragment.h \

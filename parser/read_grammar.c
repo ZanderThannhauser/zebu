@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -22,6 +23,7 @@
 
 #include "tokenizer/struct.h"
 #include "tokenizer/read_token.h"
+#include "tokenizer/token_names.h"
 
 #include "read_grammar.h"
 
@@ -42,8 +44,12 @@ void read_grammar(
 	
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
@@ -58,14 +64,6 @@ void read_grammar(
 	struct gegex* simp = gegex_simplify_dfa(dfa);
 	
 	scope_declare_grammar(scope, name, simp);
-	
-	if (true
-		&& tokenizer->token != t_semicolon
-		&& tokenizer->token != t_colon)
-	{
-		TODO;
-		exit(e_syntax_error);
-	}
 	
 	free_gegex(nfa.start);
 	

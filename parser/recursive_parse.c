@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -7,11 +9,13 @@
 #include <debug.h>
 
 /*#include <misc/sopenat.h>*/
+#include <enums/error.h>
 
 #include "tokenizer/struct.h"
 #include "tokenizer/new.h"
 #include "tokenizer/read_char.h"
 #include "tokenizer/read_token.h"
+#include "tokenizer/token_names.h"
 #include "tokenizer/free.h"
 
 #include "pragma_once/lookup.h"
@@ -63,28 +67,82 @@ void recursive_parse(
 					break;
 				
 				case t_osquare:
+				{
 					read_charset(tokenizer, scope);
+					
+					if (tokenizer->token != t_semicolon)
+					{
+						fprintf(stderr, "zebu: encountered syntax error on line %u: "
+							"unexpected '%s', expecting '%s'!\n",
+							tokenizer->line,
+							token_names[tokenizer->token],
+							token_names[t_semicolon]);
+						exit(e_syntax_error);
+					}
+					
+					read_token(tokenizer);
 					break;
+				}
 				
 				case t_gravemark:
+				{
 					read_fragment(tokenizer, scope);
+					
+					if (tokenizer->token != t_semicolon)
+					{
+						fprintf(stderr, "zebu: encountered syntax error on line %u: "
+							"unexpected '%s', expecting '%s'!\n",
+							tokenizer->line,
+							token_names[tokenizer->token],
+							token_names[t_semicolon]);
+						exit(e_syntax_error);
+					}
+					
+					read_token(tokenizer);
 					break;
+				}
 				
 				case t_oparen:
+				{
 					read_inline_grammar(tokenizer, scope, lex);
+					
+					if (tokenizer->token != t_semicolon)
+					{
+						fprintf(stderr, "zebu: encountered syntax error on line %u: "
+							"unexpected '%s', expecting '%s'!\n",
+							tokenizer->line,
+							token_names[tokenizer->token],
+							token_names[t_semicolon]);
+						exit(e_syntax_error);
+					}
+					
+					read_token(tokenizer);
 					break;
+				}
 				
 				case t_identifier:
+				{
 					read_grammar(tokenizer, scope, lex);
+					
+					if (tokenizer->token != t_semicolon)
+					{
+						fprintf(stderr, "zebu: encountered syntax error on line %u: "
+							"unexpected '%s', expecting '%s'!\n",
+							tokenizer->line,
+							token_names[tokenizer->token],
+							token_names[t_semicolon]);
+						exit(e_syntax_error);
+					}
+					
+					read_token(tokenizer);
 					break;
+				}
 				
 				default:
 					dpv(tokenizer->token);
 					TODO;
 					break;
 			}
-			
-			read_token(tokenizer);
 		}
 		
 		free_tokenizer(tokenizer);

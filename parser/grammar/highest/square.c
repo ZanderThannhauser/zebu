@@ -1,8 +1,11 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <string/new.h>
 #include <string/free.h>
@@ -15,6 +18,7 @@
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
+#include <parser/tokenizer/token_names.h>
 
 #include <yacc/structinfo/new.h>
 #include <yacc/structinfo/add_token_scalar_field.h>
@@ -55,8 +59,12 @@ struct gbundle read_square_production(
 	
 	if (tokenizer->token != t_csquare)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_csquare]);
+		exit(e_syntax_error);
 	}
 	
 	struct regex* regex = regex_from_charset(charset);

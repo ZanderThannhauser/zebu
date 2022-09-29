@@ -1,4 +1,5 @@
 
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <stdbool.h>
@@ -14,6 +15,7 @@
 #include "charset/root.h"
 
 #include "tokenizer/struct.h"
+#include "tokenizer/token_names.h"
 #include "tokenizer/read_token.h"
 
 #include "scope/declare/charset.h"
@@ -32,8 +34,12 @@ void read_charset(
 	
 	if (tokenizer->token != t_identifier)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_identifier]);
+		exit(e_syntax_error);
 	}
 	
 	struct string* name = new_string_from_tokenchars(tokenizer);
@@ -42,16 +48,24 @@ void read_charset(
 	
 	if (tokenizer->token != t_csquare)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_csquare]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
 		
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
@@ -59,14 +73,6 @@ void read_charset(
 	charset_t charset = read_root_charset(tokenizer, scope);
 	
 	scope_declare_charset(scope, name, charset);
-	
-	if (true
-		&& tokenizer->token != t_semicolon
-		&& tokenizer->token != t_colon)
-	{
-		TODO;
-		exit(e_syntax_error);
-	}
 	
 	free_string(name);
 	

@@ -49,15 +49,9 @@ struct gbundle read_concat_production(
 		case t_semicolon:
 		case t_cparen:
 		case t_colon:
-			break;
-		
+		case t_EOF:
 		default:
-		{
-			dpv(tokenizer->token);
-			dpvs(token_names[tokenizer->token]);
-			TODO;
 			break;
-		}
 	}
 	
 	EXIT;

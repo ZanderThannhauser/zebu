@@ -1,9 +1,12 @@
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <stddef.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
 
 #include <regex/dfa_to_nfa.h>
 #include <regex/add_lambda_transition.h>
@@ -16,6 +19,7 @@
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
+#include <parser/tokenizer/token_names.h>
 
 #include <lex/struct.h>
 #include <lex/add_token.h>
@@ -35,8 +39,12 @@ void read_skip_directive(
 	
 	if (tokenizer->token != t_colon)
 	{
-		TODO;
-		exit(1);
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_colon]);
+		exit(e_syntax_error);
 	}
 	
 	read_token(tokenizer);
@@ -57,6 +65,18 @@ void read_skip_directive(
 	dpv(token_id);
 	
 	lex->whitespace_token_id = token_id;
+	
+	if (tokenizer->token != t_semicolon)
+	{
+		fprintf(stderr, "zebu: encountered syntax error on line %u: "
+			"unexpected '%s', expecting '%s'!\n",
+			tokenizer->line,
+			token_names[tokenizer->token],
+			token_names[t_semicolon]);
+		exit(e_syntax_error);
+	}
+	
+	read_token(tokenizer);
 	
 	free_regex(regex.start), free_regex(dfa);
 	
