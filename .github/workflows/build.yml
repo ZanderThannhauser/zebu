@@ -192,7 +192,7 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate Iloc Example
-      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1"
+      run: make buildtype=test dotout=no verbose=no run ARGS="-vm -t fileio-with-driver -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1"
 
     - name: Compile Iloc Example (-D ZEBU_DEBUG)
       run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/iloc/iloc1.c -o /tmp/test
