@@ -30,6 +30,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate JSON Example
       run: make buildtype=debug dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/json/json.zb -o ./-examples/json/json"
 
@@ -56,6 +59,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/json/json.zb -o /tmp/unused"
     - name: Generate Just Tables
@@ -120,6 +126,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/calc/parser.zb -o /tmp/unused"
 
@@ -162,6 +171,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/iloc/iloc1.zb -o /tmp/unused"
     - name: Generate Just Tables
@@ -201,6 +213,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/iloc/iloc2.zb -o /tmp/unused"
     - name: Generate Just Tables
@@ -242,6 +257,9 @@ jobs:
 #    steps:
 #    - uses: actions/checkout@v3
 #    
+#    - name: Install Dependences
+#      run: sudo apt install -y valgrind
+
 #    - name: Generate Example
 #      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/iloc/iloc3.zb -o /tmp/unused"
 #    - name: Generate Just Tables
@@ -281,6 +299,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/lisp/parser.zb -o /tmp/unused"
     - name: Generate Just Tables
@@ -311,6 +332,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
     - name: Generate Example
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -i ./-examples/zebu/zebu.zb -o /tmp/unused"
     - name: Generate Just Tables
