@@ -372,7 +372,11 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 			}
 			else if (b == 1)
 			{
-				assert(!"363: whitespace");
+				ddprintf(this, "lexer: whitespace: \"%.*s\"\n", i, this->l.data);
+				
+				memmove(this->l.data, this->l.data + i, this->l.n - i), this->l.n -= i;
+				
+				l = bl, t = 0, i = 0;
 			}
 			else
 			{
@@ -391,8 +395,9 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 				l = {{PREFIX}}_lexer_starts[this->y.data[this->y.n - 1]], f = 0, t = 0, i = 0;
 			}
 		}
-		else if (t)
+		else if (f)
 		{
+			assert(t);
 			assert(!"256");
 			#if 0
 			process_token(this, t);
