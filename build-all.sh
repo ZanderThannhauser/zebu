@@ -1,13 +1,19 @@
 set -ev
-make buildtype=debug   dotout=no  verbose=no  -j8
-make buildtype=debug   dotout=no  verbose=yes -j8
-make buildtype=debug   dotout=yes verbose=no  -j8
-make buildtype=debug   dotout=yes verbose=yes -j8
-make buildtype=test    dotout=no  verbose=no  -j8
-make buildtype=test    dotout=no  verbose=yes -j8
-make buildtype=test    dotout=yes verbose=no  -j8
-make buildtype=test    dotout=yes verbose=yes -j8
-make buildtype=release dotout=no  verbose=no  -j8
-make buildtype=release dotout=no  verbose=yes -j8
-make buildtype=release dotout=yes verbose=no  -j8
-make buildtype=release dotout=yes verbose=yes -j8
+make platform=linux   buildtype=debug   dotout=no  verbose=no  -j8
+make platform=linux   buildtype=debug   dotout=no  verbose=yes -j8
+make platform=linux   buildtype=debug   dotout=yes verbose=no  -j8
+make platform=linux   buildtype=debug   dotout=yes verbose=yes -j8
+make platform=linux   buildtype=test    dotout=no  verbose=no  -j8
+make platform=linux   buildtype=test    dotout=no  verbose=yes -j8
+make platform=linux   buildtype=test    dotout=yes verbose=no  -j8
+make platform=linux   buildtype=test    dotout=yes verbose=yes -j8
+make platform=linux   buildtype=release dotout=no  verbose=no  -j8
+make platform=linux   buildtype=release dotout=no  verbose=yes -j8
+make platform=linux   buildtype=release dotout=yes verbose=no  -j8
+make platform=linux   buildtype=release dotout=yes verbose=yes -j8
+make platform=windows buildtype=debug   dotout=no  verbose=no  -j8
+make platform=windows buildtype=debug   dotout=yes verbose=no  -j8
+make platform=windows buildtype=test    dotout=no  verbose=no  -j8
+make platform=windows buildtype=test    dotout=yes verbose=no  -j8
+make platform=windows buildtype=release dotout=no  verbose=no  -j8
+make platform=windows buildtype=release dotout=yes verbose=no  -j8

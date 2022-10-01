@@ -1,0 +1,2 @@
+bin/windows-platform/test-build/no-verbose/no-dotout/./named/regexset/compare.o: \
+ named/regexset/compare.c

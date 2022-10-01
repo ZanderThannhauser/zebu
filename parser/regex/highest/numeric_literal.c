@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -20,8 +21,6 @@ struct rbundle read_numeric_literal_token_expression(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	int base;
 	switch (tokenizer->token)
 	{
@@ -39,7 +38,7 @@ struct rbundle read_numeric_literal_token_expression(
 	
 	if (errno)
 	{
-		fprintf(stderr, "zebu: error when reading regular-expression: strtoul('%s'): %m\n", tokenizer_start);
+		fprintf(stderr, "zebu: error when reading regular-expression: strtoul('%s'): %s\n", tokenizer_start, strerror(errno));
 		exit(e_syntax_error);
 	}
 	else if (value >= 256)
@@ -57,11 +56,7 @@ struct rbundle read_numeric_literal_token_expression(
 	#endif
 	
 	EXIT;
-	return (struct rbundle) {
-		.is_nfa = false,
-		.dfa = dfa,
-	};
-	#endif
+	return (struct rbundle) {dfa, NULL};
 }
 
 

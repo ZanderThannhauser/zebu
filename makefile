@@ -1,10 +1,23 @@
 
-CC = gcc
-
 CPPFLAGS += -D _GNU_SOURCE
 CPPFLAGS += -I .
 
 CFLAGS += -Wall -Werror -Wfatal-errors
+
+platform ?= linux
+
+ifeq ($(platform), linux)
+CC = gcc
+CPPFLAGS += -D LINUX_PLATFORM
+else ifeq ($(platform), windows)
+CC = x86_64-w64-mingw32-gcc
+CPPFLAGS += -D WINDOWS_PLATFORM
+CPPFLAGS += -D __USE_MINGW_ANSI_STDIO=1
+verbose ?= no
+EXE = .exe
+else
+$(error "invalid platform!");
+endif
 
 buildtype ?= release
 
@@ -63,10 +76,10 @@ else
 $(error "invalid on_error option!");
 endif
 
-buildprefix = bin/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
-depprefix   = dep/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
+buildprefix = bin/$(platform)-platform/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
+depprefix   = dep/$(platform)-platform/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 
-default: $(buildprefix)/zebu
+default: $(buildprefix)/zebu$(EXE)
 
 #ARGS += -v
 ARGS += --verbose
@@ -88,8 +101,8 @@ ARGS += --template=readline-with-driver
 #ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -116,19 +129,22 @@ ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu
 
-run: $(buildprefix)/zebu
+run: $(buildprefix)/zebu$(EXE)
 	$< $(ARGS)
 
-valrun: $(buildprefix)/zebu
+winerun: $(buildprefix)/zebu$(EXE)
+	wine $< $(ARGS)
+
+valrun: $(buildprefix)/zebu$(EXE)
 	valgrind $< $(ARGS)
 
-valrun-stop: $(buildprefix)/zebu
+valrun-stop: $(buildprefix)/zebu$(EXE)
 	valgrind --gen-suppressions=yes -- $< ${ARGS}
 
-valrun-leak: $(buildprefix)/zebu
+valrun-leak: $(buildprefix)/zebu$(EXE)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -- $< ${ARGS}
 
-tracerun: $(buildprefix)/zebu
+tracerun: $(buildprefix)/zebu$(EXE)
 	strace $< $(ARGS)
 
 PREFIX ?= ~/bin
@@ -172,7 +188,7 @@ $(buildprefix)/%.o $(depprefix)/%.d: %.c | $(buildprefix)/%/ $(depprefix)/%/
 	@ echo "compiling $<"
 	@ $(CC) -c $(CPPFLAGS) $(CFLAGS) $< -MMD -o $(buildprefix)/$*.o -MF $(depprefix)/$*.d $(ON_ERROR)
 
-$(buildprefix)/zebu: $(objs)
+$(buildprefix)/zebu$(EXE): $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 

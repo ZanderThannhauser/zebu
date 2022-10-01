@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -10,3 +11,4 @@ int compare_named_regexsets(const void* a, const void* b)
 	TODO;
 }
 
+#endif

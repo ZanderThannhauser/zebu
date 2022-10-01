@@ -65,7 +65,13 @@ int main(int argc, char* argv[])
 	#endif
 	
 	#ifdef DOTOUT
+	#ifdef LINUX_PLATFORM
 	if (mkdir("dot", 0775) < 0 && errno != EEXIST)
+	#else
+	#ifdef WINDOWS_PLATFORM
+	if (mkdir("dot") < 0 && errno != EEXIST)
+	#endif
+	#endif
 	{
 		fprintf(stderr, "zebu: mkdir(\"dot\"): %m\n");
 		exit(e_syscall_failed);

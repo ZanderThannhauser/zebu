@@ -4,7 +4,6 @@
 	#include <sys/stat.h>
 	#include <sys/param.h>
 	#include <sys/types.h>
-	#include <sys/mman.h>
 	
 	#include <semaphore.h>
 	#include <assert.h>
@@ -22,9 +21,14 @@
 	#include <inttypes.h>
 	#include <stdarg.h>
 	#include <limits.h>
-	#include <pwd.h>
 	#include <time.h>
-	#include <pwd.h>
+	
+	#ifdef WINDOWS_PLATFORM
+	#include <compat/rindex.h>
+	#include <compat/strndup.h>
+	#include <compat/stpncpy.h>
+	#include <compat/stpcpy.h>
+	#endif
 	
 	struct lex;
 	struct regex;
@@ -97,53 +101,63 @@
 	
 	extern void real_dpvwsn(const char* e, const wchar_t* s, size_t n);
 	
-	#define TODO \
-	{\
-		assert(debug_depth >= 0); \
-		printf("%*s""TODO: File: %s: Line: %i\n", debug_depth, "", \
-			__FILE__, __LINE__);\
-		fflush(stdout); \
-		char buffer[100];\
-		sprintf(buffer, "+%i", __LINE__);\
-		if (!fork()) \
-			execlp("gedit", "gedit", __FILE__, buffer, NULL);\
-		assert(!"TODO"); \
-	}
+	#ifdef LINUX_PLATFORM
 	
-	#define CHECK \
-	{\
-		assert(debug_depth >= 0); \
-		printf("%*s""CHECK: File: %s: Line: %i\n", debug_depth, "", \
-			__FILE__, __LINE__);\
-		fflush(stdout); \
-		char buffer[100];\
-		sprintf(buffer, "+%i", __LINE__);\
-		if (!fork()) \
-			execlp("gedit", "gedit", __FILE__, buffer, NULL);\
-		assert(!"CHECK"); \
-	}
-	
-	#define NOPE \
-	{\
-		assert(debug_depth >= 0); \
-		printf("%*s""NOPE: File: %s: Line: %i\n", debug_depth, "", \
-			__FILE__, __LINE__);\
-		fflush(stdout); \
-		char buffer[100];\
-		sprintf(buffer, "+%i", __LINE__);\
-		if (!fork()) \
-			execlp("gedit", "gedit", __FILE__, buffer, NULL);\
-		assert(!"NOPE"); \
-	}
-	
-	#define CHECK_NTH(n) \
-	{ \
-		static unsigned counter = 1; \
-		if (counter++ == n) \
+		#define TODO \
+		{\
+			assert(debug_depth >= 0); \
+			printf("%*s""TODO: File: %s: Line: %i\n", debug_depth, "", \
+				__FILE__, __LINE__);\
+			fflush(stdout); \
+			char buffer[100];\
+			sprintf(buffer, "+%i", __LINE__);\
+			if (!fork()) \
+				execlp("gedit", "gedit", __FILE__, buffer, NULL);\
+			assert(!"TODO"); \
+		}
+		
+		#define CHECK \
+		{\
+			assert(debug_depth >= 0); \
+			printf("%*s""CHECK: File: %s: Line: %i\n", debug_depth, "", \
+				__FILE__, __LINE__);\
+			fflush(stdout); \
+			char buffer[100];\
+			sprintf(buffer, "+%i", __LINE__);\
+			if (!fork()) \
+				execlp("gedit", "gedit", __FILE__, buffer, NULL);\
+			assert(!"CHECK"); \
+		}
+		
+		#define NOPE \
+		{\
+			assert(debug_depth >= 0); \
+			printf("%*s""NOPE: File: %s: Line: %i\n", debug_depth, "", \
+				__FILE__, __LINE__);\
+			fflush(stdout); \
+			char buffer[100];\
+			sprintf(buffer, "+%i", __LINE__);\
+			if (!fork()) \
+				execlp("gedit", "gedit", __FILE__, buffer, NULL);\
+			assert(!"NOPE"); \
+		}
+		
+		#define CHECK_NTH(n) \
 		{ \
-			CHECK; \
+			static unsigned counter = 1; \
+			if (counter++ == n) { \
+				CHECK; \
+			} \
 		} \
-	} \
+		
+	#else
+	
+		#define TODO assert(!"TODO");
+		#define CHECK assert(!"CHECK");
+		#define NOPE assert(!"NOPE");
+		
+	#endif
+	
 	
 	#define HERE \
 		printf("%*sHERE: File: %s: Line: %i\n", debug_depth, "", __FILE__, __LINE__);
@@ -237,6 +251,8 @@
 			unsigned int:   "%*s" "%s" " == " "(unsigned int) 0%o\n", \
 			signed long:    "%*s" "%s" " == " "(signed long) 0%lo\n", \
 			unsigned long:  "%*s" "%s" " == " "(unsigned long) 0%lo\n", \
+			signed long long:    "%*s" "%s" " == " "(signed long) 0%llo\n", \
+			unsigned long long:  "%*s" "%s" " == " "(unsigned long) 0%llo\n", \
 			float:          "%*s" "%s" " == " "(float) %#a\n", \
 			double:         "%*s" "%s" " == " "(double) %#la\n", \
 			long double:    "%*s" "%s" " == " "(long double) %#La\n", \
@@ -255,6 +271,8 @@
 			unsigned int:   "%*s" "%s" " == " "(unsigned int) 0x%X\n", \
 			signed long:    "%*s" "%s" " == " "(signed long) 0x%lX\n", \
 			unsigned long:  "%*s" "%s" " == " "(unsigned long) 0x%lX\n", \
+			signed long long:    "%*s" "%s" " == " "(signed long) 0x%llX\n", \
+			unsigned long long:  "%*s" "%s" " == " "(unsigned long) 0x%llX\n", \
 			float:          "%*s" "%s" " == " "(float) %#a\n", \
 			double:         "%*s" "%s" " == " "(double) %#la\n", \
 			long double:    "%*s" "%s" " == " "(long double) %#La\n", \
@@ -273,7 +291,8 @@
 			unsigned int:   "%*s" "%s" " == " "(unsigned int) %u\n", \
 			signed long:    "%*s" "%s" " == " "(signed long) %li\n", \
 			unsigned long:  "%*s" "%s" " == " "(unsigned long) %lu\n", \
-			long long:      "%*s" "%s" " == " "(signed long long) %llu\n", \
+			signed long long:      "%*s" "%s" " == " "(signed long long) %llu\n", \
+			unsigned long long:  "%*s" "%s" " == " "(unsigned long) %llu\n", \
 			float:          "%*s" "%s" " == " "(float) %f\n", \
 			double:         "%*s" "%s" " == " "(double) %lf\n", \
 			long double:    "%*s" "%s" " == " "(long double) %Lf\n", \

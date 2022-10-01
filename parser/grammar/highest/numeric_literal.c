@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -49,20 +50,13 @@ struct gbundle read_numeric_literal_production(
 {
 	ENTER;
 	
-	TODO;
-	#if 0
 	int base;
 	switch (tokenizer->token)
 	{
 		case t_octal_literal: base = 8; break;
-		
 		case t_decimal_literal: base = 10; break;
-		
 		case t_hexadecimal_literal: base = 16; break;
-		
-		default:
-			TODO;
-			break;
+		default: TODO; break;
 	}
 	
 	dpvs(tokenizer->tokenchars.chars);
@@ -73,7 +67,7 @@ struct gbundle read_numeric_literal_production(
 	
 	if (errno)
 	{
-		fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %m\n", tokenizer_start);
+		fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %s\n", tokenizer_start, strerror(errno));
 		exit(e_syntax_error);
 	}
 	else if (value >= 256)
@@ -142,7 +136,6 @@ struct gbundle read_numeric_literal_production(
 	
 	EXIT;
 	return (struct gbundle) {start, end};
-	#endif
 }
 
 

@@ -1,4 +1,6 @@
 
+#include <errno.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -23,7 +25,7 @@ void pragma_once_print_dependencies(struct pragma_once* this)
 	
 	if (!stream)
 	{
-		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", make_dependencies_file);
+		fprintf(stderr, "zebu: fopen(\"%s\"): %s\n", make_dependencies_file, strerror(errno));
 		exit(e_syscall_failed);
 	}
 	

@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,7 +121,7 @@ struct rbundle read_suffixes_token_expression(
 				
 				if (errno)
 				{
-					fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %m\n", start);
+					fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %s\n", start, strerror(errno));
 					exit(e_syntax_error);
 				}
 				

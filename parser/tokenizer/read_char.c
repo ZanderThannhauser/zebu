@@ -1,14 +1,15 @@
 
-#include <enums/error.h>
 
+#include <string.h>
 #include <stdlib.h>
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #include <debug.h>
 
+#include <enums/error.h>
 #include "struct.h"
 #include "read_char.h"
 
@@ -22,7 +23,7 @@ void read_char(struct tokenizer* this)
 	}
 	else if ((rretval = read(this->fd, this->buffer.data, sizeof(this->buffer.data))) < 0)
 	{
-		fprintf(stderr, "zebu: read(): %m\n"),
+		fprintf(stderr, "zebu: read(): %s\n", strerror(errno)),
 		exit(e_syscall_failed);
 	}
 	else if (!rretval)

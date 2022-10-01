@@ -39,6 +39,10 @@
 /*#include <yacc/structinfo/compare.h>*/
 /*#include <yacc/structinfo/free.h>*/
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/rindex.h>
+#endif
+
 #include "escaped/really_just_tables_source.h"
 #include "escaped/really_just_tables_header.h"
 

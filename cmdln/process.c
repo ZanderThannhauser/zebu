@@ -11,6 +11,10 @@
 
 #include <enums/error.h>
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/stpcpy.h>
+#endif
+
 #include "usage.h"
 #include "verbose.h"
 #include "process.h"

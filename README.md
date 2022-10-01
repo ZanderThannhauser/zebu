@@ -328,7 +328,7 @@ value
 #### CSV
 
 ```C
-`cell`: [~',','\"','\n']* ([~',','\"','\n']* '\"' (('\"' '\"') | [~'\"','\n'])* '\"')* [~',','\"','\n']*;
+`cell`: [!',','\"','\n']* ([!',','\"','\n']* '\"' (('\"' '\"') | [!'\"','\n'])* '\"')* [!',','\"','\n']*;
 
 row: `cell` #cells[] (',' `cell` #cells[])* `'\n'+`;
 
@@ -361,7 +361,13 @@ root: addition #root;
 
 ## Parser Templates
 
- - `-t just-tables` (`--template=just-tables`): This is the default.
+ - `-t just-tables` (`--template=just-tables`): Outputs the tables used for
+   tokenization: the transition-table, start states, accepting states, and
+   EOF-transition table, and outputs tables used for parsing: the shift-table,
+   reduce-table and goto-table, and prints a brief description of other templates.
+   This is the default parser-template.
+ - `-t really-just-tables` (`--template=really-just-tables`): Gives the same
+   output as the above option, but without the descriptions of other templates.
  - `-t readline` (`--template=readline`): *TODO*
  - `-t readline-with-driver` (`--template=readline-with-driver`): *TODO*
  - `-t fileio` (`--template=fileio`): *TODO*

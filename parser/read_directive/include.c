@@ -13,6 +13,11 @@
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/stpcpy.h>
+#include <compat/stpncpy.h>
+#endif
+
 #include "../recursive_parse.h"
 
 #include "include.h"

@@ -10,6 +10,10 @@
 
 #include <memory/srealloc.h>
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/rindex.h>
+#endif
+
 #include "canonicalize_path.h"
 
 char* canonicalize_path(const char* ro_in)

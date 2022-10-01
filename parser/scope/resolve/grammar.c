@@ -17,6 +17,10 @@
 #include <avl/search.h>
 /*#include <memory/smalloc.h>*/
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/rindex.h>
+#endif
+
 #include "../struct.h"
 
 #include "grammar.h"

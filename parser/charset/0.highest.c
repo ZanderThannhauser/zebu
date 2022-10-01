@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -45,7 +46,7 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %s\n", start, strerror(errno));
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
@@ -66,7 +67,7 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %s\n", start, strerror(errno));
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)
@@ -87,7 +88,7 @@ charset_t read_highest_charset(
 			
 			if (errno)
 			{
-				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %m\n", start);
+				fprintf(stderr, "zebu: error when reading character-set: strtoul('%s'): %s\n", start, strerror(errno));
 				exit(e_syntax_error);
 			}
 			else if (value >= 256)

@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -97,7 +98,7 @@ struct gbundle read_suffixes_production(
 				
 				if (errno)
 				{
-					fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %m\n", start);
+					fprintf(stderr, "zebu: error when reading grammar-rule: strtoul('%s'): %s\n", start, strerror(errno));
 					exit(e_syntax_error);
 				}
 				

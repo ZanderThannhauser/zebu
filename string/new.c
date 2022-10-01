@@ -6,6 +6,10 @@
 
 #include <debug.h>
 
+#ifdef WINDOWS_PLATFORM
+#include <compat/strndup.h>
+#endif
+
 #include <memory/smalloc.h>
 
 #include <parser/tokenizer/struct.h>

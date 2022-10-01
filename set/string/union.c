@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -12,3 +13,4 @@ struct stringset* stringset_union(
 	TODO;
 }
 
+#endif
