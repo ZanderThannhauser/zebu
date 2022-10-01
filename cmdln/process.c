@@ -79,6 +79,7 @@ void cmdln_process(int argc, char* const* argv)
 				} else if (strequals(optarg, "fileio-with-driver")) {
 					parser_template = pt_fileio_with_driver;
 				} else {
+					fprintf(stderr, "zebu: '%s' is an invalid parser template!\n", optarg);
 					usage(e_bad_cmdline_args);
 				}
 				break;
@@ -107,8 +108,11 @@ void cmdln_process(int argc, char* const* argv)
 				break;
 			
 			default:
+			{
+				fprintf(stderr, "zebu: unknown flag '%s'!\n", optarg);
 				usage(e_bad_cmdline_args);
 				break;
+			}
 		}
 	}
 	
