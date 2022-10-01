@@ -10,7 +10,9 @@ bin/windows-platform/release-build/no-verbose/yes-dotout/./out/out.o: \
  out/escaped/really_just_tables_source.h \
  out/escaped/really_just_tables_header.h out/escaped/just_tables_source.h \
  out/escaped/just_tables_header.h out/escaped/charbuffer_source.h \
- out/escaped/charbuffer_header.h out/escaped/readline_source.h \
+ out/escaped/charbuffer_header.h \
+ out/escaped/piecewise_charbuffer_source.h \
+ out/escaped/piecewise_charbuffer_header.h out/escaped/readline_source.h \
  out/escaped/readline_header.h out/escaped/readline_with_driver_source.h \
  out/escaped/readline_with_driver_header.h out/escaped/fileio_source.h \
  out/escaped/fileio_header.h out/escaped/fileio_with_driver_source.h \

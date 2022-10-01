@@ -6,7 +6,7 @@ enum parser_template
 	pt_just_tables,
 	
 	pt_charbuffer,
-	pt_charbuffer_piecewise,
+	pt_piecewise_charbuffer,
 	
 	pt_readline,
 	pt_readline_with_driver,

@@ -52,6 +52,9 @@
 #include "escaped/charbuffer_source.h"
 #include "escaped/charbuffer_header.h"
 
+#include "escaped/piecewise_charbuffer_source.h"
+#include "escaped/piecewise_charbuffer_header.h"
+
 #include "escaped/readline_source.h"
 #include "escaped/readline_header.h"
 
@@ -115,6 +118,7 @@ static struct {
 	[pt_just_tables] = {&just_tables_source, &just_tables_header},
 	
 	[pt_charbuffer] = {&charbuffer_source, &charbuffer_header},
+	[pt_piecewise_charbuffer] = {&piecewise_charbuffer_source, &piecewise_charbuffer_header},
 	
 	[pt_readline] = {&readline_source, &readline_header},
 	[pt_readline_with_driver] = {&readline_with_driver_source, &readline_with_driver_header},

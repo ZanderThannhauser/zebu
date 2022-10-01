@@ -249,6 +249,25 @@ jobs:
     - name: Test
       run: valgrind /tmp/test
 
+  classic-example-test-piecewise-charbuffer:
+    runs-on: ubuntu-latest
+    name: Piecewise Buffer
+    needs: [classic-example-test]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Dependences
+      run: sudo apt install -y valgrind
+
+    - name: Generate
+      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t piecewise-charbuffer -i ./-examples/classic/classic.zb -o ./-examples/classic/classic"
+
+    - name: Compile Iloc Example (-D ZEBU_DEBUG)
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/classic/piecewise-driver.c ./-examples/classic/classic.c -o /tmp/test
+
+    - name: Test
+      run: valgrind /tmp/test
+
   iloc1-example-test:
     runs-on: ubuntu-latest
     name: Iloc (Regex) Example

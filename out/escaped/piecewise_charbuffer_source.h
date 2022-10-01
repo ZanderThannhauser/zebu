@@ -1,0 +1,1 @@
+extern const char* piecewise_charbuffer_source;

@@ -68,8 +68,8 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_just_tables;
 				} else if (strequals(optarg, "charbuffer")) {
 					parser_template = pt_charbuffer;
-				} else if (strequals(optarg, "charbuffer-piecewise")) {
-					parser_template = pt_charbuffer_piecewise;
+				} else if (strequals(optarg, "piecewise-charbuffer")) {
+					parser_template = pt_piecewise_charbuffer;
 				} else if (strequals(optarg, "readline")) {
 					parser_template = pt_readline;
 				} else if (strequals(optarg, "readline-with-driver")) {
