@@ -389,7 +389,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Install Dependences
-      run: sudo apt install -y x86_64-w64-mingw32-gcc
+      run: sudo apt install -y gcc-mingw-w64-x86-64
 
     - name: Build Test
       run: make platform=windows buildtype=test dotout=no verbose=no
