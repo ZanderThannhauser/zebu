@@ -138,9 +138,7 @@ int main(int argc, char* const* argv)
 	return 0;
 	
 	bad_args:
-	fprintf(stderr, "usage: %s "
-		"-i input/path "
-		"-o output/path.c\n", argv0);
+	fprintf(stderr, "usage: %s input/path -o output/path.c\n", argv0);
 	return 1;
 }
 
