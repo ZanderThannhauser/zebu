@@ -1,7 +1,14 @@
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 
 #include <debug.h>
+
+#include <enums/error.h>
+
+#include <cmdln/output_path.h>
+#include <cmdln/make_dependencies_file.h>
 
 #include "struct.h"
 #include "print_dependencies.h"
@@ -10,8 +17,31 @@ void pragma_once_print_dependencies(struct pragma_once* this)
 {
 	ENTER;
 	
-	TODO;
+	dpvs(make_dependencies_file);
+	
+	FILE* stream = fopen(make_dependencies_file, "w");
+	
+	if (!stream)
+	{
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", make_dependencies_file);
+		exit(e_syscall_failed);
+	}
+	
+	fprintf(stream, "%s.c:", output_path);
+	
+	for (struct avl_node_t* node = this->tree->head; node; node = node->next)
+	{
+		dpvs(node->item);
+		fprintf(stream, " \\\n\t%s", (char*) node->item);
+	}
+	
+	fprintf(stream, "\n");
+	
+	fclose(stream);
 	
 	EXIT;
 }
+
+
+
 

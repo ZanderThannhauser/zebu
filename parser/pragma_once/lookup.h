@@ -3,4 +3,6 @@
 
 struct pragma_once;
 
-bool pragma_once_lookup(struct pragma_once* this, int fd);
+bool pragma_once_lookup(
+	struct pragma_once* this,
+	const char* path);

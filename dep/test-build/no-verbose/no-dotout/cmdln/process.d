@@ -8,4 +8,5 @@ bin/test-build/no-verbose/no-dotout/./cmdln/process.o: cmdln/process.c \
  set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h set/ptr/is_nonempty.h \
  set/ptr/free.h cmdln/usage.h cmdln/verbose.h cmdln/process.h \
  cmdln/input_path.h cmdln/output_path.h cmdln/output_prefix.h \
- cmdln/minimize_lexer.h cmdln/parser_template.h cmdln/make_dependencies.h
+ cmdln/minimize_lexer.h cmdln/parser_template.h cmdln/make_dependencies.h \
+ cmdln/make_dependencies_file.h

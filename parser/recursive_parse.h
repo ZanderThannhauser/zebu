@@ -10,6 +10,5 @@ void recursive_parse(
 	struct avl_tree_t* extra_fields,
 	struct scope* scope,
 	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd,
-	int fd);
+	const char* root_path,
+	const char* curr_path);

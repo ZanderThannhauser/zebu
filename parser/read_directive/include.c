@@ -6,7 +6,9 @@
 
 #include <debug.h>
 
-#include <misc/break_and_open_path.h>
+#include <memory/smalloc.h>
+
+#include <misc/canonicalize_path.h>
 
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/read_token.h>
@@ -21,8 +23,8 @@ void read_include_directive(
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd)
+	const char* root_path,
+	const char* curr_path)
 {
 	ENTER;
 	
@@ -30,45 +32,36 @@ void read_include_directive(
 	
 	read_token(tokenizer);
 	
-	unsigned dirfd;
+	const char* prefix;
 	
 	switch (tokenizer->token)
 	{
-		case t_string_literal:
-			dirfd = relative_dirfd;
-			break;
+		case t_string_literal: prefix = curr_path; break;
 		
-		case t_absolute_path:
-			dirfd = absolute_dirfd;
-			break;
+		case t_absolute_path: prefix = root_path; break;
 		
-		default:
-			TODO;
-			break;
+		default: TODO; break;
 	}
 	
-	char* path = strndup((char*) tokenizer->tokenchars.chars, tokenizer->tokenchars.n);
+	char* path = smalloc(strlen(prefix) + 4 + tokenizer->tokenchars.n + 1);
+	
+	stpncpy(stpcpy(stpcpy(path, prefix), "/../"), (char*) tokenizer->tokenchars.chars, tokenizer->tokenchars.n)[0] = '\0';
 	
 	dpvs(path);
 	
-	read_token(tokenizer);
+	char* canon = canonicalize_path(path);
 	
-	struct br_rettype br = break_and_open_path(dirfd, path);
+	read_token(tokenizer);
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
 		/* extra_fields: */ extra_fields,
 		/* scope: */ scope,
 		/* lex: */ lex,
-		/* absolute_dirfd: */ absolute_dirfd,
-		/* relative_dirfd: */ br.dirfd,
-		/* fd */ br.fd);
+		/* root_path: */ root_path,
+		/* path: */ canon);
 	
-	if (br.dirfd > 0 && br.dirfd != dirfd)
-		close(br.dirfd);
-	
-	close(br.fd);
-	
+	free(canon);
 	free(path);
 	
 	EXIT;

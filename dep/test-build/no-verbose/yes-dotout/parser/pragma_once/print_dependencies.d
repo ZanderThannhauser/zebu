@@ -6,5 +6,6 @@ bin/test-build/no-verbose/yes-dotout/./parser/pragma_once/print_dependencies.o: 
  avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h avl/search.h \
  avl/delete.h avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
- set/ptr/is_nonempty.h set/ptr/free.h parser/pragma_once/struct.h \
+ set/ptr/is_nonempty.h set/ptr/free.h cmdln/output_path.h \
+ cmdln/make_dependencies_file.h parser/pragma_once/struct.h \
  parser/pragma_once/print_dependencies.h

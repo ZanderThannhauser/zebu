@@ -60,8 +60,8 @@ void read_directive(
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd)
+	const char* root_path,
+	const char* curr_path)
 {
 	ENTER;
 	
@@ -83,7 +83,7 @@ void read_directive(
 	}
 	else if (strequals(token, "include"))
 	{
-		read_include_directive(pragma_once, extra_fields, tokenizer, scope, lex, absolute_dirfd, relative_dirfd);
+		read_include_directive(pragma_once, extra_fields, tokenizer, scope, lex, root_path, curr_path);
 	}
 	else if (strequals(token, "extra_field"))
 	{

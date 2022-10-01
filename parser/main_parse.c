@@ -11,7 +11,7 @@
 
 #include <lex/add_EOF_token.h>
 
-#include <misc/break_and_open_path.h>
+#include <misc/canonicalize_path.h>
 
 #include "scope/new.h"
 #include "scope/free.h"
@@ -37,17 +37,18 @@ void main_parse(
 	
 	struct pragma_once* pragma_once = new_pragma_once();
 	
-	struct br_rettype br = break_and_open_path(AT_FDCWD, (void*) input_path);
+	char* root_path = canonicalize_path(input_path);
 	
 	recursive_parse(
 		/* pragma_once: */ pragma_once,
 		/* extra_fields: */ extra_fields,
 		/* scope: */ scope,
 		/* lex: */ lex,
-		/* absolute_dirfd: */ br.dirfd,
-		/* relative_dirfd: */ br.dirfd,
-		/* fd: */ br.fd
+		/* root_path: */ root_path,
+		/* curr_path: */ root_path
 	);
+	
+	free(root_path);
 	
 	resolve_grammar_names(scope);
 	
@@ -55,11 +56,6 @@ void main_parse(
 	
 	if (make_dependencies)
 		pragma_once_print_dependencies(pragma_once);
-	
-	if (br.dirfd > 0)
-		close(br.dirfd);
-	
-	close(br.fd);
 	
 	free_pragma_once(pragma_once);
 	

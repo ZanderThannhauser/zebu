@@ -12,5 +12,5 @@ void read_directive(
 	struct tokenizer* tokenizer,
 	struct scope* scope,
 	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd);
+	const char* root_path,
+	const char* curr_path);

@@ -20,6 +20,7 @@
 #include "minimize_lexer.h"
 #include "parser_template.h"
 #include "make_dependencies.h"
+#include "make_dependencies_file.h"
 
 void cmdln_process(int argc, char* const* argv)
 {
@@ -27,18 +28,19 @@ void cmdln_process(int argc, char* const* argv)
 	
 	int opt, option_index;
 	const struct option long_options[] = {
-		{"input",    required_argument, 0, 'i'},
-		{"output",         no_argument, 0, 'o'},
-		{"prefix",   required_argument, 0, 'p'},
-		{"template", required_argument, 0, 't'},
-		{"minimize-lexer", no_argument, 0, 'm'},
+		{"input",       required_argument, 0, 'i'},
+		{"output",            no_argument, 0, 'o'},
+		{"prefix",      required_argument, 0, 'p'},
+		{"template",    required_argument, 0, 't'},
+		{"minimize-lexer",    no_argument, 0, 'm'},
 		{"make-dependencies", no_argument, 0, 'M'},
-		{"verbose",        no_argument, 0, 'v'},
-		{"help",           no_argument, 0, 'h'},
-		{ 0,                         0, 0,  0 },
+		{"make-dependencies-file", required_argument, 0, 'F'},
+		{"verbose",           no_argument, 0, 'v'},
+		{"help",              no_argument, 0, 'h'},
+		{ 0,                            0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "M" "v" "h",
+	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "M" "F:" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -87,6 +89,10 @@ void cmdln_process(int argc, char* const* argv)
 				make_dependencies = true;
 				break;
 			
+			case 'F':
+				strcpy(make_dependencies_file, optarg);
+				break;
+			
 			case 'v':
 				#ifdef VERBOSE
 				verbose = true;
@@ -107,6 +113,11 @@ void cmdln_process(int argc, char* const* argv)
 	{
 		fprintf(stderr, "zebu: missing arguments!\n");
 		usage(e_bad_cmdline_args);
+	}
+	
+	if (make_dependencies && !make_dependencies_file[0])
+	{
+		stpcpy(stpcpy(make_dependencies_file, output_path), ".d");
 	}
 	
 	dpvs(input_path);

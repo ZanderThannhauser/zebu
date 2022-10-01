@@ -33,18 +33,29 @@ void recursive_parse(
 	struct avl_tree_t* extra_fields,
 	struct scope* scope,
 	struct lex* lex,
-	int absolute_dirfd,
-	int relative_dirfd,
-	int fd)
+	const char* root_path,
+	const char* curr_path)
 {
 	ENTER;
 	
-	bool first_time = pragma_once_lookup(pragma_once, fd);
+	dpvs(root_path);
+	dpvs(curr_path);
+	
+	bool first_time = pragma_once_lookup(pragma_once, curr_path);
 	
 	dpvb(first_time);
 	
 	if (first_time)
 	{
+		int fd = open(curr_path, O_RDONLY);
+		
+		if (fd < 0)
+		{
+			TODO;
+			exit(e_syscall_failed);
+		}
+		
+		
 		struct tokenizer *tokenizer = new_tokenizer(fd);
 		
 		read_char(tokenizer);
@@ -56,15 +67,17 @@ void recursive_parse(
 			switch (tokenizer->token)
 			{
 				case t_percent:
+				{
 					read_directive(
-						/* pragma_once:    */ pragma_once,
-						/* extra_fields:   */ extra_fields,
-						/* tokenizer:      */ tokenizer,
-						/* scope:          */ scope,
-						/* lex:            */ lex,
-						/* absolute_dirfd: */ absolute_dirfd,
-						/* relative_dirfd: */ relative_dirfd);
+						/* pragma_once:  */ pragma_once,
+						/* extra_fields: */ extra_fields,
+						/* tokenizer:    */ tokenizer,
+						/* scope:        */ scope,
+						/* lex:          */ lex,
+						/* root_path:    */ root_path,
+						/* curr_path:    */ curr_path);
 					break;
+				}
 				
 				case t_osquare:
 				{
