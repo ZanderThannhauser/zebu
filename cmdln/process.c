@@ -66,8 +66,10 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_really_just_tables;
 				} else if (strequals(optarg, "just-tables")) {
 					parser_template = pt_just_tables;
-/*				} else if (strequals(optarg, "buffer-driven")) {*/
-/*					parser_template = pt_buffer_driven;*/
+				} else if (strequals(optarg, "charbuffer")) {
+					parser_template = pt_charbuffer;
+				} else if (strequals(optarg, "charbuffer-piecewise")) {
+					parser_template = pt_charbuffer_piecewise;
 				} else if (strequals(optarg, "readline")) {
 					parser_template = pt_readline;
 				} else if (strequals(optarg, "readline-with-driver")) {
@@ -76,10 +78,6 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_fileio;
 				} else if (strequals(optarg, "fileio-with-driver")) {
 					parser_template = pt_fileio_with_driver;
-/*				} else if (strequals(optarg, "fileio-passfail")) {*/
-/*					parser_template = pt_fileio_passfail;*/
-/*				} else if (strequals(optarg, "fileio-graphviz")) {*/
-/*					parser_template = pt_fileio_graphviz;*/
 				} else {
 					usage(e_bad_cmdline_args);
 				}

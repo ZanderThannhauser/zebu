@@ -49,8 +49,8 @@
 #include "escaped/just_tables_source.h"
 #include "escaped/just_tables_header.h"
 
-/*#include "escaped/buffer_driven_source.h"*/
-/*#include "escaped/buffer_driven_header.h"*/
+#include "escaped/charbuffer_source.h"
+#include "escaped/charbuffer_header.h"
 
 #include "escaped/readline_source.h"
 #include "escaped/readline_header.h"
@@ -114,15 +114,13 @@ static struct {
 	[pt_really_just_tables] = {&really_just_tables_source, &really_just_tables_header},
 	[pt_just_tables] = {&just_tables_source, &just_tables_header},
 	
-/*	[pt_buffer_driven] = {&buffer_driven_source, &buffer_driven_header},*/
+	[pt_charbuffer] = {&charbuffer_source, &charbuffer_header},
 	
 	[pt_readline] = {&readline_source, &readline_header},
 	[pt_readline_with_driver] = {&readline_with_driver_source, &readline_with_driver_header},
 	
 	[pt_fileio] = {&fileio_source, &fileio_header},
 	[pt_fileio_with_driver] = {&fileio_with_driver_source, &fileio_with_driver_header},
-/*	[pt_fileio_passfail] = {&fileio_passfail_source, &fileio_passfail_header},*/
-/*	[pt_fileio_graphviz] = {&fileio_graphviz_source, &fileio_graphviz_header},*/
 };
 
 void out(struct yacc_state* start)

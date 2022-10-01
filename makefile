@@ -95,8 +95,11 @@ ARGS += --make-dependencies
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
 
+ARGS += --template=charbuffer
+#ARGS += --template=charbuffer-piecewise
+
 #ARGS += --template=readline
-ARGS += --template=readline-with-driver
+#ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
@@ -168,7 +171,7 @@ include srclist.mk
 srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
 srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
 
-#srcs += ./out/escaped/buffer_driven_source.c      ./out/escaped/buffer_driven_header.c
+srcs += ./out/escaped/charbuffer_source.c      ./out/escaped/charbuffer_header.c
 
 srcs += ./out/escaped/readline_source.c           ./out/escaped/readline_header.c
 srcs += ./out/escaped/readline_with_driver_source.c       ./out/escaped/readline_with_driver_header.c

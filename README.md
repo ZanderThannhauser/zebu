@@ -368,10 +368,14 @@ root: addition #root;
    This is the default parser-template.
  - `-t really-just-tables` (`--template=really-just-tables`): Gives the same
    output as the above option, but without the descriptions of other templates.
- - `-t readline` (`--template=readline`): *TODO*
- - `-t readline-with-driver` (`--template=readline-with-driver`): *TODO*
- - `-t fileio` (`--template=fileio`): *TODO*
+ - `-t fileio` (`--template=fileio`): Creates a function with the name:
+   `struct zebu_$start* {{PREFIX}}_parse(FILE* stream)`, which will read from
+   the given stream until it reaches an EOF, and returns the parse-tree. Compile
+   with `ZEBU_DEBUG` defined, and code for printing out the parse-stack and code
+   for pretty-printing the parse-tree will be included in the executable.
  - `-t fileio-with-driver` (`--template=fileio-with-driver`): *TODO*
+ - `-t readline` (`--template=readline`): Creates a function 
+ - `-t readline-with-driver` (`--template=readline-with-driver`): *TODO*
 
 ### Parser Template File Format
 
