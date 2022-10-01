@@ -244,7 +244,7 @@ jobs:
       run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t charbuffer -i ./-examples/classic/classic.zb -o ./-examples/classic/classic"
 
     - name: Compile Iloc Example (-D ZEBU_DEBUG)
-      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/classic/driver.c /tmp/out.c -o /tmp/test
+      run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/classic/driver.c ./-examples/classic/classic.c -o /tmp/test
 
     - name: Test
       run: valgrind /tmp/test
