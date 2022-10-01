@@ -26,9 +26,7 @@
 
 {{PARSE_TREE_STRUCTS}}
 
-#ifdef ZEBU_DEBUG
 {{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
-#endif
 
 {{PARSE_TREE_INC_FUNCTIONS}}
 
@@ -422,9 +420,7 @@ int main(int argc, char* const* argv)
 	
 	void* root = parse(input);
 	
-	#ifdef ZEBU_DEBUG
 	print_zebu_$start(NULL, p_root, "start", root);
-	#endif
 	
 	free_zebu_$start(root);
 	

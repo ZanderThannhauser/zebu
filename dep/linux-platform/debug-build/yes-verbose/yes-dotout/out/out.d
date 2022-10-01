@@ -12,7 +12,8 @@ bin/linux-platform/debug-build/yes-verbose/yes-dotout/./out/out.o: \
  named/structinfo/new.h named/structinfo/compare.h \
  named/structinfo/free.h out/escaped/really_just_tables_source.h \
  out/escaped/really_just_tables_header.h out/escaped/just_tables_source.h \
- out/escaped/just_tables_header.h out/escaped/readline_source.h \
+ out/escaped/just_tables_header.h out/escaped/charbuffer_source.h \
+ out/escaped/charbuffer_header.h out/escaped/readline_source.h \
  out/escaped/readline_header.h out/escaped/readline_with_driver_source.h \
  out/escaped/readline_with_driver_header.h out/escaped/fileio_source.h \
  out/escaped/fileio_header.h out/escaped/fileio_with_driver_source.h \

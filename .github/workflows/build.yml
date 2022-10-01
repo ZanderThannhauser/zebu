@@ -241,7 +241,7 @@ jobs:
       run: sudo apt install -y valgrind
 
     - name: Generate
-      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t charbuffer -i ./-examples/classic/classic.zb -o /tmp/out"
+      run: make buildtype=test dotout=no verbose=no valrun-leak ARGS="-vm -t charbuffer -i ./-examples/classic/classic.zb -o ./-examples/classic/classic"
 
     - name: Compile Iloc Example (-D ZEBU_DEBUG)
       run: gcc -Wall -Werror -D ZEBU_DEBUG ./-examples/classic/driver.c /tmp/out.c -o /tmp/test

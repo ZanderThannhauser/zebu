@@ -368,14 +368,26 @@ root: addition #root;
    This is the default parser-template.
  - `-t really-just-tables` (`--template=really-just-tables`): Gives the same
    output as the above option, but without the descriptions of other templates.
- - `-t fileio` (`--template=fileio`): Creates a function with the name:
-   `struct zebu_$start* {{PREFIX}}_parse(FILE* stream)`, which will read from
-   the given stream until it reaches an EOF, and returns the parse-tree. Compile
-   with `ZEBU_DEBUG` defined, and code for printing out the parse-stack and code
-   for pretty-printing the parse-tree will be included in the executable.
- - `-t fileio-with-driver` (`--template=fileio-with-driver`): *TODO*
- - `-t readline` (`--template=readline`): Creates a function 
- - `-t readline-with-driver` (`--template=readline-with-driver`): *TODO*
+ - `-t charbuffer` (`--template=charbuffer`): Generates a parser function that
+   will read `len` number of characters from the given (unsigned) character
+   buffer, and returns the parse-tree. Compile with `-D ZEBU_DEBUG` to insert
+   code to pretty-print the parse-tree.
+ - `-t fileio` (`--template=fileio`): Generates a parser function that will
+   read from the given `FILE*` stream until EOF is reached, and returns the
+   parse-tree. Compile with `-D ZEBU_DEBUG` to insert code to pretty-print the
+   parse-tree.
+ - `-t fileio-with-driver` (`--template=fileio-with-driver`): Generates a
+   *program* that will open and read the path given in the first argument to on
+   the command-line. The file is parsed, and the parse-tree is pretty-printed.
+ - `-t readline` (`--template=readline`): Generates a parser function that will
+   call use the GNU Readline Library to read a line of text from the terminal.
+   The function parses the line and returns the parse-tree. Remember to link the
+   resultant program with `-lreadline`. Compile the generated function with
+   `-D ZEBU_DEBUG` to insert code to pretty-print the parse-tree.
+ - `-t readline-with-driver` (`--template=readline-with-driver`): Generates a
+   *program* that will repeatedly invoke the GNU Readline Library to read lines
+   from the terminal. Each line is parsed, and pretty-printed. Remember to link
+   the resultant program with `-lreadline`.
 
 ### Parser Template File Format
 
