@@ -90,6 +90,7 @@ void cmdln_process(int argc, char* const* argv)
 				break;
 			
 			case 'F':
+				make_dependencies = true;
 				strcpy(make_dependencies_file, optarg);
 				break;
 			

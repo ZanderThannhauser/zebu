@@ -37,8 +37,14 @@ comment-style) with the same parser. (CSS embedded in HTML, for instance)
  - `-m` (`--minimize-lexer`): Tells zebu to combine and simplify all tokenizers
    generated across all parser-contexts. By default this operation is not
    performed as its duration depends on the language.
- - `-M` (`--make-dependencies`): *TODO*
- - `-F <PATH>` (`--make-dependencies-file=<PATH>`): *TODO*
+ - `-M` (`--make-dependencies`): Tells zebu to print into a separate file a make
+   rule suitable for describing the dependencies of the output file. Zebu
+   outputs one make rule containing the output file name, a colon, and the names
+   of all the included files. The default dependency-file path is output path
+   (set with the `-o` flag), with the `.d` suffixed appended. This can be
+   overwritten with:
+ - `-F <PATH>` (`--make-dependencies-file=<PATH>`): Sets the path zebu will
+   output the dependency information into. This flag implies `-M`.
  - `-t <TEMPLATE>` (`--template=<TEMPLATE>`): Sets which parser-template zebu
    should use when generating its output. The default value is "just-tables".
  - `-v` (`--verbose`): Enables progress-percentage print-outs to the terminal
@@ -51,9 +57,10 @@ comment-style) with the same parser. (CSS embedded in HTML, for instance)
 ## Dependencies
 This program has very few build-time dependencies (namely GNU Make, Glibc &
 GCC), and even fewer run-time dependencies (none at all). The release builds
-are statically linked in the standard C library. Zebu builds with the command:
+are statically linked in the standard C library.
 ## Building
 
+Zebu builds with the command:
 ```sh
 make
 ```
