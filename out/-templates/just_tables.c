@@ -34,7 +34,7 @@
 	
 // --template=piecewise-charbuffer:
 	// Generates several functions for maintaining and using a thread-safe parser
-	// that can save/restore its state bewteen parser invocations:
+	// that can save/restore its state between parser invocations:
 	
 	// struct {{PREFIX}}_state* new_{{PREFIX}}_state();
 		// Allocates parser state, and initializes internal data structures

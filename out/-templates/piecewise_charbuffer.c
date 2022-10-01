@@ -20,7 +20,9 @@
 
 {{LEXER_EOF_TABLE}}
 
+#ifdef ZEBU_DEBUG
 {{PARSE_TREE_PRINT_TREE_FUNCTIONS}}
+#endif
 
 {{PARSE_TREE_INC_FUNCTIONS}}
 
@@ -28,6 +30,7 @@
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
+#ifdef ZEBU_DEBUG
 static void escape(char *out, unsigned char in)
 {
 	switch (in)
@@ -73,6 +76,7 @@ static void escape(char *out, unsigned char in)
 			break;
 	}
 }
+#endif
 
 struct {{PREFIX}}_state
 {
@@ -82,6 +86,7 @@ struct {{PREFIX}}_state
 	unsigned lstate, t, f, i, backup_lstate;
 };
 
+#ifdef ZEBU_DEBUG
 static void ddprintf(struct {{PREFIX}}_state* this, const char* fmt, ...)
 {
 	for (unsigned i = 0, n = this->y.n; i < n; i++)
@@ -94,6 +99,7 @@ static void ddprintf(struct {{PREFIX}}_state* this, const char* fmt, ...)
 	vprintf(fmt, va);
 	va_end(va);
 }
+#endif
 
 static void push_state(struct {{PREFIX}}_state* this, unsigned ystate)
 {
@@ -176,7 +182,9 @@ static void process_token(struct {{PREFIX}}_state* this, unsigned t, void* td)
 	
 	while (y < N({{PREFIX}}_reduces) && t < N(*{{PREFIX}}_reduces) && (r = {{PREFIX}}_reduces[y][t]))
 	{
+		#ifdef ZEBU_DEBUG
 		ddprintf(this, "r == %u\n", r);
+		#endif
 		
 		unsigned g;
 		void* d;
@@ -200,13 +208,17 @@ static void process_token(struct {{PREFIX}}_state* this, unsigned t, void* td)
 		{
 			y = this->y.data[this->y.n - 1];
 			
+			#ifdef ZEBU_DEBUG
 			ddprintf(this, "y = %u\n", y);
+			#endif
 			
 			assert(y < N({{PREFIX}}_gotos) && g < N(*{{PREFIX}}_gotos));
 			
 			s = {{PREFIX}}_gotos[y][g];
 			
+			#ifdef ZEBU_DEBUG
 			ddprintf(this, "s = %u\n", s);
+			#endif
 			
 			y = s, push_state(this, y), push_data(this, d);
 		}
@@ -234,7 +246,9 @@ void {{PREFIX}}_parse(struct {{PREFIX}}_state* this,
 	
 	const unsigned char* end = buffer + len;
 	
+	#ifdef ZEBU_DEBUG
 	char escaped[10];
+	#endif
 	
 	unsigned char a, b, c;
 	
@@ -250,13 +264,17 @@ void {{PREFIX}}_parse(struct {{PREFIX}}_state* this,
 			append(this, c);
 		}
 		
+		#ifdef ZEBU_DEBUG
 		escape(escaped, c);
 		ddprintf(this, "lexer: c = '%s' (0x%X)\n", escaped, c);
+		#endif
 		
 		a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 		b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 		
+		#ifdef ZEBU_DEBUG
 		ddprintf(this, "lexer: \"%.*s\" (%u): a = %u, b = %u\n", this->l.n, this->l.data, i, a, b);
+		#endif
 		
 		if (a)
 		{
@@ -273,7 +291,9 @@ void {{PREFIX}}_parse(struct {{PREFIX}}_state* this,
 		{
 			if (b == 1)
 			{
+				#ifdef ZEBU_DEBUG
 				ddprintf(this, "lexer: whitespace: \"%.*s\"\n", i, this->l.data);
+				#endif
 				
 				memmove(this->l.data, this->l.data + i, this->l.n - i), this->l.n -= i;
 				
@@ -281,7 +301,9 @@ void {{PREFIX}}_parse(struct {{PREFIX}}_state* this,
 			}
 			else
 			{
+				#ifdef ZEBU_DEBUG
 				ddprintf(this, "lexer: token: \"%.*s\"\n", i, this->l.data);
+				#endif
 				
 				struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 				token->refcount = 1;
@@ -321,7 +343,9 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 	
 	unsigned bl = this->backup_lstate;
 	
+	#ifdef ZEBU_DEBUG
 	char escaped[10];
+	#endif
 	
 	unsigned char a, b, c;
 	
@@ -331,8 +355,10 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 		{
 			c = this->l.data[i];
 			
+			#ifdef ZEBU_DEBUG
 			escape(escaped, c);
 			ddprintf(this, "lexer: c = '%s' (0x%X)\n", escaped, c);
+			#endif
 			
 			a = l < N({{PREFIX}}_lexer) && c < N(*{{PREFIX}}_lexer) ? {{PREFIX}}_lexer[l][c] : 0;
 		}
@@ -341,7 +367,7 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 			c = EOF;
 			
 			#ifdef ZEBU_DEBUG
-			ddprintf("lexer: c = <EOF>\n");
+			ddprintf(this, "lexer: c = <EOF>\n");
 			#endif
 			
 			a = l < N({{PREFIX}}_lexer_EOFs) ? {{PREFIX}}_lexer_EOFs[l] : 0;
@@ -349,7 +375,9 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 		
 		b = l < N({{PREFIX}}_lexer_accepts) ? {{PREFIX}}_lexer_accepts[l] : 0;
 		
+		#ifdef ZEBU_DEBUG
 		ddprintf(this, "lexer: \"%.*s\" (%u): a = %u, b = %u\n", this->l.n, this->l.data, i, a, b);
+		#endif
 		
 		if (a)
 		{
@@ -366,13 +394,17 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 		{
 			if (!this->l.n)
 			{
+				#ifdef ZEBU_DEBUG
 				ddprintf(this, "lexer: EOF.\n");
+				#endif
 				process_token(this, b, NULL);
 				break;
 			}
 			else if (b == 1)
 			{
+				#ifdef ZEBU_DEBUG
 				ddprintf(this, "lexer: whitespace: \"%.*s\"\n", i, this->l.data);
+				#endif
 				
 				memmove(this->l.data, this->l.data + i, this->l.n - i), this->l.n -= i;
 				
@@ -380,7 +412,9 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 			}
 			else
 			{
+				#ifdef ZEBU_DEBUG
 				ddprintf(this, "lexer: token: \"%.*s\"\n", i, this->l.data);
+				#endif
 				
 				struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 				token->refcount = 1;
@@ -414,7 +448,9 @@ struct zebu_$start* {{PREFIX}}_close(struct {{PREFIX}}_state* this)
 	
 	struct zebu_$start* root = this->d.data[0];
 	
+	#ifdef ZEBU_DEBUG
 	print_{{PREFIX}}_$start(NULL, p_root, "start", root);
+	#endif
 	
 	return root;
 }

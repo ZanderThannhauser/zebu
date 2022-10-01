@@ -372,6 +372,9 @@ root: addition #root;
    will read `len` number of characters from the given (unsigned) character
    buffer, and returns the parse-tree. Compile with `-D ZEBU_DEBUG` to insert
    code to pretty-print the parse-tree.
+ - `-t piecewise-charbuffer` (`--template=piecewise-charbuffer`): Generates
+   several functions for maintaining and using a thread-safe parser that can
+   save/restore its state between parser invocations.
  - `-t fileio` (`--template=fileio`): Generates a parser function that will
    read from the given `FILE*` stream until EOF is reached, and returns the
    parse-tree. Compile with `-D ZEBU_DEBUG` to insert code to pretty-print the
