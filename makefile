@@ -184,17 +184,17 @@ objs := $(patsubst %.S,$(buildprefix)/%.o,$(objs))
 deps := $(patsubst %.c,$(depprefix)/%.d,$(srcs))
 deps := $(patsubst %.S,$(depprefix)/%.d,$(deps))
 
-$(buildprefix)/%.o $(depprefix)/%.d: %.c | $(buildprefix)/%/ $(depprefix)/%/
-	@ echo "compiling $<"
-	@ $(CC) -c $(CPPFLAGS) $(CFLAGS) $< -MMD -o $(buildprefix)/$*.o -MF $(depprefix)/$*.d $(ON_ERROR)
-
 $(buildprefix)/zebu$(EXE): $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
+$(buildprefix)/%.o $(depprefix)/%.d: %.c | $(buildprefix)/%/ $(depprefix)/%/
+	@ echo "compiling $<"
+	@ $(CC) -c $(CPPFLAGS) $(CFLAGS) $< -MMD -o $(buildprefix)/$*.o -MF $(depprefix)/$*.d $(ON_ERROR)
+
 bin/escape: ./-escape.c | bin/
 	@ echo "compiling $<"
-	@ $(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) ./$< $(LOADLIBES) $(LDLIBS) -o $@
+	@ gcc -Wall -Werror ./$< -o $@
 
 .PRECIOUS: ./out/escaped/%_source.c
 .PRECIOUS: ./out/escaped/%_header.c
