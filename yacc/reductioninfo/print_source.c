@@ -634,6 +634,8 @@ void reductioninfo_print_source(
 										case lm_int:
 										{
 											fprintf(stream, ""
+												"\t" "\t" "{" "\n"
+												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "errno = 0, value->%s = strtof((char*) token->data, &m);" "\n"
 												"\t" "\t" "if (*m) {" "\n"
 												"\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
@@ -642,12 +644,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
 												"\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "}" "\n"
+												"\t" "\t" "}" "\n"
 											"", name);
 											break;
 										}
 										case lm_long:
 										{
 											fprintf(stream, ""
+												"\t" "\t" "{" "\n"
+												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "errno = 0, value->%s = strtod((char*) token->data, &m);" "\n"
 												"\t" "\t" "if (*m) {" "\n"
 												"\t" "\t" "\t" "fprintf(stderr, \"%%s: strtod('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
@@ -662,6 +667,8 @@ void reductioninfo_print_source(
 										case lm_long_double:
 										{
 											fprintf(stream, ""
+												"\t" "\t" "{" "\n"
+												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "char *m;" "\n"
 												"\t" "\t" "errno = 0, value->%s = strtold((char*) token->data, &m);" "\n"
 												"\t" "\t" "if (*m) {" "\n"
@@ -670,6 +677,7 @@ void reductioninfo_print_source(
 												"\t" "\t" "} else if (errno) {" "\n"
 												"\t" "\t" "\t" "fprintf(stderr, \"%%s: strtold('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
 												"\t" "\t" "\t" "exit(1);" "\n"
+												"\t" "\t" "}" "\n"
 												"\t" "\t" "}" "\n"
 											"", name);
 											break;

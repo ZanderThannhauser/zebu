@@ -10,7 +10,8 @@ keyvalue: `string` #key ":" value #value;
 value
 	: "true"  #boolean
 	| "false" #boolean
-	| `['0' - '9']+:"%u"` #number
+	| `['0' - '9']+:"%u"` #integer_lit
+	| `['0' - '9']+ '.' ['0' - '9']+:"%f"` #float_lit
 	| `string` #string
 	| "[" value #elements[] ("," value #elements[])* "]"
 	| "{" keyvalue #dict[] ("," keyvalue #dict[])* "}"
