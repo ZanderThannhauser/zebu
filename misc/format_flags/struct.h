@@ -14,6 +14,7 @@ struct format_flags
 		lm_ptrdiff,
 	} length_modifier;
 	const char* length_modifier_text;
+	
 	char conversion; // 'i', 'd', 'u', 'o', 'x', 'X', 'f', 'g' ...
 	
 	const char* ctype; // "char", "int", "wchar_t", ...

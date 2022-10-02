@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -6,6 +8,7 @@
 
 #include <memory/smalloc.h>
 
+#include <string/struct.h>
 #include <string/are_equal.h>
 
 #include <avl/foreach.h>
@@ -39,15 +42,15 @@
 
 #include <yacc/structinfo/compare.h>
 
+#include "transition/struct.h"
+#include "grammar/struct.h"
 #include "struct.h"
 #include "new.h"
 #include "add_transition.h"
 #include "add_grammar_transition.h"
 #include "simplify_dfa.h"
+#include "dotout.h"
 
-#include "transition/struct.h"
-
-#include "grammar/struct.h"
 
 #ifdef VERBOSE
 #include <stdio.h>
@@ -354,6 +357,147 @@ static void add_dep(
 	EXIT;
 }
 
+#ifdef DOTOUT
+
+#include <misc/frame_counter.h>
+
+#include <yacc/structinfo/to_hashtagstring.h>
+
+static void dotout(
+	struct ptrset* universe,
+	struct avl_tree_t* connections)
+{
+	ENTER;
+	
+	char path[PATH_MAX];
+	
+	snprintf(path, PATH_MAX, "dot/%u.dot", frame_counter++);
+	
+	dpvs(path);
+	
+	FILE* out = fopen(path, "w");
+	
+	if (!out)
+	{
+		fprintf(stderr, "zebu: fopen(\"%s\"): %m\n", path);
+		abort();
+	}
+	
+	fprintf(out, "digraph {" "\n");
+	
+	fprintf(out, "\t" "rankdir = LR;" "\n");
+	
+	struct ptrset* drawn = new_ptrset();
+	
+	struct ptrset* queued = new_ptrset();
+	
+	struct quack* todo = new_quack();
+	
+	ptrset_foreach(universe, ({
+		void runme(void* ptr)
+		{
+			struct gegex* state = ptr;
+			
+			ptrset_add(queued, state);
+			quack_append(todo, state);
+		}
+		runme;
+	}));
+	
+	while (quack_is_nonempty(todo))
+	{
+		struct gegex* state = quack_pop(todo);
+		
+		fprintf(out, ""
+			"\"%p\" [" "\n"
+				"\t" "shape = %s;" "\n"
+				"\t" "label = \"\";" "\n"
+				"\t" "style = filled;" "\n"
+				"\t" "fillcolor = white;" "\n"
+			"]" "\n"
+		"", state, state->accepts ? "doublecircle" : "circle");
+		
+		{
+			ptrset_add(drawn, state);
+			
+			struct avl_node_t* node = avl_search(connections, &state);
+			
+			assert(node);
+			
+			struct same_as_node* sa = node->item;
+			
+			ptrset_foreach(sa->set, ({
+				void runme(void* ptr) {
+					struct gegex* dep = ptr;
+					if (!ptrset_contains(drawn, dep))
+					{
+						fprintf(out, ""
+							"\"%p\" -> \"%p\" [" "\n"
+								"\t" "style = dashed" "\n"
+								"\t" "constraint = false" "\n"
+								"\t" "dir = none" "\n"
+							"]" "\n"
+						"", state, dep);
+					}
+				}
+				runme;
+			}));
+		}
+		
+		// normal transitions:
+		for (unsigned i = 0, n = state->transitions.n; i < n; i++)
+		{
+			struct gegex_transition* transition = state->transitions.data[i];
+			
+			if (ptrset_add(queued, transition->to))
+				quack_append(todo, transition->to);
+			
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"#%u token%s\"" "\n"
+				"]" "\n"
+			"", state, transition->to, transition->token, label);
+			
+			free(label);
+		}
+		
+		// grammar_transitions:
+		for (unsigned i = 0, n = state->grammars.n; i < n; i++)
+		{
+			struct gegex_grammar_transition* transition = state->grammars.data[i];
+			
+			if (ptrset_add(queued, transition->to))
+				quack_append(todo, transition->to);
+			
+			char* label = structinfo_to_hashtagstring(transition->structinfo);
+			
+			fprintf(out, ""
+				"\"%p\" -> \"%p\" [" "\n"
+					"\t" "label = \"%s%s\"" "\n"
+				"]" "\n"
+			"", state, transition->to, transition->grammar->chars, label);
+			
+			free(label);
+		}
+	}
+	
+	free_ptrset(drawn);
+	free_ptrset(queued);
+	
+	free_quack(todo);
+	
+	fprintf(out, "}" "\n");
+	
+	if (out)
+		fclose(out);
+	
+	EXIT;
+}
+#endif
+
+
 struct mapping
 {
 	struct gegex* old; // must be the first
@@ -533,44 +677,50 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 							unequal = true;
 						}
 						
+						if (!unequal)
 						{
-							unsigned a_i = 0, a_n = a->transitions.n;
-							unsigned b_i = 0, b_n = b->transitions.n;
+							unsigned i = 0, a_n = a->transitions.n, b_n = b->transitions.n;
 							
-							while (!unequal && a_i < a_n && b_i < b_n)
+							if (a_n != b_n)
 							{
-								const struct gegex_transition* const at = a->transitions.data[a_i];
-								const struct gegex_transition* const bt = b->transitions.data[b_i];
+								unequal = true;
+							}
+							
+							while (!unequal && i < a_n && i < b_n)
+							{
+								const struct gegex_transition* const at = a->transitions.data[i];
+								const struct gegex_transition* const bt = b->transitions.data[i];
 								
 								if (at->token != bt->token || compare_unsignedsets(at->whitespace, bt->whitespace))
 								{
 									unequal = true;
 								}
-								else if (!compare_structinfos(at->structinfo, bt->structinfo))
+								else if (compare_structinfos(at->structinfo, bt->structinfo))
 								{
 									unequal = true;
 								}
 								else
 								{
 									add_dep(dependent_of, a, b, at->to, bt->to);
-									a_i++, b_i++;
+									i++;
 								}
 							}
 							
-							if (!unequal && (a_i < a_n || b_i < b_n))
+						}
+						
+						if (!unequal)
+						{
+							unsigned i = 0, a_n = a->grammars.n, b_n = b->grammars.n;
+							
+							if (a_n != b_n)
 							{
 								unequal = true;
 							}
-						}
-						
-						{
-							unsigned a_i = 0, a_n = a->grammars.n;
-							unsigned b_i = 0, b_n = b->grammars.n;
 							
-							while (!unequal && a_i < a_n && b_i < b_n)
+							while (!unequal && i < a_n && i < b_n)
 							{
-								const struct gegex_grammar_transition* const at = a->grammars.data[a_i];
-								const struct gegex_grammar_transition* const bt = b->grammars.data[b_i];
+								const struct gegex_grammar_transition* const at = a->grammars.data[i];
+								const struct gegex_grammar_transition* const bt = b->grammars.data[i];
 								
 								if (!strings_are_equal(at->grammar, bt->grammar))
 								{
@@ -583,13 +733,8 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 								else
 								{
 									add_dep(dependent_of, a, b, at->to, bt->to);
-									a_i++, b_i++;
+									i++;
 								}
-							}
-							
-							if (!unequal && (a_i < a_n || b_i < b_n))
-							{
-								unequal = true;
 							}
 						}
 						
@@ -674,6 +819,10 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 	signal(SIGALRM, handler2);
 	#endif
 	
+	#ifdef DOTOUT
+	dotout(universe, connections);
+	#endif
+	
 	while (heap_is_nonempty(todo))
 	{
 		struct task* task = heap_pop(todo);
@@ -705,7 +854,15 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 		free(task);
 	}
 	
+	#ifdef DOTOUT
+	dotout(universe, connections);
+	#endif
+	
 	struct gegex* new_start = clone(connections, original);
+	
+	#ifdef DOTOUT
+	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
+	#endif
 	
 	avl_free_tree(dependent_of);
 	

@@ -408,11 +408,11 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 			
 			free_heap(heap);
 		}
-		
-		#ifdef DOTOUT
-		gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
-		#endif
 	}
+	
+	#ifdef DOTOUT
+	gegex_dotout(new_start, NULL, __PRETTY_FUNCTION__);
+	#endif
 	
 	#ifdef VERBOSE
 	signal(SIGALRM, default_sighandler);

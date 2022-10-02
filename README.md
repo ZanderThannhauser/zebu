@@ -47,6 +47,7 @@ comment-style) with the same parser. (CSS embedded in HTML, for instance)
    output the dependency information into. This flag implies `-M`.
  - `-t <TEMPLATE>` (`--template=<TEMPLATE>`): Sets which parser-template zebu
    should use when generating its output. The default value is "just-tables".
+ - `-T <PATH>` (`--custom-template=<PATH>`): **TODO**
  - `-v` (`--verbose`): Enables progress-percentage print-outs to the terminal
    for the most time-consuming algorithms: NFA-to-DFA, DFA simplification, lexer
    minimization (see above), and LL parser generation.
@@ -58,8 +59,8 @@ comment-style) with the same parser. (CSS embedded in HTML, for instance)
 This program has very few build-time dependencies (namely GNU Make, Glibc &
 GCC), and even fewer run-time dependencies (none at all). The release builds
 are statically linked in the standard C library.
-## Building
 
+## Building (Linux)
 Zebu builds with the command:
 ```sh
 make
@@ -81,6 +82,23 @@ make install PREFIX=<PREFIX>
 ```
 
 `PREFIX` sets the installation prefix; the default value is "`${HOME}/bin`."
+
+## Cross-Compiling for Windows
+
+Zebu can be built for MS Windows on Linux using MinGW's GCC for Windows.
+On Ubuntu, this can be installed with `sudo apt install -y gcc-mingw-w64-x86-64`.
+
+The command to build zebu for windows is:
+```sh
+make platform=windows
+```
+or
+```sh
+make -j `nproc` platform=windows
+```
+
+After the build is complete, the executable can be found at
+`bin/windows-platform/release-build/no-verbose/no-dotout/zebu.exe`.
 
 ## Input File Specification
 
@@ -351,14 +369,6 @@ root: addition #root;
 %start: root #root;
 ```
 
-## Implementation Details: Tokenizer
-
-*TODO*
-
-## Implementation Details: Grammar Rules
-
-*TODO*
-
 ## Parser Templates
 
  - `-t just-tables` (`--template=just-tables`): Outputs the tables used for
@@ -414,7 +424,9 @@ will be pasted as-is to zebu's output, except for the following substitutions:
  - `{{START_GRAMMAR_ID}}`: *TODO*
  - `{{TOKEN_IDS_TO_SETS}}`: Used for debugging.
 
-## Build Types
+## Development & Implementation Details
+
+### Build Types
 
 If you are a developer of zebu, you way find these three build flags below may
 help you. They can be set as environment variables or as arguments to the `make`
@@ -439,7 +451,15 @@ command.
    tracking down bugs. Files are put into a "`dot/`" directory, this directory
    is created if it does not exist. To enable this option, use `dotout=on`.
 
-## Future Features
+### Implementation Details: Tokenizer
+
+*TODO*
+
+### Implementation Details: Grammar Rules
+
+*TODO*
+
+### Future Features
 
  - Way of articulating in the input file how to handle shift-reduce errors,
    perhaps something not unlike the way GNU Bison or Yacc deals with them:

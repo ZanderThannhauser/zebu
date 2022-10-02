@@ -104,14 +104,18 @@ ARGS += --template=readline-with-driver
 #ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
+#ARGS += --custom-template=./out/-templates/really_just_tables
+#ARGS += --custom-source-template=./out/-templates/really_just_tables.c
+#ARGS += --custom-header-template=./out/-templates/really_just_tables.h
+
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
 
 #ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
+#ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
 #ARGS += -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/expressions
 #ARGS += -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
 #ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
