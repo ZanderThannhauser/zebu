@@ -244,7 +244,7 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse()
 			
 			ddprintf("r = %u\n", r);
 			
-			{{REDUCTIONRULE_SWITCH}}
+			{{REDUCTION_RULE_SWITCH}}
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{

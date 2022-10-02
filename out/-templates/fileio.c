@@ -319,7 +319,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 			unsigned g;
 			void* d;
 			
-			{{REDUCTIONRULE_SWITCH}}
+			{{REDUCTION_RULE_SWITCH}}
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{

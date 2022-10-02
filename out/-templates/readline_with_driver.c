@@ -297,7 +297,7 @@ int main(int argc, char** argv)
 				ddprintf("r = %u\n", r);
 				#endif
 				
-				{{REDUCTIONRULE_SWITCH}}
+				{{REDUCTION_RULE_SWITCH}}
 				
 				if (g == {{START_GRAMMAR_ID}})
 				{

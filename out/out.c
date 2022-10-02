@@ -432,7 +432,7 @@ void out(struct yacc_state* start)
 			{
 				dynvector_print_source(EOFs, output_prefix, stream);
 			}
-			else if (!strncmp(old, "REDUCTIONRULE_SWITCH", len))
+			else if (!strncmp(old, "REDUCTION_RULE_SWITCH", len))
 			{
 				reducerule_to_id_print_source(rrtoi, stoi, output_prefix, stream);
 			}

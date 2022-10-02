@@ -192,7 +192,7 @@ static void process_token(struct {{PREFIX}}_state* this, unsigned t, void* td)
 		typeof(this->y) yacc = this->y;
 		typeof(this->d) data = this->d;
 		
-		{{REDUCTIONRULE_SWITCH}}
+		{{REDUCTION_RULE_SWITCH}}
 		
 		this->y = yacc;
 		this->d = data;

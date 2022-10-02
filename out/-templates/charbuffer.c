@@ -264,7 +264,7 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse(
 			unsigned g;
 			void* d;
 			
-			{{REDUCTIONRULE_SWITCH}}
+			{{REDUCTION_RULE_SWITCH}}
 			
 			if (g == {{START_GRAMMAR_ID}})
 			{
