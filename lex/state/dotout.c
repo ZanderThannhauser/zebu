@@ -11,6 +11,7 @@
 #include <quack/append.h>
 #include <quack/is_nonempty.h>
 #include <quack/pop.h>
+#include <quack/free.h>
 
 #include <set/ptr/new.h>
 #include <set/ptr/add.h>
@@ -121,6 +122,7 @@ void lex_state_dotout(
 	}
 	
 	free_ptrset(queued);
+	free_quack(todo);
 	
 	fprintf(stream, "}" "\n");
 	

@@ -129,6 +129,7 @@ void gegex_dotout(struct gegex* start, struct gegex* optional_end, const char* n
 		}
 	}
 	
+	free_ptrset(queued);
 	free_quack(todo);
 	
 	if (optional_end)

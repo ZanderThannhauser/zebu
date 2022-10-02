@@ -691,11 +691,10 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 								const struct gegex_transition* const at = a->transitions.data[i];
 								const struct gegex_transition* const bt = b->transitions.data[i];
 								
-								if (at->token != bt->token || compare_unsignedsets(at->whitespace, bt->whitespace))
-								{
-									unequal = true;
-								}
-								else if (compare_structinfos(at->structinfo, bt->structinfo))
+								if (false
+									|| at->token != bt->token
+									|| compare_unsignedsets(at->whitespace, bt->whitespace)
+									|| compare_structinfos(at->structinfo, bt->structinfo))
 								{
 									unequal = true;
 								}
@@ -722,11 +721,9 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 								const struct gegex_grammar_transition* const at = a->grammars.data[i];
 								const struct gegex_grammar_transition* const bt = b->grammars.data[i];
 								
-								if (!strings_are_equal(at->grammar, bt->grammar))
-								{
-									unequal = true;
-								}
-								else if (!compare_structinfos(at->structinfo, bt->structinfo))
+								if (false
+									|| !strings_are_equal(at->grammar, bt->grammar)
+									|| compare_structinfos(at->structinfo, bt->structinfo))
 								{
 									unequal = true;
 								}
