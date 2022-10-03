@@ -38,6 +38,10 @@ struct gbundle read_suffixes_production(
 		{
 			gegex_add_lambda_transition(retval.accepts, retval.start);
 			
+			struct gegex* new_accepts = new_gegex();
+			gegex_add_lambda_transition(retval.accepts, new_accepts);
+			retval.accepts = new_accepts;
+			
 			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);
 			#endif
@@ -48,8 +52,13 @@ struct gbundle read_suffixes_production(
 		
 		case t_asterisk:
 		{
+			
 			gegex_add_lambda_transition(retval.accepts, retval.start);
 			gegex_add_lambda_transition(retval.start, retval.accepts);
+			
+			struct gegex* new_accepts = new_gegex();
+			gegex_add_lambda_transition(retval.accepts, new_accepts);
+			retval.accepts = new_accepts;
 			
 			#ifdef DOTOUT
 			gegex_dotout(retval.start, retval.accepts, __PRETTY_FUNCTION__);

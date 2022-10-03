@@ -51,10 +51,9 @@ void recursive_parse(
 		
 		if (fd < 0)
 		{
-			TODO;
+			fprintf(stderr, "zebu: open(\"%s\"): %m\n", curr_path);
 			exit(e_syscall_failed);
 		}
-		
 		
 		struct tokenizer *tokenizer = new_tokenizer(fd);
 		

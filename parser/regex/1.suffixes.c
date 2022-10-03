@@ -59,8 +59,13 @@ struct rbundle read_suffixes_token_expression(
 				retval = regex_dfa_to_nfa(retval.start);
 			}
 			
+			regex_add_lambda_transition(retval.start, retval.accepts);
+			
 			regex_add_lambda_transition(retval.accepts, retval.start);
-			regex_add_lambda_transition(retval.start,   retval.accepts);
+			
+			struct regex* new_accepts = new_regex();
+			regex_add_lambda_transition(retval.accepts, new_accepts);
+			retval.accepts = new_accepts;
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.start, __PRETTY_FUNCTION__);
@@ -79,6 +84,10 @@ struct rbundle read_suffixes_token_expression(
 			}
 			
 			regex_add_lambda_transition(retval.accepts, retval.start);
+			
+			struct regex* new_accepts = new_regex();
+			regex_add_lambda_transition(retval.accepts, new_accepts);
+			retval.accepts = new_accepts;
 			
 			#ifdef DOTOUT
 			regex_dotout(retval.start, __PRETTY_FUNCTION__);

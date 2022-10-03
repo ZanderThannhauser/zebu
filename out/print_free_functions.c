@@ -24,7 +24,7 @@ void print_free_function_prototypes(
 	ENTER;
 	
 	fprintf(stream, ""
-		"extern void free_%s_token(struct %s_token* this);" "\n"
+		"extern void free_%s_token(struct %s_token* token);" "\n"
 	"", prefix, prefix);
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
@@ -52,12 +52,12 @@ void print_free_functions(
 	print_free_function_prototypes(structinfos, prefix, stream);
 	
 	fprintf(stream, ""
-		"void free_%s_token(struct %s_token* this)" "\n"
+		"void free_%s_token(struct %s_token* token)" "\n"
 		"{" "\n"
-		"\t" "if (this && !--this->refcount)" "\n"
+		"\t" "if (token && !--token->refcount)" "\n"
 		"\t" "{" "\n"
-		"\t" "\t" "free(this->data);" "\n"
-		"\t" "\t" "free(this);" "\n"
+		"\t" "\t" "free(token->data);" "\n"
+		"\t" "\t" "free(token);" "\n"
 		"\t" "}" "\n"
 		"}" "\n"
 	"", prefix, prefix);

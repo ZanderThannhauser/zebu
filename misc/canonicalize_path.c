@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -47,6 +48,7 @@ char* canonicalize_path(const char* ro_in)
 	
 	dpvs(ro_in);
 	
+	bool absolute_path = (ro_in[0] == '/');
 	unsigned negative = 0;
 	
 	char* in = strdup(ro_in);
@@ -80,13 +82,21 @@ char* canonicalize_path(const char* ro_in)
 			append(arg);
 		}
 	}
-	
+
 	dpvs(out.data);
 	
-	if (negative)
+	if (absolute_path)
+	{
+		append(" ");
+		memmove(out.data + 1, out.data, out.n - 1);
+		out.data[0] = '/';
+	}
+	else if (negative)
 	{
 		TODO;
 	}
+	
+	dpvs(out.data);
 	
 	free(in);
 	

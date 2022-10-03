@@ -367,10 +367,21 @@ struct fsa_rettype lex_find_shortest_accepting(
 		
 		if (u->EOF_transition_to)
 		{
-			TODO;
-			#if 0
-			// TODO;
-			#endif
+			struct lex_state* v = u->EOF_transition_to;
+			
+			if ((!has_dist(dist, v) || alt < get_dist(dist, v)))
+			{
+				set_dist(dist, v, alt);
+				
+				set_prev(prev, v, u, -1);
+				
+				heap_push(Q, v);
+				
+				#ifdef DOTOUT
+				if (alt > max_dist)
+					max_dist = alt;
+				#endif
+			}
 		}
 		
 		#ifdef DOTOUT
