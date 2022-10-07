@@ -1,0 +1,26 @@
+
+%start: exp;
+
+[identchars]:
+	'a'-'z',
+	'A'-'Z', '_',
+	'+', '-', '*', '/'
+;
+
+`ident`:
+	([identchars] [identchars, '0'-'9']*) &! ("define" | "let" | "lambda")
+;
+
+exp
+	: "#t"
+	| "#f"
+	| `['0'-'9']+:"%i"` #number
+	| `'\"' ([!('\"', '\\')] | '\\' ['t','n','r'])* '\"'` #string
+	| ['`','\''] exp
+	| '(' "define" `ident` exp ')'
+	| '(' "let" '(' (('(' `ident` #name exp #value ')') #assigns[])* ')' exp ')'
+	| '(' "lambda" '(' (`ident` #arguments[])* ')' exp ')'
+	| '(' #list (exp #subexp)* ')'
+	;
+	
+
