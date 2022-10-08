@@ -331,7 +331,8 @@ void* parse(FILE* stream)
 			}
 			else
 			{
-				assert(!"168");
+				fprintf(stderr, "%s: unexpected '%c' when reading ...'%.*s'!\n", argv0, c, i, lexer.data);
+				abort();
 			}
 		}
 	}
