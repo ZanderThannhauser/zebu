@@ -329,7 +329,7 @@ void out(struct yacc_state* start)
 			{
 				dyntable_print_header(gotos, output_prefix, stream);
 			}
-			else if (!strncmp(old, "LEXER_TABLE", len))
+			else if (!strncmp(old, "LEXER_TRANSITION_TABLE", len))
 			{
 				dyntable_print_header(lexer, output_prefix, stream);
 			}
@@ -416,7 +416,7 @@ void out(struct yacc_state* start)
 			{
 				dyntable_print_source(gotos, output_prefix, stream);
 			}
-			else if (!strncmp(old, "LEXER_TABLE", len))
+			else if (!strncmp(old, "LEXER_TRANSITION_TABLE", len))
 			{
 				dyntable_print_source(lexer, output_prefix, stream);
 			}

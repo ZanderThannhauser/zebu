@@ -1,6 +1,6 @@
 const char* just_tables_header = ""
 	"" "\n"
-	"{{LEXER_TABLE}}" "\n"
+	"{{LEXER_TRANSITION_TABLE}}" "\n"
 	"" "\n"
 	"{{LEXER_STARTS_TABLE}}" "\n"
 	"" "\n"

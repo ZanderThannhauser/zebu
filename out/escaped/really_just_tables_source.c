@@ -1,6 +1,6 @@
 const char* really_just_tables_source = ""
 	"" "\n"
-	"{{LEXER_TABLE}}" "\n"
+	"{{LEXER_TRANSITION_TABLE}}" "\n"
 	"" "\n"
 	"{{LEXER_STARTS_TABLE}}" "\n"
 	"" "\n"

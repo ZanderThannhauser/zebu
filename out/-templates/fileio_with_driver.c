@@ -16,7 +16,7 @@
 
 {{GOTO_TABLE}}
 
-{{LEXER_TABLE}}
+{{LEXER_TRANSITION_TABLE}}
 
 {{LEXER_STARTS_TABLE}}
 
@@ -122,7 +122,7 @@ static void escape(char *out, unsigned char in)
 		case '\n': *out++ = '\\', *out++ = 'n', *out = 0; break;
 		
 		default:
-			sprintf(out, "\\x%02X", in);
+			sprintf(out, "\\x%02hhX", in);
 			break;
 	}
 }
@@ -155,6 +155,20 @@ void* parse(FILE* stream)
 		data.data[data.n++] = d;
 	}
 	
+	void push_char(unsigned char c)
+	{
+		while (lexer.n + 1 >= lexer.cap)
+		{
+			lexer.cap = lexer.cap << 1 ?: 1;
+			#ifdef ZEBU_DEBUG
+			ddprintf("lexer.cap == %u\n", lexer.cap);
+			#endif
+			lexer.data = realloc(lexer.data, lexer.cap);
+		}
+		
+		lexer.data[lexer.n++] = c;
+	}
+	
 	#ifdef ZEBU_DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
@@ -175,19 +189,6 @@ void* parse(FILE* stream)
 	
 	void read_token(unsigned l)
 	{
-		void append(unsigned char c)
-		{
-			while (lexer.n + 1 >= lexer.cap)
-			{
-				lexer.cap = lexer.cap << 1 ?: 1;
-				#ifdef ZEBU_DEBUG
-				ddprintf("lexer.cap == %u\n", lexer.cap);
-				#endif
-				lexer.data = realloc(lexer.data, lexer.cap);
-			}
-			
-			lexer.data[lexer.n++] = c;
-		}
 		
 		unsigned original_l = l, i = 0, a, b, c, f = 0;
 		
@@ -215,7 +216,7 @@ void* parse(FILE* stream)
 			}
 			else if ((c = getc(stream)) != EOF)
 			{
-				append(c);
+				push_char(c);
 				
 				#ifdef ZEBU_DEBUG
 				char escaped[10];

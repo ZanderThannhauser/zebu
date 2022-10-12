@@ -14,7 +14,7 @@
 
 {{GOTO_TABLE}}
 
-{{LEXER_TABLE}}
+{{LEXER_TRANSITION_TABLE}}
 
 {{LEXER_STARTS_TABLE}}
 
@@ -283,7 +283,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 			}
 			else
 			{
-				fprintf(stderr, "zebu: unexpected '%c' when reading ...'%.*s'!\n", c, i, lexer.data);
+				fprintf(stderr, "zebu: unexpected '%c' when reading '%.*s'!\n", c, i, lexer.data);
 				abort();
 			}
 		}
