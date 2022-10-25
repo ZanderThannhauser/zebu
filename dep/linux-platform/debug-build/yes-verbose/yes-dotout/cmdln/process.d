@@ -9,4 +9,5 @@ bin/linux-platform/debug-build/yes-verbose/yes-dotout/./cmdln/process.o: \
  set/ptr/is_nonempty.h set/ptr/free.h cmdln/usage.h cmdln/verbose.h \
  cmdln/process.h cmdln/input_path.h cmdln/output_path.h \
  cmdln/output_prefix.h cmdln/minimize_lexer.h cmdln/parser_template.h \
- cmdln/make_dependencies.h cmdln/make_dependencies_file.h
+ cmdln/make_dependencies.h cmdln/parser_program_name.h \
+ cmdln/make_dependencies_file.h

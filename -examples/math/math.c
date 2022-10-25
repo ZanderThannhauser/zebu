@@ -38,7 +38,7 @@ const unsigned zebu_shifts[23][10] = {
 	[16][3] = 3,
 	[17][2] = 2,
 	[17][3] = 3,
-	[18][9] = 30,
+	[18][9] = 28,
 	[19][2] = 8,
 	[19][3] = 9,
 	[20][2] = 8,
@@ -50,7 +50,7 @@ const unsigned zebu_shifts[23][10] = {
 };
 
 
-const unsigned zebu_reduces[37][10] = {
+const unsigned zebu_reduces[33][10] = {
 	[2][4] = 1,
 	[2][5] = 1,
 	[2][6] = 1,
@@ -83,33 +83,25 @@ const unsigned zebu_reduces[37][10] = {
 	[25][6] = 8,
 	[25][7] = 8,
 	[25][8] = 8,
-	[26][6] = 9,
-	[26][7] = 9,
 	[26][8] = 9,
 	[27][8] = 10,
-	[28][8] = 11,
-	[29][8] = 12,
-	[30][4] = 6,
-	[30][5] = 6,
-	[30][6] = 6,
-	[30][7] = 6,
-	[30][9] = 6,
-	[31][6] = 7,
-	[31][7] = 7,
-	[31][9] = 7,
-	[32][6] = 8,
-	[32][7] = 8,
-	[32][9] = 8,
-	[33][6] = 9,
-	[33][7] = 9,
-	[33][9] = 9,
-	[34][9] = 10,
-	[35][9] = 11,
-	[36][9] = 12,
+	[28][4] = 6,
+	[28][5] = 6,
+	[28][6] = 6,
+	[28][7] = 6,
+	[28][9] = 6,
+	[29][6] = 7,
+	[29][7] = 7,
+	[29][9] = 7,
+	[30][6] = 8,
+	[30][7] = 8,
+	[30][9] = 8,
+	[31][9] = 9,
+	[32][9] = 10,
 };
 
 
-const unsigned zebu_gotos[23][7] = {
+const unsigned zebu_gotos[23][5] = {
 	[1][1] = 4,
 	[1][2] = 5,
 	[1][3] = 6,
@@ -123,33 +115,25 @@ const unsigned zebu_gotos[23][7] = {
 	[9][3] = 12,
 	[9][4] = 18,
 	[14][2] = 5,
-	[14][3] = 25,
-	[14][5] = 24,
+	[14][3] = 24,
 	[15][2] = 5,
 	[15][3] = 25,
-	[15][5] = 26,
-	[16][1] = 28,
+	[16][1] = 26,
 	[16][2] = 5,
 	[16][3] = 6,
-	[16][6] = 27,
-	[17][1] = 28,
+	[17][1] = 27,
 	[17][2] = 5,
 	[17][3] = 6,
-	[17][6] = 29,
 	[19][2] = 11,
-	[19][3] = 32,
-	[19][5] = 31,
+	[19][3] = 29,
 	[20][2] = 11,
-	[20][3] = 32,
-	[20][5] = 33,
-	[21][1] = 35,
+	[20][3] = 30,
+	[21][1] = 31,
 	[21][2] = 11,
 	[21][3] = 12,
-	[21][6] = 34,
-	[22][1] = 35,
+	[22][1] = 32,
 	[22][2] = 11,
 	[22][3] = 12,
-	[22][6] = 36,
 };
 
 
@@ -207,7 +191,7 @@ const unsigned zebu_lexer[32][58] = {
 };
 
 
-const unsigned zebu_lexer_starts[37] = {
+const unsigned zebu_lexer_starts[33] = {
 	[1] = 1,
 	[2] = 2,
 	[3] = 1,
@@ -233,17 +217,13 @@ const unsigned zebu_lexer_starts[37] = {
 	[23] = 2,
 	[24] = 4,
 	[25] = 4,
-	[26] = 4,
+	[26] = 3,
 	[27] = 3,
-	[28] = 3,
-	[29] = 3,
-	[30] = 5,
-	[31] = 7,
-	[32] = 7,
-	[33] = 7,
-	[34] = 6,
-	[35] = 6,
-	[36] = 6,
+	[28] = 5,
+	[29] = 7,
+	[30] = 7,
+	[31] = 6,
+	[32] = 6,
 };
 
 
@@ -301,6 +281,7 @@ struct zebu_addition
 {
 	struct zebu_addition* add;
 	struct zebu_multiply* left;
+	struct zebu_addition* minus;
 	unsigned refcount;
 };
 
@@ -313,6 +294,7 @@ struct zebu_highest
 
 struct zebu_multiply
 {
+	struct zebu_multiply* divide;
 	struct zebu_highest* left;
 	struct zebu_multiply* times;
 	unsigned refcount;
@@ -519,9 +501,13 @@ void print_zebu_addition(struct link* links, enum prefix p, const char* name, st
 	else
 		print_empty_leaf(new ?: links, p_not_last_child, "addition", "add");
 	if (ptree->left)
-		print_zebu_multiply(new ?: links, p_last_child, "left", ptree->left);
+		print_zebu_multiply(new ?: links, p_not_last_child, "left", ptree->left);
 	else
-		print_empty_leaf(new ?: links, p_last_child, "multiply", "left");
+		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "left");
+	if (ptree->minus)
+		print_zebu_addition(new ?: links, p_last_child, "minus", ptree->minus);
+	else
+		print_empty_leaf(new ?: links, p_last_child, "addition", "minus");
 	free(new);
 }
 void print_zebu_highest(struct link* links, enum prefix p, const char* name, struct zebu_highest* ptree)
@@ -586,6 +572,10 @@ void print_zebu_multiply(struct link* links, enum prefix p, const char* name, st
 		break;
 	}
 	printf("\e[34m%s\e[m (\e[36mmultiply\e[m)\n", name);
+	if (ptree->divide)
+		print_zebu_multiply(new ?: links, p_not_last_child, "divide", ptree->divide);
+	else
+		print_empty_leaf(new ?: links, p_not_last_child, "multiply", "divide");
 	if (ptree->left)
 		print_zebu_highest(new ?: links, p_not_last_child, "left", ptree->left);
 	else
@@ -630,10 +620,10 @@ void print_zebu_root(struct link* links, enum prefix p, const char* name, struct
 }
 
 
-struct zebu_token* inc_zebu_token(struct zebu_token* this)
+struct zebu_token* inc_zebu_token(struct zebu_token* token)
 {
-	if (this) this->refcount++;
-	return this;
+	if (token) token->refcount++;
+	return token;
 }
 struct zebu_$start* inc_zebu_$start(struct zebu_$start* ptree)
 {
@@ -667,7 +657,7 @@ struct zebu_root* inc_zebu_root(struct zebu_root* ptree)
 
 
 
-extern void free_zebu_token(struct zebu_token* this);
+extern void free_zebu_token(struct zebu_token* token);
 extern void free_zebu_$start(struct zebu_$start* ptree);
 
 extern void free_zebu_addition(struct zebu_addition* ptree);
@@ -678,12 +668,12 @@ extern void free_zebu_multiply(struct zebu_multiply* ptree);
 
 extern void free_zebu_root(struct zebu_root* ptree);
 
-void free_zebu_token(struct zebu_token* this)
+void free_zebu_token(struct zebu_token* token)
 {
-	if (this && !--this->refcount)
+	if (token && !--token->refcount)
 	{
-		free(this->data);
-		free(this);
+		free(token->data);
+		free(token);
 	}
 }
 void free_zebu_$start(struct zebu_$start* ptree)
@@ -701,6 +691,7 @@ void free_zebu_addition(struct zebu_addition* ptree)
 	{
 		free_zebu_addition(ptree->add);
 		free_zebu_multiply(ptree->left);
+		free_zebu_addition(ptree->minus);
 		free(ptree);
 	}
 }
@@ -719,6 +710,7 @@ void free_zebu_multiply(struct zebu_multiply* ptree)
 {
 	if (ptree && !--ptree->refcount)
 	{
+		free_zebu_multiply(ptree->divide);
 		free_zebu_highest(ptree->left);
 		free_zebu_multiply(ptree->times);
 		free(ptree);
@@ -1019,10 +1011,31 @@ int main(int argc, char** argv)
 		free_zebu_root(value->root), value->root = inc_zebu_root(subgrammar);
 		free_zebu_root(subgrammar);
 		}
-		d = value, g = 7;
+		d = value, g = 5;
 		break;
 	}
-	case 11:
+	case 10:
+	{
+		struct zebu_addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
+		value->refcount = 1;
+		{
+		struct zebu_addition* subgrammar = data.data[--yacc.n, --data.n];
+		free_zebu_addition(value->minus), value->minus = inc_zebu_addition(subgrammar);
+		free_zebu_addition(subgrammar);
+		}
+		{
+		struct zebu_token* token = data.data[--yacc.n, --data.n];
+		free_zebu_token(token);
+		}
+		{
+		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
+		free_zebu_multiply(value->left), value->left = inc_zebu_multiply(subgrammar);
+		free_zebu_multiply(subgrammar);
+		}
+		d = value, g = 1;
+		break;
+	}
+	case 9:
 	{
 		struct zebu_addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
@@ -1031,69 +1044,22 @@ int main(int argc, char** argv)
 		free_zebu_addition(value->add), value->add = inc_zebu_addition(subgrammar);
 		free_zebu_addition(subgrammar);
 		}
-		d = value, g = 6;
-		break;
-	}
-	case 8:
-	{
-		struct zebu_multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
+		{
+		struct zebu_token* token = data.data[--yacc.n, --data.n];
+		free_zebu_token(token);
+		}
 		{
 		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
-		free_zebu_multiply(value->times), value->times = inc_zebu_multiply(subgrammar);
+		free_zebu_multiply(value->left), value->left = inc_zebu_multiply(subgrammar);
 		free_zebu_multiply(subgrammar);
 		}
-		d = value, g = 5;
+		d = value, g = 1;
 		break;
 	}
 	case 4:
 	{
 		struct zebu_addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
-		{
-		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
-		free_zebu_multiply(value->left), value->left = inc_zebu_multiply(subgrammar);
-		free_zebu_multiply(subgrammar);
-		}
-		d = value, g = 1;
-		break;
-	}
-	case 10:
-	{
-		struct zebu_addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct zebu_addition* trie = data.data[--yacc.n, --data.n];
-			if (trie->add) { free_zebu_addition(value->add); value->add = inc_zebu_addition(trie->add); }
-			if (trie->left) { free_zebu_multiply(value->left); value->left = inc_zebu_multiply(trie->left); }
-			free_zebu_addition(trie);
-		}
-		{
-		struct zebu_token* token = data.data[--yacc.n, --data.n];
-		free_zebu_token(token);
-		}
-		{
-		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
-		free_zebu_multiply(value->left), value->left = inc_zebu_multiply(subgrammar);
-		free_zebu_multiply(subgrammar);
-		}
-		d = value, g = 1;
-		break;
-	}
-	case 12:
-	{
-		struct zebu_addition* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
-		value->refcount = 1;
-		{
-			struct zebu_addition* trie = data.data[--yacc.n, --data.n];
-			if (trie->add) { free_zebu_addition(value->add); value->add = inc_zebu_addition(trie->add); }
-			if (trie->left) { free_zebu_multiply(value->left); value->left = inc_zebu_multiply(trie->left); }
-			free_zebu_addition(trie);
-		}
-		{
-		struct zebu_token* token = data.data[--yacc.n, --data.n];
-		free_zebu_token(token);
-		}
 		{
 		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
 		free_zebu_multiply(value->left), value->left = inc_zebu_multiply(subgrammar);
@@ -1146,15 +1112,14 @@ int main(int argc, char** argv)
 		d = value, g = 3;
 		break;
 	}
-	case 7:
+	case 8:
 	{
 		struct zebu_multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		{
-			struct zebu_multiply* trie = data.data[--yacc.n, --data.n];
-			if (trie->left) { free_zebu_highest(value->left); value->left = inc_zebu_highest(trie->left); }
-			if (trie->times) { free_zebu_multiply(value->times); value->times = inc_zebu_multiply(trie->times); }
-			free_zebu_multiply(trie);
+		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
+		free_zebu_multiply(value->divide), value->divide = inc_zebu_multiply(subgrammar);
+		free_zebu_multiply(subgrammar);
 		}
 		{
 		struct zebu_token* token = data.data[--yacc.n, --data.n];
@@ -1168,15 +1133,14 @@ int main(int argc, char** argv)
 		d = value, g = 3;
 		break;
 	}
-	case 9:
+	case 7:
 	{
 		struct zebu_multiply* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));
 		value->refcount = 1;
 		{
-			struct zebu_multiply* trie = data.data[--yacc.n, --data.n];
-			if (trie->left) { free_zebu_highest(value->left); value->left = inc_zebu_highest(trie->left); }
-			if (trie->times) { free_zebu_multiply(value->times); value->times = inc_zebu_multiply(trie->times); }
-			free_zebu_multiply(trie);
+		struct zebu_multiply* subgrammar = data.data[--yacc.n, --data.n];
+		free_zebu_multiply(value->times), value->times = inc_zebu_multiply(subgrammar);
+		free_zebu_multiply(subgrammar);
 		}
 		{
 		struct zebu_token* token = data.data[--yacc.n, --data.n];
@@ -1204,7 +1168,7 @@ int main(int argc, char** argv)
 	}
 }
 				
-				if (g == 7)
+				if (g == 5)
 				{
 					free_zebu_token(td);
 					yacc.n = 0, root = d;

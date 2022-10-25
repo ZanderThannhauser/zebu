@@ -26,6 +26,7 @@ srcs += ./cmdln/make_dependencies_file.c
 srcs += ./cmdln/minimize_lexer.c
 srcs += ./cmdln/output_path.c
 srcs += ./cmdln/output_prefix.c
+srcs += ./cmdln/parser_program_name.c
 srcs += ./cmdln/parser_template.c
 srcs += ./cmdln/process.c
 srcs += ./cmdln/usage.c

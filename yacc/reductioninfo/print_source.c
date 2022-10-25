@@ -5,6 +5,8 @@
 
 #include <string/struct.h>
 
+#include <cmdln/parser_program_name.h>
+
 #include <misc/format_flags/struct.h>
 
 #include <yacc/structinfo/struct.h>
@@ -87,18 +89,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "signed long raw = strtol((char*) token->data, &m, 0);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= SCHAR_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -110,18 +112,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "signed long raw = strtol((void*) token->data, &m, 0);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= SHRT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -133,18 +135,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "signed long raw = strtol((char*) token->data, &m, 0);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= INT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%i scanf-token given a value too high for an signed int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -156,15 +158,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "signed long raw = strtol((char*) token->data, &m, 0);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtol('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -176,15 +178,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "signed long long raw = strtoll((char*) token->data, &m, 0);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoll('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoll('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoll('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoll('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -207,18 +209,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 10);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UCHAR_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -230,18 +232,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 10);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= USHRT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -253,18 +255,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 10);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UINT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -276,15 +278,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 10);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -296,15 +298,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long long raw = strtoull((char*) token->data, &m, 10);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -325,18 +327,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 8);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UCHAR_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -348,18 +350,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 8);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= USHRT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -371,18 +373,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 8);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UINT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -394,15 +396,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 8);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -414,15 +416,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long long raw = strtoull((char*) token->data, &m, 8);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -444,18 +446,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 16);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UCHAR_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned char!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -467,18 +469,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 16);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= USHRT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned short!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -490,18 +492,18 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 16);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (raw >= UINT_MAX) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: %%%%o scanf-token given a value too high for an unsigned int!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -513,15 +515,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long raw = strtoul((char*) token->data, &m, 16);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -533,15 +535,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "errno = 0;" "\n"
 												"\t" "\t" "\t" "unsigned long long raw = strtoull((char*) token->data, &m, 16);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtoul('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = raw;" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -568,15 +570,15 @@ void reductioninfo_print_source(
 												"\t" "\t" "{" "\n"
 												"\t" "\t" "\t" "size_t len = mbstowcs(NULL, (void*) token->data, -1);" "\n"
 												"\t" "\t" "\t" "if (!token->len) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%ls' scanf-token given empty string!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%ls' scanf-token given empty string!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (len == (size_t) -1) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: error processing '%%%%ls' scanf-token: mbstowcs(): %%m \\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: error processing '%%%%ls' scanf-token: mbstowcs(): %%m \\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "mbstowcs(value->%s = malloc((len + 1) * sizeof(wchar_t)), (void*) token->data, len + 1);" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, parser_program_name, name);
 											break;
 										}
 										
@@ -594,12 +596,12 @@ void reductioninfo_print_source(
 											fprintf(stream, ""
 												"\t" "\t" "{" "\n"
 												"\t" "\t" "\t" "if (!token->len) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%c' scanf-token given empty string!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%c' scanf-token given empty string!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "\t" "value->%s = token->data[0];" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, name);
 											break;
 										}
 										
@@ -607,13 +609,13 @@ void reductioninfo_print_source(
 										{
 											fprintf(stream, ""
 												"\t" "\t" "if (!token->len) {" "\n"
-												"\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%lc' scanf-token given empty string!\\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "fprintf(stderr, \"%%s: '%%%%lc' scanf-token given empty string!\\n\", %s);" "\n"
 												"\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "} else if (mbstowcs(&value->%s, (void*) token->data, 1) == (size_t) -1) {" "\n"
-												"\t" "\t" "\t" "fprintf(stderr, \"%%s: error processing '%%%%lc' scanf-token: mbstowcs(): %%m \\n\", program_invocation_name);" "\n"
+												"\t" "\t" "\t" "fprintf(stderr, \"%%s: error processing '%%%%lc' scanf-token: mbstowcs(): %%m \\n\", %s);" "\n"
 												"\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", parser_program_name, name, parser_program_name);
 											break;
 										}
 										
@@ -638,14 +640,14 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "\t" "errno = 0, value->%s = strtof((char*) token->data, &m);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtof('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", name, parser_program_name, parser_program_name);
 											break;
 										}
 										case lm_long:
@@ -655,14 +657,14 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "\t" "errno = 0, value->%s = strtod((char*) token->data, &m);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtod('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtod('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtod('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtod('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", name, parser_program_name, parser_program_name);
 											break;
 										}
 										case lm_long_double:
@@ -672,14 +674,14 @@ void reductioninfo_print_source(
 												"\t" "\t" "\t" "char *m;" "\n"
 												"\t" "\t" "\t" "errno = 0, value->%s = strtold((char*) token->data, &m);" "\n"
 												"\t" "\t" "\t" "if (*m) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtold('%%s'): invalid character '%%c'!\\n\", program_invocation_name, token->data, *m);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtold('%%s'): invalid character '%%c'!\\n\", %s, token->data, *m);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "} else if (errno) {" "\n"
-												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtold('%%s'): %%%%m!\\n\", program_invocation_name, token->data);" "\n"
+												"\t" "\t" "\t" "\t" "fprintf(stderr, \"%%s: strtold('%%s'): %%m!\\n\", %s, token->data);" "\n"
 												"\t" "\t" "\t" "\t" "exit(1);" "\n"
 												"\t" "\t" "\t" "}" "\n"
 												"\t" "\t" "}" "\n"
-											"", name);
+											"", name, parser_program_name, parser_program_name);
 											break;
 										}
 										default: TODO; break;

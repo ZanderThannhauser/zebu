@@ -24,6 +24,7 @@
 #include "minimize_lexer.h"
 #include "parser_template.h"
 #include "make_dependencies.h"
+#include "parser_program_name.h"
 #include "make_dependencies_file.h"
 
 void cmdln_process(int argc, char* const* argv)
@@ -32,19 +33,21 @@ void cmdln_process(int argc, char* const* argv)
 	
 	int opt, option_index;
 	const struct option long_options[] = {
-		{"input",       required_argument, 0, 'i'},
-		{"output",            no_argument, 0, 'o'},
-		{"prefix",      required_argument, 0, 'p'},
-		{"template",    required_argument, 0, 't'},
-		{"minimize-lexer",    no_argument, 0, 'm'},
-		{"make-dependencies", no_argument, 0, 'M'},
+		{"input",                  required_argument, 0, 'i'},
+		{"output",                       no_argument, 0, 'o'},
+		{"prefix",                 required_argument, 0, 'p'},
+		{"template",               required_argument, 0, 't'},
+		{"minimize-lexer",               no_argument, 0, 'm'},
+		{"make-dependencies",            no_argument, 0, 'M'},
 		{"make-dependencies-file", required_argument, 0, 'F'},
-		{"verbose",           no_argument, 0, 'v'},
-		{"help",              no_argument, 0, 'h'},
-		{ 0,                            0, 0,  0 },
+		{"program-name",           required_argument, 0, 'P'},
+		{"verbose",                      no_argument, 0, 'v'},
+		{"help",                         no_argument, 0, 'h'},
+		{ 0,                                       0, 0,  0 },
 	};
 	
-	while ((opt = getopt_long(argc, argv, "i:" "o:" "p" "t:" "m" "M" "F:" "v" "h",
+	while ((opt = getopt_long(argc, argv,
+		"i:" "o:" "p" "t:" "m" "M" "F:" "P:" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -95,6 +98,10 @@ void cmdln_process(int argc, char* const* argv)
 			case 'F':
 				make_dependencies = true;
 				strcpy(make_dependencies_file, optarg);
+				break;
+			
+			case 'P':
+				stpcpy(stpcpy(stpcpy(parser_program_name, "\""), optarg), "\"");
 				break;
 			
 			case 'v':
