@@ -104,7 +104,7 @@ ARGS += --template=readline-with-driver
 #ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-ARGS += --program-name bash
+#ARGS += --program-name bash
 
 #ARGS += --custom-template=./out/-templates/really_just_tables
 #ARGS += --custom-source-template=./out/-templates/really_just_tables.c
