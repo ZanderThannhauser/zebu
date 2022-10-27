@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <assert.h>
 #include <stdlib.h>
 
@@ -47,6 +48,15 @@ void structinfo_update(
 			{
 				TODO;
 				exit(1);
+			}
+			
+			if (false
+				|| ae->type == snt_substructinfo_scalar
+				|| ae->type == snt_substructinfo_array)
+			{
+				structinfo_update(
+					ae->substructinfo.structinfo,
+					be->substructinfo.structinfo);
 			}
 			
 			an = an->next, bn = bn->next;

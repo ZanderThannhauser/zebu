@@ -41,6 +41,7 @@
 
 #include <yacc/structinfo/new.h>
 #include <yacc/structinfo/add_scanf_scalar_field.h>
+#include <yacc/structinfo/add_scanf_array_field.h>
 #include <yacc/structinfo/add_token_scalar_field.h>
 #include <yacc/structinfo/add_token_array_field.h>
 #include <yacc/structinfo/free.h>
@@ -135,13 +136,9 @@ struct gbundle read_gravemark_production(
 			case t_array_hashtag:
 			{
 				if (fflags)
-				{
-					TODO;
-				}
+					structinfo_add_scanf_array_field(structinfo, fflags, tag);
 				else
-				{
 					structinfo_add_token_array_field(structinfo, tag);
-				}
 				break;
 			}
 			

@@ -7,9 +7,15 @@
 
 #include <enums/error.h>
 
+#include <gegex/nest_structinfo_into_scalar.h>
+#include <gegex/nest_structinfo_into_array.h>
+
 #include <parser/tokenizer/struct.h>
 #include <parser/tokenizer/token_names.h>
 #include <parser/tokenizer/read_token.h>
+
+#include <string/new.h>
+#include <string/free.h>
 
 #include "../root.h"
 
@@ -37,6 +43,36 @@ struct gbundle read_parenthesis_production(
 	}
 	
 	read_token(tokenizer);
+	
+	switch (tokenizer->token)
+	{
+		case t_scalar_hashtag:
+		{
+			struct string* tag = new_string_from_tokenchars(tokenizer);
+			
+			gegex_nest_structinfo_into_scalar(retval.start, tag);
+			
+			read_token(tokenizer);
+			
+			free_string(tag);
+			break;
+		}
+		
+		case t_array_hashtag:
+		{
+			struct string* tag = new_string_from_tokenchars(tokenizer);
+			
+			gegex_nest_structinfo_into_array(retval.start, tag);
+			
+			read_token(tokenizer);
+			
+			free_string(tag);
+			break;
+		}
+		
+		default:
+			break;
+	}
 	
 	EXIT;
 	return retval;

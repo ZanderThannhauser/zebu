@@ -13,6 +13,9 @@ enum structinfo_node_type
 	snt_scanf_scalar,
 	snt_scanf_array,
 	
+	snt_substructinfo_scalar,
+	snt_substructinfo_array,
+	
 	snt_user_defined,
 };
 

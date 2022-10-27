@@ -81,8 +81,22 @@ void structinfo_print_source(
 			}
 			
 			case snt_scanf_array:
+			{
 				TODO;
 				break;
+			}
+			
+			case snt_substructinfo_scalar:
+			{
+				TODO;
+				break;
+			}
+			
+			case snt_substructinfo_array:
+			{
+				TODO;
+				break;
+			}
 			
 			case snt_user_defined:
 			{

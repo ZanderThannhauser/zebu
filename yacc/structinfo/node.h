@@ -14,13 +14,17 @@ struct structinfo_node
 		} grammar;
 		
 		struct {
+			struct format_flags* fflags;
+		} scanf;
+		
+		struct {
+			struct structinfo* structinfo;
+		} substructinfo;
+		
+		struct {
 			struct string* type;
 			struct string* destructor;
 		} user_defined;
-		
-		struct {
-			struct format_flags* fflags;
-		} scanf;
 	};
 	unsigned refcount;
 };

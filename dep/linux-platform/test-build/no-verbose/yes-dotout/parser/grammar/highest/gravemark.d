@@ -16,6 +16,7 @@ bin/linux-platform/test-build/no-verbose/yes-dotout/./parser/grammar/highest/gra
  regex/nfa_to_dfa.h regex/simplify_dfa.h regex/struct.h regex/free.h \
  regex/add_lambda_transition.h yacc/structinfo/new.h \
  yacc/structinfo/add_scanf_scalar_field.h \
+ yacc/structinfo/add_scanf_array_field.h \
  yacc/structinfo/add_token_scalar_field.h \
  yacc/structinfo/add_token_array_field.h yacc/structinfo/free.h \
  parser/grammar/highest/gravemark.h gegex/gbundle.h

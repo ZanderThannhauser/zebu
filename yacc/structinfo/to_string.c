@@ -1,6 +1,7 @@
 
 #ifdef DOTOUT
 
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include <stddef.h>
@@ -47,37 +48,71 @@ char* structinfo_to_string(struct structinfo* this)
 		{
 			struct structinfo_node* node = ptr;
 			
+			const char* chars = node->name->chars;
+			
 			switch (node->type)
 			{
 				case snt_token_scalar:
-					append("struct token* "), append(node->name->chars), append(";\\l");
+				{
+					append("struct token* "), append(chars), append(";\\l");
 					break;
+				}
 				
 				case snt_token_array:
-					append("struct token* "), append(node->name->chars), append("[];\\l");
+				{
+					append("struct token* "), append(chars), append("[];\\l");
 					break;
+				}
 				
 				case snt_grammar_scalar:
+				{
 					append("struct "), append(node->grammar.name->chars);
-					append("* "), append(node->name->chars), append(";\\l");
+					append("* "), append(chars), append(";\\l");
 					break;
+				}
 				
 				case snt_grammar_array:
+				{
 					append("struct "), append(node->grammar.name->chars);
-					append("* "), append(node->name->chars), append("[];\\l");
+					append("* "), append(chars), append("[];\\l");
 					break;
+				}
 				
 				case snt_scanf_scalar:
-					append(node->scanf.fflags->ctype), append(node->name->chars), append(";\\l");
+				{
+					append(node->scanf.fflags->ctype), append(" "), append(chars), append(";\\l");
 					break;
+				}
 				
 				case snt_scanf_array:
-					append(node->scanf.fflags->ctype), append(node->name->chars), append("[];\\l");
+				{
+					append(node->scanf.fflags->ctype), append(" "), append(chars), append("[];\\l");
 					break;
+				}
+				
+				case snt_substructinfo_scalar:
+				{
+					char* substructinfo = structinfo_to_string(node->substructinfo.structinfo);
+					dpvs(substructinfo);
+					append(substructinfo), append(" "), append(chars), append(";\\l");
+					free(substructinfo);
+					break;
+				}
+				
+				case snt_substructinfo_array:
+				{
+					char* substructinfo = structinfo_to_string(node->substructinfo.structinfo);
+					dpvs(substructinfo);
+					append(substructinfo), append(" "), append(chars), append("[];\\l");
+					free(substructinfo);
+					break;
+				}
 				
 				case snt_user_defined:
-					append(node->user_defined.type->chars), append(node->name->chars), append("[];\\l");
+				{
+					append(node->user_defined.type->chars), append(chars), append("[];\\l");
 					break;
+				}
 				
 				default:
 					TODO;
@@ -87,7 +122,7 @@ char* structinfo_to_string(struct structinfo* this)
 		runme;
 	}));
 	
-	append("};\\l");
+	append("}");
 	
 	dpvs(buffer.data);
 	
