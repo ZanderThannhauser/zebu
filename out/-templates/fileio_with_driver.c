@@ -155,20 +155,6 @@ void* parse(FILE* stream)
 		data.data[data.n++] = d;
 	}
 	
-	void push_char(unsigned char c)
-	{
-		while (lexer.n + 1 >= lexer.cap)
-		{
-			lexer.cap = lexer.cap << 1 ?: 1;
-			#ifdef ZEBU_DEBUG
-			ddprintf("lexer.cap == %u\n", lexer.cap);
-			#endif
-			lexer.data = realloc(lexer.data, lexer.cap);
-		}
-		
-		lexer.data[lexer.n++] = c;
-	}
-	
 	#ifdef ZEBU_DEBUG
 	void ddprintf(const char* fmt, ...)
 	{
@@ -183,6 +169,20 @@ void* parse(FILE* stream)
 		va_end(va);
 	}
 	#endif
+	
+	void push_char(unsigned char c)
+	{
+		while (lexer.n + 1 >= lexer.cap)
+		{
+			lexer.cap = lexer.cap << 1 ?: 1;
+			#ifdef ZEBU_DEBUG
+			ddprintf("lexer.cap == %u\n", lexer.cap);
+			#endif
+			lexer.data = realloc(lexer.data, lexer.cap);
+		}
+		
+		lexer.data[lexer.n++] = c;
+	}
 	
 	unsigned y, t, s, r;
 	void* td;
