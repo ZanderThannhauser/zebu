@@ -98,6 +98,7 @@ void print_tree_functions(
 		"\t\tcase \':\': case \';\':" "\n"
 		"\t\tcase \',\': case \'.\':" "\n"
 		"\t\tcase \'_\':" "\n"
+		"\t\tcase \'/\':" "\n"
 		"\t\tcase \'`\':" "\n"
 		"\t\tcase \'0\' ... \'9\':" "\n"
 		"\t\tcase \'a\' ... \'z\':" "\n"
