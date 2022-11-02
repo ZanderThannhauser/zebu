@@ -23,6 +23,9 @@
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #include <quack/len.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -108,7 +111,15 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (quack_is_nonempty(todo))
@@ -162,7 +173,15 @@ struct regex* regex_intersect_dfas(struct regex* A_start, struct regex* B_start)
 	}
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	avl_free_tree(mappings);

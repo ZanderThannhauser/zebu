@@ -31,6 +31,9 @@
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #include <quack/len.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -124,7 +127,15 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	struct avl_tree_t* mappings = avl_alloc_tree(compare_mappings, free_mapping);
@@ -269,7 +280,15 @@ struct regex* regex_nfa_to_dfa(struct rbundle original)
 	#endif
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	avl_free_tree(mappings);

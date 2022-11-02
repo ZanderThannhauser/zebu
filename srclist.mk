@@ -35,6 +35,7 @@ srcs += ./compat/rindex.c
 srcs += ./compat/stpcpy.c
 srcs += ./compat/stpncpy.c
 srcs += ./compat/strndup.c
+srcs += ./compat/timer_thread.c
 srcs += ./debug.c
 srcs += ./gegex/add_grammar_transition.c
 srcs += ./gegex/add_lambda_transition.c

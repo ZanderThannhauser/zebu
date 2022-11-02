@@ -35,6 +35,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -55,12 +58,21 @@ int main(int argc, char* argv[])
 	#ifdef VERBOSE
 	if (verbose)
 	{
+		#ifdef LINUX_PLATFORM
 		signal(SIGALRM, default_sighandler);
 		
 		setitimer(ITIMER_REAL, &(const struct itimerval) {
-			.it_interval = {.tv_sec = 0, .tv_usec = 500 * 1000},
-			.it_value = {.tv_sec = 0, .tv_usec = 500 * 1000},
+			.it_interval = {.tv_sec = 0, .tv_usec = 250 * 1000},
+			.it_value = {.tv_sec = 1, .tv_usec = 0},
 		}, NULL);
+		#else
+		#ifdef WINDOWS_PLATFORM
+		timer_handler = default_sighandler;
+		start_timer_thread();
+		#else
+		#error bad platform
+		#endif
+		#endif
 	}
 	#endif
 	
@@ -70,6 +82,8 @@ int main(int argc, char* argv[])
 	#else
 	#ifdef WINDOWS_PLATFORM
 	if (mkdir("dot") < 0 && errno != EEXIST)
+	#else
+	#error bad platform
 	#endif
 	#endif
 	{
@@ -103,7 +117,15 @@ int main(int argc, char* argv[])
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	free_yacc_state(parser);
@@ -115,6 +137,9 @@ int main(int argc, char* argv[])
 	free_lex(lex);
 	
 	#ifdef VERBOSE
+	#ifdef WINDOWS_PLATFORM
+	join_timer_thread();
+	#endif
 	if (verbose && write(1, "\e[K", 3) < 3)
 		abort();
 	#endif

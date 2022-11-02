@@ -44,6 +44,9 @@
 #include <set/ptr/len.h>
 #include <heap/len.h>
 #include <misc/default_sighandler.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #include "simplify_dfa.h"
@@ -492,7 +495,7 @@ struct regex* regex_simplify_dfa(struct regex* original)
 		char buffer[1000] = {};
 		
 		size_t len = snprintf(buffer, sizeof(buffer),
-			"\e[K" "zebu: regex simplify (building dependencies): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: regex simplify (building dependencies): %ju of %ju (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, buffer, len) != len)
@@ -504,7 +507,15 @@ struct regex* regex_simplify_dfa(struct regex* original)
 	{
 		n = (ptrset_len(universe) * (ptrset_len(universe) - 1)) / 2;
 		
+		#ifdef LINUX_PLATFORM
 		signal(SIGALRM, handler1);
+		#else
+		#ifdef WINDOWS_PLATFORM
+		timer_handler = handler1;
+		#else
+		#error bad platform
+		#endif
+		#endif
 	}
 	#endif
 	
@@ -559,7 +570,7 @@ struct regex* regex_simplify_dfa(struct regex* original)
 		char ptr[200] = {};
 		
 		size_t len = snprintf(ptr, 200,
-			"\e[K" "zebu: regex simplify (allocating sets): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: regex simplify (allocating sets): %ju of %ju (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -570,7 +581,16 @@ struct regex* regex_simplify_dfa(struct regex* original)
 	
 	{
 		count = 0, n = ptrset_len(universe);
+		
+		#ifdef LINUX_PLATFORM
 		signal(SIGALRM, handler12);
+		#else
+		#ifdef WINDOWS_PLATFORM
+		timer_handler = handler12;
+		#else
+		#error bad platform
+		#endif
+		#endif
 	}
 	#endif
 	
@@ -613,7 +633,15 @@ struct regex* regex_simplify_dfa(struct regex* original)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (heap_is_nonempty(todo))
@@ -658,7 +686,15 @@ struct regex* regex_simplify_dfa(struct regex* original)
 	free_heap(todo);
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	EXIT;

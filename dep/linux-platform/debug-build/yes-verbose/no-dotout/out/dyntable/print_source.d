@@ -6,5 +6,5 @@ bin/linux-platform/debug-build/yes-verbose/no-dotout/./out/dyntable/print_source
  avl/compare_t.h avl/node_t.h avl/insert.h avl/search.h avl/delete.h \
  avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
- set/ptr/is_nonempty.h set/ptr/free.h misc/default_sighandler.h \
- out/dyntable/struct.h out/dyntable/print_source.h
+ set/ptr/is_nonempty.h set/ptr/free.h out/dyntable/struct.h \
+ out/dyntable/print_source.h

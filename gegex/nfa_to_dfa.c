@@ -47,6 +47,9 @@
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #include <quack/len.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -160,7 +163,15 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (quack_is_nonempty(todo))
@@ -415,7 +426,15 @@ struct gegex* gegex_nfa_to_dfa(struct gbundle original)
 	#endif
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	avl_free_tree(mappings);

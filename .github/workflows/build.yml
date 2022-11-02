@@ -496,10 +496,14 @@ jobs:
       run: make platform=windows buildtype=test dotout=no verbose=no
     - name: Build Test (with dotout)
       run: make platform=windows buildtype=test dotout=yes verbose=no
+    - name: Build Test (with verbose)
+      run: make platform=windows buildtype=test dotout=no verbose=yes
     - name: Build Release
       run: make platform=windows buildtype=release dotout=no verbose=no
     - name: Build Release (with dotout)
       run: make platform=windows buildtype=release dotout=yes verbose=no
+    - name: Build Release (with verbose)
+      run: make platform=windows buildtype=release dotout=no verbose=yes
 
 #  iloc-example:
 #    runs-on: ubuntu-latest

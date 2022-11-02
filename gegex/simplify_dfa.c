@@ -59,6 +59,9 @@
 #include <set/ptr/len.h>
 #include <heap/len.h>
 #include <misc/default_sighandler.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 struct pair
@@ -658,7 +661,15 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler1);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler1;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	ptrset_foreach(universe, ({
@@ -768,7 +779,15 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 	
 	count = 0, n = ptrset_len(universe);
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler12);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler12;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
@@ -813,7 +832,15 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	#ifdef DOTOUT
@@ -870,7 +897,15 @@ struct gegex* gegex_simplify_dfa(struct gegex* original)
 	free_heap(todo);
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	EXIT;

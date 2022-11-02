@@ -13,8 +13,7 @@ else ifeq ($(platform), windows)
 CC = x86_64-w64-mingw32-gcc
 CPPFLAGS += -D WINDOWS_PLATFORM
 CPPFLAGS += -D __USE_MINGW_ANSI_STDIO=1
-verbose ?= no
-EXE = .exe
+SUFFIX = .exe
 else
 $(error "invalid platform!");
 endif
@@ -79,7 +78,7 @@ endif
 buildprefix = bin/$(platform)-platform/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 depprefix   = dep/$(platform)-platform/$(buildtype)-build/$(verbose)-verbose/$(dotout)-dotout
 
-default: $(buildprefix)/zebu$(EXE)
+default: $(buildprefix)/zebu$(SUFFIX)
 
 #ARGS += -v
 ARGS += --verbose
@@ -111,7 +110,7 @@ ARGS += --template=readline-with-driver
 #ARGS += --custom-header-template=./out/-templates/really_just_tables.h
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -129,7 +128,7 @@ ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 #ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 #ARGS += -i ./-examples/carrs-lisp/parser.zb -o /tmp/out
 
-#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
 #ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
@@ -139,22 +138,22 @@ ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu
 
-run: $(buildprefix)/zebu$(EXE)
+run: $(buildprefix)/zebu$(SUFFIX)
 	$< $(ARGS)
 
-winerun: $(buildprefix)/zebu$(EXE)
+winerun: $(buildprefix)/zebu$(SUFFIX)
 	wine $< $(ARGS)
 
-valrun: $(buildprefix)/zebu$(EXE)
+valrun: $(buildprefix)/zebu$(SUFFIX)
 	valgrind $< $(ARGS)
 
-valrun-stop: $(buildprefix)/zebu$(EXE)
+valrun-stop: $(buildprefix)/zebu$(SUFFIX)
 	valgrind --gen-suppressions=yes -- $< ${ARGS}
 
-valrun-leak: $(buildprefix)/zebu$(EXE)
+valrun-leak: $(buildprefix)/zebu$(SUFFIX)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -- $< ${ARGS}
 
-tracerun: $(buildprefix)/zebu$(EXE)
+tracerun: $(buildprefix)/zebu$(SUFFIX)
 	strace $< $(ARGS)
 
 PREFIX ?= ~/bin
@@ -195,7 +194,7 @@ objs := $(patsubst %.S,$(buildprefix)/%.o,$(objs))
 deps := $(patsubst %.c,$(depprefix)/%.d,$(srcs))
 deps := $(patsubst %.S,$(depprefix)/%.d,$(deps))
 
-$(buildprefix)/zebu$(EXE): $(objs)
+$(buildprefix)/zebu$(SUFFIX): $(objs)
 	@ echo "linking $@"
 	@ $(CC) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) -o $@
 

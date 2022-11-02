@@ -28,6 +28,8 @@
 	#include <compat/strndup.h>
 	#include <compat/stpncpy.h>
 	#include <compat/stpcpy.h>
+	
+	#include <compat/timer_thread.h>
 	#endif
 	
 	struct lex;

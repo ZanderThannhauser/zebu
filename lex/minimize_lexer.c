@@ -56,6 +56,9 @@
 #include <set/ptr/len.h>
 #include <heap/len.h>
 #include <misc/default_sighandler.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 struct pair
@@ -310,7 +313,15 @@ static struct ptrset* build_universe(struct lex* this)
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	avl_tree_foreach(this->tokenizer_cache, ({
@@ -351,7 +362,15 @@ static struct ptrset* build_universe(struct lex* this)
 	}
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	free_quack(todo);
@@ -507,7 +526,15 @@ static void traverse_and_clone(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (quack_is_nonempty(lex_todo))
@@ -586,7 +613,15 @@ static void traverse_and_clone(
 	}
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	free_ptrset(queued);
@@ -627,7 +662,7 @@ void lex_minimize_lexer(
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, 1000,
-			"\e[K" "zebu: minimize lexer (build dependencies): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: minimize lexer (build dependencies): %ju of %ju (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -636,7 +671,15 @@ void lex_minimize_lexer(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler1);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler1;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	ptrset_foreach(universe, ({
@@ -694,7 +737,7 @@ void lex_minimize_lexer(
 		char ptr[1000] = {};
 		
 		size_t len = snprintf(ptr, 1000,
-			"\e[K" "zebu: minimize tokenizer (allocating dependency-trees): %lu of %lu (%.2f%%)\r",
+			"\e[K" "zebu: minimize tokenizer (allocating dependency-trees): %ju of %ju (%.2f%%)\r",
 			count, n, (((double) count * 100) / n));
 		
 		if (write(1, ptr, len) != len)
@@ -705,7 +748,15 @@ void lex_minimize_lexer(
 	
 	count = 0, n = ptrset_len(universe);
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler12);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler12;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	struct avl_tree_t* connections = avl_alloc_tree(compare_same_as_nodes, free_same_as_node);
@@ -750,7 +801,15 @@ void lex_minimize_lexer(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (heap_is_nonempty(todo))
@@ -786,7 +845,15 @@ void lex_minimize_lexer(
 	}
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	traverse_and_clone(connections, ystart);

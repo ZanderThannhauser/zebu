@@ -46,6 +46,9 @@
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #include <quack/len.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -368,7 +371,15 @@ void build_tries(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler1);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler1;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	// explore:
@@ -438,7 +449,15 @@ void build_tries(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	// we have one pass that fills-out all the tries:
@@ -540,8 +559,16 @@ void build_tries(
 		free(bundle);
 	}
 	
-	#if VERBOSE
+	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	avl_free_tree(gegex_to_trie);

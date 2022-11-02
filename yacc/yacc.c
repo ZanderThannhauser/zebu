@@ -61,6 +61,9 @@
 #include <signal.h>
 #include <misc/default_sighandler.h>
 #include <quack/len.h>
+#ifdef WINDOWS_PLATFORM
+#include <compat/timer_thread.h>
+#endif
 #endif
 
 #ifdef DOTOUT
@@ -522,7 +525,15 @@ struct yacc_state* yacc(
 		}
 	}
 	
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, handler2);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = handler2;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	while (quack_is_nonempty(todo))
@@ -783,7 +794,15 @@ struct yacc_state* yacc(
 	}
 	
 	#ifdef VERBOSE
+	#ifdef LINUX_PLATFORM
 	signal(SIGALRM, default_sighandler);
+	#else
+	#ifdef WINDOWS_PLATFORM
+	timer_handler = default_sighandler;
+	#else
+	#error bad platform
+	#endif
+	#endif
 	#endif
 	
 	if (minimize_lexer)
