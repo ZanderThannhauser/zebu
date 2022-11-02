@@ -62,6 +62,7 @@ static void escape(char *out, char in)
 		case ':': case ';':
 		case ',': case '.':
 		case '_':
+		case '/':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':

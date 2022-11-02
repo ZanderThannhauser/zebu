@@ -67,6 +67,7 @@ static void escape(char *out, unsigned char in)
 		case ':': case ';':
 		case ',': case '.':
 		case '_':
+		case '/':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':
@@ -260,7 +261,8 @@ int main(int argc, char** argv)
 				}
 				else
 				{
-					assert(!"TODO");
+					fprintf(stderr, "zebu: unexpected '%c' when reading '%.*s'!\n", c, (int) (lexer - begin), begin);
+					abort();
 				}
 			}
 		}
