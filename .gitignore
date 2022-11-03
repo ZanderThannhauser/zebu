@@ -5,3 +5,4 @@ dot
 copy+paste.txt
 gmon.out
 suppressions.txt
+.zest.db

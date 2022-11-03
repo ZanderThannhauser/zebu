@@ -1,0 +1,2 @@
+set -ev
+zest ./tests

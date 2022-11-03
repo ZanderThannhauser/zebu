@@ -1,0 +1,17 @@
+[{
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu"
+	},
+	"commands": [
+		"./zebu --help"
+	]
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu"
+	},
+	"commands": [
+		"./zebu -h"
+	]
+}]
+
+

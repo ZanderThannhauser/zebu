@@ -1,0 +1,58 @@
+[{
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb"
+	},
+	"commands": [
+		"./zebu -t really-just-tables -i ./input.zb -o ./output",
+		"gcc -c -Wall -Werror ./output.c -o ./output"
+	]
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb"
+	},
+	"commands": [
+		"./zebu -t just-tables -i ./input.zb -o ./output",
+		"gcc -c -Wall -Werror ./output.c -o ./output"
+	]
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb"
+	},
+	"commands": [
+		"./zebu -t fileio -i ./input.zb -o ./output",
+		"gcc -c -D _GNU_SOURCE -Wall -Werror ./output.c -o ./output"
+	]
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb",
+		"./input.json": "./-examples/json/input.json"
+	},
+	"commands": [
+		"./zebu -t fileio-with-driver -i ./input.zb -o ./output",
+		"gcc -Wall -Werror ./output.c -o ./output -lreadline",
+		"./output ./input.json"
+	],
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb",
+		"./input.json": "./-examples/json/input.json"
+	},
+	"commands": [
+		"./zebu -t fileio-with-driver -i ./input.zb -o ./output",
+		"gcc -Wall -Werror ./output.c -o ./output -lreadline",
+		"valgrind ./output ./input.json"
+	],
+}]
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+[{
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu"
+	},
+	"commands": [
+		"./zebu -i ./missing/path.zb -o ./output"
+	],
+	"exit-code": 1,
+}]
+
+
