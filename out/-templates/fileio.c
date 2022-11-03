@@ -289,7 +289,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 				else
 					fprintf(stderr, "zebu: unexpected '%c' when reading '%.*s'!\n", c, i, lexer.data);
 				
-				abort();
+				exit(1);
 			}
 		}
 	}

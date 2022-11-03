@@ -333,8 +333,12 @@ void* parse(FILE* stream)
 			}
 			else
 			{
-				fprintf(stderr, "%s: unexpected '%c' when reading ...'%.*s'!\n", argv0, c, i, lexer.data);
-				abort();
+				if (c == (unsigned) EOF)
+					fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s'!\n", argv0, i, lexer.data);
+				else
+					fprintf(stderr, "%s: unexpected '%c' when reading '%.*s'!\n", argv0, c, i, lexer.data);
+				
+				exit(1);
 			}
 		}
 	}

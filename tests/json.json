@@ -47,7 +47,28 @@
 		"gcc -Wall -Werror ./output.c -o ./output -lreadline",
 		"valgrind ./output ./input.json"
 	],
+}, {
+	"files": {
+		"./zebu": "bin/linux-platform/release-build/yes-verbose/no-dotout/zebu",
+		"./input.zb": "./-examples/json/json.zb",
+		"./input.json": []
+	},
+	"commands": [
+		"./zebu -t fileio-with-driver -i ./input.zb -o ./output",
+		"gcc -Wall -Werror ./output.c -o ./output -lreadline",
+		"./output ./input.json"
+	],
+	"exit-code": 1
 }]
+
+
+
+
+
+
+
+
+
 
 
 
