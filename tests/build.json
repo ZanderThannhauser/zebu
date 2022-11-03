@@ -1,0 +1,97 @@
+[{
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=yes buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=yes buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=yes buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=no  buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=no  buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=yes verbose=no  buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=yes buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=yes buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=yes buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=no  buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=no  buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=linux dotout=no  verbose=no  buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=yes buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=yes buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=yes buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=no  buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=no  buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=yes verbose=no  buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=yes buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=yes buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=yes buildtype=release"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=no  buildtype=debug"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=no  buildtype=test"
+	]
+}, {
+	"commands": [
+		"make -j -C ~/git/zebu.git/dev/ platform=windows dotout=no  verbose=no  buildtype=release"
+	]
+}]
