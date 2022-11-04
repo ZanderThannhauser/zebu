@@ -353,7 +353,11 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 		}
 		else
 		{
-			assert(!"266");
+			struct {{PREFIX}}_token* token = td;
+			
+			fprintf(stderr, "zebu: unexpected token '%.*s'!\n", token->len, token->data);
+			
+			exit(1);
 		}
 	}
 	
