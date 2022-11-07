@@ -26,7 +26,8 @@ CPPFLAGS += -D RELEASE
 CFLAGS += -O2
 CFLAGS += -flto
 
-LDFLAGS += -flto=auto -static
+LDFLAGS += -flto=auto
+#LDFLAGS += -static
 
 else ifeq ($(buildtype), test)
 CPPFLAGS += -D TESTING
@@ -110,7 +111,7 @@ ARGS += --template=readline-with-driver
 #ARGS += --custom-header-template=./out/-templates/really_just_tables.h
 
 #ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
 #ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
@@ -128,7 +129,7 @@ ARGS += --template=readline-with-driver
 #ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
 #ARGS += -i ./-examples/carrs-lisp/parser.zb -o /tmp/out
 
-ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
+#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
 #ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
 #ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
 
