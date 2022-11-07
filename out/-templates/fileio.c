@@ -234,7 +234,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 					ddprintf("lexer: whitespace: \"%.*s\"\n", i, lexer.data);
 					#endif
 					
-					l = original_l, t = 0;
+					l = original_l, t = 0, f = 0;
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i, i = 0;
 				}
 				else
@@ -254,7 +254,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 					break;
 				}
 			}
-			else if (f)
+			else if (t)
 			{
 				if (t == 1)
 				{
