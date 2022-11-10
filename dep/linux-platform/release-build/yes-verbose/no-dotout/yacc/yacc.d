@@ -4,8 +4,8 @@ bin/linux-platform/release-build/yes-verbose/no-dotout/./yacc/yacc.o: \
  avl/tree_t.h avl/freeitem_t.h avl/compare_t.h avl/node_t.h avl/insert.h \
  avl/foreach.h avl/alloc_tree.h avl/free_tree.h quack/new.h \
  quack/append.h quack/is_nonempty.h quack/pop.h quack/free.h \
- cmdln/minimize_lexer.h named/structinfo/struct.h lex/struct.h \
- lex/build_tokenizer/build_tokenizer.h lex/minimize_lexer.h \
+ string/struct.h cmdln/minimize_lexer.h named/structinfo/struct.h \
+ lex/struct.h lex/build_tokenizer/build_tokenizer.h lex/minimize_lexer.h \
  lex/find_shortest_accepting.h set/unsigned/head.h set/unsigned/new.h \
  set/unsigned/add.h set/unsigned/clone.h set/unsigned/foreach.h \
  set/unsigned/update.h set/unsigned/free.h set/unsignedset/foreach.h \

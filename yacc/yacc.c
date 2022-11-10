@@ -27,6 +27,8 @@
 #include <quack/pop.h>
 #include <quack/free.h>
 
+#include <string/struct.h>
+
 /*#include <avl/foreach.h>*/
 
 #include <cmdln/minimize_lexer.h>
@@ -328,6 +330,22 @@ static void add_shift(
 	EXIT;
 }
 
+static void shift_reduce_error(
+	struct lex_state* start,
+	struct unsignedset* tokenset)
+{
+	ENTER;
+	
+	struct fsa_rettype string = lex_find_shortest_accepting(start, tokenset);
+	
+	dpvsn(string.data, string.len);
+	
+	fprintf(stderr, "zebu: shift/reduce error on token \"%.*s\"\n", string.len, string.data);
+	
+	EXIT;
+	exit(e_shift_reduce_error);
+}
+
 static void add_reduce(
 	struct avl_tree_t* reduce_tokens,
 	unsigned token,
@@ -344,15 +362,18 @@ static void add_reduce(
 	
 	if (node)
 	{
-		#ifdef DEBUGGING
 		dpvs(reduce_as);
 		
 		struct reduce_node* old = node->item;
 		
 		dpvs(old->reduce_as);
-		#endif
 		
-		TODO;
+		fprintf(stderr, "zebu: reduce/reduce error bewteen "
+			"'%.*s' and '%.*s' grammar\n",
+			old->reduce_as->len, old->reduce_as->chars,
+			reduce_as->len, reduce_as->chars);
+		
+		exit(e_reduce_reduce_error);
 	}
 	else
 	{
@@ -400,22 +421,6 @@ static void add_subgrammar(
 	free_unsignedset(whitespace_dup), free_unsignedset(tokens_dup);
 	
 	EXIT;
-}
-
-static void shift_reduce_error(
-	struct lex_state* start,
-	struct unsignedset* tokenset)
-{
-	ENTER;
-	
-	struct fsa_rettype string = lex_find_shortest_accepting(start, tokenset);
-	
-	dpvsn(string.data, string.len);
-	
-	fprintf(stderr, "zebu: shift/reduce error on token \"%.*s\"\n", string.len, string.data);
-	
-	EXIT;
-	exit(e_shift_reduce_error);
 }
 
 struct yacc_state* yacc(

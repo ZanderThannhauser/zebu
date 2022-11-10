@@ -11,6 +11,7 @@ enum
 	e_bad_input_file,
 	e_syntax_error,
 	e_shift_reduce_error,
+	e_reduce_reduce_error,
 	
 	number_of_errors,
 };
