@@ -83,7 +83,7 @@ int compare_simplified_regexes(
 		if (is_a_numbered && is_b_numbered)
 		{
 			unsigned a_number = ((struct node*) is_a_numbered->item)->number;
-			unsigned b_number = ((struct node*) is_a_numbered->item)->number;
+			unsigned b_number = ((struct node*) is_b_numbered->item)->number;
 			
 			dpv(a_number);
 			dpv(b_number);
