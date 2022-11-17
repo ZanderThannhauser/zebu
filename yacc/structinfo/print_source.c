@@ -115,7 +115,7 @@ void structinfo_print_source(
 	}
 	
 	fprintf(stream, ""
-		"\t" "unsigned refcount;" "\n"
+		"\t" "unsigned refcount, startline, endline;" "\n"
 		"};" "\n"
 		"" "\n"
 	"");

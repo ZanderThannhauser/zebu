@@ -104,7 +104,6 @@ static void escape(char *out, unsigned char in)
 		case ':': case ';':
 		case ',': case '.':
 		case '_':
-		case '/':
 		case '0' ... '9':
 		case 'a' ... 'z':
 		case 'A' ... 'Z':
@@ -134,7 +133,9 @@ void* parse(FILE* stream)
 	void* root;
 	struct { unsigned* data, n, cap; } yacc = {};
 	struct { void** data; unsigned n, cap; } data = {};
-	struct { unsigned char* data; unsigned n, cap; } lexer = {};
+	struct { unsigned char* data; unsigned n, cap; unsigned line; } lexer = {
+		.line = 1,
+	};
 	
 	void push_state(unsigned y)
 	{
@@ -190,8 +191,9 @@ void* parse(FILE* stream)
 	
 	void read_token(unsigned l)
 	{
-		
 		unsigned original_l = l, i = 0, a, b, c, f = 0;
+		
+		unsigned line = lexer.line;
 		
 		t = 0;
 		
@@ -250,7 +252,7 @@ void* parse(FILE* stream)
 			{
 				if (b)
 				{
-					l = a, t = b, f = i++;
+					l = a, t = b, f = i++, lexer.line = line;
 					#ifdef ZEBU_DEBUG
 					ddprintf("lexer: l = %u\n", l);
 					#endif
@@ -262,11 +264,19 @@ void* parse(FILE* stream)
 					ddprintf("lexer: l = %u\n", l);
 					#endif
 				}
+				
+				if (c == '\n')
+				{
+					line++;
+					#ifdef ZEBU_DEBUG
+					ddprintf("lexer: line: %u\n", line);
+					#endif
+				}
 			}
 			else if (b)
 			{
 				#ifdef ZEBU_DEBUG
-				ddprintf("lexer: token: \"%.*s\"\n", i, lexer.data);
+				ddprintf("lexer: token: \"%.*s\", line: %u\n", i, lexer.data, line);
 				#endif
 				
 				if (!lexer.n)
@@ -283,7 +293,7 @@ void* parse(FILE* stream)
 					ddprintf("lexer: whitespace: \"%.*s\"\n", i, lexer.data);
 					#endif
 					
-					l = original_l, t = 0;
+					l = original_l, t = 0, lexer.line = line;
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i, i = 0;
 				}
 				else
@@ -294,11 +304,13 @@ void* parse(FILE* stream)
 					
 					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
+					token->line = line;
 					token->data = memcpy(malloc(i + 1), lexer.data, i);
 					token->data[i] = 0;
 					token->len = i;
 					t = b, td = token;
 					
+					lexer.line = line;
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i;
 					break;
 				}
@@ -311,7 +323,7 @@ void* parse(FILE* stream)
 					ddprintf("lexer: falling back to whitespace: \"%.*s\"\n", f, lexer.data);
 					#endif
 					
-					l = original_l, t = 0;
+					l = original_l, t = 0, line = lexer.line;
 					memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f, f = 0, i = 0;
 				}
 				else
@@ -322,6 +334,7 @@ void* parse(FILE* stream)
 					
 					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
+					token->line = lexer.line;
 					token->data = memcpy(malloc(f + 1), lexer.data, f);
 					token->data[f] = 0;
 					token->len = f;
@@ -334,9 +347,9 @@ void* parse(FILE* stream)
 			else
 			{
 				if (c == (unsigned) EOF)
-					fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s'!\n", argv0, i, lexer.data);
+					fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s' on line %u!\n", argv0, i, lexer.data, line);
 				else
-					fprintf(stderr, "%s: unexpected '%c' when reading '%.*s'!\n", argv0, c, i, lexer.data);
+					fprintf(stderr, "%s: unexpected '%c' when reading '%.*s' on line %u!\n", argv0, c, i, lexer.data, line);
 				
 				exit(1);
 			}

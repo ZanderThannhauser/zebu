@@ -99,10 +99,10 @@ ARGS += --verbose
 #ARGS += --template=piecewise-charbuffer
 
 #ARGS += --template=readline
-ARGS += --template=readline-with-driver
+#ARGS += --template=readline-with-driver
 
 #ARGS += --template=fileio
-#ARGS += --template=fileio-with-driver
+ARGS += --template=fileio-with-driver
 
 #ARGS += --program-name bash
 
@@ -110,34 +110,34 @@ ARGS += --template=readline-with-driver
 #ARGS += --custom-source-template=./out/-templates/really_just_tables.c
 #ARGS += --custom-header-template=./out/-templates/really_just_tables.h
 
-#ARGS += -i ./-examples/classic/classic.zb -o ./-examples/classic/classic
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o ./-examples/sandbox/sandbox
+#ARGS += -i ./-examples/classic/classic.zb -o /tmp/classic
+#ARGS += -i ./-examples/sandbox/sandbox.zb -o /tmp/sandbox
 
-#ARGS += -i ./-examples/math/math.zb -o ./-examples/math/math
-#ARGS += -i ./-examples/math2/math.zb -o ./-examples/math2/math
+#ARGS += -i ./-examples/math/math.zb -o /tmp/math
+#ARGS += -i ./-examples/math2/math.zb -o /tmp/math
 
-#ARGS += -i ./-examples/maia/maia.zb -o ./-examples/maia/maia
-#ARGS += -i ./-examples/json/json.zb -o ./-examples/json/json
-#ARGS += -i ./-examples/expressions/expressions.zb -o ./-examples/expressions/expressions
-#ARGS += -i ./-examples/expressions2/expressions.zb -o ./-examples/expressions2/output
-#ARGS += -i ./-examples/explode/explode.zb -o ./-examples/explode/explode
-#ARGS += -i ./-examples/gegex/gegex.zb -o ./-examples/gegex/output
-#ARGS += -i ./-examples/hard/hard.zb -o ./-examples/hard/output
+#ARGS += -i ./-examples/maia/maia.zb -o /tmp/maia
+ARGS += -i ./-examples/json/json.zb -o /tmp/json
+#ARGS += -i ./-examples/expressions/expressions.zb -o /tmp/expressions
+#ARGS += -i ./-examples/expressions2/expressions.zb -o /tmp/output
+#ARGS += -i ./-examples/explode/explode.zb -o /tmp/explode
+#ARGS += -i ./-examples/gegex/gegex.zb -o /tmp/gegex
+#ARGS += -i ./-examples/hard/hard.zb -o /tmp/hard
 
-#ARGS += -i ./-examples/C/C.zb -o ./-examples/C/C
+#ARGS += -i ./-examples/C/C.zb -o /tmp/C
 
-#ARGS += -i ./-examples/lisp/parser.zb -o ./-examples/lisp/parser
-#ARGS += -i ./-examples/carrs-lisp/parser.zb -o /tmp/out
+#ARGS += -i ./-examples/lisp/parser.zb -o /tmp/parser
+#ARGS += -i ./-examples/carrs-lisp/parser.zb -o /tmp/carr
 
-#ARGS += -i ./-examples/iloc/iloc1.zb -o ./-examples/iloc/iloc1
-#ARGS += -i ./-examples/iloc/iloc2.zb -o ./-examples/iloc/iloc2
-#ARGS += -i ./-examples/iloc/iloc3.zb -o ./-examples/iloc/iloc3
+#ARGS += -i ./-examples/iloc/iloc1.zb -o /tmp/iloc1
+#ARGS += -i ./-examples/iloc/iloc2.zb -o /tmp/iloc2
+#ARGS += -i ./-examples/iloc/iloc3.zb -o /tmp/iloc3
 
-#ARGS += -i ./-examples/xml/xml.zb -o ./-examples/xml/xml
+#ARGS += -i ./-examples/xml/xml.zb -o /tmp/xml
 
-#ARGS += -i ./-examples/csv/csv.zb -o ./-examples/csv/csv
+#ARGS += -i ./-examples/csv/csv.zb -o /tmp/csv
 
-#ARGS += -i ./-examples/zebu/zebu.zb -o ./-examples/zebu/zebu
+#ARGS += -i ./-examples/zebu/zebu.zb -o /tmp/zebu
 
 run: $(buildprefix)/zebu$(SUFFIX)
 	$< $(ARGS)

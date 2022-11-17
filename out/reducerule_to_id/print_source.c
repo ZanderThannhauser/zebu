@@ -38,6 +38,8 @@ void reducerule_to_id_print_source(
 		
 		fprintf(stream, ""
 			"\t" "\t" "struct %s_%s* value = memset(malloc(sizeof(*value)), 0, sizeof(*value));" "\n"
+			"\t" "\t" "value->startline = -1;" "\n"
+			"\t" "\t" "value->endline = 0;" "\n"
 			"\t" "\t" "value->refcount = 1;" "\n"
 		"", prefix, ele->grammar->chars);
 		
@@ -56,6 +58,16 @@ void reducerule_to_id_print_source(
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

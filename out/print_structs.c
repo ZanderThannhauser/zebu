@@ -20,7 +20,7 @@ void print_structs(
 		"struct %s_token" "\n"
 		"{" "\n"
 			"\t" "unsigned char* data;" "\n"
-			"\t" "unsigned len, refcount;" "\n"
+			"\t" "unsigned len, refcount, line;" "\n"
 		"};" "\n"
 		"\n"
 	"", prefix);

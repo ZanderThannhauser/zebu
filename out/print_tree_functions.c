@@ -143,7 +143,7 @@ void print_tree_functions(
 			"\t" "char escape[10];" "\n"
 			"\t" "for (unsigned i = 0, n = token->len; i < n; i++)" "\n"
 			"\t" "\t" "print_tree_escape(escape, token->data[i]), fputs(escape, stdout);" "\n"
-			"\t" "printf(\"\\\"\\e[0m)\\n\");" "\n"
+			"\t" "printf(\"\\\"\\e[0m) on line %%u\\n\", token->line);" "\n"
 		"}" "\n"
 		"\n"
 		"void print_scanf_leaf(struct link* links, enum prefix p, const char* name, const char* format, ...)" "\n"
@@ -222,7 +222,7 @@ void print_tree_functions(
 				"\t" "\t" "\t" "new->prev = links;" "\n"
 				"\t" "\t" "break;" "\n"
 				"\t" "}" "\n"
-				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m)\\n\", name);" "\n"
+				"\t" "printf(\"\\e[34m%%s\\e[m (\\e[36m%s\\e[m) on line %%u through %%u\\n\", name, ptree->startline, ptree->endline);" "\n"
 		"", output_prefix, name, output_prefix, name, name);
 		
 		for (struct avl_node_t* node = structinfo->tree->head; node; node = node->next)
