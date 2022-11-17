@@ -303,11 +303,20 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 			}
 			else
 			{
-				if (c == (unsigned) EOF)
-					fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s' on line %u!\n", argv0, i, lexer.data, line);
+				if (i != 0)
+				{
+					if (c == (unsigned) EOF)
+						fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s' on line %u!\n", argv0, i, lexer.data, line);
+					else
+						fprintf(stderr, "%s: unexpected '%c' when reading '%.*s' on line %u!\n", argv0, c, i, lexer.data, line);
+				}
 				else
-					fprintf(stderr, "%s: unexpected '%c' when reading '%.*s' on line %u!\n", argv0, c, i, lexer.data, line);
-				
+				{
+					if (c == (unsigned) EOF)
+						fprintf(stderr, "%s: unexpected '<EOF>' on line %u!\n", argv0, line);
+					else
+						fprintf(stderr, "%s: unexpected '%c' on line %u!\n", argv0, c, line);
+				}
 				exit(1);
 			}
 		}
