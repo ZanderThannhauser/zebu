@@ -128,7 +128,7 @@ static void escape(char *out, unsigned char in)
 }
 #endif
 
-void* parse(FILE* stream)
+struct zebu_$start* parse(FILE* stream)
 {
 	void* root;
 	struct { unsigned* data, n, cap; } yacc = {};
@@ -155,6 +155,17 @@ void* parse(FILE* stream)
 			data.data = realloc(data.data, sizeof(*data.data) * data.cap);
 		}
 		data.data[data.n++] = d;
+	}
+	
+	void push_char(unsigned char c)
+	{
+		while (lexer.n + 1 >= lexer.cap)
+		{
+			lexer.cap = lexer.cap << 1 ?: 1;
+			lexer.data = realloc(lexer.data, lexer.cap);
+		}
+		
+		lexer.data[lexer.n++] = c;
 	}
 	
 	#ifdef ZEBU_DEBUG
@@ -315,7 +326,7 @@ void* parse(FILE* stream)
 					break;
 				}
 			}
-			else if (f)
+			else if (t)
 			{
 				if (t == 1)
 				{
@@ -415,7 +426,11 @@ void* parse(FILE* stream)
 		}
 		else
 		{
-			assert(!"266");
+			struct {{PREFIX}}_token* token = td;
+			
+			fprintf(stderr, "zebu: unexpected token '%.*s'!\n", token->len, token->data);
+			
+			exit(1);
 		}
 	}
 	

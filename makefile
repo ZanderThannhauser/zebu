@@ -101,8 +101,8 @@ ARGS += --verbose
 #ARGS += --template=readline
 #ARGS += --template=readline-with-driver
 
-#ARGS += --template=fileio
-ARGS += --template=fileio-with-driver
+ARGS += --template=fileio
+#ARGS += --template=fileio-with-driver
 
 #ARGS += --program-name bash
 
