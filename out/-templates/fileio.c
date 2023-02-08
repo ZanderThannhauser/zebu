@@ -1,4 +1,8 @@
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include <limits.h>
 #include <stdarg.h>
 #include <string.h>
@@ -90,7 +94,7 @@ struct zebu_$start* {{PREFIX}}_parse(FILE* stream)
 	void* root;
 	struct { unsigned* data, n, cap; } yacc = {};
 	struct { void** data; unsigned n, cap; } data = {};
-	struct { unsigned char* data; unsigned n, cap; unsigned line; } lexer = {
+	struct { unsigned char* data; unsigned n, cap, line; } lexer = {
 		.line = 1,
 	};
 	
