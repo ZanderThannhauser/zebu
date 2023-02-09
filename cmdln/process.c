@@ -81,6 +81,8 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_fileio;
 				} else if (strequals(optarg, "fileio-with-driver")) {
 					parser_template = pt_fileio_with_driver;
+				} else if (strequals(optarg, "myreadline-with-driver")) {
+					parser_template = pt_myreadline_with_driver;
 				} else {
 					fprintf(stderr, "zebu: '%s' is an invalid parser template!\n", optarg);
 					usage(e_bad_cmdline_args);

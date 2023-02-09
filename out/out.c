@@ -67,6 +67,9 @@
 #include "escaped/fileio_with_driver_source.h"
 #include "escaped/fileio_with_driver_header.h"
 
+#include "escaped/myreadline_with_driver_source.h"
+#include "escaped/myreadline_with_driver_header.h"
+
 /*#include "escaped/fileio_graphviz_source.h"*/
 /*#include "escaped/fileio_graphviz_header.h"*/
 
@@ -125,6 +128,8 @@ static struct {
 	
 	[pt_fileio] = {&fileio_source, &fileio_header},
 	[pt_fileio_with_driver] = {&fileio_with_driver_source, &fileio_with_driver_header},
+	
+	[pt_myreadline_with_driver] = {&myreadline_with_driver_source, &myreadline_with_driver_header},
 };
 
 void out(struct yacc_state* start)

@@ -14,6 +14,8 @@ enum parser_template
 	pt_fileio,
 	pt_fileio_with_driver,
 	
+	pt_myreadline_with_driver,
+	
 	number_of_parser_templates,
 };
 

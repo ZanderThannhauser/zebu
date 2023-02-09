@@ -101,8 +101,10 @@ ARGS += --verbose
 #ARGS += --template=readline
 #ARGS += --template=readline-with-driver
 
-ARGS += --template=fileio
+#ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
+
+ARGS += --template=myreadline-with-driver
 
 #ARGS += --program-name bash
 
@@ -187,6 +189,8 @@ srcs += ./out/escaped/readline_with_driver_source.c       ./out/escaped/readline
 srcs += ./out/escaped/fileio_with_driver_source.c       ./out/escaped/fileio_with_driver_header.c
 #srcs += ./out/escaped/fileio_passfail_source.c    ./out/escaped/fileio_passfail_header.c
 #srcs += ./out/escaped/fileio_graphviz_source.c    ./out/escaped/fileio_graphviz_header.c
+
+srcs += ./out/escaped/myreadline_with_driver_source.c  ./out/escaped/myreadline_with_driver_header.c
 endif
 
 objs := $(patsubst %.c,$(buildprefix)/%.o,$(srcs))
