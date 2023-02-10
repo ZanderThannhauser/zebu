@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -46,3 +47,4 @@ void structinfo_add_substructinfo_scalar_field(
 	
 	EXIT;
 }
+#endif

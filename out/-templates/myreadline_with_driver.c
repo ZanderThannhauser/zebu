@@ -1,4 +1,20 @@
 
+#ifndef ZEBU_LINE_NUMBERS
+#define ZEBU_LINE_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_COLUMN_NUMBERS
+#define ZEBU_COLUMN_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_TREE_DEPTH
+#define ZEBU_TREE_DEPTH (0)
+#endif
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>

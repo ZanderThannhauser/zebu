@@ -36,16 +36,16 @@ void structinfo_print_source(
 		{
 			case snt_token_scalar:
 				fprintf(stream, ""
-					"\t" "struct %s_token* %s;" "\n"
+					"struct %s_token* %s;" "\n"
 				"", prefix, name);
 				break;
 			
 			case snt_token_array:
 				fprintf(stream, ""
-					"\t" "struct {" "\n"
-					"\t" "\t" "struct %s_token** data;" "\n"
-					"\t" "\t" "unsigned n, cap;" "\n"
-					"\t" "} %s;" "\n"
+					"struct {" "\n"
+					"struct %s_token** data;" "\n"
+					"unsigned n, cap;" "\n"
+					"} %s;" "\n"
 				"", prefix, name);
 				break;
 			
@@ -54,7 +54,7 @@ void structinfo_print_source(
 				const char* grammar = ele->grammar.name->chars;
 				
 				fprintf(stream, ""
-					"\t" "struct %s_%s* %s;" "\n"
+					"struct %s_%s* %s;" "\n"
 				"", prefix, grammar, name);
 				break;
 			}
@@ -64,10 +64,10 @@ void structinfo_print_source(
 				const char* grammar = ele->grammar.name->chars;
 				
 				fprintf(stream, ""
-					"\t" "struct {" "\n"
-					"\t" "\t" "struct %s_%s** data;" "\n"
-					"\t" "\t" "unsigned n, cap;" "\n"
-					"\t" "} %s;" "\n"
+					"struct {" "\n"
+					"struct %s_%s** data;" "\n"
+					"unsigned n, cap;" "\n"
+					"} %s;" "\n"
 				"", prefix, grammar, name);
 				break;
 			}
@@ -75,7 +75,7 @@ void structinfo_print_source(
 			case snt_scanf_scalar:
 			{
 				fprintf(stream, ""
-					"\t" "%s %s;" "\n"
+					"%s %s;" "\n"
 				"", ele->scanf.fflags->ctype, name);
 				break;
 			}
@@ -86,6 +86,7 @@ void structinfo_print_source(
 				break;
 			}
 			
+			#if 0
 			case snt_substructinfo_scalar:
 			{
 				TODO;
@@ -97,13 +98,14 @@ void structinfo_print_source(
 				TODO;
 				break;
 			}
+			#endif
 			
 			case snt_user_defined:
 			{
 				struct string* const type = ele->user_defined.type;
 				
 				fprintf(stream, ""
-					"\t" "%.*s %s;" "\n"
+					"%.*s %s;" "\n"
 				"", type->len, type->chars, name);
 				break;
 			}
@@ -115,7 +117,10 @@ void structinfo_print_source(
 	}
 	
 	fprintf(stream, ""
-		"\t" "unsigned refcount, startline, endline;" "\n"
+		"unsigned refcount;" "\n"
+		"#if ZEBU_LINE_NUMBERS" "\n"
+		"unsigned startline, endline;" "\n"
+		"#endif" "\n"
 		"};" "\n"
 		"" "\n"
 	"");

@@ -1,5 +1,19 @@
 
+#ifndef ZEBU_LINE_NUMBERS
+#define ZEBU_LINE_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_COLUMN_NUMBERS
+#define ZEBU_COLUMN_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_TREE_DEPTH
+#define ZEBU_TREE_DEPTH (0)
+#endif
+
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 #include <limits.h>
 #include <stdarg.h>
@@ -133,9 +147,32 @@ struct zebu_$start* parse(FILE* stream)
 	void* root;
 	struct { unsigned* data, n, cap; } yacc = {};
 	struct { void** data; unsigned n, cap; } data = {};
-	struct { unsigned char* data; unsigned n, cap; unsigned line; } lexer = {
+	struct {
+		unsigned char* data;
+		unsigned n, cap;
+		#if ZEBU_LINE_NUMBERS
+		unsigned line;
+		#endif
+	} lexer = {
+		#if ZEBU_LINE_NUMBERS
 		.line = 1,
+		#endif
 	};
+	
+	#ifdef ZEBU_DEBUG
+	void ddprintf(const char* fmt, ...)
+	{
+		for (unsigned i = 0, n = yacc.n; i < n; i++)
+			printf("%u ", yacc.data[i]);
+		
+		printf("| ");
+		
+		va_list va;
+		va_start(va, fmt);
+		vprintf(fmt, va);
+		va_end(va);
+	}
+	#endif
 	
 	void push_state(unsigned y)
 	{
@@ -156,21 +193,6 @@ struct zebu_$start* parse(FILE* stream)
 		}
 		data.data[data.n++] = d;
 	}
-	
-	#ifdef ZEBU_DEBUG
-	void ddprintf(const char* fmt, ...)
-	{
-		for (unsigned i = 0, n = yacc.n; i < n; i++)
-			printf("%u ", yacc.data[i]);
-		
-		printf("| ");
-		
-		va_list va;
-		va_start(va, fmt);
-		vprintf(fmt, va);
-		va_end(va);
-	}
-	#endif
 	
 	void push_char(unsigned char c)
 	{
@@ -193,7 +215,9 @@ struct zebu_$start* parse(FILE* stream)
 	{
 		unsigned original_l = l, i = 0, a, b, c, f = 0;
 		
+		#if ZEBU_LINE_NUMBERS
 		unsigned line = lexer.line;
+		#endif
 		
 		t = 0;
 		
@@ -252,7 +276,10 @@ struct zebu_$start* parse(FILE* stream)
 			{
 				if (b)
 				{
-					l = a, t = b, f = i++, lexer.line = line;
+					l = a, t = b, f = i++;
+					#if ZEBU_LINE_NUMBERS
+					lexer.line = line;
+					#endif
 					#ifdef ZEBU_DEBUG
 					ddprintf("lexer: l = %u\n", l);
 					#endif
@@ -265,6 +292,7 @@ struct zebu_$start* parse(FILE* stream)
 					#endif
 				}
 				
+				#if ZEBU_LINE_NUMBERS
 				if (c == '\n')
 				{
 					line++;
@@ -272,6 +300,7 @@ struct zebu_$start* parse(FILE* stream)
 					ddprintf("lexer: line: %u\n", line);
 					#endif
 				}
+				#endif
 			}
 			else if (b)
 			{
@@ -293,7 +322,10 @@ struct zebu_$start* parse(FILE* stream)
 					ddprintf("lexer: whitespace: \"%.*s\"\n", i, lexer.data);
 					#endif
 					
-					l = original_l, t = 0, lexer.line = line;
+					l = original_l, t = 0;
+					#if ZEBU_LINE_NUMBERS
+					lexer.line = line;
+					#endif
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i, i = 0;
 				}
 				else
@@ -304,13 +336,15 @@ struct zebu_$start* parse(FILE* stream)
 					
 					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
+					#if ZEBU_LINE_NUMBERS
 					token->line = line;
+					lexer.line = line;
+					#endif
 					token->data = memcpy(malloc(i + 1), lexer.data, i);
 					token->data[i] = 0;
 					token->len = i;
 					t = b, td = token;
 					
-					lexer.line = line;
 					memmove(lexer.data, lexer.data + i, lexer.n - i), lexer.n -= i;
 					break;
 				}
@@ -323,7 +357,10 @@ struct zebu_$start* parse(FILE* stream)
 					ddprintf("lexer: falling back to whitespace: \"%.*s\"\n", f, lexer.data);
 					#endif
 					
-					l = original_l, t = 0, line = lexer.line;
+					l = original_l, t = 0;
+					#if ZEBU_LINE_NUMBERS
+					line = lexer.line;
+					#endif
 					memmove(lexer.data, lexer.data + f, lexer.n - f), lexer.n -= f, f = 0, i = 0;
 				}
 				else
@@ -334,7 +371,9 @@ struct zebu_$start* parse(FILE* stream)
 					
 					struct {{PREFIX}}_token* token = malloc(sizeof(*token));
 					token->refcount = 1;
+					#if ZEBU_LINE_NUMBERS
 					token->line = lexer.line;
+					#endif
 					token->data = memcpy(malloc(f + 1), lexer.data, f);
 					token->data[f] = 0;
 					token->len = f;
@@ -346,20 +385,20 @@ struct zebu_$start* parse(FILE* stream)
 			}
 			else
 			{
-				if (i != 0)
-				{
-					if (c == (unsigned) EOF)
-						fprintf(stderr, "%s: unexpected '<EOF>' when reading '%.*s' on line %u!\n", argv0, i, lexer.data, line);
-					else
-						fprintf(stderr, "%s: unexpected '%c' when reading '%.*s' on line %u!\n", argv0, c, i, lexer.data, line);
-				}
+				fprintf(stderr, "%s: unexpected ", argv0);
+				
+				if (c == (unsigned) EOF)
+					fprintf(stderr, "'<EOF>'");
 				else
-				{
-					if (c == (unsigned) EOF)
-						fprintf(stderr, "%s: unexpected '<EOF>' on line %u!\n", argv0, line);
-					else
-						fprintf(stderr, "%s: unexpected '%c' on line %u!\n", argv0, c, line);
-				}
+					fprintf(stderr, "'%c'", c);
+				
+				if (i) fprintf(stderr, " when reading '%.*s'", i, lexer.data);
+				
+				#if ZEBU_LINE_NUMBERS
+				fprintf(stderr, " on line %u", line);
+				#endif
+				
+				fprintf(stderr, "\n");
 				
 				exit(1);
 			}

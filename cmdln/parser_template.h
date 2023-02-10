@@ -1,5 +1,5 @@
 
-enum parser_template
+extern enum parser_template
 {
 	pt_really_just_tables,
 	
@@ -17,7 +17,5 @@ enum parser_template
 	pt_myreadline_with_driver,
 	
 	number_of_parser_templates,
-};
-
-extern enum parser_template parser_template;
+} parser_template;
 

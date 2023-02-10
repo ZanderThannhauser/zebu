@@ -15,16 +15,15 @@
 #include <compat/stpcpy.h>
 #endif
 
-#include "usage.h"
 #include "verbose.h"
 #include "process.h"
 #include "input_path.h"
 #include "output_path.h"
 #include "output_prefix.h"
+#include "usage_message.h"
 #include "minimize_lexer.h"
 #include "parser_template.h"
 #include "make_dependencies.h"
-#include "parser_program_name.h"
 #include "make_dependencies_file.h"
 
 void cmdln_process(int argc, char* const* argv)
@@ -40,14 +39,13 @@ void cmdln_process(int argc, char* const* argv)
 		{"minimize-lexer",               no_argument, 0, 'm'},
 		{"make-dependencies",            no_argument, 0, 'M'},
 		{"make-dependencies-file", required_argument, 0, 'F'},
-		{"program-name",           required_argument, 0, 'P'},
 		{"verbose",                      no_argument, 0, 'v'},
 		{"help",                         no_argument, 0, 'h'},
 		{ 0,                                       0, 0,  0 },
 	};
 	
 	while ((opt = getopt_long(argc, argv,
-		"i:" "o:" "p:" "t:" "m" "M" "F:" "P:" "v" "h",
+		"i:" "o:" "p:" "t:" "m" "M" "F:" "v" "h",
 		long_options, &option_index)) >= 0)
 	{
 		switch (opt)
@@ -85,7 +83,7 @@ void cmdln_process(int argc, char* const* argv)
 					parser_template = pt_myreadline_with_driver;
 				} else {
 					fprintf(stderr, "zebu: '%s' is an invalid parser template!\n", optarg);
-					usage(e_bad_cmdline_args);
+					puts(usage_message), exit(e_bad_cmdline_args);
 				}
 				break;
 			
@@ -102,10 +100,6 @@ void cmdln_process(int argc, char* const* argv)
 				strcpy(make_dependencies_file, optarg);
 				break;
 			
-			case 'P':
-				stpcpy(stpcpy(stpcpy(parser_program_name, "\""), optarg), "\"");
-				break;
-			
 			case 'v':
 				#ifdef VERBOSE
 				verbose = true;
@@ -113,13 +107,13 @@ void cmdln_process(int argc, char* const* argv)
 				break;
 			
 			case 'h':
-				usage(0);
+				puts(usage_message), exit(0);
 				break;
 			
 			default:
 			{
 				fprintf(stderr, "zebu: unknown flag '%s'!\n", optarg);
-				usage(e_bad_cmdline_args);
+				puts(usage_message), exit(e_bad_cmdline_args);
 				break;
 			}
 		}
@@ -128,12 +122,13 @@ void cmdln_process(int argc, char* const* argv)
 	if (!input_path || !output_path)
 	{
 		fprintf(stderr, "zebu: missing arguments!\n");
-		usage(e_bad_cmdline_args);
+		puts(usage_message), exit(e_bad_cmdline_args);
 	}
 	
 	if (make_dependencies && !make_dependencies_file[0])
 	{
 		stpcpy(stpcpy(make_dependencies_file, output_path), ".d");
+		dpvs(make_dependencies_file);
 	}
 	
 	dpvs(input_path);

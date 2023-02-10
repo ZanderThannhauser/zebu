@@ -50,6 +50,8 @@ void structinfo_update(
 				exit(1);
 			}
 			
+			TODO;
+			#if 0
 			if (false
 				|| ae->type == snt_substructinfo_scalar
 				|| ae->type == snt_substructinfo_array)
@@ -58,6 +60,7 @@ void structinfo_update(
 					ae->substructinfo.structinfo,
 					be->substructinfo.structinfo);
 			}
+			#endif
 			
 			an = an->next, bn = bn->next;
 		}

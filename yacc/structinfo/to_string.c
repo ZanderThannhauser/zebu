@@ -90,6 +90,7 @@ char* structinfo_to_string(struct structinfo* this)
 					break;
 				}
 				
+				#if 0
 				case snt_substructinfo_scalar:
 				{
 					char* substructinfo = structinfo_to_string(node->substructinfo.structinfo);
@@ -107,6 +108,7 @@ char* structinfo_to_string(struct structinfo* this)
 					free(substructinfo);
 					break;
 				}
+				#endif
 				
 				case snt_user_defined:
 				{

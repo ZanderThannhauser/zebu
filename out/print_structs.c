@@ -3,6 +3,8 @@
 
 #include <avl/tree_t.h>
 
+#include <cmdln/parser_template.h>
+
 #include <named/structinfo/struct.h>
 
 #include <yacc/structinfo/print_source.h>
@@ -19,10 +21,18 @@ void print_structs(
 	fprintf(stream, ""
 		"struct %s_token" "\n"
 		"{" "\n"
-			"\t" "unsigned char* data;" "\n"
-			"\t" "unsigned len, refcount, line;" "\n"
+			"unsigned char* data;" "\n"
+			"unsigned len, refcount;" "\n"
+			"#if ZEBU_LINE_NUMBERS" "\n"
+			"unsigned line;" "\n"
+			"#endif" "\n"
+			"#if ZEBU_COLUMN_NUMBERS" "\n"
+			"unsigned startcol, endcol;" "\n"
+			"#endif" "\n"
+			"#if ZEBU_TREE_DEPTH" "\n"
+			"unsigned tree_depth;" "\n"
+			"#endif" "\n"
 		"};" "\n"
-		"\n"
 	"", prefix);
 	
 	for (struct avl_node_t* node = structinfos->head; node; node = node->next)
@@ -33,3 +43,22 @@ void print_structs(
 	
 	EXIT;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

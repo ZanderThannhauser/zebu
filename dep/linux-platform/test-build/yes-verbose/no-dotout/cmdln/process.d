@@ -6,8 +6,7 @@ bin/linux-platform/test-build/yes-verbose/no-dotout/./cmdln/process.o: \
  avl/compare_t.h avl/node_t.h avl/insert.h avl/search.h avl/delete.h \
  avl/tree_t.h avl/free_nodes.h avl/free_tree.h set/ptr/new.h \
  set/ptr/inc.h set/ptr/add.h set/ptr/foreach.h set/ptr/compare.h \
- set/ptr/is_nonempty.h set/ptr/free.h cmdln/usage.h cmdln/verbose.h \
- cmdln/process.h cmdln/input_path.h cmdln/output_path.h \
- cmdln/output_prefix.h cmdln/minimize_lexer.h cmdln/parser_template.h \
- cmdln/make_dependencies.h cmdln/parser_program_name.h \
- cmdln/make_dependencies_file.h
+ set/ptr/is_nonempty.h set/ptr/free.h cmdln/verbose.h cmdln/process.h \
+ cmdln/input_path.h cmdln/output_path.h cmdln/output_prefix.h \
+ cmdln/usage_message.h cmdln/minimize_lexer.h cmdln/parser_template.h \
+ cmdln/make_dependencies.h cmdln/make_dependencies_file.h

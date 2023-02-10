@@ -50,7 +50,10 @@ struct gbundle read_parenthesis_production(
 		{
 			struct string* tag = new_string_from_tokenchars(tokenizer);
 			
+			TODO;
+			#if 0
 			gegex_nest_structinfo_into_scalar(retval.start, tag);
+			#endif
 			
 			read_token(tokenizer);
 			
@@ -62,7 +65,10 @@ struct gbundle read_parenthesis_production(
 		{
 			struct string* tag = new_string_from_tokenchars(tokenizer);
 			
+			TODO;
+			#if 0
 			gegex_nest_structinfo_into_array(retval.start, tag);
+			#endif
 			
 			read_token(tokenizer);
 			

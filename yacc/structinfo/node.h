@@ -18,10 +18,6 @@ struct structinfo_node
 		} scanf;
 		
 		struct {
-			struct structinfo* structinfo;
-		} substructinfo;
-		
-		struct {
 			struct string* type;
 			struct string* destructor;
 		} user_defined;

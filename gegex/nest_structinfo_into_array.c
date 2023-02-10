@@ -1,4 +1,5 @@
 
+#if 0
 #include <assert.h>
 
 #include <debug.h>
@@ -93,3 +94,4 @@ void gegex_nest_structinfo_into_array(
 
 
 
+#endif

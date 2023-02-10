@@ -81,6 +81,8 @@ depprefix   = dep/$(platform)-platform/$(buildtype)-build/$(verbose)-verbose/$(d
 
 default: $(buildprefix)/zebu$(SUFFIX)
 
+#ARGS += -h
+
 #ARGS += -v
 ARGS += --verbose
 
@@ -95,7 +97,7 @@ ARGS += --verbose
 #ARGS += --template=really-just-tables
 #ARGS += --template=just-tables
 
-#ARGS += --template=charbuffer
+ARGS += --template=charbuffer
 #ARGS += --template=piecewise-charbuffer
 
 #ARGS += --template=readline
@@ -104,7 +106,7 @@ ARGS += --verbose
 #ARGS += --template=fileio
 #ARGS += --template=fileio-with-driver
 
-ARGS += --template=myreadline-with-driver
+#ARGS += --template=myreadline-with-driver
 
 #ARGS += --program-name bash
 
@@ -113,13 +115,13 @@ ARGS += --template=myreadline-with-driver
 #ARGS += --custom-header-template=./out/-templates/really_just_tables.h
 
 #ARGS += -i ./-examples/classic/classic.zb -o /tmp/classic
-#ARGS += -i ./-examples/sandbox/sandbox.zb -o /tmp/sandbox
+ARGS += -i ./-examples/sandbox/sandbox.zb -o /tmp/sandbox
 
 #ARGS += -i ./-examples/math/math.zb -o /tmp/math
 #ARGS += -i ./-examples/math2/math.zb -o /tmp/math
 
 #ARGS += -i ./-examples/maia/maia.zb -o /tmp/maia
-ARGS += -i ./-examples/json/json.zb -o /tmp/json
+#ARGS += -i ./-examples/json/json.zb -o /tmp/json
 #ARGS += -i ./-examples/expressions/expressions.zb -o /tmp/expressions
 #ARGS += -i ./-examples/expressions2/expressions.zb -o /tmp/output
 #ARGS += -i ./-examples/explode/explode.zb -o /tmp/explode
@@ -177,6 +179,8 @@ srclist.mk:
 ifneq "$(MAKECMDGOALS)" "clean"
 include srclist.mk
 
+srcs += ./cmdln/usage_message.c
+
 srcs += ./out/escaped/really_just_tables_source.c ./out/escaped/really_just_tables_header.c
 srcs += ./out/escaped/just_tables_source.c        ./out/escaped/just_tables_header.c
 
@@ -213,6 +217,10 @@ bin/escape: ./-escape.c | bin/
 
 .PRECIOUS: ./out/escaped/%_source.c
 .PRECIOUS: ./out/escaped/%_header.c
+
+./cmdln/usage_message.c ./cmdln/usage_message.h: bin/escape ./cmdln/usage_message.txt
+	@ echo "escaping $*"
+	@ $^ -v usage_message -o $@
 
 ./out/escaped/%_source.c: bin/escape ./out/-templates/%.c | bin/
 	@ echo "escaping $*"

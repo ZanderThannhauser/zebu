@@ -16,7 +16,9 @@ bin/windows-platform/release-build/yes-verbose/no-dotout/./out/out.o: \
  out/escaped/readline_header.h out/escaped/readline_with_driver_source.h \
  out/escaped/readline_with_driver_header.h out/escaped/fileio_source.h \
  out/escaped/fileio_header.h out/escaped/fileio_with_driver_source.h \
- out/escaped/fileio_with_driver_header.h out/reducerule_to_id/new.h \
+ out/escaped/fileio_with_driver_header.h \
+ out/escaped/myreadline_with_driver_source.h \
+ out/escaped/myreadline_with_driver_header.h out/reducerule_to_id/new.h \
  out/reducerule_to_id/reducerule_to_id.h \
  out/reducerule_to_id/print_source.h out/reducerule_to_id/free.h \
  out/string_to_id/new.h out/string_to_id/string_to_id.h \

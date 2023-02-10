@@ -1,5 +1,19 @@
 
+#ifndef ZEBU_LINE_NUMBERS
+#define ZEBU_LINE_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_COLUMN_NUMBERS
+#define ZEBU_COLUMN_NUMBERS (0)
+#endif
+
+#ifndef ZEBU_TREE_DEPTH
+#define ZEBU_TREE_DEPTH (0)
+#endif
+
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 
 #include <errno.h>
 #include <limits.h>
@@ -36,6 +50,7 @@
 
 #define N(array) (sizeof(array) / sizeof(*array))
 
+#ifdef ZEBU_DEBUG
 static void escape(char *out, unsigned char in)
 {
 	switch (in)
@@ -82,6 +97,7 @@ static void escape(char *out, unsigned char in)
 			break;
 	}
 }
+#endif
 
 struct {{PREFIX}}_$start* {{PREFIX}}_parse(
 	const unsigned char* buffer,
@@ -138,7 +154,9 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse(
 	
 	void read_token(unsigned l)
 	{
+		#ifdef ZEBU_DEBUG
 		char escaped[10];
+		#endif
 		
 		// unsigned original_l = l;
 		
@@ -154,9 +172,9 @@ struct {{PREFIX}}_$start* {{PREFIX}}_parse(
 			{
 				c = *buffer;
 				
+				#ifdef ZEBU_DEBUG
 				escape(escaped, c);
 				
-				#ifdef ZEBU_DEBUG
 				ddprintf("c = '%s' (0x%X)\n", escaped, c);
 				#endif
 				

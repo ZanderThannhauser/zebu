@@ -5,8 +5,6 @@
 
 #include <string/struct.h>
 
-#include <cmdln/parser_program_name.h>
-
 #include <misc/format_flags/struct.h>
 
 #include <yacc/structinfo/struct.h>
@@ -32,8 +30,10 @@ void reductioninfo_print_source(
 			fprintf(stream, ""
 				"{" "\n"
 					"struct %s_token* token = data.data[--yacc.n, --data.n];" "\n"
+					"#if ZEBU_LINE_NUMBERS" "\n"
 					"if (token->line < value->startline) value->startline = token->line;" "\n"
 					"if (value->endline < token->line) value->endline = token->line;" "\n"
+					"#endif" "\n"
 			"", prefix);
 			
 			structinfo_foreach(this->structinfo, ({
@@ -102,7 +102,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -125,7 +125,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -148,7 +148,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -168,7 +168,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -188,7 +188,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -222,7 +222,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -245,7 +245,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -268,7 +268,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -288,7 +288,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -308,7 +308,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -340,7 +340,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -363,7 +363,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -386,7 +386,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -406,7 +406,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -426,7 +426,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -459,7 +459,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -482,7 +482,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -505,7 +505,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -525,7 +525,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -545,7 +545,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = raw;" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -580,7 +580,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"mbstowcs(value->%s = malloc((len + 1) * sizeof(wchar_t)), (void*) token->data, len + 1);" "\n"
 												"}" "\n"
-											"", parser_program_name, parser_program_name, name);
+											"", "zebu", "zebu", name);
 											break;
 										}
 										
@@ -603,7 +603,7 @@ void reductioninfo_print_source(
 													"}" "\n"
 													"value->%s = token->data[0];" "\n"
 												"}" "\n"
-											"", parser_program_name, name);
+											"", "zebu", name);
 											break;
 										}
 										
@@ -617,7 +617,7 @@ void reductioninfo_print_source(
 													"fprintf(stderr, \"%%s: error processing '%%%%lc' scanf-token: mbstowcs(): %%m \\n\", %s);" "\n"
 													"exit(1);" "\n"
 												"}" "\n"
-											"", parser_program_name, name, parser_program_name);
+											"", "zebu", name, "zebu");
 											break;
 										}
 										
@@ -649,7 +649,7 @@ void reductioninfo_print_source(
 														"exit(1);" "\n"
 													"}" "\n"
 												"}" "\n"
-											"", name, parser_program_name, parser_program_name);
+											"", name, "zebu", "zebu");
 											break;
 										}
 										case lm_long:
@@ -666,7 +666,7 @@ void reductioninfo_print_source(
 														"exit(1);" "\n"
 													"}" "\n"
 												"}" "\n"
-											"", name, parser_program_name, parser_program_name);
+											"", name, "zebu", "zebu");
 											break;
 										}
 										case lm_long_double:
@@ -683,7 +683,7 @@ void reductioninfo_print_source(
 														"exit(1);" "\n"
 													"}" "\n"
 												"}" "\n"
-											"", name, parser_program_name, parser_program_name);
+											"", name, "zebu", "zebu");
 											break;
 										}
 										default: TODO; break;
@@ -727,8 +727,10 @@ void reductioninfo_print_source(
 			fprintf(stream, ""
 				"{" "\n"
 				"struct %s_%s* subgrammar = data.data[--yacc.n, --data.n];" "\n"
+				"#if ZEBU_LINE_NUMBERS" "\n"
 				"if (subgrammar->startline < value->startline) value->startline = subgrammar->startline;" "\n"
 				"if (value->endline < subgrammar->endline) value->endline = subgrammar->endline;" "\n"
+				"#endif" "\n"
 			"", prefix, type);
 			
 			structinfo_foreach(this->structinfo, ({
@@ -789,8 +791,10 @@ void reductioninfo_print_source(
 			fprintf(stream, ""
 				"{" "\n"
 				"struct %s_%s* trie = data.data[--yacc.n, --data.n];" "\n"
+				"#if ZEBU_LINE_NUMBERS" "\n"
 				"if (trie->startline < value->startline) value->startline = trie->startline;" "\n"
 				"if (value->endline < trie->endline) value->endline = trie->endline;" "\n"
+				"#endif" "\n"
 			"", prefix, grammar);
 			
 			structinfo_foreach(structinfo, ({
